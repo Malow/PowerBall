@@ -6,7 +6,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	int b = 5;
 
 
-	int c = 10 + a + b;
+	int c = 25 + a + b;
 
 
 	return 0;
