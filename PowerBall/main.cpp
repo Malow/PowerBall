@@ -2,10 +2,12 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
-<<<<<<< HEAD
-	// NU SKA DET STÅ SÅ HÄR
-=======
-	// Test ska det bara stå
->>>>>>> 34175ed89d3b8a77f278b92ee0ae3e663fa1e1c5
+	int a = 5;
+	int b = 10;
+
+
+	int c = 10 + a + b;
+
+
 	return 0;
 }
