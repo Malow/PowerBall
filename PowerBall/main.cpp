@@ -2,6 +2,6 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
-	// LOLOLOL
+	// Test ska det bara stå
 	return 0;
 }
