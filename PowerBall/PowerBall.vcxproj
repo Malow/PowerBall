@@ -19,17 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Ball.cpp" />
     <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
+    <ClCompile Include="..\Source\Platform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Ball.h" />
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Mesh.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
+    <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

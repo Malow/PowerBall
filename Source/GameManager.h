@@ -6,15 +6,25 @@ Takes care of playing a single game and upon the end of the game returns the thr
 */
 
 #include "stdafx.h"
-
+#include "Platform.h"
+#include "Ball.h"
 class GameManager
 {
 private:
-
+	int			mNumPlayers;
+	Platform*	mPlatform;
+	Ball**		mBalls; //size = mNumPlayers (intialized in Initialize();)
 public:
-	GameManager();
-	virtual ~GameManager();
+	//constructors and destructors
+				GameManager();
+	virtual		~GameManager();
 
-	/*! Initiates a game and runs it untill it's over, after which it will return. Parameters are balls etc */
-	bool Play();
+	/*! Starts the game with the assigned amount of players. */
+	bool		Play(const int numPlayers);
+
+private:
+
+	/*! Initializes the game. (First function-call in Play) */
+	void		Initialize();
+
 };

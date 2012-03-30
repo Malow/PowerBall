@@ -26,6 +26,12 @@
     <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Ball.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Platform.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -42,6 +48,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\Mesh.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Ball.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Platform.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
