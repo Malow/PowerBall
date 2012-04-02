@@ -32,6 +32,9 @@
     <ClCompile Include="..\Source\Platform.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\Image.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -54,6 +57,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Platform.h">
       <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\Image.h">
+      <Filter>Graphics Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

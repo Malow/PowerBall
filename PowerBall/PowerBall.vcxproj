@@ -22,6 +22,7 @@
     <ClCompile Include="..\Source\Ball.cpp" />
     <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
@@ -31,6 +32,7 @@
     <ClInclude Include="..\Source\Ball.h" />
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Mesh.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
     <ClInclude Include="..\Source\Platform.h" />
@@ -82,8 +84,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../../Bin/</OutDir>
-    <IntDir>../../Intermediate/</IntDir>
+    <OutDir>../../PowerBallBin/</OutDir>
+    <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -100,8 +102,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../../Bin/</OutDir>
-    <IntDir>../../Intermediate/</IntDir>
+    <OutDir>../../PowerBallBin/</OutDir>
+    <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
@@ -109,8 +111,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../../Bin/</OutDir>
-    <IntDir>../../Intermediate/</IntDir>
+    <OutDir>../../PowerBallBin/</OutDir>
+    <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x64;$(ExecutablePath)</ExecutablePath>
     <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
