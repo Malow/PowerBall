@@ -2,6 +2,7 @@
 #define KEYLISTENER_H
 
 #include <windows.h>
+#include "stdafx.h"
 #include "Process.h"
 
 /*
@@ -34,9 +35,10 @@ namespace MaloW
 	private:
 		bool keys[256];
 		MaloW::Process* notifier;
+		HWND hwnd;
 
 	public:
-		KeyListener(MaloW::Process* notifier = NULL);
+		KeyListener(HWND handle, MaloW::Process* notifier = NULL);
 		virtual ~KeyListener() { }
 
 		void KeyDown(WPARAM param);
@@ -44,6 +46,12 @@ namespace MaloW
 
 		bool IsPressed(char key);
 		//bool HasBeenPressedSinceLast(char NotYetImplemented) { }
+
+		/*! Returns the mouse-position relative to the window (excluding borders) */
+		D3DXVECTOR2 GetMousePosition() const;
+
+		/*! Sets the mouse-position relative to the window (excluding borders) */
+		void SetMousePosition(D3DXVECTOR2 mousePos);
 	};
 }
 

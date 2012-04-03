@@ -102,6 +102,7 @@ public:
 	// Get's
 	Camera* GetCamera() const { return this->dx->GetCamera(); }
 	MaloW::KeyListener* GetKeyListener() const { return this->kl; }
+	HWND GetWindowHandle() const { return this->hWnd; }
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }
 

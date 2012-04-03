@@ -34,7 +34,7 @@ bool MainMenu::Initialize()
 bool MainMenu::Run()
 {
 	Event getEvent = Event("LOL", " ");
-	while(this->mRunning)
+	while(this->mGe->isRunning())
 	{
 		this->mGe->Update();
 		//this->mSets[this->mCurrentSet].Update();

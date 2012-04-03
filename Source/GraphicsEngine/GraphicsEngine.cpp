@@ -134,7 +134,7 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 void GraphicsEngine::InitObjects()
 {
 	this->dx = new DxManager(this->hWnd, this->parameters, this->cam);
-	this->kl = new MaloW::KeyListener();
+	this->kl = new MaloW::KeyListener(this->hWnd);
 
 	if(this->parameters.CamType == FPS)
 	{
