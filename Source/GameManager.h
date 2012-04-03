@@ -8,6 +8,8 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "stdafx.h"
 #include "Platform.h"
 #include "Ball.h"
+#include "GraphicsEngine.h"
+
 class GameManager
 {
 private:
@@ -16,7 +18,7 @@ private:
 	Ball**		mBalls; //size = mNumPlayers (intialized in Initialize();)
 public:
 	//constructors and destructors
-				GameManager();
+				GameManager(GraphicsEngine* ge);
 	virtual		~GameManager();
 
 	/*! Starts the game with the assigned amount of players. */

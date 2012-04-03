@@ -23,9 +23,24 @@
     <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
-    <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Buffer.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Camera.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManager.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerInit.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerRender.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Light.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Mesh.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\MeshStrip.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Object3D.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\ObjLoader.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
+    <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp" />
+    <ClCompile Include="..\Source\MaloWLib\Process.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +48,42 @@
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
-    <ClInclude Include="..\Source\GraphicsEngine\Mesh.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Buffer.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Camera.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManager.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDebugging.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Light.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\GraphicsEngineParameters.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Material.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Mesh.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\MeshStrip.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Object3D.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\ObjLoader.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Shader.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
+    <ClInclude Include="..\Source\MaloWLib\Array.h" />
+    <ClInclude Include="..\Source\MaloWLib\KeyListener.h" />
+    <ClInclude Include="..\Source\MaloWLib\List.h" />
+    <ClInclude Include="..\Source\MaloWLib\MaloW.h" />
+    <ClInclude Include="..\Source\MaloWLib\MaloWFileDebug.h" />
+    <ClInclude Include="..\Source\MaloWLib\Process.h" />
+    <ClInclude Include="..\Source\MaloWLib\Queue.h" />
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\DebugNormals.fx" />
+    <None Include="Shaders\DebugWireframe.fx" />
+    <None Include="Shaders\DeferredGeometry.fx" />
+    <None Include="Shaders\DeferredLightning.fx" />
+    <None Include="Shaders\ForwardRendering.fx" />
+    <None Include="Shaders\ScreenSpaceBillBoard.fx" />
+    <None Include="Shaders\ShadowMap.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB7EE0D5-90C1-4BBD-8828-F5A39BE7D296}</ProjectGuid>
@@ -87,7 +134,7 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D32</TargetName>
   </PropertyGroup>
@@ -96,7 +143,7 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D64</TargetName>
   </PropertyGroup>
@@ -105,7 +152,7 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)R32</TargetName>
   </PropertyGroup>
@@ -114,7 +161,7 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)R64</TargetName>
   </PropertyGroup>

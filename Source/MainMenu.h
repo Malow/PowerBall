@@ -7,13 +7,14 @@ Takes care of the game untill either Play is pressed and then GameManager takes 
 
 #include "GameManager.h"
 #include "stdafx.h"
+#include "GraphicsEngine.h"
 
 class MainMenu
 {
 private:
 
 public:
-	MainMenu();
+	MainMenu(GraphicsEngine* ge);
 	virtual ~MainMenu();
 
 	/*! Creates a menu and lets the user choose between exiting, where it returns, playing, where the GameManager's play is called, and Options where the user can change options. */

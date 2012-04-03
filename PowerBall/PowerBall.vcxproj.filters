@@ -9,6 +9,21 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{b28a900a-ca47-4f32-8bb3-747d412b3f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\MaloWLib">
+      <UniqueIdentifier>{1770d7db-a2dc-4d2c-8d7a-e4d049340e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics Engine Files\MaloWLib">
+      <UniqueIdentifier>{2a910e44-bf90-4106-9b73-0c02cc70ffd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics Engine Files\MaloWLib\DirectX">
+      <UniqueIdentifier>{e37bb7a1-c7a2-4e11-87de-483b9c34f5eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics Engine Files\Shaders">
+      <UniqueIdentifier>{3f043b24-e3c2-4300-8862-39a52b67e782}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -23,9 +38,6 @@
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp">
-      <Filter>Graphics Engine Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Ball.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
@@ -34,6 +46,54 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp">
       <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp">
+      <Filter>Other\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MaloWLib\Process.cpp">
+      <Filter>Other\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Camera.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Light.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Mesh.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\MeshStrip.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\ObjLoader.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManager.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerRender.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerInit.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Buffer.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Object3D.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,9 +109,6 @@
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\GraphicsEngine\Mesh.h">
-      <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Ball.h">
       <Filter>Game Files</Filter>
     </ClInclude>
@@ -61,5 +118,100 @@
     <ClInclude Include="..\Source\GraphicsEngine\Image.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\Array.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\KeyListener.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\List.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\MaloW.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\MaloWFileDebug.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\Process.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\Queue.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Camera.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Light.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Material.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Mesh.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\MeshStrip.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\ObjLoader.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManager.h">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDebugging.h">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Buffer.h">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Object3D.h">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Shader.h">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\GraphicsEngineParameters.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\DebugNormals.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DebugWireframe.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredGeometry.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredLightning.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\ForwardRendering.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\ScreenSpaceBillBoard.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowMap.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

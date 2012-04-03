@@ -1,6 +1,6 @@
 #include "GameManager.h"
 
-GameManager::GameManager()
+GameManager::GameManager(GraphicsEngine* ge)
 {
 	this->mNumPlayers	= 0;
 	this->mPlatform		= NULL;
