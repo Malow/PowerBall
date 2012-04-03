@@ -1,22 +1,38 @@
 #pragma once
+/**
+* Auther: Rikard Johansson
+* Create Date: 28/03/2012
+*
+* This class handels the main menu of the game
+* It starts the "game" and its the menu you get back to
+* when you finish a game.
+**/
 
-/*
-Main menu of the game, gets the thread from main() function in the Run() function.
-Takes care of the game untill either Play is pressed and then GameManager takes over or exit is pressed and it returns to main.
-*/
-
+//Includes
+#include "GUI\GUISet.h"
+#include "GUI\Event.h"
 #include "GameManager.h"
 #include "stdafx.h"
+#include "GUI\SimpleButton.h"
+#include "GUI\GUIPicture.h"
 
 class MainMenu
 {
 private:
+	int mNrOfSets;
+	int mCurrentSet;
+	bool mRunning;
 
+	GameManager* mGm;
+	GUISet* mSets;
+
+	/*! Creates the sets etc, has to be called before run.*/
+	bool Initialize();
 public:
+	/*! This function will create the main menu and init all buttons etc.*/
 	MainMenu();
 	virtual ~MainMenu();
 
-	/*! Creates a menu and lets the user choose between exiting, where it returns, playing, where the GameManager's play is called, and Options where the user can change options. */
-	void Run();
-
+	/*! This function will start to use and draw the main menu*/
+	bool Run();
 };

@@ -24,6 +24,11 @@
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Mesh.cpp" />
+    <ClCompile Include="..\Source\GUI\Element.cpp" />
+    <ClCompile Include="..\Source\GUI\Events.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
+    <ClCompile Include="..\Source\GUI\GUISet.cpp" />
+    <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
@@ -34,6 +39,11 @@
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Mesh.h" />
+    <ClInclude Include="..\Source\GUI\Element.h" />
+    <ClInclude Include="..\Source\GUI\Event.h" />
+    <ClInclude Include="..\Source\GUI\GUIPicture.h" />
+    <ClInclude Include="..\Source\GUI\GUISet.h" />
+    <ClInclude Include="..\Source\GUI\SimpleButton.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\stdafx.h" />

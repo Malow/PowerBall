@@ -9,15 +9,18 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{ef32a87e-70b4-4c2b-960e-3a09a80ceece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\Events">
+      <UniqueIdentifier>{d2ea9f07-8757-4312-b561-80ee576b821b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GameManager.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\MainMenu.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp">
@@ -35,12 +38,27 @@
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\Element.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUISet.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\Events.cpp">
+      <Filter>GUI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MainMenu.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\SimpleButton.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\MainMenu.h">
       <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\stdafx.h">
@@ -60,6 +78,24 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\Image.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\Element.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUISet.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\Event.h">
+      <Filter>GUI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MainMenu.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\SimpleButton.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUIPicture.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
