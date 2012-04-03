@@ -13,5 +13,6 @@ private:
 	int mActiveHeight;
 public:
 	SimpleButton();
-	SimpleButton(float x, float y, float z, char textureName, int width, int height);
+	virtual ~SimpleButton();
+	SimpleButton(float x, float y, float z, string textureName, int width, int height);
 };

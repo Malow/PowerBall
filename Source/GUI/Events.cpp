@@ -6,7 +6,7 @@ Event::Event()
 	this->mEventInfo = ' ';
 }
 
-Event::Event(char eventMessage, char eventInfo)
+Event::Event(string eventMessage, string eventInfo)
 {
 	this->mEventMessage = eventMessage;
 	this->mEventInfo = eventInfo;

@@ -8,6 +8,9 @@
 
 #include "..\GraphicsEngine\GraphicsEngine.h"
 #include "..\GraphicsEngine\Image.h"
+#include <string>
+
+using namespace std;
 
 class Element
 {
@@ -26,13 +29,13 @@ private:
 	int mActiveWidth;
 	int mActiveHeight;
 
-	char mTextureName;
+	string mTextureName;
 
 	Image* mImage;
 
 public:
 	Element();
-	Element(float x, float y, float z, char textureName, int width, int height);
+	Element(float x, float y, float z, string textureName, int width, int height);
 	virtual ~Element();
 
 	/*! Sets the position of the element*/

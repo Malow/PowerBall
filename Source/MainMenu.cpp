@@ -10,6 +10,10 @@ MainMenu::MainMenu()
 
 	this->Initialize();
 }
+MainMenu::~MainMenu()
+{
+	delete [] this->mGm;
+}
 
 bool MainMenu::Initialize()
 {
@@ -18,19 +22,20 @@ bool MainMenu::Initialize()
 	this->mSets = new GUISet[this->mNrOfSets]();
 	
 
-	Element tempElement = GUIPicture(0,0,1, L'MainMenu_Wallpaper_1920x1080',1,1);
+	Element tempElement = GUIPicture(0,0,1, "MainMenu_Wallpaper_1920x1080",1,1);
 	this->mSets[0].AddElement(tempElement);
 
 	this->mSets[0].AddSetToRenderer();
 
+	return true;
 }
 
 bool MainMenu::Run()
 {
-	Event* getEvent = new Event('PLAY', ' ');
+	Event getEvent = Event("PLAY", " ");
 	while(this->mRunning)
 	{
-		if(getEvent->GetEventMessage() == 'PLAY')
+		if(getEvent.GetEventMessage() == "PLAY")
 		{
 			this->mSets[this->mCurrentSet].RemoveSetFromRenderer();
 			this->mGm->Play(2);
@@ -38,5 +43,6 @@ bool MainMenu::Run()
 		}
 		//this->mSets[this->mCurrentSet].Update();
 	}
-	delete [] getEvent;
+
+	return true;
 }

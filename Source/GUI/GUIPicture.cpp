@@ -4,7 +4,11 @@ GUIPicture::GUIPicture() : Element()
 {
 
 }
-GUIPicture::GUIPicture(float x, float y, float z, char textureName, int width, int height) : Element(x, y, z, textureName, width, height)
+GUIPicture::~GUIPicture()
+{
+
+}
+GUIPicture::GUIPicture(float x, float y, float z, string textureName, int width, int height) : Element(x, y, z, textureName, width, height)
 {
 
 }

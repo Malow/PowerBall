@@ -6,7 +6,7 @@ Element::Element()
 	this->mY = 0;
 	this->mZ = 0;
 
-	this->mTextureName = 'null';
+	this->mTextureName = "null";
 
 	this->mWidth = 0;
 	this->mHeight = 0;
@@ -14,7 +14,7 @@ Element::Element()
 	this->mImage = 0;
 }
 
-Element::Element(float x, float y, float z, char textureName, int width, int height)
+Element::Element(float x, float y, float z, string textureName, int width, int height)
 {
 	this->mX = x;
 	this->mY = y;

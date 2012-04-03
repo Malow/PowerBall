@@ -6,9 +6,15 @@ GUISet::GUISet()
 	this->mNrOfElements = 0;
 	this->mElements = new Element[10]();
 }
+GUISet::~GUISet()
+{
+
+}
 bool GUISet::AddElement(Element element)
 {
 	this->mElements[this->mNrOfElements++] = element;
+
+	return true;
 }
 
 bool GUISet::AddSetToRenderer()

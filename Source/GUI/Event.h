@@ -9,28 +9,30 @@
 * Event Message is the message about whats going to happen.
 * Event Info is the extra info that may be used.
 **/
+#include <string>
 
+using namespace std;
 
 class Event
 {
 private:
-	char mEventMessage;
-	char mEventInfo;
+	string mEventMessage;
+	string mEventInfo;
 
 public:
 	/*! Default constructor*/
 	Event();
 	/*! Constructor that takes a message and info about the event*/
-	Event(char eventMessage, char eventInfo);
+	Event(string eventMessage, string eventInfo);
 	virtual ~Event();
 	
 	/*! Set the event message.*/
-	void SetEventMessage(char eventMessage) { this->mEventMessage = eventMessage; }
+	void SetEventMessage(string eventMessage) { this->mEventMessage = eventMessage; }
 	/*! Set the event info.*/
-	void SetEventInfo(char eventInfo) { this->mEventInfo = mEventInfo; }
+	void SetEventInfo(string eventInfo) { this->mEventInfo = eventInfo; }
 	/*! Returns the event message*/
-	char GetEventMessage(){ return this->mEventMessage; }
+	string GetEventMessage(){ return this->mEventMessage; }
 	/*! Returns the event info*/
-	char GetEventInfo(){ return this->mEventInfo; }
+	string GetEventInfo(){ return this->mEventInfo; }
 	
 };
