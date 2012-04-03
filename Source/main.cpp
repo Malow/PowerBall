@@ -14,7 +14,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 
-
 	/*
 	// Example of GE useage
 	Mesh* testBall = ge->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
@@ -27,7 +26,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			ge->GetCamera()->moveForward(diff);
 	}
 	*/
-
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu mm(ge);

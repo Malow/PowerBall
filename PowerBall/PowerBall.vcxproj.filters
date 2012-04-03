@@ -24,6 +24,12 @@
     <Filter Include="Graphics Engine Files\Shaders">
       <UniqueIdentifier>{3f043b24-e3c2-4300-8862-39a52b67e782}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{3c6e96bd-50f7-48b5-b12a-fd1c5ea6423c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\Event">
+      <UniqueIdentifier>{fb76ef5f-9c4c-4310-99a4-0b99699d03a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -94,6 +100,21 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\Element.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUISet.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\SimpleButton.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\Events.cpp">
+      <Filter>GUI\Event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +210,21 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\Element.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUIPicture.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUISet.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\SimpleButton.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\Event.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -37,6 +37,11 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
+    <ClCompile Include="..\Source\GUI\Element.cpp" />
+    <ClCompile Include="..\Source\GUI\Events.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
+    <ClCompile Include="..\Source\GUI\GUISet.cpp" />
+    <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
     <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp" />
@@ -65,6 +70,11 @@
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
+    <ClInclude Include="..\Source\GUI\Element.h" />
+    <ClInclude Include="..\Source\GUI\Event.h" />
+    <ClInclude Include="..\Source\GUI\GUIPicture.h" />
+    <ClInclude Include="..\Source\GUI\GUISet.h" />
+    <ClInclude Include="..\Source\GUI\SimpleButton.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
     <ClInclude Include="..\Source\MaloWLib\Array.h" />
     <ClInclude Include="..\Source\MaloWLib\KeyListener.h" />
