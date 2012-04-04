@@ -8,6 +8,8 @@ KeyListener::KeyListener(HWND handle, MaloW::Process* notifier)
 	this->notifier = notifier;
 	for(int i = 0; i < 256; i++)
 		this->keys[i] = false;
+	for(int i = 0; i < 50; i++)
+		this->mouse[i] = false;
 }
 
 void KeyListener::KeyDown(WPARAM param)
@@ -72,4 +74,32 @@ void KeyListener::SetMousePosition(D3DXVECTOR2 mousePos)
 	{
 		SetCursorPos(np.x, np.y);
 	}
+}
+
+void KeyListener::MouseDown(int button)
+{
+	if(!this->mouse[button])
+	{
+		this->mouse[button] = true;
+		if(this->notifier)
+		{
+			MouseClickEvent* mce = new MouseClickEvent(button, true);
+			this->notifier->PutEvent(mce);
+		}
+	}
+}
+
+void KeyListener::MouseUp(int button)
+{
+	this->mouse[button] = false;
+	if(this->notifier)
+	{
+		MouseClickEvent* mce = new MouseClickEvent(button, false);
+		this->notifier->PutEvent(mce);
+	}
+}
+
+bool KeyListener::IsClicked(int button)
+{
+	return this->mouse[button];
 }

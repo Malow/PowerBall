@@ -26,8 +26,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
 		if(eng->GetKeyListener()->IsPressed('W'))
 			eng->GetCamera()->moveForward(diff);
+		if(eng->GetKeyListener()->IsClicked(1))
+			eng->GetCamera()->moveBackward(diff);
 	}
 	*/
+	
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu mm(ge);
