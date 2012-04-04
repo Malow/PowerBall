@@ -4,6 +4,10 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	myInitMemoryCheck();
+#endif
+
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine
 	GraphicsEngineParams params;
@@ -19,7 +23,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
 	Mesh* testBall = eng->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
-	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 200), D3DXVECTOR2(150, 300), "sun.png");
+	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 200), D3DXVECTOR2(250, 300), "trollface.png");
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(10, 20, 10));
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{

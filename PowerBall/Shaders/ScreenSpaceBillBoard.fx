@@ -84,22 +84,22 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 	float4 basepos = float4(posx, posy, 0, 1);
 
 	//bottom left
-	output.Pos = basepos;
+	output.Pos = basepos + float4(0, dimy, 0, 0);
 	output.tex = float2(0,1);
 	triStream.Append(output);
 	
 	//bottom right
-	output.Pos = basepos + float4(dimx, 0, 0, 0);
+	output.Pos = basepos + float4(dimx, dimy, 0, 0);
 	output.tex = float2(1,1);
 	triStream.Append(output);
 
 	//top left
-	output.Pos = basepos + float4(0, dimy, 0, 0);
+	output.Pos = basepos;
 	output.tex = float2(0,0);
 	triStream.Append(output);
 
 	//top right
-	output.Pos = basepos + float4(dimx, dimy, 0, 0);
+	output.Pos = basepos + float4(dimx, 0, 0, 0);
 	output.tex = float2(1,0);
 	triStream.Append(output);
 }
