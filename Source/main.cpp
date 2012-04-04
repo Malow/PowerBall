@@ -4,6 +4,10 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	myInitMemoryCheck();
+#endif
+
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine
 	GraphicsEngineParams params;
