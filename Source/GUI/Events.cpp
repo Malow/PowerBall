@@ -3,13 +3,13 @@
 Event::Event()
 {
 	this->mEventMessage = ' ';
-	this->mEventInfo = ' ';
+	//this->mEventInfo = ' ';
 }
 
-Event::Event(string eventMessage, string eventInfo)
+Event::Event(string eventMessage/*, string eventInfo*/)
 {
 	this->mEventMessage = eventMessage;
-	this->mEventInfo = eventInfo;
+	//this->mEventInfo = eventInfo;
 }
 
 Event::~Event()

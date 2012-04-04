@@ -9,10 +9,10 @@ private:
 	float mActiveY;
 	float mActiveZ;
 
-	int mActiveWidth;
-	int mActiveHeight;
+	float mActiveWidth;
+	float mActiveHeight;
 public:
 	SimpleButton();
 	virtual ~SimpleButton();
-	SimpleButton(float x, float y, float z, string textureName, int width, int height);
+	SimpleButton(float x, float y, float z, string textureName, float width, float height, Event tempEvent);
 };

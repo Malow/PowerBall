@@ -8,7 +8,7 @@ GUIPicture::~GUIPicture()
 {
 
 }
-GUIPicture::GUIPicture(float x, float y, float z, string textureName, int width, int height) : Element(x, y, z, textureName, width, height)
+GUIPicture::GUIPicture(float x, float y, float z, string textureName, float width, float height, Event tempEvent) : Element(x, y, z, textureName, width, height, 0, 0, 0, 0, tempEvent)
 {
 
 }

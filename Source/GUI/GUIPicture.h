@@ -9,5 +9,5 @@ private:
 public:
 	GUIPicture();
 	virtual ~GUIPicture();
-	GUIPicture(float x, float y, float z, string textureName, int width, int height);
+	GUIPicture(float x, float y, float z, string textureName, float width, float height, Event tempEvent);
 };
