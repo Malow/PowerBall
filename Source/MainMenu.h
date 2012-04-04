@@ -11,11 +11,11 @@
 //Includes
 #include "GUI\GUISet.h"
 #include "GUI\Event.h"
+#include "GUI\NoEvent.h"
+#include "GUI\ChangeSetEvent.h"
 #include "GameManager.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
-#include "GUI\SimpleButton.h"
-#include "GUI\GUIPicture.h"
 
 class MainMenu
 {

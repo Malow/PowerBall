@@ -9,6 +9,9 @@
 #include "..\GraphicsEngine\GraphicsEngine.h"
 #include "..\GraphicsEngine\Image.h"
 #include <string>
+#include "Event.h"
+#include "NoEvent.h"
+#include "ChangeSetEvent.h"
 
 using namespace std;
 
@@ -18,43 +21,61 @@ private:
 	float mX;
 	float mY;
 	float mZ;
-
-	int mWidth;
-	int mHeight;
+	
+	float mWidth;
+	float mHeight;
 
 	float mActiveX;
 	float mActiveY;
-	float mActiveZ;
 
-	int mActiveWidth;
-	int mActiveHeight;
+	float mActiveWidth;
+	float mActiveHeight;
 
 	string mTextureName;
 
 	Image* mImage;
+	Event mEvent;
 
 public:
 	Element();
-	Element(float x, float y, float z, string textureName, int width, int height);
+	Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, Event tempEvent);
 	virtual ~Element();
 
 	/*! Sets the position of the element*/
-	void SetPosition(float x, float y, float z){ this->mX = x; this->mY = y;this->mZ = z; };
+	void SetPosition(float x, float y, float z){ this->mX = x; this->mY = y;this->mZ = z; }
 	/*! Saves the position of the element in the parameters*/
-	void GetPosition(float& x, float& y, float& z){ x = this->mX; y = this->mY; z = this->mZ; };
+	void GetPosition(float& x, float& y, float& z){ x = this->mX; y = this->mY; z = this->mZ; }
 
 	/*! Sets the width of the element*/
-	void SetWidth(int width){ this->mWidth = width; };
+	void SetWidth(float width){ this->mWidth = width; }
 	/*! Saves the width of the element in parameter*/
-	void GetWidth(int& width){ width = this->mWidth; };
+	void GetWidth(float& width){ width = this->mWidth; }
 
 	/*! Set the height of the element*/
-	void SetHeight(int height){ this->mHeight = height; };
+	void SetHeight(float height){ this->mHeight = height; }
 	/*! Saves the height of the element in parameter*/
-	void GetHeight(int& height){ height = this->mHeight; };
+	void GetHeight(float& height){ height = this->mHeight; }
+
+	/*! Saves the actviation width of the button*/
+	void SetActiveWidth(float activeWidth){ this->mActiveWidth = activeWidth; }
+	/*! Returns the actvite width of the button*/
+	void GetActiveWidth(float& width){ width = this->mActiveWidth; }
+
+	/*! Saves the actviation height of the button*/
+	void SetActiveHeight(float activeHeight){ this->mActiveHeight = activeHeight; }
+	/*! Returns the actvite height of the button*/
+	void GetActiveHeight(float& height){ height = this->mActiveHeight; }
+
+	/*! Sets the event of the element*/
+	void SetEvent(Event tempEvent){ this->mEvent = tempEvent; }
+	/*! Gets the event from the element*/
+	void GetEvent(Event& tempEvent){ tempEvent = this->mEvent; }
 
 	/*! Adds the element to the renderer*/
 	bool AddToRenderer(GraphicsEngine* ge);
 	/*! Removes the element from the renderer*/
 	bool RemoveFromRenderer(GraphicsEngine* ge);
+	
+	/*! Check if the mouse is inside the active area and returns an event if it is*/
+	Event CheckCollision(float mouseX, float mouseY);
 };

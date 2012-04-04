@@ -116,6 +116,12 @@
     <ClCompile Include="..\Source\GUI\Events.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\NoEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -224,6 +230,12 @@
       <Filter>GUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GUI\Event.h">
+      <Filter>GUI\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\NoEvent.h">
+      <Filter>GUI\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\ChangeSetEvent.h">
       <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
