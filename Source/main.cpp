@@ -13,13 +13,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1500;
-	params.CamType = FPS;
+	params.CamType = RTS;
 
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 
-	
+	/*
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
 	Mesh* testBall = eng->CreateMesh("Media/sun.obj", D3DXVECTOR3(10, 10, 10));
@@ -33,7 +33,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
 	}
-	
+	*/
 	
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
