@@ -33,14 +33,14 @@ bool GUISet::RemoveSetFromRenderer(GraphicsEngine* ge)
 
 	return true;
 }
-Event GUISet::CheckCollision(float mouseX, float mouseY)
+Event* GUISet::CheckCollision(float mouseX, float mouseY)
 {
-	Event returnEvent; // = NoEvent();
-	Event tempReturnEvent;
+	Event* returnEvent = new NoEvent(); // = NoEvent();
+	Event* tempReturnEvent;
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
 		tempReturnEvent = this->mElements[i].CheckCollision(mouseX, mouseY);
-		if(tempReturnEvent.GetEventMessage() != "NoEvent")
+		if(tempReturnEvent->GetEventMessage() != "NoEvent")
 		{
 			returnEvent = tempReturnEvent;
 			break;

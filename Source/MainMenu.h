@@ -17,6 +17,12 @@
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 
+enum MENU {MAINMENU,
+	PLAY, 
+	OPTIONS, 
+	CREDIT,
+	QUIT};
+
 class MainMenu
 {
 private:

@@ -17,7 +17,7 @@ Element::Element()
 	this->mImage = 0;
 }
 
-Element::Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, Event tempEvent)
+Element::Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, Event* tempEvent)
 {
 	this->mX = x;
 	this->mY = y;
@@ -56,10 +56,10 @@ bool Element::RemoveFromRenderer(GraphicsEngine* ge)
 	return true;
 }
 
-Event Element::CheckCollision(float mouseX, float mouseY)
+Event* Element::CheckCollision(float mouseX, float mouseY)
 {
-	if(1 != 1) // Inside
-		return this->mEvent;
+	if((mouseX < this->mActiveX || mouseX > (this->mActiveX+this->mActiveWidth)) || (mouseY < this->mActiveY || mouseY > (this->mActiveY+this->mActiveHeight))) // Outside
+		return new NoEvent();
 	else
-		return NoEvent();
+		return this->mEvent;
 }

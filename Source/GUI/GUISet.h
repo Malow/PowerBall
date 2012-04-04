@@ -31,6 +31,6 @@ public:
 	/*! Removes the set from the renderer*/
 	bool RemoveSetFromRenderer(GraphicsEngine* ge);
 
-	Event CheckCollision(float mouseX, float mouseY);
+	Event* CheckCollision(float mouseX, float mouseY);
 
 };
