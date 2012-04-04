@@ -28,12 +28,26 @@ namespace MaloW
 		bool GetPressed() const { return this->pressed; }
 	};
 
+	class MouseClickEvent : public MaloW::ProcessEvent
+	{
+	private:
+		int button;
+		bool pressed;
 
+	public:
+		MouseClickEvent(int button, bool pressed) { this->button = button; this->pressed = pressed; }
+		virtual ~MouseClickEvent() {}
+		int GetButton() const { return this->button; }
+		bool GetPressed() const { return this->pressed; }
+	};
+
+	
 
 	class KeyListener
 	{
 	private:
 		bool keys[256];
+		bool mouse[50]; // Support 50 buttons
 		MaloW::Process* notifier;
 		HWND hwnd;
 
@@ -44,7 +58,11 @@ namespace MaloW
 		void KeyDown(WPARAM param);
 		void KeyUp(WPARAM param);
 
+		void MouseDown(int button);
+		void MouseUp(int button);
+
 		bool IsPressed(char key);
+		bool IsClicked(int button);
 		//bool HasBeenPressedSinceLast(char NotYetImplemented) { }
 
 		/*! Returns the mouse-position relative to the window (excluding borders) */

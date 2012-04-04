@@ -86,6 +86,25 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 			PostQuitMessage(0);
 			break;
 
+		// Mouse
+		case WM_LBUTTONDOWN:
+			if(kl)
+				kl->MouseDown(1);
+			break;
+		case WM_LBUTTONUP:
+			if(kl)
+				kl->MouseUp(1);
+			break;
+
+		case WM_RBUTTONDOWN:
+			if(kl)
+				kl->MouseDown(2);
+			break;
+		case WM_RBUTTONUP:
+			if(kl)
+				kl->MouseUp(2);
+			break;
+
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 	}

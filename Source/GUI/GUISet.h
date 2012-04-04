@@ -10,6 +10,8 @@
 //includes
 #include "Element.h"
 #include "..\GraphicsEngine\GraphicsEngine.h"
+#include "GUIPicture.h"
+#include "SimpleButton.h"
 
 class GUISet
 {
@@ -28,5 +30,7 @@ public:
 
 	/*! Removes the set from the renderer*/
 	bool RemoveSetFromRenderer(GraphicsEngine* ge);
+
+	Event CheckCollision(float mouseX, float mouseY);
 
 };

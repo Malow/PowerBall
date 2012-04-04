@@ -22,8 +22,12 @@ bool MainMenu::Initialize()
 
 	this->mSets = new GUISet[this->mNrOfSets]();
 	
+	Event tempEvent = NoEvent();
+	Element tempElement = GUIPicture(-1, -1, 1, "MainMenu_Wallpaper_1920x1080.png", 2, 2, tempEvent);
+	this->mSets[0].AddElement(tempElement);
 
-	Element tempElement = GUIPicture(-1,-1,1, "MainMenu_Wallpaper_1920x1080.png",2,2);
+	tempEvent = ChangeSetEvent(1);
+	tempElement = SimpleButton(0, 0, 0, "MainMenu_Play.png", 0.5, 0.5, tempEvent);
 	this->mSets[0].AddElement(tempElement);
 
 	this->mSets[0].AddSetToRenderer(this->mGe);
@@ -33,11 +37,10 @@ bool MainMenu::Initialize()
 
 bool MainMenu::Run()
 {
-	Event getEvent = Event("LOL", " ");
 	while(this->mGe->isRunning())
 	{
 		this->mGe->Update();
-		//this->mSets[this->mCurrentSet].Update();
+		//this->mSets[this->mCurrentSet].CheckCollision(this->mGe->GetM);
 		if(this->mGe->GetKeyListener()->IsPressed('W'))
 		{
 			this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
