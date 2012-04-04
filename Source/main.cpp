@@ -13,17 +13,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
+	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 
 	/*
 	// Example of GE useage
-	Mesh* testBall = ge->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
-	Image* testImg = ge->CreateImage(D3DXVECTOR2(-0.9f, -0.9f), D3DXVECTOR2(0.2f, 0.2f), "sun.png");
-	Light* testLight = ge->CreateLight(D3DXVECTOR3(10, 20, 10));
-	while(ge->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
+	GraphicsEngine* eng = GetGraphicsEngine();
+	Mesh* testBall = eng->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
+	Image* testImg = eng->CreateImage(D3DXVECTOR2(-0.9f, -0.9f), D3DXVECTOR2(0.2f, 0.2f), "sun.png");
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(10, 20, 10));
+	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
-		float diff = ge->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
-		if(ge->GetKeyListener()->IsPressed('W'))
-			ge->GetCamera()->moveForward(diff);
+		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
+		if(eng->GetKeyListener()->IsPressed('W'))
+			eng->GetCamera()->moveForward(diff);
 	}
 	*/
 

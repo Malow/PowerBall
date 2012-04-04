@@ -13,6 +13,8 @@ Singleton.
 #include "Image.h"
 
 
+
+
 // Class for communication between processes for loading meshes
 class LoadMeshEvent : public MaloW::ProcessEvent
 {
@@ -110,3 +112,14 @@ public:
 	void SetShadowMapQuality(int quality) { this->dx->ChangeShadowMapSize(quality); }
 	virtual void Life();
 };
+
+// Used as an easy single-ton.
+struct gfxeng
+{
+	static GraphicsEngine* eng;
+};
+
+inline GraphicsEngine* GetGraphicsEngine()
+{
+	return gfxeng::eng;
+}

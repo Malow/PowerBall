@@ -6,6 +6,8 @@ HINSTANCE GraphicsEngine::hInstance = NULL;
 HWND GraphicsEngine::hWnd = NULL;
 MaloW::KeyListener* GraphicsEngine::kl = NULL;
 
+GraphicsEngine* gfxeng::eng = NULL;
+
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {
 	if(!this->initDone)
