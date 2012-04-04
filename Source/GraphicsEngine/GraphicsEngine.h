@@ -98,6 +98,8 @@ public:
 	/*! Stops rendering the Image and internally deletes it and the pointer will become NULL. Return depends on if the Image was sucessfully removed. */
 	bool DeleteImage(Image* delImage);
 
+	GraphicsEngineParams GetEngineParameters() const { return this->parameters; }
+
 	float Update();
 	bool isRunning();
 

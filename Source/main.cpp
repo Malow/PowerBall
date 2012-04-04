@@ -19,7 +19,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
 	Mesh* testBall = eng->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
-	Image* testImg = eng->CreateImage(D3DXVECTOR2(-0.9f, -0.9f), D3DXVECTOR2(0.2f, 0.2f), "sun.png");
+	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 200), D3DXVECTOR2(150, 300), "sun.png");
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(10, 20, 10));
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
@@ -30,7 +30,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveBackward(diff);
 	}
 	*/
-	
+
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu mm(ge);

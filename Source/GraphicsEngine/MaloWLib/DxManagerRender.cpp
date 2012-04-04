@@ -392,17 +392,18 @@ void DxManager::RenderImages()
 	for(int i = 0; i < this->images.size(); i++)
 	{
 		Image* img = this->images[i];
-		/*// if Convert from screenspace is needed, which it isnt.
+		// if Convert from screenspace is needed, which it isnt.
 		this->Shader_BillBoard->SetFloat("posx", (img->GetPosition().x / this->params.windowWidth) * 2 - 1);
-		this->Shader_BillBoard->SetFloat("posy", (img->GetPosition().y / this->params.windowHeight) * 2 - 1);
+		this->Shader_BillBoard->SetFloat("posy", 2 - (img->GetPosition().y / this->params.windowHeight) * 2 - 1);
 		this->Shader_BillBoard->SetFloat("dimx", (img->GetDimensions().x / this->params.windowWidth) * 2);
-		this->Shader_BillBoard->SetFloat("dimy", (img->GetDimensions().y / this->params.windowHeight) * 2);
-		*/
+		this->Shader_BillBoard->SetFloat("dimy", -(img->GetDimensions().y / this->params.windowHeight) * 2);
+		
+		/*// if -1 to 1
 		this->Shader_BillBoard->SetFloat("posx", img->GetPosition().x);
 		this->Shader_BillBoard->SetFloat("posy", img->GetPosition().y);
 		this->Shader_BillBoard->SetFloat("dimx", img->GetDimensions().x);
 		this->Shader_BillBoard->SetFloat("dimy", img->GetDimensions().y);
-
+		*/
 		this->Shader_BillBoard->SetResource("tex2D", img->GetTexture());
 		this->Shader_BillBoard->Apply(0);
 		this->Dx_DeviceContext->Draw(1, 0);
