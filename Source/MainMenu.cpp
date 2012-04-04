@@ -25,25 +25,25 @@ bool MainMenu::Initialize()
 	Element* tempElement = new GUIPicture(0, 0, 1, "Media/MainMenu_Wallpaper_1920x1080.png", windowWidth, windowHeight, new NoEvent());
 	this->mSets[BACKGROUND].AddElement(tempElement);
 	
-	tempElement = new SimpleButton((float)windowWidth*0.03, (float)windowHeight*0.76, 0, "Media/MainMenu_Options.png", (float)windowWidth*0.30, (float)windowHeight*0.15, new ChangeSetEvent(OPTIONS));
+	tempElement = new SimpleButton(windowWidth*0.03f, windowHeight*0.76f, 0, "Media/MainMenu_Options.png", windowWidth*0.30f, windowHeight*0.15f, new ChangeSetEvent(OPTIONS));
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
-	tempElement = new SimpleButton((float)windowWidth*0.35, (float)windowHeight*0.68, 0, "Media/MainMenu_Play.png", (float)windowWidth*0.30, (float)windowHeight*0.15, new ChangeSetEvent(PLAY));
+	tempElement = new SimpleButton(windowWidth*0.35f, windowHeight*0.68f, 0, "Media/MainMenu_Play.png", windowWidth*0.30f, windowHeight*0.15f, new ChangeSetEvent(PLAY));
 	this->mSets[MAINMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton((float)windowWidth*0.35, (float)windowHeight*0.86, 0, "Media/MainMenu_Credit.png", (float)windowWidth*0.30, (float)windowHeight*0.12, new ChangeSetEvent(CREDIT));
+	tempElement = new SimpleButton(windowWidth*0.35f, windowHeight*0.86f, 0, "Media/MainMenu_Credit.png", windowWidth*0.30f, windowHeight*0.12f, new ChangeSetEvent(CREDIT));
 	this->mSets[MAINMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton((float)windowWidth*0.67, (float)windowHeight*0.76, 0, "Media/MainMenu_Quit.png", (float)windowWidth*0.30, (float)windowHeight*0.15, new ChangeSetEvent(QUIT));
+	tempElement = new SimpleButton(windowWidth*0.67f, windowHeight*0.76f, 0, "Media/MainMenu_Quit.png", windowWidth*0.30f, windowHeight*0.15f, new ChangeSetEvent(QUIT));
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
-	tempElement = new SimpleButton((float)windowWidth*0.03, (float)windowHeight*0.88, 0, "Media/MainMenu_Back.png", (float)windowWidth*0.09, (float)windowHeight*0.07, new ChangeSetEvent(MAINMENU));
+	tempElement = new SimpleButton(windowWidth*0.03f, windowHeight*0.88f, 0, "Media/MainMenu_Back.png", windowWidth*0.09f, windowHeight*0.07f, new ChangeSetEvent(MAINMENU));
 	this->mSets[OPTIONS].AddElement(tempElement);
 
-	tempElement = new SimpleButton((float)windowWidth*0.03, (float)windowHeight*0.88, 0, "Media/MainMenu_Back.png", (float)windowWidth*0.09, (float)windowHeight*0.07, new ChangeSetEvent(MAINMENU));
+	tempElement = new SimpleButton(windowWidth*0.03f, windowHeight*0.88f, 0, "Media/MainMenu_Back.png", windowWidth*0.09f, windowHeight*0.07f, new ChangeSetEvent(MAINMENU));
 	this->mSets[CREDIT].AddElement(tempElement);
 
-	tempElement = new GUIPicture((float)windowWidth*0.19, (float)windowHeight*0.08, 1, "Media/MainMenu_Wallpaper_Credit.png", (float)windowWidth*0.62, (float)windowHeight*0.84, new NoEvent());
+	tempElement = new GUIPicture(windowWidth*0.19f, windowHeight*0.08f, 1, "Media/MainMenu_Wallpaper_Credit.png", windowWidth*0.62f, windowHeight*0.84f, new NoEvent());
 	this->mSets[CREDIT].AddElement(tempElement);
 
 	tempElement = NULL;
