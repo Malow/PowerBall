@@ -17,7 +17,8 @@
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 
-enum MENU {MAINMENU,
+enum MENU {BACKGROUND,
+	MAINMENU,
 	PLAY, 
 	OPTIONS, 
 	CREDIT,

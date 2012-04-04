@@ -17,13 +17,14 @@ class GUISet
 {
 private:
 	int mNrOfElements;
-	Element* mElements;
+	int mMaxNrOfElements;
+	Element** mElements;
 public:
 	GUISet();
 	virtual ~GUISet();
 
 	/*! Adds a element to the set*/
-	bool AddElement(Element element);
+	bool AddElement(Element* element);
 
 	/*! Loads all elements into the renderer*/
 	bool AddSetToRenderer(GraphicsEngine* ge);
