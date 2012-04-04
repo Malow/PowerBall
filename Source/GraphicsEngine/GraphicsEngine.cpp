@@ -6,6 +6,8 @@ HINSTANCE GraphicsEngine::hInstance = NULL;
 HWND GraphicsEngine::hWnd = NULL;
 MaloW::KeyListener* GraphicsEngine::kl = NULL;
 
+GraphicsEngine* gfxeng::eng = NULL;
+
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {
 	if(!this->initDone)
@@ -84,6 +86,25 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 			PostQuitMessage(0);
 			break;
 
+		// Mouse
+		case WM_LBUTTONDOWN:
+			if(kl)
+				kl->MouseDown(1);
+			break;
+		case WM_LBUTTONUP:
+			if(kl)
+				kl->MouseUp(1);
+			break;
+
+		case WM_RBUTTONDOWN:
+			if(kl)
+				kl->MouseDown(2);
+			break;
+		case WM_RBUTTONUP:
+			if(kl)
+				kl->MouseUp(2);
+			break;
+
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -134,7 +155,7 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 void GraphicsEngine::InitObjects()
 {
 	this->dx = new DxManager(this->hWnd, this->parameters, this->cam);
-	this->kl = new MaloW::KeyListener();
+	this->kl = new MaloW::KeyListener(this->hWnd);
 
 	if(this->parameters.CamType == FPS)
 	{

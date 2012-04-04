@@ -13,6 +13,8 @@ Singleton.
 #include "Image.h"
 
 
+
+
 // Class for communication between processes for loading meshes
 class LoadMeshEvent : public MaloW::ProcessEvent
 {
@@ -96,12 +98,15 @@ public:
 	/*! Stops rendering the Image and internally deletes it and the pointer will become NULL. Return depends on if the Image was sucessfully removed. */
 	bool DeleteImage(Image* delImage);
 
+	GraphicsEngineParams GetEngineParameters() const { return this->parameters; }
+
 	float Update();
 	bool isRunning();
 
 	// Get's
 	Camera* GetCamera() const { return this->dx->GetCamera(); }
 	MaloW::KeyListener* GetKeyListener() const { return this->kl; }
+	HWND GetWindowHandle() const { return this->hWnd; }
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }
 
@@ -109,3 +114,14 @@ public:
 	void SetShadowMapQuality(int quality) { this->dx->ChangeShadowMapSize(quality); }
 	virtual void Life();
 };
+
+// Used as an easy single-ton.
+struct gfxeng
+{
+	static GraphicsEngine* eng;
+};
+
+inline GraphicsEngine* GetGraphicsEngine()
+{
+	return gfxeng::eng;
+}
