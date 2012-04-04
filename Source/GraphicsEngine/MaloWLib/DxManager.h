@@ -35,7 +35,7 @@ public:
 	}
 	virtual ~RendererEvent() 
 	{ 
-		if(this->deleteSelf)
+		if(this->deleteSelf && this->message.substr(0, 6) != "Delete")
 		{
 			if(this->mesh)
 				delete this->mesh;

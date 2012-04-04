@@ -273,15 +273,17 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 	if(mtlfile == "")
 		return returndata;
 	
-
+	
 	// Get the directory correct
+	string tempFilename = filename;
+	string orgMtl = mtlfile;
 	string newmtl = "";
-	size_t slashpos = filename.find("/");
+	size_t slashpos = tempFilename.find("/");
 	while(slashpos != string::npos)
 	{
-		slashpos = filename.find("/");
-		newmtl += filename.substr(0, slashpos);
-		filename = filename.substr(slashpos + 1);
+		slashpos = tempFilename.find("/");
+		newmtl += tempFilename.substr(0, slashpos+1);
+		tempFilename = tempFilename.substr(slashpos + 1);
 	}
 	mtlfile = newmtl + mtlfile;
 	
@@ -330,7 +332,8 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 		}
 		else if(line.size() > 0 && line.substr(0, 6) == "map_Kd")
 		{
-			md.texture = line.substr(7);
+			md.texture = mtlfile.substr(0, mtlfile.length() - orgMtl.length());
+			md.texture += line.substr(7);
 		}
 		else if(line.size() > 0 && line.substr(0, 2) == "Ks")
 		{

@@ -48,7 +48,7 @@ GraphicsEngine::~GraphicsEngine()
 	// Close DxManager thread.
 	this->dx->Close();
 	this->dx->WaitUntillDone();
-
+	
 	if(this->dx)
 		delete this->dx;
 	if(this->kl)
