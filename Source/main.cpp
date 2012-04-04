@@ -13,17 +13,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1500;
-	params.CamType = RTS;
+	params.CamType = FPS;
 
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 
-	/*
+	
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
-	Mesh* testBall = eng->CreateMesh("sun.obj", D3DXVECTOR3(10, 10, 10));
-	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 200), D3DXVECTOR2(250, 300), "trollface.png");
+	Mesh* testBall = eng->CreateMesh("Media/sun.obj", D3DXVECTOR3(10, 10, 10));
+	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 200), D3DXVECTOR2(250, 300), "Media/trollface.png");
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(10, 20, 10));
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
@@ -33,7 +33,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
 	}
-	*/
+	
 	
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
