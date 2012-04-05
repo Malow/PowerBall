@@ -13,7 +13,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1500;
-	params.CamType = FPS;
+	params.CamType = RTS;
 
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
