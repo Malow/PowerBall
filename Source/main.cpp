@@ -31,6 +31,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
+		testBall->Rotate(D3DXVECTOR3(diff, diff, 0) * 0.001f);
 		if(eng->GetKeyListener()->IsPressed('W'))
 			eng->GetCamera()->moveForward(diff);
 		if(eng->GetKeyListener()->IsClicked(1))
