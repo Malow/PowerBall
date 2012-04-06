@@ -113,13 +113,13 @@
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GUI\Events.cpp">
-      <Filter>GUI\Event</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GUI\NoEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\Event.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
   </ItemGroup>

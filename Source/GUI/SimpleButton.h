@@ -5,12 +5,7 @@
 class SimpleButton : public Element
 {
 private:
-	float mActiveX;
-	float mActiveY;
-	float mActiveZ;
 
-	float mActiveWidth;
-	float mActiveHeight;
 public:
 	SimpleButton();
 	virtual ~SimpleButton();

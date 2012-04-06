@@ -39,6 +39,7 @@ private:
 public:
 	Element();
 	Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, Event* tempEvent);
+	/*Element(Element& origObj);*/
 	virtual ~Element();
 
 	/*! Sets the position of the element*/
@@ -56,6 +57,11 @@ public:
 	/*! Saves the height of the element in parameter*/
 	void GetHeight(float& height){ height = this->mHeight; }
 
+	/*! Sets the position of active position*/
+	void SetPosition(float x, float y){ this->mActiveX = x; this->mActiveY = y; }
+	/*! Saves the pos of active pos in parameters*/
+	void GetActivePos(float& x, float& y){ x = this->mActiveX; y = this->mActiveY; }
+
 	/*! Saves the actviation width of the button*/
 	void SetActiveWidth(float activeWidth){ this->mActiveWidth = activeWidth; }
 	/*! Returns the actvite width of the button*/
@@ -70,6 +76,16 @@ public:
 	void SetEvent(Event* tempEvent){ this->mEvent = tempEvent; }
 	/*! Gets the event from the element*/
 	void GetEvent(Event* tempEvent){ tempEvent = this->mEvent; }
+
+	/*! Sets the texture variable*/
+	void SetTextureName(string textureName){ this->mTextureName = textureName; }
+	/*! Saves the texture name in parameter*/
+	void GetTextureName(string& textureName){ textureName = this->mTextureName; }
+	
+	/*! Sets the image*/
+	void SetImage(Image* image){ this->mImage = image; }
+	/*! Saves the image in the parameter*/
+	void GetImage(Image* image){ image = this->mImage; }
 
 	/*! Adds the element to the renderer*/
 	bool AddToRenderer(GraphicsEngine* ge);

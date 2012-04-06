@@ -143,7 +143,7 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 		return E_FAIL;
 
 	ShowWindow(this->hWnd, nCmdShow);
-
+	MoveWindow(this->hWnd, 0, 0, rc.right - rc.left, rc.bottom - rc.top, false);
 
 	this->InitObjects();
 
