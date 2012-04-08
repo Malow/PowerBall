@@ -42,7 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu mm(ge);
 	mm.Run();
-
+	
 	
 	// Delete graphics engine
 	delete ge;

@@ -3,7 +3,7 @@
 //	Approximates ambient occlusion by sampling the depth of neighboring pixels in screen space.
 //	Requirements: Depth and normal for each pixel (and randomized 3D-vectors).
 //------------------------------------------------------------------------------------------------------
-
+/*
 //------------------------------------------------------------------------------------------------------
 //	Global variables (non-numeric values cannot be added to constant buffers)
 //------------------------------------------------------------------------------------------------------
@@ -27,17 +27,6 @@ cbuffer PerFrame
 };
 
 //------------------------------------------------------------------------------------------------------
-//	Shader input/ouput structures
-//------------------------------------------------------------------------------------------------------
-struct VSIn
-{
-	uint vertexID : SV_VertexID; 
-};
-struct PSIn
-{
-	float4 pos : SV_Position;
-};
-//------------------------------------------------------------------------------------------------------
 //	State structures
 //------------------------------------------------------------------------------------------------------
 SamplerState LinearSampler 
@@ -45,27 +34,6 @@ SamplerState LinearSampler
 	Filter = MIN_MAG_MIP_LINEAR; 
 	AddressU = Wrap;
 	AddressV = Wrap;
-};
-DepthStencilState DepthDisabled
-{
-    DepthEnable = FALSE;
-    DepthWriteMask = ZERO;
-};
-RasterizerState BackCulling
-{
-	CullMode = BACK;
-};
-BlendState NoBlending //**
-{
-    AlphaToCoverageEnable = FALSE;
-    BlendEnable[0] = FALSE;
-    SrcBlend = SRC_COLOR;
-    DestBlend = ONE;
-    BlendOp = ADD;
-    SrcBlendAlpha = ZERO;
-    DestBlendAlpha = ZERO;
-    BlendOpAlpha = ADD;
-    RenderTargetWriteMask[0] = 0x0F;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -87,12 +55,13 @@ float3 ScreenSpaceToViewSpace(float2 screenPos)
 	float z = (float)depthMap.Sample(LinearSampler, float2(pixelPos.x, pixelPos.y));
 	pixelPos.z = z;
 	//transform by the inverse projection matrix
-	pixelPos = mul(pixelPos, invProj);
+	pixelPos = mul(pixelPos, invProjMatrix);
 	//convert to view-space by dividing by w
 	pixelPos.xyz / pixelPos.w;
 
 	return pixelPos.xyz;
 }
+
 float2 ViewSpaceToScreenSpace(float4 viewPos)
 {
 	//convert to clip space [-w,w]
@@ -108,39 +77,11 @@ float2 ViewSpaceToScreenSpace(float4 viewPos)
 
 	return viewPos.xy;
 }
-//------------------------------------------------------------------------------------------------------
-//	Vertex shader
-//------------------------------------------------------------------------------------------------------
-PSIn VS(VSIn input)
-{
-	PSIn output = (PSIn)0;
-
-	//make quad in homogenous clip space [-1,1] (topology: trianglestrip)
-	if(input.vertexID == 0)
-	{
-		output.pos = float4(-1.0f, 1.0f, 0.0f, 1.0f);
-	}
-	else if(input.vertexID == 1)
-	{
-		output.pos = float4(-1.0f, -1.0f, 0.0f, 1.0f);
-	}
-	else if(input.vertexID == 2)
-	{
-		output.pos = float4(1.0f, 1.0f, 0.0f, 1.0f);
-	}
-	else if(input.vertexID == 3)
-	{
-		output.pos = float4(1.0f, -1.0f, 0.0f, 1.0f); 
-	}
-
-	return output;
-}
 
 //------------------------------------------------------------------------------------------------------
-//	Pixel shader
+//	SSAO Shader
 //------------------------------------------------------------------------------------------------------
-//float4 PS(VSIn input)
-float4 SSAO(VSIn input)
+float4 SSAO()
 {
 	//Get view-position of pixel
 	float3 pixelPosV = ScreenSpaceToViewSpace(input.pos.xy);
@@ -187,23 +128,5 @@ float4 SSAO(VSIn input)
 	//**blur - separate pass/shader**
 
 	return float4(0,1,0,1) - occlusion * float4(1,1,1,1); //debug, **neg, värden**
-}
-
-/*
-//-----------------------------------------------------------------------------------------
-//	Technique
-//-----------------------------------------------------------------------------------------
-technique11 Tech
-{
-    pass p0
-    {
-        SetVertexShader(CompileShader(vs_4_0, VSScene()));
-        SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_4_0, PSScene()));
-	    
-		SetDepthStencilState(DepthDisabled, 0);
-	    SetRasterizerState(NoCulling);
-		SetBlendState(NoBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff); //**
-    }  
 }
 */
