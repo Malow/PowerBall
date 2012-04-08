@@ -1,27 +1,14 @@
 #include "TextureManager.h"
 
-//private
-TextureManager* TextureManager::mInstance = NULL;
-
 TextureManager::TextureManager()
 {
 	this->gDevice = NULL;
 	this->gDeviceContext = NULL;
-
-	this->mInstance = NULL;
-	this->mNrOfTextures = 0;
 }
 TextureManager::~TextureManager()
 {
 	this->gDevice = NULL;
 	this->gDeviceContext = NULL;
-
-	this->mInstance = NULL;
-
-	for(UINT i = 0; i < this->mNrOfTextures; i++)
-	{
-		SAFE_RELEASE(this->mTextureSRVs[i]);
-	}
 }
 
 
@@ -170,18 +157,6 @@ void TextureManager::Init(ID3D11Device* device, ID3D11DeviceContext* deviceConte
 	this->gDevice = device;
 	this->gDeviceContext = deviceContext;
 }
-TextureManager* TextureManager::GetInstance()
-{
-	if(!mInstance)
-	{
-		mInstance = new TextureManager();
-	}
-	return mInstance;
-}
-void TextureManager::Cleanup()
-{
-	this->~TextureManager();
-}
 		
 ID3D11ShaderResourceView* TextureManager::CreateRndTex(UINT size, UINT dimension, float min, float max)
 {
@@ -197,4 +172,3 @@ ID3D11ShaderResourceView* TextureManager::CreateRndTex(UINT size, UINT dimension
 	
 	return rndTexSRV;
 }
-

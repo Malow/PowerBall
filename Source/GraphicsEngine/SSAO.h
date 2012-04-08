@@ -21,7 +21,7 @@ class SSAO
 		SSAO();
 		SSAO(UINT nrOfSamples, float radius, float angleBias);
 		virtual ~SSAO();
-		void Init();
+		void Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
 		/*! Sets all SSAO settings to the shader. */
 		void PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam);

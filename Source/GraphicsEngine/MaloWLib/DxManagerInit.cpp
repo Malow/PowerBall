@@ -262,8 +262,7 @@ HRESULT DxManager::Init()
 	}
 
 
-	TextureManager::GetInstance()->Init(this->Dx_Device, this->Dx_DeviceContext);
-	ssao.Init();
+	ssao.Init(this->Dx_Device, this->Dx_DeviceContext);
 
 
 	return S_OK;

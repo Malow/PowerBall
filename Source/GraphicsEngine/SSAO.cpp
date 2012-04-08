@@ -19,9 +19,11 @@ SSAO::~SSAO()
 	SAFE_RELEASE(this->mRndTex);
 }
 
-void SSAO::Init()
+void SSAO::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	this->mRndTex = TextureManager::GetInstance()->CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
+	TextureManager texMgr = TextureManager();
+	texMgr.Init(device, deviceContext);
+	this->mRndTex = texMgr.CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
 }
 					
 
