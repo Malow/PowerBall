@@ -3,7 +3,7 @@
 //	Approximates ambient occlusion by sampling the depth of neighboring pixels in screen space.
 //	Requirements: Depth and normal for each pixel (and randomized 3D-vectors).
 //------------------------------------------------------------------------------------------------------
-/*
+
 //------------------------------------------------------------------------------------------------------
 //	Global variables (non-numeric values cannot be added to constant buffers)
 //------------------------------------------------------------------------------------------------------
@@ -11,13 +11,14 @@ Texture1D rndTex;	//used for sampling. contains randomized 3D-vectors x,y,z[-1,1
 Texture2D depthMap;	//contains the depth of each pixel
 Texture2D normalMap;//contains the normal of each pixel
 float DEPTH_EPSILON = 0.001f;
+static const uint		nrOfSamples = 8;	//**temp.**
 
 //------------------------------------------------------------------------------------------------------
 //	Constant buffers
 //------------------------------------------------------------------------------------------------------
 cbuffer PerFrame
 {
-	uint		nrOfSamples;	//size of rndTex
+	//uint		nrOfSamples;	//size of rndTex
 	uint		width;			//width of depth map and normal map
 	uint		height;			//height of depth map and normal map
 	float		radius;			//length multiplier of random-vectors
@@ -61,11 +62,10 @@ float3 ScreenSpaceToViewSpace(float2 screenPos)
 
 	return pixelPos.xyz;
 }
-
 float2 ViewSpaceToScreenSpace(float4 viewPos)
 {
 	//convert to clip space [-w,w]
-	viewPos = mul(float4(offsetPos[i], 1.0f), projMatrix); 
+	viewPos = mul(viewPos, projMatrix); 
 	//convert to normalized device coordinates [-1,1]
 	viewPos.xyz /= viewPos.w;
 	//convert to texture space [0,1]
@@ -81,10 +81,10 @@ float2 ViewSpaceToScreenSpace(float4 viewPos)
 //------------------------------------------------------------------------------------------------------
 //	SSAO Shader
 //------------------------------------------------------------------------------------------------------
-float4 SSAO()
+float4 SSAO(float4 pixel)
 {
 	//Get view-position of pixel
-	float3 pixelPosV = ScreenSpaceToViewSpace(input.pos.xy);
+	float3 pixelPosV = ScreenSpaceToViewSpace(pixel.xy);
 
 	//add 3D-vectors to this position
 	float4 offsetPos[nrOfSamples];
@@ -92,30 +92,31 @@ float4 SSAO()
 	for(uint i = 0; i < nrOfSamples; i++)
 	{
 		float3 offsetVector = rndTex.Sample(LinearSampler, (float)i);  //**uniform rnd**
-		float3 pixelNormalV = normalMap.Sample(LinearSampler, input.pos.xy);
+		float3 pixelNormalV = normalMap.Sample(LinearSampler, pixel.xy);
 		//check if offsetVector is above surface and within angle bias, if not, flip
 		if(dot(pixelNormalV, offsetVector) < angleBias)
 		{
 			offsetVector = -offsetVector;
 		}
-		offsetPos[i] = float3(viewPos + offsetVector, 1.0f));
+		offsetPos[i] = float4(pixelPosV + offsetVector, 1.0f);
 	}
 
 	//remap to screen space
 	[unroll]
 	for(uint i = 0; i < nrOfSamples; i++)
 	{
-		offsetPos.xy = viewSpaceToScreenSpace(offsetPos[i]);
+		offsetPos[i].xy = ViewSpaceToScreenSpace(offsetPos[i]);
 	}
 
 	//compare depth of offset positions with the depth of the pixel on that xy-position
 	float dist[nrOfSamples];
 	float occlusion = 0.0f;
+	float pixelDepth = -1.0f;
 	[unroll]
 	for(uint i = 0; i < nrOfSamples; i++)
 	{
 		pixelDepth = depthMap.Sample(LinearSampler, float2(offsetPos[i].x, offsetPos[i].y));
-		dist[i] = pixelDepth - offsetPos.z; //get depth-distance between pixel position and offset position
+		dist[i] = pixelDepth - offsetPos[i].z; //get depth-distance between pixel position and offset position
 		//if distance is positive, then the offset position is infront of the pixel
 		if(dist[i] > DEPTH_EPSILON) //** ? 0 : 1;** use epsilon to avoid using samples behind the pixel
 		{
@@ -129,4 +130,4 @@ float4 SSAO()
 
 	return float4(0,1,0,1) - occlusion * float4(1,1,1,1); //debug, **neg, värden**
 }
-*/
+
