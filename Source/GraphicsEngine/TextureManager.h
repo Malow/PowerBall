@@ -4,9 +4,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include <D3D11.h>
-#include <D3DX11.h>
-#include <vector>
 
 class TextureManager
 {

@@ -1,3 +1,5 @@
+#include "SSAO.fx"
+
 // Marcus Löwegren
 
 // For textures
@@ -303,6 +305,8 @@ float4 PSScene(PSSceneIn input) : SV_Target
 
 	if(finalColor.x < 0.0f)		// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
 		return DiffuseColor;
+
+	finalColor = SSAO(); //**parameter**
 
 	return saturate(finalColor);
 }
