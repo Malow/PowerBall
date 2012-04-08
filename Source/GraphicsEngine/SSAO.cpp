@@ -5,19 +5,26 @@ SSAO::SSAO()
 	this->mNrOfSamples = 8;
 	this->mRadius = 1.0f; 
 	this->mAngleBias = 0.0f;
-	this->mRndTex = TextureManager::GetInstance()->CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
+	this->mRndTex = NULL;
 }
 SSAO::SSAO(UINT nrOfSamples, float radius, float angleBias)
 {
 	this->mNrOfSamples = nrOfSamples;
 	this->mRadius = radius;
 	this->mAngleBias = angleBias;
-	this->mRndTex = TextureManager::GetInstance()->CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
+	this->mRndTex = NULL;
 }
 SSAO::~SSAO()
 {
 	SAFE_RELEASE(this->mRndTex);
 }
+
+void SSAO::Init()
+{
+	this->mRndTex = TextureManager::GetInstance()->CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
+}
+					
+
 
 void SSAO::PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam)
 {	

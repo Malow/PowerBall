@@ -128,6 +128,6 @@ float4 SSAO(float4 pixel)
 	//todo: occlusion function & blur
 	//**blur - separate pass/shader**
 
-	return float4(0,1,0,1) - occlusion * float4(1,1,1,1); //debug, **neg, värden**
+	return occlusion * float4(1,1,1,1); //debug, **neg, värden**
 }
 

@@ -365,7 +365,7 @@ void DxManager::RenderDeferredPerPixel()
 	
 
 	// Set SSAO settings
-	//this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
+	this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 	this->Shader_DeferredLightning->Apply(0);
 
 	
@@ -383,7 +383,7 @@ void DxManager::RenderDeferredPerPixel()
 	}
 
 	// Unbind SSAO
-	//this->ssao.PostRender(this->Shader_DeferredLightning);
+	this->ssao.PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
 

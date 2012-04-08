@@ -91,7 +91,7 @@ private:
 	Shader* Shader_DeferredGeometry;
 	Shader* Shader_DeferredLightning;
 	
-	//SSAO ssao;
+	SSAO ssao;
 
 	void RenderForward();
 	void RenderDeferredGeometry();
