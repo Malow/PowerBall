@@ -113,14 +113,20 @@
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\Events.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source\GUI\NoEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GUI\Event.cpp">
-      <Filter>GUI\Event</Filter>
+    <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp">
+      <Filter>Graphics Engine Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +244,12 @@
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h">
       <Filter>GUI\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\SSAO.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">
@@ -252,13 +264,19 @@
     <None Include="Shaders\DeferredLightning.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
-    <None Include="Shaders\ForwardRendering.fx">
-      <Filter>Graphics Engine Files\Shaders</Filter>
-    </None>
     <None Include="Shaders\ScreenSpaceBillBoard.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\ForwardRendering.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\FXAA.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
     <None Include="Shaders\ShadowMap.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\SSAO.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
   </ItemGroup>

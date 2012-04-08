@@ -84,7 +84,7 @@ float3 ScreenSpaceToViewSpace(float2 screenPos)
 	//convert to normalized device coordinates [-1,1]
 	pixelPos.xy = (pixelPos.xy * 2) - 1;
 	//get the depth value for this pixel
-	float z = depthMap.Sample(LinearSampler, float2(pixelPos.x, pixelPos.y))
+	float z = (float)depthMap.Sample(LinearSampler, float2(pixelPos.x, pixelPos.y));
 	pixelPos.z = z;
 	//transform by the inverse projection matrix
 	pixelPos = mul(pixelPos, invProj);
