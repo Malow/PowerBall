@@ -100,7 +100,10 @@ public:
 
 	GraphicsEngineParams GetEngineParameters() const { return this->parameters; }
 
+	/*! Updates the Camera and takes care of all key-inputs and returns diff in milliseconds (47.0f as return = 47 ms, IE. NOT SECONDS) */
 	float Update();
+
+
 	bool isRunning();
 
 	// Get's
