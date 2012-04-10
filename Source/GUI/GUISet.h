@@ -32,6 +32,9 @@ public:
 	/*! Removes the set from the renderer*/
 	bool RemoveSetFromRenderer(GraphicsEngine* ge);
 
-	Event* CheckCollision(float mouseX, float mouseY);
+	/*! Updates the hover and pressed images*/
+	void UpdateButtons(D3DXVECTOR2 mousePosm, GraphicsEngine* ge);
+
+	GUIEvent* CheckCollision(float mouseX, float mouseY);
 
 };

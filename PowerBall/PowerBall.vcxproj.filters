@@ -125,7 +125,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GUI\Event.cpp">
+    <ClCompile Include="..\Source\GUI\GUIEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
   </ItemGroup>
@@ -235,9 +235,6 @@
     <ClInclude Include="..\Source\GUI\SimpleButton.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\GUI\Event.h">
-      <Filter>GUI\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\GUI\NoEvent.h">
       <Filter>GUI\Event</Filter>
     </ClInclude>
@@ -249,6 +246,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\SSAO.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUIEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

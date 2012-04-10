@@ -6,9 +6,9 @@
 * This event will be returned when you are going into a new menu
 **/
 
-#include "Event.h"
+#include "GUIEvent.h"
 
-class ChangeSetEvent : public Event
+class ChangeSetEvent : public GUIEvent
 {
 private:
 	int mSet;

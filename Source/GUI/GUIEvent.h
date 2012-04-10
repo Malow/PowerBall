@@ -12,17 +12,17 @@
 
 using namespace std;
 
-class Event
+class GUIEvent
 {
 private:
 	string mEventMessage;
 
 public:
 	/*! Default constructor*/
-	Event();
+	GUIEvent();
 	/*! Constructor that takes a message about the event*/
-	Event(string eventMessage);
-	virtual ~Event();
+	GUIEvent(string eventMessage);
+	virtual ~GUIEvent();
 	
 	/*! Set the event message.*/
 	void SetEventMessage(string eventMessage) { this->mEventMessage = eventMessage; }

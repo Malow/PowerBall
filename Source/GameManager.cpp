@@ -15,7 +15,7 @@ GameManager::~GameManager()
 	{
 		mGe->DeleteMesh(this->mBalls[i]->GetMesh());
 	}
-
+	
 	// removing the dynamically allocated memory
 	SAFE_DELETE(this->mPlatform);
 	for (int i = 0; i < this->mNumPlayers; i++) 

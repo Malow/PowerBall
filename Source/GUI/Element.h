@@ -34,11 +34,11 @@ private:
 	string mTextureName;
 
 	Image* mImage;
-	Event* mEvent;
+	GUIEvent* mEvent;
 
 public:
 	Element();
-	Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, Event* tempEvent);
+	Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, GUIEvent* tempEvent);
 	/*Element(Element& origObj);*/
 	virtual ~Element();
 
@@ -73,9 +73,9 @@ public:
 	void GetActiveHeight(float& height){ height = this->mActiveHeight; }
 
 	/*! Sets the event of the element*/
-	void SetEvent(Event* tempEvent){ this->mEvent = tempEvent; }
+	void SetEvent(GUIEvent* tempEvent){ this->mEvent = tempEvent; }
 	/*! Gets the event from the element*/
-	void GetEvent(Event* tempEvent){ tempEvent = this->mEvent; }
+	void GetEvent(GUIEvent* tempEvent){ tempEvent = this->mEvent; }
 
 	/*! Sets the texture variable*/
 	void SetTextureName(string textureName){ this->mTextureName = textureName; }
@@ -93,5 +93,5 @@ public:
 	bool RemoveFromRenderer(GraphicsEngine* ge);
 	
 	/*! Check if the mouse is inside the active area and returns an event if it is*/
-	Event* CheckCollision(float mouseX, float mouseY);
+	GUIEvent* CheckCollision(float mouseX, float mouseY);
 };

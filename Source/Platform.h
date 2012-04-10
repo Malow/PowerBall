@@ -30,13 +30,13 @@ public:
 	
 	/*! Returns the bilinear interpolated Y-value of surrounding vertices of the x,z position in the world (Returns -1 if outside the platform). */
 	float GetYInterpolated(const float x, const float z) const;
-
+	
 	/*! Returns the value for platform shrinking, the platform will shrink by x units per second (Returns 0 if not shrinking). */
 	float GetShrinkValue() const { return this->mShrink; }
 
 	/*! Returns a pointer to the mesh of this platform. */
 	Mesh* GetMesh() { return this->mMesh; }
-
+	
 	/*! Returns the position of the platform in XZ plane */
 	Vector3 GetPositionXZ() const;
 
