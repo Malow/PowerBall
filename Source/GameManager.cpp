@@ -87,7 +87,7 @@ bool GameManager::Play(const int numPlayers)
 
 		if(numAlivePlayers <= 1)
 			running = false;
-		mPlatform->Update(diff*0.0001);
+		mPlatform->Update(diff*0.05);
 	}
 	
 	//returns to menu after some win/draw screen.

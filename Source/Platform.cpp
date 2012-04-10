@@ -40,8 +40,8 @@ Vector3 Platform::GetPositionXZ() const
 void Platform::Update(const float dt)
 {
 	
-	this->mScaledRadius -= this->mShrink*dt;
-	float fraction = this->mScaledRadius/this->mRadius;
+	float fraction = 1.0f-this->mShrink*dt;
+	this->mScaledRadius *= fraction;//this->mScaledRadius/this->mRadius;
 	this->mMesh->Scale(D3DXVECTOR3(fraction,1,fraction));
 }
 bool Platform::IsOnPlatform(const float x, const float z) const
