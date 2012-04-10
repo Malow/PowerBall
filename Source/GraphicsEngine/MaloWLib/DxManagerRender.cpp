@@ -525,7 +525,7 @@ HRESULT DxManager::Render()
 	//this->RenderForward();
 
 	this->RenderDeferredGeometry();
-
+	
 	// Debug: Render Normals
 	//MaloW::Array<Mesh*>* meshes = &this->objects;
 	//DrawNormals(meshes, this->Dx_Device, this->Dx_DeviceContext, this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix());
