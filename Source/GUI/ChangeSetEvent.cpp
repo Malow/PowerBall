@@ -1,10 +1,10 @@
 #include "ChangeSetEvent.h"
 
-ChangeSetEvent::ChangeSetEvent() : Event("ChangeSetEvent")
+ChangeSetEvent::ChangeSetEvent() : GUIEvent("ChangeSetEvent")
 {
 
 }
-ChangeSetEvent::ChangeSetEvent(int set) : Event("ChangeSetEvent")
+ChangeSetEvent::ChangeSetEvent(int set) : GUIEvent("ChangeSetEvent")
 {
 	this->mSet = set;
 }

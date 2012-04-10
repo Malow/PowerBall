@@ -4,9 +4,9 @@
 * Create Date: 04/04/2012
 * This is a event that returns that nothing is going to happen.
 **/
-#include "Event.h"
+#include "GUIEvent.h"
 
-class NoEvent : public Event
+class NoEvent : public GUIEvent
 {
 private:
 

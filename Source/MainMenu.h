@@ -10,7 +10,7 @@
 
 //Includes
 #include "GUI\GUISet.h"
-#include "GUI\Event.h"
+#include "GUI\GUIEvent.h"
 #include "GUI\NoEvent.h"
 #include "GUI\ChangeSetEvent.h"
 #include "GameManager.h"
@@ -37,6 +37,9 @@ private:
 
 	/*! Creates the sets etc, has to be called before run.*/
 	bool Initialize();
+
+	/*! Update mouse position*/
+	void UpdateMousePosition();
 public:
 	/*! This function will create the main menu and init all buttons etc.*/
 	MainMenu(GraphicsEngine* ge);

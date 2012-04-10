@@ -41,7 +41,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
-    <ClCompile Include="..\Source\GUI\Event.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
@@ -78,7 +78,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
-    <ClInclude Include="..\Source\GUI\Event.h" />
+    <ClInclude Include="..\Source\GUI\GUIEvent.h" />
     <ClInclude Include="..\Source\GUI\GUIPicture.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />

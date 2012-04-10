@@ -1,20 +1,5 @@
 #include "Platform.h"
 
-Platform::Platform(const string meshFilePath)
-{
-	//this->mMesh		= Engine.GetInstance()->CreateObject(meshFilePath);
-	this->mShrink		= 0.0f;
-	//float		mRotation;
-	//float		mWobblynessiiness;
-}
-
-Platform::Platform(const string meshFilePath, float shrinkValue)
-{
-	//this->mMesh		= Engine.GetInstance()->CreateObject(meshFilePath);
-	this->mShrink		= shrinkValue;
-	//float		mRotation;
-	//float		mWobblynessiiness;
-}
 Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh		     = GetGraphicsEngine()->CreateMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
@@ -25,7 +10,7 @@ Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 }
 Platform::~Platform()
 {
-	//Engine.GetInstance()->DeleteObject(this->mMesh);
+	GetGraphicsEngine()->DeleteMesh(this->mMesh);
 }
 
 float Platform::GetY(const float x, const float z) const
@@ -34,6 +19,8 @@ float Platform::GetY(const float x, const float z) const
 	z;
 	//either get vertex height from engine
 	//or calc the distance of x,z to the center of platform and compare it to radius of platform. (this requires to have a specified Y-value of the platform)
+
+
 	return -1.0f;
 }
 
@@ -53,9 +40,20 @@ Vector3 Platform::GetPositionXZ() const
 void Platform::Update(const float dt)
 {
 	
-	this->mScaledRadius -= this->mShrink*dt;
-	float fraction = this->mScaledRadius/this->mRadius;
+	float fraction = 1.0f-this->mShrink*dt;
+	this->mScaledRadius *= fraction;//this->mScaledRadius/this->mRadius;
 	this->mMesh->Scale(D3DXVECTOR3(fraction,1,fraction));
-	
-	//Engine.GetInstance()->ScaleObject(this->mMesh, this->mshrink*dt);
+}
+bool Platform::IsOnPlatform(const float x, const float z) const
+{
+	D3DXVECTOR3 pos = this->mMesh->GetPosition();
+
+	//calculate the distance from the XZ-center of the platform to the XZ-position
+	float distance = sqrt(pow(pos.x - x, 2) + pow(pos.z - z, 2));
+
+	bool isOn = false;
+	if(distance < this->mScaledRadius)
+		isOn = true;
+
+	return isOn;
 }

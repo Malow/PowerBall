@@ -15,19 +15,14 @@ GameManager::~GameManager()
 	{
 		mGe->DeleteMesh(this->mBalls[i]->GetMesh());
 	}
-
+	
 	// removing the dynamically allocated memory
 	SAFE_DELETE(this->mPlatform);
 	for (int i = 0; i < this->mNumPlayers; i++) 
 	{
-		delete[] this->mBalls[i];
-		this->mBalls[i] = NULL;
+		SAFE_DELETE(this->mBalls[i]);
     }
-	delete[] this->mBalls;
-	this->mBalls = NULL;
-	//SAFE_DELETE(this->mBalls) //for loop
-
-	
+	SAFE_DELETE_ARRAY(this->mBalls);
 }
 
 bool GameManager::Play(const int numPlayers)
@@ -77,22 +72,22 @@ bool GameManager::Play(const int numPlayers)
 			mBalls[1]->AddForce(Vector3(0,0,-1));
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
-			this->mBalls[i]->Update(diff);
-			Vector3 temp = this->mBalls[i]->GetPositionXZ() - this->mPlatform->GetPositionXZ();
+			this->mBalls[i]->Update(diff, this->mPlatform);
+			/*Vector3 temp = this->mBalls[i]->GetPositionXZ() - this->mPlatform->GetPositionXZ();
 
 			
 			if( temp.GetLength() < this->mPlatform->GetScaledRadius() )
-				numAlivePlayers += 1;
+				numAlivePlayers += 1;*/
 			
-			/*
+			
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
-			*/
+			
 		}
 
 		if(numAlivePlayers <= 1)
 			running = false;
-		mPlatform->Update(diff*0.0001);
+		mPlatform->Update(diff*0.05);
 	}
 	
 	//returns to menu after some win/draw screen.
