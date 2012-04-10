@@ -1,23 +1,5 @@
 #include "Ball.h"
 
-Ball::Ball(const string meshFilePath)
-{
-	//this->mMesh		= Engine.GetInstance()->CreateObject(meshFilePath);
-	this->mRadius		= 1.0f;
-	this->mVelocity		= Vector3(0,0,0);
-	this->mMaxVelocity	= 1.0f;
-	this->mAcceleration	= Vector3(0,0,0);
-	//this->mForward	= vector3(0.0f, 0.0f, 1.0f);
-}
-Ball::Ball(const string meshFilePath, float radius, float maxVelocity, Vector3 acceleration)
-{
-	//this->mMesh		= Engine.GetInstance()->CreateObject(meshFilePath);
-	this->mRadius		= radius;
-	this->mVelocity		= Vector3(0,0,0);
-	this->mMaxVelocity	= maxVelocity;
-	this->mAcceleration	= acceleration;
-	//this->mForward	= vector3(0.0f, 0.0f, 1.0f);
-}
 Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh			 = GetGraphicsEngine()->CreateMesh(meshFilePath, position); 
@@ -31,20 +13,20 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 }
 Ball::~Ball()
 {
-	//Engine.GetInstance()->DeleteObject(this->mMesh);
+	GetGraphicsEngine()->DeleteMesh(this->mMesh);
 }
 Vector3 Ball::GetPositionXZ() const
 {
 	D3DXVECTOR3 temp = this->mMesh->GetPosition();
 	return Vector3(temp.x, 0, temp.z);
 }
-void Ball::Update(const float dt)
+void Ball::Update(const float dt, Platform* platform)
 {
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp.x, temp.y, temp.z);
 	Vector3 newPosition = oldPosition + mVelocity*dt;
 	
-	if(newPosition.y < 14.7f )
+	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
 		newPosition.y = 14.7f;	//oldPosition.y;
 	
 	Vector3 direction = newPosition - oldPosition;
@@ -72,8 +54,11 @@ void Ball::Update(const float dt)
 bool Ball::IsAlive() const
 {
 	bool alive = false;
-	//if(this->GetPos().y > 0)
+	D3DXVECTOR3 pos = this->mMesh->GetPosition();
+
+	if(pos.y > 0)
 		alive = true;
+
 	return alive;
 }
 

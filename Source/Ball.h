@@ -3,6 +3,7 @@
 #include <string>
 #include "Vector.h"
 #include "GraphicsEngine.h"
+#include "Platform.h"
 using namespace MaloW;
 using namespace std;
 
@@ -25,8 +26,6 @@ public:
 	//constructors and destructors
 
 	/*! Initializes the Ball and loads assigned mesh.*/
-	Ball(const string meshFilePath);
-	Ball(const string meshFilePath, float radius, float maxVelocity, Vector3 acceleration);
 	Ball(const string meshFilePath, D3DXVECTOR3 position);
 	virtual		~Ball();
 	
@@ -83,7 +82,7 @@ public:
 
 
 	/*! Updates the ball. */
-	void Update(const float dt);
+	void Update(const float dt, Platform* platform);
 	
 	/*! Returns false if the position of the ball is outside the game field. */
 	bool IsAlive() const;
