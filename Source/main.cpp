@@ -26,12 +26,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	eng->GetCamera()->LookAt(D3DXVECTOR3(10, 10, 10));
 	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	Mesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
+	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(10, 20, 10));
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(13, 20, 13));
+	Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
+	testLight->SetLookAt(testBall->GetPosition());
+	testLight2->SetLookAt(testBall->GetPosition());
+
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
-		testBall->Rotate(D3DXVECTOR3(diff, diff, 0) * 0.001f);
+
+		testBall->Rotate(D3DXVECTOR3(2*PI, 0, 0) * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
+
 		if(eng->GetKeyListener()->IsPressed('W'))
 			eng->GetCamera()->moveForward(diff);
 		if(eng->GetKeyListener()->IsClicked(1))
@@ -42,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu mm(ge);
 	mm.Run();
-
+	
 	
 	// Delete graphics engine
 	delete ge;

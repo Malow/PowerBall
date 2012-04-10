@@ -262,6 +262,8 @@ HRESULT DxManager::Init()
 	}
 
 
+	ssao.Init(this->Dx_Device, this->Dx_DeviceContext);
+
 
 	return S_OK;
 }

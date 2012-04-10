@@ -112,9 +112,9 @@ void Mesh::MoveBy(D3DXVECTOR3 moveby)
 	this->RecreateWorldMatrix();
 }
 
-void Mesh::Rotate(D3DXVECTOR3 rotation)
+void Mesh::Rotate(D3DXVECTOR3 radians)
 {
-	this->rot += rotation;
+	this->rot += radians;
 	this->RecreateWorldMatrix();
 }
 

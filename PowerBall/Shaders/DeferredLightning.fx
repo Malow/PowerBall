@@ -1,3 +1,5 @@
+#include "SSAO.fx"
+
 // Marcus Löwegren
 
 // For textures
@@ -49,7 +51,6 @@ cbuffer EveryFrame
 	//float PCF_SIZE;
 	float PCF_SIZE_SQUARED;
 };
-
 
 struct VSIn
 {
@@ -209,82 +210,6 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	specLighting = saturate(specLighting / NrOfLights);
 
 	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), DiffuseColor.w);
-	
-	
-	
-
-	/*
-	//Basic Screen Space Ambient Occlussion:
-	// Need to rework to use random vectors / kernel with random rotation.
-	float AO_SIZE = 7.0f;
-	float AO_SCALE = 5.0f;
-	float Total_AO = 0.0f;
-	finalColor = saturate(finalColor);
-	float myDepth = NormsAndDepth.w;
-
-	//if(myDepth == 1.0f)	
-		//return finalColor;
-
-	float depth = 0;
-	[unroll] for(float s = 0; s < AO_SIZE; s++)
-	{
-		[unroll] for(float q = 0; q < AO_SIZE; q++)
-		{
-			depth = NormalAndDepth.Sample(linearSampler, input.tex + float2((1.0f/1920.0f)*(s-AO_SIZE/2) * AO_SCALE, (1.0f/1080.0f)*(q-AO_SIZE/2) * AO_SCALE)).w;
-			
-			
-			float depthDiff = myDepth - depth;
-			if(depthDiff > 0.005f)		// Avoid self-occlusion
-				Total_AO += 0.0000003f / (depthDiff * depthDiff);
-				
-			
-			
-			//if(depth < myDepth)
-				//if(depth + 0.005f > myDepth)		// To avoid objects from Ambient Occlude each other if they are not even close to eachother.
-					//Total_AO += (myDepth - depth) * 5.0f;
-					
-		}
-	}
-
-	finalColor = float4(1,1,1,1);		// For debugging, shows only AO
-
-	finalColor *= (1.0f - Total_AO);
-	*/
-
-	/*
-	// Better SSAO:
-	finalColor = saturate(finalColor);
-	float myDepth = NormsAndDepth.w;
-	float Total_AO = 0.0f;
-	float3 rand[10] = {
-		float3(-0.010735935, 0.01647018, 0.0062425877),
-		float3(-0.06533369, 0.3647007, -0.13746321),
-		float3(-0.6539235, -0.016726388, -0.53000957),
-		float3(0.40958285, 0.0052428036, -0.5591124),
-		float3(-0.1465366, 0.09899267, 0.15571679),
-		float3(-0.44122112, -0.5458797, 0.04912532),
-		float3(0.03755566, -0.10961345, -0.33040273),
-		float3(0.019100213, 0.29652783, 0.066237666),
-		float3(0.8765323, 0.011236004, 0.28265962),
-		float3(0.29264435, -0.40794238, 0.15964167)
-		};
-	for(int s = 0; s < 10; s++)
-	{
-		if(dot(NormsAndDepth.xyz, rand[s]) < 0.0f)
-			rand[s] *= -1;
-		rand[s] = float3(input.Pos.xy, myDepth) + rand[s] * 5;
-	}
-	for(int t = 0; t < 10; t++)
-	{
-		float depth = NormalAndDepth.Sample(linearSampler, float2(rand[t].x / 1920.0f, rand[t].y / 1080.0f)).w;
-		float depthdiff = rand[t].z - depth;
-		if(depthdiff > 0.02f)
-			Total_AO += (1.0f / (depthdiff * depthdiff)) / 10000.0f;
-	}
-	finalColor = float4(1,1,1,1);		// For debugging, shows only AO
-
-	finalColor *= (1.0f - Total_AO);
-	*/
 
 	
 	/*
@@ -303,6 +228,8 @@ float4 PSScene(PSSceneIn input) : SV_Target
 
 	if(finalColor.x < 0.0f)		// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
 		return DiffuseColor;
+
+	//finalColor = SSAO(input.Pos, NormalAndDepth);
 
 	return saturate(finalColor);
 }

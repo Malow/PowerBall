@@ -37,6 +37,8 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
     <ClCompile Include="..\Source\GUI\Event.cpp" />
@@ -72,6 +74,8 @@
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\SSAO.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
     <ClInclude Include="..\Source\GUI\Event.h" />
@@ -95,9 +99,19 @@
     <None Include="Shaders\DebugWireframe.fx" />
     <None Include="Shaders\DeferredGeometry.fx" />
     <None Include="Shaders\DeferredLightning.fx" />
-    <None Include="Shaders\ForwardRendering.fx" />
+    <None Include="Shaders\ForwardRendering.fx">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$"(DXSDK_DIR)Utilities\bin\x64\"fxc.exe  /T fx_5_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Shaders\FXAA.fx" />
     <None Include="Shaders\ScreenSpaceBillBoard.fx" />
-    <None Include="Shaders\ShadowMap.fx" />
+    <None Include="Shaders\ShadowMap.fx">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Shaders\SSAO.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB7EE0D5-90C1-4BBD-8828-F5A39BE7D296}</ProjectGuid>
@@ -183,7 +197,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

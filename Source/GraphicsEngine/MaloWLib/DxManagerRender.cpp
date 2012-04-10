@@ -363,10 +363,15 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
+
+	// Set SSAO settings
+	this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 	this->Shader_DeferredLightning->Apply(0);
+
 	
 	this->Dx_DeviceContext->Draw(1, 0);
-
+	
+	
 	// Unbind resources:
 	this->Shader_DeferredLightning->SetResource("Texture", NULL);
 	this->Shader_DeferredLightning->SetResource("NormalAndDepth", NULL);
@@ -376,7 +381,13 @@ void DxManager::RenderDeferredPerPixel()
 	{
 		this->Shader_DeferredLightning->SetResourceAtIndex(i, "ShadowMap", NULL);
 	}
+
+	// Unbind SSAO
+	this->ssao.PostRender(this->Shader_DeferredLightning);
+
 	this->Shader_DeferredLightning->Apply(0);
+
+	
 }
 
 void DxManager::RenderImages()

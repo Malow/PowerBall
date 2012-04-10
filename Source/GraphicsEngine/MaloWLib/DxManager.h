@@ -12,6 +12,7 @@
 #include "Light.h"
 #include "Process.h"
 #include "Image.h"
+#include "SSAO.h"
 
 
 
@@ -80,7 +81,7 @@ private:
 	int currentShadowMapSize;
 	Shader* Shader_ShadowMap;
 	Shader* Shader_BillBoard;
-
+	
 	// Deferred Rendering
 	// Gbuffer:
 	static const int NrOfRenderTargets = 4;
@@ -89,6 +90,8 @@ private:
 	ID3D11ShaderResourceView* Dx_GbufferSRVs[NrOfRenderTargets];
 	Shader* Shader_DeferredGeometry;
 	Shader* Shader_DeferredLightning;
+	
+	SSAO ssao;
 
 	void RenderForward();
 	void RenderDeferredGeometry();

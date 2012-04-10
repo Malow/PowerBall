@@ -2,6 +2,7 @@ newmtl initialShadingGroup
 illum 4
 Kd 0.000000 0.000000 0.000000
 Ka 0.000000 0.000000 0.000000
+Ks 0.300000 0.300000 0.300000
 Tf 1.000000 1.000000 1.000000
 map_Kd BallTexture.png
 Ni 1.000000 
