@@ -78,15 +78,16 @@ bool GameManager::Play(const int numPlayers)
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			this->mBalls[i]->Update(diff);
-			float distance = abs((this->mBalls[i]->GetPositionXZ() - this->mPlatform->GetPositionXZ()).GetLength() );
-			/*
-			if( distance < this->mPlatform->GetScaledRadius() )
-				numAlivePlayers += 1;
-			*/
+			Vector3 temp = this->mBalls[i]->GetPositionXZ() - this->mPlatform->GetPositionXZ();
+
 			
+			if( temp.GetLength() < this->mPlatform->GetScaledRadius() )
+				numAlivePlayers += 1;
+			
+			/*
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
-			
+			*/
 		}
 
 		if(numAlivePlayers <= 1)
