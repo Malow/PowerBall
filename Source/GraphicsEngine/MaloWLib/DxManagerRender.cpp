@@ -182,6 +182,14 @@ void DxManager::RenderShadowMap()
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat4(l, "lights", "LightPosition", D3DXVECTOR4(this->lights[l]->GetPosition(), 1));
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat4(l, "lights", "LightColor", D3DXVECTOR4(this->lights[l]->GetColor(), 1));
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat(l, "lights", "LightIntensity", this->lights[l]->GetIntensity());
+
+		// For deferred quad:
+		this->Shader_DeferredQuad->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV(this->currentShadowMapSize));
+		this->Shader_DeferredQuad->SetStructMemberAtIndexAsMatrix(l, "lights", "LightViewProj", vp);
+		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat4(l, "lights", "LightPosition", D3DXVECTOR4(this->lights[l]->GetPosition(), 1));
+		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat4(l, "lights", "LightColor", D3DXVECTOR4(this->lights[l]->GetColor(), 1));
+		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat(l, "lights", "LightIntensity", this->lights[l]->GetIntensity());
+
 	}
 	float PCF_SIZE = 3.0f;
 	this->Shader_ForwardRendering->SetFloat("PCF_SIZE", (float)(int)PCF_SIZE);
@@ -194,6 +202,12 @@ void DxManager::RenderShadowMap()
 	this->Shader_DeferredLightning->SetFloat("PCF_SIZE_SQUARED", PCF_SIZE * PCF_SIZE);
 	this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->currentShadowMapSize)));
 	this->Shader_DeferredLightning->SetFloat("NrOfLights", (float)this->lights.size());
+
+	// for deferred quad:
+	this->Shader_DeferredQuad->SetFloat("PCF_SIZE", (float)(int)PCF_SIZE);
+	this->Shader_DeferredQuad->SetFloat("PCF_SIZE_SQUARED", PCF_SIZE * PCF_SIZE);
+	this->Shader_DeferredQuad->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->currentShadowMapSize)));
+	this->Shader_DeferredQuad->SetFloat("NrOfLights", (float)this->lights.size());
 }
 
 void DxManager::RenderForward()
@@ -294,7 +308,7 @@ void DxManager::RenderDeferredGeometry()
 	for(int i = 0; i < this->objects.size(); i++)
 	{
 		MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
-
+		
 		// Set matrixes
 		world = this->objects[i]->GetWorldMatrix();
 		wvp = world * view * proj;
@@ -386,8 +400,6 @@ void DxManager::RenderDeferredPerPixel()
 	this->ssao.PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
-
-	
 }
 
 void DxManager::RenderImages()
@@ -423,6 +435,89 @@ void DxManager::RenderImages()
 	this->Shader_BillBoard->Apply(0);
 }
 
+void DxManager::RenderQuadDeferred()
+{
+	//clear and set render target/depth
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_DeferredQuadRT, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+
+	static float ClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_DeferredQuadRT, ClearColor);
+
+	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	
+	this->Shader_DeferredQuad->SetResource("Texture", this->Dx_GbufferSRVs[0]);
+	this->Shader_DeferredQuad->SetResource("NormalAndDepth", this->Dx_GbufferSRVs[1]);
+	this->Shader_DeferredQuad->SetResource("Position", this->Dx_GbufferSRVs[2]);
+	this->Shader_DeferredQuad->SetResource("Specular", this->Dx_GbufferSRVs[3]);
+	D3DXMATRIX v = this->camera->GetViewMatrix();
+	D3DXMATRIX p = this->camera->GetProjectionMatrix();
+	D3DXMATRIX vp = v * p;
+	this->Shader_DeferredQuad->SetMatrix("CameraVP", vp);
+	this->Shader_DeferredQuad->SetMatrix("CameraView", v);
+	this->Shader_DeferredQuad->SetMatrix("CameraProj", p);
+	this->Shader_DeferredQuad->SetFloat("CameraFar", 200.0f);
+	this->Shader_DeferredQuad->SetFloat("CameraNear", 1.0f);
+	this->Shader_DeferredQuad->SetFloat("ScreenWidth", this->params.windowWidth);
+	this->Shader_DeferredQuad->SetFloat("ScreenHeight", this->params.windowHeight);
+	this->Shader_DeferredQuad->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
+	
+	this->Shader_DeferredQuad->Apply(0);
+	
+	
+	this->Dx_DeviceContext->Draw(this->lights.size(), 0);
+	
+	
+	// Unbind resources:
+	this->Shader_DeferredQuad->SetResource("Texture", NULL);
+	this->Shader_DeferredQuad->SetResource("NormalAndDepth", NULL);
+	this->Shader_DeferredQuad->SetResource("Position", NULL);
+	this->Shader_DeferredQuad->SetResource("Specular", NULL);
+	for(int i = 0; i < this->lights.size(); i++)
+	{
+		this->Shader_DeferredQuad->SetResourceAtIndex(i, "ShadowMap", NULL);
+	}
+	this->Shader_DeferredQuad->Apply(0);
+}
+
+void DxManager::RenderDeferredTexture()
+{
+	//clear and set render target/depth
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+
+	static float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1};
+	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_RenderTargetView, ClearColor);
+
+	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	this->Shader_DeferredTexture->SetResource("Texture", this->Dx_GbufferSRVs[0]);
+	this->Shader_DeferredTexture->SetResource("NormalAndDepth", this->Dx_GbufferSRVs[1]);
+	this->Shader_DeferredTexture->SetResource("Position", this->Dx_GbufferSRVs[2]);
+	this->Shader_DeferredTexture->SetResource("Specular", this->Dx_GbufferSRVs[3]);
+	this->Shader_DeferredTexture->SetResource("LightAccu", this->Dx_DeferredSRV);
+
+	// Set SSAO settings
+	this->ssao.PreRender(this->Shader_DeferredTexture, this->params, this->camera);
+	this->Shader_DeferredTexture->Apply(0);
+
+	
+	this->Dx_DeviceContext->Draw(1, 0);
+	
+	
+	// Unbind resources:
+	this->Shader_DeferredTexture->SetResource("Texture", NULL);
+	this->Shader_DeferredTexture->SetResource("NormalAndDepth", NULL);
+	this->Shader_DeferredTexture->SetResource("Position", NULL);
+	this->Shader_DeferredTexture->SetResource("Specular", NULL);
+	this->Shader_DeferredTexture->SetResource("LightAccu", NULL);
+
+	// Unbind SSAO
+	this->ssao.PostRender(this->Shader_DeferredTexture);
+
+	this->Shader_DeferredTexture->Apply(0);
+}
+
 HRESULT DxManager::Render()
 {
 	this->RenderShadowMap();
@@ -437,7 +532,10 @@ HRESULT DxManager::Render()
 	// Debug: Render Wireframe
 	//MaloW::Array<Mesh*>* meshes = &this->objects;
 	//DrawWireFrame(meshes, this->Dx_Device, this->Dx_DeviceContext, this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix());
+
 	
+	//this->RenderQuadDeferred();
+	//this->RenderDeferredTexture();
 	this->RenderDeferredPerPixel();
 
 	this->RenderParticles();

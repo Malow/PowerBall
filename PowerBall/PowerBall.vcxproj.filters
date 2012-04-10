@@ -279,5 +279,11 @@
     <None Include="Shaders\SSAO.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\DeferredQuad.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredTexture.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

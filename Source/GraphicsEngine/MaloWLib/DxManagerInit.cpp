@@ -219,6 +219,85 @@ HRESULT DxManager::Init()
 
 
 
+	// Deferred Quad pass
+	D3D11_INPUT_ELEMENT_DESC DeferredQuadDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	this->Shader_DeferredQuad = new Shader();
+	if(FAILED(this->Shader_DeferredQuad->Init(Dx_Device, Dx_DeviceContext, "Shaders/DeferredQuad.fx", DeferredQuadDesc, 4)))	// + on last if added above
+	{
+		MaloW::Debug("Failed to open DeferredQuad.fx");
+		return E_FAIL;
+	}
+
+	// Deferred Texture pass
+	D3D11_INPUT_ELEMENT_DESC DeferredTextureDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	this->Shader_DeferredTexture = new Shader();
+	if(FAILED(this->Shader_DeferredTexture->Init(Dx_Device, Dx_DeviceContext, "Shaders/DeferredTexture.fx", DeferredTextureDesc, 4)))	// + on last if added above
+	{
+		MaloW::Debug("Failed to open DeferredTexture.fx");
+		return E_FAIL;
+	}
+
+		D3D11_TEXTURE2D_DESC DeferredQuadTextureDesc;
+		ZeroMemory(&DeferredQuadTextureDesc, sizeof(DeferredQuadTextureDesc));
+		DeferredQuadTextureDesc.Width = screenWidth;
+		DeferredQuadTextureDesc.Height = screenHeight;	
+		DeferredQuadTextureDesc.MipLevels = 1;
+		DeferredQuadTextureDesc.ArraySize = 1;
+		DeferredQuadTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		DeferredQuadTextureDesc.SampleDesc.Count = 1;
+		DeferredQuadTextureDesc.SampleDesc.Quality = 0;
+		DeferredQuadTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+		DeferredQuadTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		DeferredQuadTextureDesc.CPUAccessFlags = 0;
+		DeferredQuadTextureDesc.MiscFlags = 0;
+	
+		if(FAILED(this->Dx_Device->CreateTexture2D(&DeferredQuadTextureDesc, NULL, &this->Dx_DeferredTexture)))
+			MaloW::Debug("Failed to initiate DeferredQuadTexture");
+
+
+		D3D11_RENDER_TARGET_VIEW_DESC DescQuadRT;
+		ZeroMemory(&DescQuadRT, sizeof(DescQuadRT));
+		DescQuadRT.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		DescQuadRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		DescQuadRT.Texture2DArray.ArraySize = 1;
+		DescQuadRT.Texture2DArray.MipSlice = 0;
+
+		if(FAILED(this->Dx_Device->CreateRenderTargetView(this->Dx_DeferredTexture, NULL, &this->Dx_DeferredQuadRT)))
+			MaloW::Debug("Failed to initiate Deferred Quad RT");
+
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srQuadDesc;
+		ZeroMemory(&srQuadDesc, sizeof(srQuadDesc));
+		srQuadDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		srQuadDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srQuadDesc.Texture2D.MostDetailedMip = 0;
+		srQuadDesc.Texture2D.MipLevels = 1;
+
+		if(FAILED(this->Dx_Device->CreateShaderResourceView(this->Dx_DeferredTexture, &srQuadDesc, &this->Dx_DeferredSRV)))
+			MaloW::Debug("Failed to initiate Deferred Quad SRV");
+
+
+
+
+
+
+
+
+
+
+
+
+
 	for(int i = 0; i < this->NrOfRenderTargets; i++)
 	{
 		D3D11_TEXTURE2D_DESC GBufferTextureDesc;
@@ -247,7 +326,7 @@ HRESULT DxManager::Init()
 		DescRT.Texture2DArray.MipSlice = 0;
 
 		if(FAILED(this->Dx_Device->CreateRenderTargetView(this->Dx_GbufferTextures[i], NULL, &this->Dx_GbufferRTs[i])))
-			MaloW::Debug("Failed to initiate Gbuffer");
+			MaloW::Debug("Failed to initiate Gbuffer RT");
 
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srDesc;

@@ -28,6 +28,13 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 	this->Shader_DeferredGeometry = NULL;
 	this->Shader_DeferredLightning = NULL;
 
+	this->Shader_DeferredQuad = NULL;
+	this->Shader_DeferredTexture = NULL;
+
+	this->Dx_DeferredTexture = NULL;
+	this->Dx_DeferredQuadRT = NULL;
+	this->Dx_DeferredSRV = NULL;
+
 	this->framecount = 0;
 	this->TriangleCount = 0;
 
@@ -56,6 +63,18 @@ DxManager::~DxManager()
 	if(this->Shader_DeferredLightning)
 		delete this->Shader_DeferredLightning;
 
+	if(this->Shader_DeferredQuad)
+		delete this->Shader_DeferredQuad;
+
+	if(this->Shader_DeferredTexture)
+		delete this->Shader_DeferredTexture;
+
+	if(this->Dx_DeferredTexture)
+		this->Dx_DeferredTexture->Release();
+	if(this->Dx_DeferredQuadRT)
+		this->Dx_DeferredQuadRT->Release();
+	if(this->Dx_DeferredSRV)
+		this->Dx_DeferredSRV->Release();
 
 	if(this->Dx_DeviceContext)
 		this->Dx_DeviceContext->Release();

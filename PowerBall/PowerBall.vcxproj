@@ -99,6 +99,8 @@
     <None Include="Shaders\DebugWireframe.fx" />
     <None Include="Shaders\DeferredGeometry.fx" />
     <None Include="Shaders\DeferredLightning.fx" />
+    <None Include="Shaders\DeferredQuad.fx" />
+    <None Include="Shaders\DeferredTexture.fx" />
     <None Include="Shaders\ForwardRendering.fx">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$"(DXSDK_DIR)Utilities\bin\x64\"fxc.exe  /T fx_5_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>

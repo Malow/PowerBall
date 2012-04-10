@@ -59,7 +59,7 @@ namespace MaloW
 	{
 		return this->list->size();
 	}
-
+	
 	template <typename T>
 	bool Queue<T>::isEmpty()
 	{

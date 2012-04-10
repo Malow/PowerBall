@@ -90,6 +90,13 @@ private:
 	ID3D11ShaderResourceView* Dx_GbufferSRVs[NrOfRenderTargets];
 	Shader* Shader_DeferredGeometry;
 	Shader* Shader_DeferredLightning;
+
+	Shader* Shader_DeferredQuad;
+	Shader* Shader_DeferredTexture;
+	ID3D11Texture2D* Dx_DeferredTexture;
+	ID3D11RenderTargetView* Dx_DeferredQuadRT;
+	ID3D11ShaderResourceView* Dx_DeferredSRV;
+
 	
 	SSAO ssao;
 
@@ -99,6 +106,8 @@ private:
 	void RenderParticles();
 	void RenderShadowMap();
 	void RenderImages();
+	void RenderQuadDeferred();
+	void RenderDeferredTexture();
 	
 	HRESULT Init();
 
