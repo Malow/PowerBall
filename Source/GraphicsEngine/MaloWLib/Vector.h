@@ -126,6 +126,42 @@ namespace MaloW
 		{
 			return acos(this->GetDotProduct(compObj) / (this->GetLength() * compObj.GetLength()));
 		}
+		// new for physics
+		
+		Vector3 operator+(const Vector3& v) const
+        {
+            return Vector3(this->x+v.x, this->y+v.y, this->z+v.z);
+        }
+		Vector3 operator-(const Vector3& v) const
+		{
+			return Vector3(this->x-v.x, this->y-v.y, this->z-v.z);
+		}
+		Vector3 operator*(const float& scalar) const
+		{
+			return Vector3(this->x*scalar, this->y*scalar, this->z*scalar);
+		}
+		Vector3 operator/(const float& scalar) const
+		{
+			return Vector3(this->x/scalar, this->y/scalar, this->z/scalar);
+		}
+		void operator+=(const Vector3& v)
+        {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+        }
+		void operator-=(const Vector3& v)
+        {
+            x -= v.x;
+            y -= v.y;
+            z -= v.z;
+        }
+		void operator*=(const float scalar)
+        {
+            x *= scalar;
+            y *= scalar;
+            z *= scalar;
+        }
 	};
 };
 

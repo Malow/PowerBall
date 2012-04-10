@@ -16,6 +16,7 @@ private:
 	int			mNumPlayers;
 	Platform*	mPlatform;
 	Ball**		mBalls; //size = mNumPlayers (intialized in Initialize();)
+	GraphicsEngine* mGe;
 public:
 	//constructors and destructors
 				GameManager(GraphicsEngine* ge);

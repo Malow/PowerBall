@@ -1,42 +1,58 @@
 #pragma once
+
 #include <string>
+#include "Vector.h"
+#include "GraphicsEngine.h"
+using namespace MaloW;
 using namespace std;
+
 
 class Ball
 {
 private:
-	//Object*	mMesh;
+	
+	Mesh*		mMesh;
 	float		mRadius;
-	float		mVelocity;
+	float		mMass;
+	float		mDamping;
+	Vector3		mSumAddedForce;
+	Vector3		mVelocity;
 	float		mMaxVelocity;
-	float		mAcceleration; //insert physics.
+	Vector3		mAcceleration; //insert physics.
 	//vector3	mForward;
 
 public:
 	//constructors and destructors
 
 	/*! Initializes the Ball and loads assigned mesh.*/
-				Ball(const string meshFilePath);
-				Ball(const string meshFilePath, float radius, float maxVelocity, float acceleration);
+	Ball(const string meshFilePath);
+	Ball(const string meshFilePath, float radius, float maxVelocity, Vector3 acceleration);
+	Ball(const string meshFilePath, D3DXVECTOR3 position);
 	virtual		~Ball();
 	
 
 	//Get-Functions
 	
 	/*! Returns the balls radius. */
-	float		GetRadius() const { return this->mRadius; } 
+	float GetRadius() const { return this->mRadius; } 
 
 	/*! Returns the position of the ball in world space (retrieved from mMesh). */
-	float		GetPos() const; //{ return this->mMesh->GetCenter/Pos(); }
+	D3DXVECTOR3 GetPosition() const { return this->mMesh->GetPosition(); }
+
+	/*! Returns the position of the platform in XZ plane */
+	Vector3 GetPositionXZ() const;
 	
 	/*! Returns the balls current velocity. */
-	float		GetVelocity() const { return this->mVelocity; } 
+	Vector3 GetVelocity() const { return this->mVelocity; } 
 
 	/*! Returns the upper limit of the balls velocity. */
-	float		GetMaxVelocity() const { return this->mMaxVelocity; }
+	float GetMaxVelocity() const { return this->mMaxVelocity; }
 	
 	/*! Returns acceleration value. */
-	float		GetAcceleration() const { return this->mAcceleration; }
+	Vector3 GetAcceleration() const { return this->mAcceleration; }
+	
+	/*! Returns a pointer to the mesh of this ball. */
+	Mesh* GetMesh() { return this->mMesh; }
 
 	/*! Returns the balls forward vector (the direction the ball is moving). */
 	//vector3	GetForwardVector() const { return this->mForward; }
@@ -45,32 +61,32 @@ public:
 	//Set-Functions
 	
 	/*! Returns the balls radius. */
-	void		SetRadius(float radius) { this->mRadius = radius; } 
+	void SetRadius(float radius) { this->mRadius = radius; } 
 
 	/*! Sets the position of the ball in world space. */
-	void		SetPos(); //vector3 pos  { this->mMesh->SetCenter/Pos(pos); }
+	void SetPosition(D3DXVECTOR3 position) { this->mMesh->SetPosition(position); }
 
 	/*! Sets the position of the ball in world space. */
-	void		SetPos(const float x, const float y, const float z);
+	void SetPosition(const float x, const float y, const float z);
 
 	/*! Sets the balls current velocity. */
-	void		SetVelocity(float vel) { this->mVelocity = vel; } 
+	void SetVelocity(Vector3 vel) { this->mVelocity = vel; } 
 
 	/*! Sets the upper limit of the balls velocity. */
-	void		SetMaxVelocity(float maxVel) { this->mMaxVelocity = maxVel; }
+	void SetMaxVelocity(float maxVel) { this->mMaxVelocity = maxVel; }
 	
 	/*! Sets the acceleration value. */
-	void		SetAcceleration(float acc) { this->mAcceleration = acc; }
+	void SetAcceleration(Vector3 acc) { this->mAcceleration = acc; }
 
 	/*! Sets the balls forward vector (the direction the ball is moving). */
-	//void		SetForwardVector(vector3 forward) { this->mForward = forward; }
+	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
 
 	/*! Updates the ball. */
-	void		Update(const float dt);
+	void Update(const float dt);
 	
 	/*! Returns false if the position of the ball is outside the game field. */
-	bool		IsAlive() const;
-
-
+	bool IsAlive() const;
+	/*! Adds a force to this ball. */
+	void AddForce(const Vector3 &force) { this->mSumAddedForce += force; }
 };
