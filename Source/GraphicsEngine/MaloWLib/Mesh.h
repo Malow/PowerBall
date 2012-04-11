@@ -33,6 +33,7 @@ public:
 	void SetPosition(D3DXVECTOR3 pos);
 	void MoveBy(D3DXVECTOR3 moveby);
 	void Rotate(D3DXVECTOR3 radians);
+	void RotateAxis(D3DXVECTOR3 around, float angle);
 	void Scale(D3DXVECTOR3 scale);
 	void Scale(float scale);
 
