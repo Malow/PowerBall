@@ -122,7 +122,7 @@ void GameManager::Initialize()
 		if( i == 0)
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,-5));
 		else
-			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,+5));
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,5));
 	}
 }
 

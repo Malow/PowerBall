@@ -7,7 +7,7 @@ Mesh::Mesh(D3DXVECTOR3 pos)
 	this->topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	this->pos = pos;
 
-	this->rot = D3DXVECTOR3(0, 0, 0);
+	this->rotQuat = D3DXQUATERNION(0, 0, 0, 1);
 	this->scale = D3DXVECTOR3(1, 1, 1);
 }
 
@@ -114,7 +114,57 @@ void Mesh::MoveBy(D3DXVECTOR3 moveby)
 
 void Mesh::Rotate(D3DXVECTOR3 radians)
 {
-	this->rot += radians;
+	D3DXQUATERNION quaternion;
+	D3DXQuaternionRotationYawPitchRoll(&quaternion, radians.y, radians.x, radians.z);
+	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quaternion);
+	this->RecreateWorldMatrix();
+}
+
+void Mesh::Rotate(D3DXQUATERNION quat)
+{
+	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quat);
+	this->RecreateWorldMatrix();
+}
+
+void Mesh::RotateAxis(D3DXVECTOR3 around, float angle)
+{
+	
+	/*
+	float q1 = around.x*sin(angle/2);
+	float q2 = around.y*sin(angle/2);
+	float q3 = around.z*sin(angle/2);
+	float q4 = cos(angle/2);
+	D3DXQUATERNION quaternion = D3DXQUATERNION(q1,q2,q3,q4);
+	this->rotQuat = quaternion;
+	D3DXQuaternionNormalize(&this->rotQuat, &this->rotQuat);
+	*/
+	D3DXQUATERNION quaternion;
+	D3DXQuaternionRotationAxis(&quaternion, &around, -angle);
+	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quaternion);
+
+	/*
+	D3DXMATRIX rotAxisMatrix;
+	//D3DXMatrixRotationQuaternion(&rotAxisMatrix, &quaternion);
+	
+	D3DXMatrixRotationAxis(&rotAxisMatrix, &around, angle);
+	D3DXVECTOR3 tempRot;
+	tempRot.x = atan2(rotAxisMatrix._32,rotAxisMatrix._33);
+
+	float m32Sq = rotAxisMatrix._32*rotAxisMatrix._32;
+	float m33Sq = rotAxisMatrix._33*rotAxisMatrix._33;
+
+	//tempRot.y = -asin(rotAxisMatrix._31);
+	tempRot.y = atan2(-rotAxisMatrix._31,sqrt(m32Sq+m33Sq));
+	tempRot.z = atan2(rotAxisMatrix._21,rotAxisMatrix._11);
+	this->rot += tempRot;
+	if( rot.x >= 2*PI)
+		rot.x -= 2*PI;
+	if( rot.y >= 2*PI)
+		rot.y -= 2*PI;
+	if( rot.z >= 2*PI)
+		rot.z -= 2*PI;
+	*/
+
 	this->RecreateWorldMatrix();
 }
 
@@ -142,12 +192,24 @@ void Mesh::RecreateWorldMatrix()
 	D3DXMATRIX scaling;
 	D3DXMatrixScaling(&scaling, this->scale.x, this->scale.y, this->scale.z);
 
+	/*
+	// Euler
 	D3DXMATRIX x, y, z;
 	D3DXMatrixRotationX(&x, this->rot.x);
 	D3DXMatrixRotationY(&y, this->rot.y);
 	D3DXMatrixRotationZ(&z, this->rot.z);
 
 	D3DXMATRIX world = scaling*x*y*z*translate;
+	*/
+
+	// Quaternions
+	D3DXMATRIX QuatMat;
+	D3DXMatrixRotationQuaternion(&QuatMat, &this->rotQuat); 
+
+	D3DXMATRIX world = scaling*QuatMat*translate;
+
+
+
 
 	this->worldMatrix = world;
 }
