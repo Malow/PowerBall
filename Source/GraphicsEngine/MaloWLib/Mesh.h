@@ -22,7 +22,7 @@ protected:
 	D3D_PRIMITIVE_TOPOLOGY topology;
 
 	D3DXVECTOR3 pos;
-	D3DXVECTOR3 rot;
+	D3DXQUATERNION rotQuat;
 	D3DXVECTOR3 scale;
 	D3DXMATRIX worldMatrix;
 
@@ -33,12 +33,13 @@ public:
 	void SetPosition(D3DXVECTOR3 pos);
 	void MoveBy(D3DXVECTOR3 moveby);
 	void Rotate(D3DXVECTOR3 radians);
+	void Rotate(D3DXQUATERNION quat);
 	void RotateAxis(D3DXVECTOR3 around, float angle);
 	void Scale(D3DXVECTOR3 scale);
 	void Scale(float scale);
 
 	D3DXVECTOR3 GetPosition() const { return this->pos; }
-	D3DXVECTOR3 GetRotation() const { return this->rot; }
+	D3DXQUATERNION GetRotation() const { return this->rotQuat; }
 	D3DXVECTOR3 GetScaling() const { return this->scale; }
 
 	D3DXMATRIX GetWorldMatrix() { return this->worldMatrix; }
