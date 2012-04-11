@@ -9,13 +9,15 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "Platform.h"
 #include "Ball.h"
 #include "GraphicsEngine.h"
+#include "GameNetwork.h"
 
 class GameManager
 {
 private:
-	int			mNumPlayers;
-	Platform*	mPlatform;
-	Ball**		mBalls; //size = mNumPlayers (intialized in Initialize();)
+	int				mNumPlayers;
+	Platform*		mPlatform;
+	Ball**			mBalls; //size = mNumPlayers (intialized in Initialize();)
+	GameNetwork*	mNet; 
 	GraphicsEngine* mGe;
 public:
 	//constructors and destructors
@@ -23,11 +25,11 @@ public:
 	virtual		~GameManager();
 
 	/*! Starts the game with the assigned amount of players. */
-	bool		Play(const int numPlayers);
+	bool		Play(const int numPlayers, bool network);
 
 private:
 
 	/*! Initializes the game. (First function-call in Play) */
-	void		Initialize();
+	void		Initialize(bool network);
 
 };

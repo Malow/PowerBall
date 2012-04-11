@@ -66,7 +66,7 @@ public:
 	void SetPosition(D3DXVECTOR3 position) { this->mMesh->SetPosition(position); }
 
 	/*! Sets the position of the ball in world space. */
-	void SetPosition(const float x, const float y, const float z);
+	void SetPosition(const float x, const float y, const float z) { this->mMesh->SetPosition(D3DXVECTOR3(x,y,z)); }
 
 	/*! Sets the balls current velocity. */
 	void SetVelocity(Vector3 vel) { this->mVelocity = vel; } 

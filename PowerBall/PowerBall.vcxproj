@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\Source\Ball.cpp" />
     <ClCompile Include="..\Source\GameManager.cpp" />
+    <ClCompile Include="..\Source\GameNetwork.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Buffer.cpp" />
@@ -52,10 +53,12 @@
     <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp" />
     <ClCompile Include="..\Source\MaloWLib\Process.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
+    <ClCompile Include="..\Source\ServerConnection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Ball.h" />
     <ClInclude Include="..\Source\GameManager.h" />
+    <ClInclude Include="..\Source\GameNetwork.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Buffer.h" />
@@ -94,6 +97,7 @@
     <ClInclude Include="..\Source\MaloWLib\Process.h" />
     <ClInclude Include="..\Source\MaloWLib\Queue.h" />
     <ClInclude Include="..\Source\Platform.h" />
+    <ClInclude Include="..\Source\ServerConnection.h" />
     <ClInclude Include="..\Source\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

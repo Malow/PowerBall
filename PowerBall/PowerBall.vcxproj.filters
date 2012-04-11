@@ -30,6 +30,9 @@
     <Filter Include="GUI\Event">
       <UniqueIdentifier>{fb76ef5f-9c4c-4310-99a4-0b99699d03a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Network">
+      <UniqueIdentifier>{30a8626e-046c-4981-b1d8-1d3210e82d03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -130,6 +133,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp">
       <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ServerConnection.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GameNetwork.cpp">
+      <Filter>Game Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +264,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\Text.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ServerConnection.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GameNetwork.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
