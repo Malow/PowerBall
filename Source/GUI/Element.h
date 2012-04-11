@@ -75,7 +75,7 @@ public:
 	/*! Sets the event of the element*/
 	void SetEvent(GUIEvent* tempEvent){ this->mEvent = tempEvent; }
 	/*! Gets the event from the element*/
-	void GetEvent(GUIEvent* tempEvent){ tempEvent = this->mEvent; }
+	GUIEvent* GetEvent(){ return this->mEvent; }
 
 	/*! Sets the texture variable*/
 	void SetTextureName(string textureName){ this->mTextureName = textureName; }
@@ -88,9 +88,9 @@ public:
 	void GetImage(Image* image){ image = this->mImage; }
 
 	/*! Adds the element to the renderer*/
-	bool AddToRenderer(GraphicsEngine* ge);
+	virtual bool AddToRenderer(GraphicsEngine* ge);
 	/*! Removes the element from the renderer*/
-	bool RemoveFromRenderer(GraphicsEngine* ge);
+	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
 	
 	/*! Check if the mouse is inside the active area and returns an event if it is*/
 	GUIEvent* CheckCollision(float mouseX, float mouseY);

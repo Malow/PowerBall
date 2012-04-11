@@ -30,22 +30,14 @@ GUIPicture::GUIPicture(float x, float y, float z, string textureName, float widt
 
 void GUIPicture::ChangePicture(GraphicsEngine* ge)
 {
-	if(this->mPressed == true)
+	if(this->mPressed == true && this->mPressedImage == NULL)
 	{
 		float tempX, tempY, tempZ;
 		this->GetPosition(tempX, tempY, tempZ);
 		float width, height;
 		this->GetWidth(width);
 		this->GetHeight(height);
-		Image* newTemp = ge->CreateImage(D3DXVECTOR2(tempX, tempX), D3DXVECTOR2(width, height), this->mTextureNamePressed);
-
-		Image* tempImg;
-		this->GetImage(tempImg);
-		ge->DeleteImage(tempImg);
-		tempImg = NULL;
-
-		this->SetImage(newTemp);
-		newTemp = NULL;
+		this->mPressedImage = ge->CreateImage(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(width, height), this->mTextureNamePressed);
 	}
 	else if(this->mHovered == true && this->mHoveredImage == NULL)
 	{
@@ -64,7 +56,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 	if(this->mPressed == false && this->mPressedImage != NULL)
 	{
 		ge->DeleteImage(this->mPressedImage);
-		this->mPressedImage == NULL;
+		this->mPressedImage = NULL;
 	}
 }
 void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
@@ -77,6 +69,7 @@ void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
 	if(this->mPressedImage != NULL)
 	{
 		ge->DeleteImage(this->mPressedImage);
-		this->mPressedImage == NULL;
+		this->mPressedImage = NULL;
 	}
+	this->RemoveFromRenderer(ge);
 }

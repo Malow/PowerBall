@@ -41,7 +41,6 @@ bool GUISet::RemoveSetFromRenderer(GraphicsEngine* ge)
 {
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
-		this->mElements[i]->RemoveFromRenderer(ge);
 		if(typeid(*this->mElements[i]) == typeid(GUIPicture))
 		{
 			GUIPicture* temp = (GUIPicture*)this->mElements[i];
@@ -51,95 +50,173 @@ bool GUISet::RemoveSetFromRenderer(GraphicsEngine* ge)
 
 	return true;
 }
-void GUISet::UpdateButtons(D3DXVECTOR2 mousePos, GraphicsEngine* ge)
+GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 {
+	GUIEvent* returnEvent = NULL;
+	D3DXVECTOR2 mousePos = ge->GetKeyListener()->GetMousePosition();
 	float windowWidth = (float)ge->GetEngineParameters().windowWidth;
 	float windowHeight = (float)ge->GetEngineParameters().windowHeight;
+	GUIPicture* temp = NULL;
 
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
-
+	/*If options*/
 	if(mousePos.x < ((dx * (494.0f / 1440))+(offSet)))
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
 			if(i == 4)
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[4];
-				temp->SetHovered(true);
-				temp->ChangePicture(ge);
+				if(!mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[4];
+
+					if(temp->GetPressed())
+						returnEvent = this->mElements[4]->GetEvent();
+					temp->SetHovered(true);
+					temp->SetPressed(false);
+					temp->ChangePicture(ge);
+				}
+				else if(mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[4];
+
+					temp->SetHovered(false);
+					temp->SetPressed(true);
+					temp->ChangePicture(ge);
+				}
 			}
 			else
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIPicture*)this->mElements[i];
+
 				temp->SetHovered(false);
+				temp->SetPressed(false);
 				temp->ChangePicture(ge);
 			}
 		}
 	}
+	/*If Credit*/
 	else if(mousePos.x > ((dx * (945.0f / 1440))+(offSet)))
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
 			if(i == 2)
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[2];
-				temp->SetHovered(true);
-				temp->ChangePicture(ge);
+				if(!mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[2];
+
+					if(temp->GetPressed())
+						returnEvent = this->mElements[2]->GetEvent();
+					temp->SetHovered(true);
+					temp->SetPressed(false);
+					temp->ChangePicture(ge);
+				}
+				else if(mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[2];
+
+					temp->SetHovered(false);
+					temp->SetPressed(true);
+					temp->ChangePicture(ge);
+				}
 			}
 			else
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIPicture*)this->mElements[i];
+
 				temp->SetHovered(false);
+				temp->SetPressed(false);
 				temp->ChangePicture(ge);
 			}
 		}
 	}
+	/*If Play*/
 	else if(mousePos.y < (windowHeight * (397.0f / 1080)))
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
 			if(i == 1)
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[1];
-				temp->SetHovered(true);
-				temp->ChangePicture(ge);
+				if(!mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[1];
+
+					if(temp->GetPressed())
+						returnEvent = this->mElements[1]->GetEvent();
+					temp->SetHovered(true);
+					temp->SetPressed(false);
+					temp->ChangePicture(ge);
+				}
+				else if(mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[1];
+
+					temp->SetHovered(false);
+					temp->SetPressed(true);
+					temp->ChangePicture(ge);
+				}
 			}
 			else
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIPicture*)this->mElements[i];
+
 				temp->SetHovered(false);
+				temp->SetPressed(false);
 				temp->ChangePicture(ge);
 			}
 		}
 	}
+	/*If Exit*/
 	else if(mousePos.y > (windowHeight * (681.0f / 1080)))
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
 			if(i == 3)
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[3];
-				temp->SetHovered(true);
-				temp->ChangePicture(ge);
+				if(!mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[3];
+
+					if(temp->GetPressed())
+						returnEvent = this->mElements[3]->GetEvent();
+					temp->SetHovered(true);
+					temp->SetPressed(false);
+					temp->ChangePicture(ge);
+				}
+				else if(mousePressed)
+				{
+					temp = (GUIPicture*)this->mElements[3];
+
+					temp->SetHovered(false);
+					temp->SetPressed(true);
+					temp->ChangePicture(ge);
+				}
 			}
 			else
 			{
-				GUIPicture* temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIPicture*)this->mElements[i];
+
 				temp->SetHovered(false);
+				temp->SetPressed(false);
 				temp->ChangePicture(ge);
 			}
 		}
 	}
+	/*Safe Side*/
 	else
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
-			GUIPicture* temp = (GUIPicture*)this->mElements[i];
+			temp = (GUIPicture*)this->mElements[i];
+
 			temp->SetHovered(false);
 			temp->ChangePicture(ge);
 		}
 	}
+
+	return returnEvent;
 }
 
 GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY)
@@ -148,13 +225,16 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY)
 	GUIEvent* tempReturnEvent;
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
-		tempReturnEvent = this->mElements[i]->CheckCollision(mouseX, mouseY);
-		if(tempReturnEvent != NULL)
+		if(typeid(*this->mElements[i]) != typeid(GUIPicture))
 		{
-			if(tempReturnEvent->GetEventMessage() != "NoEvent")
+			tempReturnEvent = this->mElements[i]->CheckCollision(mouseX, mouseY);
+			if(tempReturnEvent != NULL)
 			{
-				returnEvent = tempReturnEvent;
-				break;
+				if(tempReturnEvent->GetEventMessage() != "NoEvent")
+				{
+					returnEvent = tempReturnEvent;
+					break;
+				}
 			}
 		}
 	}
