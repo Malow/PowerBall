@@ -340,7 +340,7 @@ HRESULT DxManager::Init()
 			MaloW::Debug("Failed to initiate Gbuffer SRV");
 	}
 
-
+	ssao = SSAO(8, 1.0f, 0.0f);
 	ssao.Init(this->Dx_Device, this->Dx_DeviceContext);
 
 
