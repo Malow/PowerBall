@@ -27,7 +27,17 @@ DepthStencilState DisableDepthWrite
     DepthEnable = FALSE;
     DepthWriteMask = ZERO;
 };
-
+BlendState SrcAlphaBlendingAdd 
+{ 
+	BlendEnable[0] = TRUE; 
+	SrcBlend = SRC_ALPHA; 
+	DestBlend = INV_SRC_ALPHA; 
+	BlendOp = ADD; 
+	SrcBlendAlpha = ZERO; 
+	DestBlendAlpha = ZERO; 
+	BlendOpAlpha = ADD; 
+	RenderTargetWriteMask[0] = 0x0F; 
+}; 
 //-----------------------------------------------------------------------------------------
 // Input and Output Structures
 //-----------------------------------------------------------------------------------------
@@ -231,7 +241,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	if(finalColor.x < 0.0f)		// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
 		return DiffuseColor;
 
-	//finalColor = SSAO(input.Pos, NormalAndDepth);
+	finalColor = SSAO(input.Pos, NormalAndDepth);
 
 	return saturate(finalColor);
 }
@@ -239,7 +249,6 @@ float4 PSScene(PSSceneIn input) : SV_Target
 //-----------------------------------------------------------------------------------------
 // Technique: RenderTextured  
 //-----------------------------------------------------------------------------------------
-
 technique11 BasicTech
 {
     pass p0
@@ -252,5 +261,7 @@ technique11 BasicTech
 
 		SetDepthStencilState( DisableDepthWrite, 0 );
 	    SetRasterizerState( NoCulling );
+		
+		SetBlendState( SrcAlphaBlendingAdd, float4( 0.0f, 0.0f, 0.0f, 0.0f ), 0xFFFFFFFF );
     }  
 }
