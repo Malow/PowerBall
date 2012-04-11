@@ -23,7 +23,18 @@ void SSAO::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	TextureManager texMgr = TextureManager();
 	texMgr.Init(device, deviceContext);
-	this->mRndTex = texMgr.CreateRndTex(this->mNrOfSamples, 3, -1.0f, 1.0f);
+
+	//calculate min and max values for x,y,z [0,radius]
+	// radius = |(x,y,z)
+	// = root(radius^2) 
+	// = root((radius^2 / 3) + (radius^2 / 3) + (radius^2 / 3))
+	// = root(root((radius^2 / 3)^2) + root((radius^2 / 3)^2) + root((radius^2 / 3)^2))
+	// x,y,z = root(root((radius^2 / 3)^2)
+	// = root((radius^2 / 3)
+
+	float minMax = sqrt((this->mRadius * this->mRadius) / 3.0f);
+
+	this->mRndTex = texMgr.CreateRndTex1DVec3(this->mNrOfSamples, -minMax, minMax);
 }
 					
 

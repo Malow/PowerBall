@@ -7,7 +7,7 @@ RTSCamera::RTSCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, 
 	this->forward = D3DXVECTOR3(0, -2, 1);
 	this->forward = this->NormalizeVector(this->forward);
 
-	ShowCursor(FALSE);
+	ShowCursor(TRUE);
 }
 
 RTSCamera::~RTSCamera()

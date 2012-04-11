@@ -71,5 +71,4 @@ void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
 		ge->DeleteImage(this->mPressedImage);
 		this->mPressedImage = NULL;
 	}
-	this->RemoveFromRenderer(ge);
 }
