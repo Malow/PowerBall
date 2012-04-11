@@ -32,7 +32,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 {
 	if(this->mPressed == true)
 	{
-		float tempX, tempY, tempZ;
+		/*float tempX, tempY, tempZ;
 		this->GetPosition(tempX, tempY, tempZ);
 		float width, height;
 		this->GetWidth(width);
@@ -45,7 +45,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 		tempImg = NULL;
 
 		this->SetImage(newTemp);
-		newTemp = NULL;
+		newTemp = NULL;*/
 	}
 	else if(this->mHovered == true && this->mHoveredImage == NULL)
 	{
@@ -64,7 +64,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 	if(this->mPressed == false && this->mPressedImage != NULL)
 	{
 		ge->DeleteImage(this->mPressedImage);
-		this->mPressedImage == NULL;
+		this->mPressedImage = NULL;
 	}
 }
 void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
@@ -77,6 +77,6 @@ void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
 	if(this->mPressedImage != NULL)
 	{
 		ge->DeleteImage(this->mPressedImage);
-		this->mPressedImage == NULL;
+		this->mPressedImage = NULL;
 	}
 }
