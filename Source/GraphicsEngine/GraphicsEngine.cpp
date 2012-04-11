@@ -72,7 +72,7 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 					break;
 			}
 			break;
-
+		
 		case WM_KEYUP:
 			if(kl)
 				kl->KeyUp(wParam);
@@ -222,6 +222,19 @@ bool GraphicsEngine::DeleteImage(Image* delImage)
 	return true;
 }
 
+Text* GraphicsEngine::CreateText(string text, D3DXVECTOR2 position, float size, string fontTexturePath)
+{
+	Text* textobj = new Text(text, position, size);
+	this->dx->CreateText(textobj, fontTexturePath);
+	return textobj;
+}
+
+bool GraphicsEngine::DeleteText(Text* delText)
+{
+
+	return true;
+}
+
 float GraphicsEngine::Update()
 {
 	MSG msg = {0};
@@ -232,7 +245,7 @@ float GraphicsEngine::Update()
 		if(msg.message == WM_QUIT)
 			this->keepRunning = false;
 	}
-
+	
 	// Timer
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);

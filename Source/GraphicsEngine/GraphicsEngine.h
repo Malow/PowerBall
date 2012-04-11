@@ -98,6 +98,9 @@ public:
 	/*! Stops rendering the Image and internally deletes it and the pointer will become NULL. Return depends on if the Image was sucessfully removed. */
 	bool DeleteImage(Image* delImage);
 
+	Text* CreateText(string text, D3DXVECTOR2 position, float size, string fontTexturePath);
+	bool DeleteText(Text* delText);
+
 	GraphicsEngineParams GetEngineParameters() const { return this->parameters; }
 
 	/*! Updates the Camera and takes care of all key-inputs and returns diff in milliseconds (47.0f as return = 47 ms, IE. NOT SECONDS) */

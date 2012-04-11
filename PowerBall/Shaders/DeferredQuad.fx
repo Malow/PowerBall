@@ -3,6 +3,9 @@ Texture2D Texture;
 Texture2D NormalAndDepth;
 Texture2D Position;
 Texture2D Specular;
+
+#define LightRadiusCoef 5.0f;
+
 SamplerState linearSampler
 {
     Filter = MIN_MAG_MIP_LINEAR;
@@ -158,7 +161,7 @@ VSOut VS(uint lightIndex : SV_VertexID)
 	VSOut output;
 	output.lightIndex = lightIndex;
 
-	float lightRadius = lights[lightIndex].LightIntensity * 5; // *5 as a test, decrease for better performance, increase for less abrupt lightfalloff.
+	float lightRadius = lights[lightIndex].LightIntensity * LightRadiusCoef;
 
 	output.coords = ComputeClipRegion(lights[lightIndex].LightPosView.xyz, lightRadius);	
 	
@@ -220,7 +223,7 @@ float4 CalcLight(float2 tex, Light light, int lightIndex)
 
 	//Compute shadow map tex coord
 	float2 smTex = float2(0.5f*posLight.x, -0.5f*posLight.y) + 0.5f;
-
+	
 	// Compute pixel depth for shadowing.
 	float depth = posLight.z / posLight.w;
 
@@ -238,9 +241,8 @@ float4 CalcLight(float2 tex, Light light, int lightIndex)
 		{
 			[unroll] for(float q = 0; q < PCF_SIZE; q++)
 			{
-				int i = 0;
-				//i = lightIndex;
-				shadow += (ShadowMap[i].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;
+				//shadow += (ShadowMap[lightIndex].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;		
+				shadow += (ShadowMap[0].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;			
 			}
 		}
 		shadow /= PCF_SIZE_SQUARED;
@@ -283,7 +285,7 @@ float4 PS(GSOut input) : SV_Target
 	{
 		int index = input.lightIndex;
 		Light light = lights[index];
-		float lightRadius = light.LightIntensity * 5;
+		float lightRadius = light.LightIntensity * LightRadiusCoef;
 		
 		float3 directionToLight = light.LightPosView.xyz - viewPos.xyz;
 		float distanceToLight = length(directionToLight);

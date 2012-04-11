@@ -13,6 +13,7 @@
 #include "Process.h"
 #include "Image.h"
 #include "SSAO.h"
+#include "Text.h"
 
 
 
@@ -73,6 +74,7 @@ private:
 	MaloW::Array<Mesh*> objects;
 
 	MaloW::Array<Image*> images;
+	MaloW::Array<Text*> texts;
 
 	// Lightning
 	MaloW::Array<Light*> lights;
@@ -128,12 +130,14 @@ public:
 	Object3D* createParticleObject(ParticleMesh* mesh);
 	Light* CreateLight(D3DXVECTOR3 pos);
 	void CreateImage(Image* image, string texture);
+	void CreateText(Text* text, string font);
 
 	long GetFrameCount() const { return this->framecount; }
 
 	void deleteObject(Mesh* mesh);
 	void DeleteLight(Light* light);
 	void DeleteImage(Image* image);
+	void DeleteText(Text* text);
 
 	void SetCamera(Camera* cam) { this->camera = cam; }
 	Camera* GetCamera() const { return this->camera; }

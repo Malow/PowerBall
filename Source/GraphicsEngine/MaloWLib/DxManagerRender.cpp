@@ -364,7 +364,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
 	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
 
-	static float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1};
+	static float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1.0f};
 	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_RenderTargetView, ClearColor);
 
 	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
@@ -377,7 +377,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
-
+	
 	// Set SSAO settings
 	this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 	this->Shader_DeferredLightning->Apply(0);
@@ -532,14 +532,14 @@ HRESULT DxManager::Render()
 	// Debug: Render Wireframe
 	//MaloW::Array<Mesh*>* meshes = &this->objects;
 	//DrawWireFrame(meshes, this->Dx_Device, this->Dx_DeviceContext, this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix());
-
+	
 	
 	//this->RenderQuadDeferred();
 	//this->RenderDeferredTexture();
 	this->RenderDeferredPerPixel();
 
 	this->RenderParticles();
-
+	
 	this->RenderImages();
 
 	

@@ -258,3 +258,28 @@ void DxManager::DeleteImage(Image* image)
 	RendererEvent* re = new RendererEvent("Delete Image", NULL, NULL, image);
 	this->PutEvent(re);
 }
+
+void DxManager::DeleteText(Text* text)
+{
+
+}
+
+void DxManager::CreateText(Text* text, string font)
+{
+	ID3D11ShaderResourceView* texture = NULL;
+
+	D3DX11_IMAGE_LOAD_INFO loadInfo;
+	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
+	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	loadInfo.Format = DXGI_FORMAT_BC1_UNORM;
+	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, font.c_str(), &loadInfo, NULL, &texture, NULL)))
+		MaloW::Debug("Failed to load texture " + font);
+	
+	Font newFont;
+	newFont.texture = texture;
+	font.replace(font.size() - 3, font.size(), "txt");
+
+	// load char texture coords from .txt file to newFont.whatever, create shader for it and a renderer function. ->draw(text.size()); and expand every vertex to a quad. Use 2 int-arrays in shader to represent the string and the coords for every char.
+
+	text->SetFont(newFont);
+}
