@@ -33,7 +33,7 @@ public:
 	bool RemoveSetFromRenderer(GraphicsEngine* ge);
 
 	/*! Updates the hover and pressed images*/
-	void UpdateButtons(D3DXVECTOR2 mousePosm, GraphicsEngine* ge);
+	GUIEvent* UpdateButtons(GraphicsEngine* ge, bool mousePressed);
 
 	GUIEvent* CheckCollision(float mouseX, float mouseY);
 

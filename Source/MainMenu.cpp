@@ -28,18 +28,24 @@ bool MainMenu::Initialize()
 	Element* tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/mainmenu.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), " ", " ");
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
-	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonplay.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), "Media/clickplay.png", "Media/mouseoverplay.png");
+	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonplay.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(PLAY), "Media/clickplay.png", "Media/mouseoverplay.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 
-	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttoncredits.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), "Media/clickcredits.png", "Media/mouseovercredits.png");
+	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttoncredits.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(CREDIT), "Media/clickcredits.png", "Media/mouseovercredits.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
-	tempElement	 = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonexit.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), "Media/clickexit.png", "Media/mouseoverexit.png");
+	tempElement	 = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonexit.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(EXIT), "Media/clickexit.png", "Media/mouseoverexit.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 
-	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonoptions.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), "Media/clickoptions.png", "Media/mouseoveroptions.png");
+	tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonoptions.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(OPTIONS), "Media/clickoptions.png", "Media/mouseoveroptions.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
+	tempElement = new GUIPicture(0,0,1, "optionsmenu.png", windowWidth, windowHeight, new NoEvent(), " ", " ");
+	this->mSets[OPTIONS].AddElement(tempElement);
+
+	tempElement = new SimpleButton(0,0,1, "optionsmenu.png", windowWidth, windowHeight, new ChangeSetEvent(MAINMENU));
+	this->mSets[OPTIONS].AddElement(tempElement);
+
 	tempElement = NULL;
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
 	
@@ -50,8 +56,6 @@ void MainMenu::UpdateMousePosition()
 	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float lengthFromMiddle = (windowHeight * 0.745f) / 3;
-
-	MaloW::Debug(lengthFromMiddle);
 	
 	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth/2, windowHeight/2);
 	D3DXVECTOR2 mouseVector = this->mGe->GetKeyListener()->GetMousePosition();
@@ -68,29 +72,71 @@ void MainMenu::UpdateMousePosition()
 
 bool MainMenu::Run()
 {
+	
 	ShowCursor(FALSE);
 	float dt;
 	float updateMouse = 50;
 	this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2(800,450));
 	GUIEvent *returnEvent = NULL;
+	bool mousePressed = false;
 	while(this->mGe->isRunning())
 	{
+		/*Mouse Update*/
 		dt = this->mGe->Update();
 		if(updateMouse < 0)
 		{
-			this->UpdateMousePosition();
+			if(GetForegroundWindow() == this->mGe->GetWindowHandle())
+				this->UpdateMousePosition();
 			updateMouse = 50;
 		}
 		else{ updateMouse -= dt; }
-		this->mSets[this->mCurrentSet].UpdateButtons(this->mGe->GetKeyListener()->GetMousePosition(), this->mGe);
-		if(this->mGe->GetKeyListener()->IsClicked(1))
+
+		/*If mouse is clicked*/
+		if(this->mGe->GetKeyListener()->IsClicked(1) && !mousePressed)
+		{
+			mousePressed = true;
+		}
+		/*If mouse is not clicked*/
+		if(!this->mGe->GetKeyListener()->IsClicked(1) && mousePressed)
+		{
+			mousePressed = false;
+		}
+		returnEvent = this->mSets[this->mCurrentSet].UpdateButtons(this->mGe, mousePressed);
+
+		if(returnEvent != NULL)
+		{
+			if(returnEvent->GetEventMessage() == "ChangeSetEvent")
+			{
+				ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
+				int tempEventSet = NULL;
+				tempReturnEvent->GetSet(tempEventSet);
+				if(tempEventSet == PLAY)
+				{
+					this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+					ShowCursor(TRUE);
+					this->mGm->Play(2);
+					ShowCursor(FALSE);
+					delete this->mGm;
+					this->mGm = new GameManager(this->mGe);
+					this->mCurrentSet = MAINMENU;
+					this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+				}
+
+				if(tempEventSet == EXIT)
+				{
+					this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+					return true;
+				}
+			}
+		}
+		/*if(this->mGe->GetKeyListener()->IsClicked(1))
 		{
 			this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 			this->mGm->Play(2);
 			delete this->mGm;
 			this->mGm = new GameManager(this->mGe);
 			this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-		}
+		}*/
 		/*if(this->mGe->GetKeyListener()->IsClicked(1))
 		{
 			D3DXVECTOR2 mousePos;

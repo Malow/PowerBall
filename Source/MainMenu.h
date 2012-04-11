@@ -22,7 +22,7 @@ enum MENU {BACKGROUND,
 	PLAY, 
 	OPTIONS, 
 	CREDIT,
-	QUIT};
+	EXIT};
 
 class MainMenu
 {

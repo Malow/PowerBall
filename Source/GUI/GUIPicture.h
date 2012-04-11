@@ -26,5 +26,6 @@ public:
 	bool GetPressed(){ return this->mPressed; }
 
 	void ChangePicture(GraphicsEngine* ge);
+
 	void RemoveAllFromRenderer(GraphicsEngine* ge);
 };
