@@ -140,8 +140,6 @@ void GameManager::Initialize(bool network)
 	Light* moreLight7 = mGe->CreateLight(D3DXVECTOR3(-12, 25, 0));
 	*/
 	
-	Platform platform = Platform("Media/Cylinder.obj", D3DXVECTOR3(0,0,0));
-	
 	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 	this->mBalls		= new Ball*[this->mNumPlayers];
 
