@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------
 //	Post-process effect: Screen space ambient occlusion (SSAO).
 //	Approximates ambient occlusion by sampling the depth of neighboring pixels in screen space.
-//	Requirements/input:	Normal in view space and depth in normalized device coordinates for each pixel.
-//						Note that normals should be face normals to avoid false occlusion.
+//	Requirements:	Normal in view space and depth in normalized device coordinates for each pixel.
+//					Note that normals should be face normals to avoid false occlusion.
 //------------------------------------------------------------------------------------------------------
 
 
@@ -102,7 +102,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		float pixelDepth = -1.0f;
 		float occlusionFactor = 0.0f;
 
-		for(uint i = 0; i < nrOfSamples; i++) //**
+		[branch] for(uint i = 0; i < nrOfSamples; i++) //**
 		{
 			//2. add 3D-vectors to this the view position of the pixel
 			offsetVector = uniRndVectors[i];  //gRndTex.Sample(LinearSampler, (float)i);  //sample offset vector //**uniform rnd**
@@ -123,21 +123,21 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			offsetPos[i].y = 1.0f - offsetPos[i].y; //invert direction of y-axis
 
 			//**debug**		
-			if(	offsetPos[i].x >= 0.0f && offsetPos[i].x <= 1.0f 
-			/*&& offsetPos[i].y >= 0.0f && offsetPos[i].y <= 1.0f*/)
+			/*[branch] if(offsetPos[i].x >= 0.0f && offsetPos[i].x <= 1.0f 
+			&& offsetPos[i].y >= 0.0f && offsetPos[i].y <= 1.0f)
 			{
 				debugColor = float4(1,1,1,1);
 			}
 			else
 			{
 				debugColor = float4(1,0,1,1);
-			}
+			}*/
 
 			//4. get distance between the depth of the sample (offset position) and the depth sampled at that point
 			dist = offsetPos[i].z - normalAndDepthMap.Sample(LinearSampler, offsetPos[i].xy).w;  
 			
 			//if distance is positive, then the offset position is infront of the pixel and therefore occlude the pixel to some degree
-			/*if(dist > DEPTH_EPSILON) //use epsilon to avoid using samples behind the pixel
+			if(dist > DEPTH_EPSILON) //use epsilon to avoid using samples behind the pixel
 			{
 				//5. **todo: occlusion function - quadratic**
 				//
@@ -149,7 +149,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 				debugColor -= (1.0f / nrOfSamples) * float4(1,1,1,0); //**
 
 				//6. **todo: blur (bilateral) - separate pass/shader?**
-			}*/
+			}
 		}
 	}
 	else

@@ -1,4 +1,4 @@
-#include "DxManager.h"
+﻿#include "DxManager.h"
 
 #include "DxManagerDebugging.h"
 
@@ -213,7 +213,7 @@ void DxManager::RenderShadowMap()
 void DxManager::RenderForward()
 {
 	//Matrixes
-	D3DXMATRIX world, view, proj, wvp;
+	D3DXMATRIX world, view, proj, wvp, worldInverseTranspose;
 	view = this->camera->GetViewMatrix();
 	proj = this->camera->GetProjectionMatrix();
 
@@ -234,9 +234,12 @@ void DxManager::RenderForward()
 		// Set matrixes
 		world = this->objects[i]->GetWorldMatrix();
 		wvp = world * view * proj;
+		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
+		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
 
 		this->Shader_ForwardRendering->SetMatrix("WVP", wvp);
 		this->Shader_ForwardRendering->SetMatrix("worldMatrix", world);
+		this->Shader_ForwardRendering->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
 
 		for(int u = 0; u < strips->size(); u++)
 		{
@@ -287,7 +290,7 @@ void DxManager::RenderForward()
 void DxManager::RenderDeferredGeometry()
 {
 	//Matrixes
-	D3DXMATRIX world, view, proj, wvp;
+	D3DXMATRIX world, view, proj, wvp, worldInverseTranspose;
 	view = this->camera->GetViewMatrix();
 	proj = this->camera->GetProjectionMatrix();
 
@@ -312,9 +315,12 @@ void DxManager::RenderDeferredGeometry()
 		// Set matrixes
 		world = this->objects[i]->GetWorldMatrix();
 		wvp = world * view * proj;
+		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
+		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
 
 		this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
+		this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
 
 		for(int u = 0; u < strips->size(); u++)
 		{
