@@ -46,10 +46,10 @@ bool MainMenu::Initialize()
 	tempElement = new SimpleButton(offSet + dx * (50.0f / 1440), windowHeight * (300.0f / 1080), 1, "Media/buttongraphics.png", dx * (200.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
 	this->mSets[OPTIONS].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet + dx * (365.0f / dx), windowHeight * (30.0f / 1080), 1, "Media/buttonbasic.png", dx * (125.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
+	tempElement = new SimpleButton(offSet + dx * (450.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonbasic.png", dx * (125.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
 	this->mSets[OPTIONS].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet + dx * (490.0f / dx), windowHeight * (30.0f / 1080), 1, "Media/buttonadvanced.png", dx * (225.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
+	tempElement = new SimpleButton(offSet + dx * (575.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonadvanced.png", dx * (225.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
 	this->mSets[OPTIONS].AddElement(tempElement);
 	
 	tempElement = NULL;
@@ -80,7 +80,7 @@ bool MainMenu::Run()
 {
 	float dt;
 	float updateMouse = 50;
-	this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2(800,450));
+	this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2((float)this->mGe->GetEngineParameters().windowWidth / 2, (float)this->mGe->GetEngineParameters().windowHeight / 3));
 	GUIEvent *returnEvent = NULL;
 	bool mousePressed = false;
 	while(this->mGe->isRunning())
@@ -95,6 +95,7 @@ bool MainMenu::Run()
 			{
 				if(GetForegroundWindow() == this->mGe->GetWindowHandle())
 					this->UpdateMousePosition();
+
 				updateMouse = 50;
 			}
 			else{ updateMouse -= dt; }
@@ -108,7 +109,7 @@ bool MainMenu::Run()
 			mousePressed = true;
 		}
 
-		if(this->mCurrentSet == OPTIONS)
+		if(this->mCurrentSet == OPTIONS) 
 		{
 			D3DXVECTOR2 mousePos;
 			mousePos = this->mGe->GetKeyListener()->GetMousePosition();
@@ -158,7 +159,6 @@ bool MainMenu::Run()
 					}
 					if(tempEventSet == OPTIONS)
 					{
-						ShowCursor(TRUE);
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mCurrentSet = OPTIONS;
 						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);

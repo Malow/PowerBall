@@ -30,6 +30,7 @@ void Ball::Update(const float dt, Platform* platform)
 		newPosition.y = 14.7f;	//oldPosition.y;
 	
 	Vector3 direction = newPosition - oldPosition;
+	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
 	this->GetMesh()->SetPosition(temp);
 	float angleRad = (direction.GetLength()/(2*PI*this->mRadius))*(180/PI);
@@ -67,4 +68,66 @@ bool Ball::IsAlive() const
 
 	return alive;
 }
+Vector3 Ball::GetPositionVector3() const
+{
+	D3DXVECTOR3 pos = this->mMesh->GetPosition();
+	Vector3 position = Vector3(pos.x, pos.y, pos.z);
+	return position;
+}
+bool Ball::collisionWithSphereSimple(Ball* b1)
+{
+	Vector3 r = this->GetPositionVector3() - b1->GetPositionVector3();
+	float distanceBalls = r.GetLength();
+	float sumRadius = this->GetRadius() + b1->GetRadius();
+	if(distanceBalls > sumRadius)
+		return false;
+	return true;
+}
 
+void Ball::collisionSphereResponse(Ball* b1, float dt)
+{
+	// normal of the "collision plane"
+	Vector3 nColl = this->GetPositionVector3() - b1->GetPositionVector3();
+	// for easy projecting of vector, no div by |n|^2 in proj formula
+	nColl.normalize();
+
+	// savning the important stuff for easy acc
+	float m1 = this->mMass;
+	float m2 = b1->mMass;
+	float mSum = m1+m2;
+	Vector3 v1 = this->mVelocity;
+	Vector3 v2 = b1->mVelocity;
+
+	// projecting the vector v1 on nColl
+	float x1 = nColl.GetDotProduct(v1);		// factor in nColl dir
+	Vector3 v1x = nColl*x1;					// projetion done
+	Vector3 v1y = v1 - v1x;					// perpendicular vector 
+
+	// projecting the vector v2 on nColl
+	nColl = nColl*(-1);						// switching direction of "plane normal"
+	float x2 = nColl.GetDotProduct(v2);		// factor in nColl dir
+	Vector3 v2x = nColl*x2;					// projetion done
+	Vector3 v2y = v2 - v2x;					// perpendicular vector 
+	/* 
+	
+	float m1, m2, x1, x2;
+	Vector3 v1temp, v1, v2, v1x, v2x, v1y, v2y, x(this->GetPositionVector3() - b1->GetPositionVector3());
+
+	x.normalize();
+	v1 = this->mVelocity;
+	x1 = x.GetDotProduct(v1); //this->GetPositionVector3().GetDotProduct(v1);
+	v1x = x * x1;
+	v1y = v1 - v1x;
+	m1 = this->mMass;
+	x = x*-1;
+	v2 = b1->mVelocity;
+	x2 = x.GetDotProduct(v2); //b1->GetPositionVector3().GetDotProduct(v2);
+	v2x = x * x2;
+	v2y = v2 - v2x;
+	m2 = b1->mMass;
+	this->mVelocity = Vector3( v1x*(m1-m2)/(m1+m2) + v2x*(2*m2)/(m1+m2) + v1y )*dt;
+	b1->mVelocity = Vector3( v1x*(2*m1)/(m1+m2) + v2x*(m2-m1)/(m1+m2) + v2y )*dt;
+	*/
+	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
+	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
+}

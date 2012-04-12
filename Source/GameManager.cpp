@@ -18,6 +18,10 @@ GameManager::~GameManager()
     }
 	SAFE_DELETE_ARRAY(this->mBalls);
 	SAFE_DELETE(this->mNet);
+	for(int i = 0; i < 5; i++)
+	{
+		//this->mGe->DeleteLight(this->mLights[i]);
+	}
 }
 
 bool GameManager::Play(const int numPlayers, bool network)
@@ -97,6 +101,18 @@ bool GameManager::Play(const int numPlayers, bool network)
 			
 		}
 		
+		// will be moved to phisics simulation class
+		for(int i = 0; i < this->mNumPlayers; i++)
+		{
+			for(int j = i+1; j < this->mNumPlayers; j++)
+			{
+				Ball* b1 = this->mBalls[i];
+				Ball* b2 = this->mBalls[j];
+				if(b1->collisionWithSphereSimple(b2))
+					b1->collisionSphereResponse(b2, diff);
+
+			}
+		}
 		if(numAlivePlayers <= 1)
 			running = false;
 		mPlatform->Update(diff*0.05);
@@ -112,19 +128,19 @@ void GameManager::Initialize(bool network)
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, -15));
 	mGe->GetCamera()->LookAt(centerPlatform);
-	Image* testImg = mGe->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	Light* testLight = mGe->CreateLight(D3DXVECTOR3(0, 25, 0));
-	Light* moreLight1 = mGe->CreateLight(D3DXVECTOR3(0, 20, -5)); 
-	Light* moreLight2 = mGe->CreateLight(D3DXVECTOR3(0, 20, 5));
-	Light* moreLight3 = mGe->CreateLight(D3DXVECTOR3(5, 25, 0));
-	Light* moreLight4 = mGe->CreateLight(D3DXVECTOR3(-5, 25, 0));
+	//Image* testImg = mGe->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
+	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 25, 0));
+	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 20, -5)); 
+	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 20, 5));
+	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(5, 25, 0));
+	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-5, 25, 0));
 	/*
 	Light* moreLight5 = mGe->CreateLight(D3DXVECTOR3(-8, 25, 0));
 	Light* moreLight6 = mGe->CreateLight(D3DXVECTOR3(-10, 25, 0));
 	Light* moreLight7 = mGe->CreateLight(D3DXVECTOR3(-12, 25, 0));
 	*/
 	
-	
+	Platform platform = Platform("Media/Cylinder.obj", D3DXVECTOR3(0,0,0));
 	
 	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 	this->mBalls		= new Ball*[this->mNumPlayers];
