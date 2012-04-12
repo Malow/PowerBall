@@ -38,6 +38,9 @@ public:
 	/*! Returns the position of the ball in world space (retrieved from mMesh). */
 	D3DXVECTOR3 GetPosition() const { return this->mMesh->GetPosition(); }
 
+	/*! Returns the position of the ball in world space (retrieved from mMesh). */
+	Vector3 GetPositionVector3() const;
+
 	/*! Returns the position of the platform in XZ plane */
 	Vector3 GetPositionXZ() const;
 	
@@ -88,4 +91,10 @@ public:
 	bool IsAlive() const;
 	/*! Adds a force to this ball. */
 	void AddForce(const Vector3 &force) { this->mSumAddedForce += force; }
+
+	/*! Simple Collision Detection between Sphere and Sphere. */
+	bool collisionWithSphereSimple(Ball* b1);
+
+	/*! Sphere To Sphere Collision Response. */
+	void collisionSphereResponse(Ball* b1, float dt);
 };

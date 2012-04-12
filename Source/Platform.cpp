@@ -39,11 +39,18 @@ Vector3 Platform::GetPositionXZ() const
 }
 void Platform::Update(const float dt)
 {
-	
+	//this->mMesh->RotateAxis(D3DXVECTOR3(0,1,0), dt*0.01);
 	float fraction = 1.0f-this->mShrink*dt;
 	this->mScaledRadius *= fraction;//this->mScaledRadius/this->mRadius;
 	this->mMesh->Scale(D3DXVECTOR3(fraction,1,fraction));
 }
+/*void Platform::Update(const float dt)
+{
+	
+	float fraction = 1.0f-this->mShrink*dt;
+	this->mScaledRadius *= fraction;//this->mScaledRadius/this->mRadius;
+	this->mMesh->Scale(D3DXVECTOR3(fraction,1,fraction));
+}*/
 bool Platform::IsOnPlatform(const float x, const float z) const
 {
 	D3DXVECTOR3 pos = this->mMesh->GetPosition();

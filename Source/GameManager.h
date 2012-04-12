@@ -19,6 +19,7 @@ private:
 	Ball**			mBalls; //size = mNumPlayers (intialized in Initialize();)
 	GameNetwork*	mNet; 
 	GraphicsEngine* mGe;
+	Light*			mLights[5];
 public:
 	//constructors and destructors
 				GameManager(GraphicsEngine* ge);

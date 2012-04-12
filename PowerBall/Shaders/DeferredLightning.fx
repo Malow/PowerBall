@@ -180,7 +180,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		// Compute pixel depth for shadowing.
 		float depth = posLight.z / posLight.w;
 
-		float SHADOW_EPSILON = 0.01f;								////////////// PUT THIS WHERE?
+		float SHADOW_EPSILON = 0.00001f;			////////////// PUT THIS WHERE?
 		
 		// PCF
 		float shadow = 0.0f;
