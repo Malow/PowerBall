@@ -27,5 +27,5 @@ public:
 
 	void ChangePicture(GraphicsEngine* ge);
 
-	void RemoveAllFromRenderer(GraphicsEngine* ge);
+	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
 };

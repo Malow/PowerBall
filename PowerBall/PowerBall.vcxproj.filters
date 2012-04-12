@@ -140,6 +140,9 @@
     <ClCompile Include="..\Source\GameNetwork.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\DropDownList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -270,6 +273,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GameNetwork.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\DropDownList.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

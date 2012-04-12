@@ -42,11 +42,6 @@ bool GUISet::RemoveSetFromRenderer(GraphicsEngine* ge)
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
 		this->mElements[i]->RemoveFromRenderer(ge);
-		if(typeid(*this->mElements[i]) == typeid(GUIPicture))
-		{
-			GUIPicture* temp = (GUIPicture*)this->mElements[i];
-			temp->RemoveAllFromRenderer(ge);
-		}
 	}
 
 	return true;

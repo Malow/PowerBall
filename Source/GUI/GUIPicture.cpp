@@ -59,7 +59,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 		this->mPressedImage = NULL;
 	}
 }
-void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
+bool GUIPicture::RemoveFromRenderer(GraphicsEngine* ge)
 {
 	if(this->mHoveredImage != NULL)
 	{
@@ -71,4 +71,6 @@ void GUIPicture::RemoveAllFromRenderer(GraphicsEngine* ge)
 		ge->DeleteImage(this->mPressedImage);
 		this->mPressedImage = NULL;
 	}
+	Element::RemoveFromRenderer(ge);
+	return true;
 }

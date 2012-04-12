@@ -40,6 +40,9 @@ bool MainMenu::Initialize()
 	tempElement = new GUIPicture(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[OPTIONS].AddElement(tempElement);
 
+	MaloW::Debug(dx);
+	MaloW::Debug(windowHeight);
+
 	tempElement = new SimpleButton(offSet + dx * (50.0f / 1440), windowHeight * (1015.0f / 1080), 1, "Media/buttonbacktomenu.png", dx * (325.0f / 1440), windowHeight * (30.0f / 1080), new ChangeSetEvent(MAINMENU));
 	this->mSets[OPTIONS].AddElement(tempElement);
 
@@ -63,15 +66,15 @@ void MainMenu::UpdateMousePosition()
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float lengthFromMiddle = (windowHeight * 0.745f) / 3;
 	
-	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth/2, windowHeight/2);
+	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth / 2, windowHeight / 2);
 	D3DXVECTOR2 mouseVector = this->mGe->GetKeyListener()->GetMousePosition();
-	D3DXVECTOR2 centerToMouseVec = (centerVector-mouseVector);
+	D3DXVECTOR2 centerToMouseVec = (centerVector - mouseVector);
 
 	
 	if(D3DXVec2Length(&centerToMouseVec) != lengthFromMiddle)
 	{
-		centerToMouseVec = (lengthFromMiddle/D3DXVec2Length(&centerToMouseVec))*centerToMouseVec;
-		this->mGe->GetKeyListener()->SetMousePosition(centerVector+(centerToMouseVec*(-1)));
+		centerToMouseVec = (lengthFromMiddle / D3DXVec2Length(&centerToMouseVec)) * centerToMouseVec;
+		this->mGe->GetKeyListener()->SetMousePosition(centerVector + (centerToMouseVec * (-1)));
 	}
 	
 }
@@ -82,14 +85,16 @@ bool MainMenu::Run()
 	float updateMouse = 50;
 	this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2((float)this->mGe->GetEngineParameters().windowWidth / 2, (float)this->mGe->GetEngineParameters().windowHeight / 3));
 	GUIEvent *returnEvent = NULL;
+	bool menuChange = false;
 	bool mousePressed = false;
+	float menuChangeTime = 0;
 	while(this->mGe->isRunning())
 	{
 		dt = this->mGe->Update();
-
+		
 		if(this->mCurrentSet == MAINMENU)
 		{
-			ShowCursor(FALSE);
+			ShowCursor(TRUE);
 			/*Mouse Update*/
 			if(updateMouse < 0)
 			{
@@ -109,122 +114,139 @@ bool MainMenu::Run()
 			mousePressed = true;
 		}
 
-		if(this->mCurrentSet == OPTIONS) 
+		if(!menuChange)
 		{
-			D3DXVECTOR2 mousePos;
-			mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-			if(this->mGe->GetKeyListener()->IsClicked(1))
+			if(this->mCurrentSet == MAINMENU)
+			{
+				returnEvent = this->mSets[this->mCurrentSet].UpdateButtons(this->mGe, mousePressed);
+
+				if(returnEvent != NULL)
+				{
+					if(returnEvent->GetEventMessage() == "ChangeSetEvent")
+					{
+						ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
+						int tempEventSet = NULL;
+						tempReturnEvent->GetSet(tempEventSet);
+						if(tempEventSet == PLAY)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mGm = new GameManager(this->mGe);
+							this->mGm->Play(2, false);
+							SAFE_DELETE(this->mGm);
+							this->mCurrentSet = MAINMENU;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						}
+						if(tempEventSet == EXIT)
+						{
+							SAFE_DELETE(this->mGm);
+							return true;
+						}
+						if(tempEventSet == OPTIONS)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mCurrentSet = OPTIONS;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+							menuChange = true;
+							menuChangeTime = 50;
+						}
+					}
+				}
+			}
+			else if(this->mCurrentSet == OPTIONS) 
+			{
+				D3DXVECTOR2 mousePos;
+				mousePos = this->mGe->GetKeyListener()->GetMousePosition();
+				if(this->mGe->GetKeyListener()->IsClicked(1))
+					returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y);
+
+				if(returnEvent != NULL)
+				{
+					if(returnEvent->GetEventMessage() == "ChangeSetEvent")
+					{
+						int whatSet;
+						ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
+						temp->GetSet(whatSet);
+						if(whatSet == MAINMENU)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mCurrentSet = MAINMENU;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+							menuChange = true;
+							menuChangeTime = 50;
+						}
+					}
+				}
+			}
+			returnEvent = NULL;
+		}
+			/*If mouse is not clicked*/
+			if(!this->mGe->GetKeyListener()->IsClicked(1) && mousePressed)
+			{
+				mousePressed = false;
+			}
+			/*if(this->mGe->GetKeyListener()->IsClicked(1))
+			{
+				this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+				this->mGm->Play(2);
+				delete this->mGm;
+				this->mGm = new GameManager(this->mGe);
+				this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+			}*/
+			/*if(this->mGe->GetKeyListener()->IsClicked(1))
+			{
+				D3DXVECTOR2 mousePos;
+				mousePos = this->mGe->GetKeyListener()->GetMousePosition();
 				returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y);
-
-			if(returnEvent != NULL)
-			{
-				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
+				if(returnEvent != NULL)
 				{
-					int whatSet;
-					ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
-					temp->GetSet(whatSet);
-					if(whatSet == MAINMENU)
+					if(returnEvent->GetEventMessage() == "ChangeSetEvent")
 					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = MAINMENU;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						int whatSet;
+						ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
+						temp->GetSet(whatSet);
+						if(whatSet == PLAY)
+						{
+							this->mSets[BACKGROUND].RemoveSetFromRenderer(this->mGe);
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mGm->Play(2);
+							this->mCurrentSet = 0;
+						}
+						if(whatSet == QUIT)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							return false;
+						}
+						if(whatSet == OPTIONS)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mCurrentSet = OPTIONS;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						}
+						if(whatSet == MAINMENU)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mCurrentSet = MAINMENU;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						}
+						if(whatSet == CREDIT)
+						{
+							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+							this->mCurrentSet = CREDIT;
+							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						}
 					}
 				}
+			}*/
+		else
+		{
+			menuChangeTime = menuChangeTime - dt;
+
+			if(menuChangeTime < 0)
+			{
+				menuChange = false;
 			}
 		}
-		else if(this->mCurrentSet == MAINMENU)
-		{
-			returnEvent = this->mSets[this->mCurrentSet].UpdateButtons(this->mGe, mousePressed);
-
-			if(returnEvent != NULL)
-			{
-				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
-				{
-					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
-					int tempEventSet = NULL;
-					tempReturnEvent->GetSet(tempEventSet);
-					if(tempEventSet == PLAY)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mGm = new GameManager(this->mGe);
-						this->mGm->Play(2, false);
-						SAFE_DELETE(this->mGm);
-						this->mCurrentSet = MAINMENU;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-					if(tempEventSet == EXIT)
-					{
-						SAFE_DELETE(this->mGm);
-						return true;
-					}
-					if(tempEventSet == OPTIONS)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = OPTIONS;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-				}
-			}
-		}
-		/*If mouse is not clicked*/
-		if(!this->mGe->GetKeyListener()->IsClicked(1) && mousePressed)
-		{
-			mousePressed = false;
-		}	
-		/*if(this->mGe->GetKeyListener()->IsClicked(1))
-		{
-			this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-			this->mGm->Play(2);
-			delete this->mGm;
-			this->mGm = new GameManager(this->mGe);
-			this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-		}*/
-		/*if(this->mGe->GetKeyListener()->IsClicked(1))
-		{
-			D3DXVECTOR2 mousePos;
-			mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-			returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y);
-			if(returnEvent != NULL)
-			{
-				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
-				{
-					int whatSet;
-					ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
-					temp->GetSet(whatSet);
-					if(whatSet == PLAY)
-					{
-						this->mSets[BACKGROUND].RemoveSetFromRenderer(this->mGe);
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mGm->Play(2);
-						this->mCurrentSet = 0;
-					}
-					if(whatSet == QUIT)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						return false;
-					}
-					if(whatSet == OPTIONS)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = OPTIONS;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-					if(whatSet == MAINMENU)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = MAINMENU;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-					if(whatSet == CREDIT)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = CREDIT;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-				}
-			}
-		}*/
-		returnEvent = NULL;
+		
 	}
 
 	return true;
