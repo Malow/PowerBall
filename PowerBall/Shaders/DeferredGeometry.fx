@@ -24,6 +24,7 @@ cbuffer EveryObject
 {
 	matrix WVP;
 	matrix worldMatrix;
+	matrix worldMatrixInverseTranspose;
 	bool textured;
 
 	float4 AmbientLight;
@@ -101,7 +102,7 @@ PSSceneIn VSScene(VSIn input)
 	output.Pos = mul(input.Pos, WVP);
 	output.WorldPos = mul(input.Pos, worldMatrix);
 	output.tex = input.tex;
-	output.norm = normalize(mul(input.norm, (float3x3)worldMatrix));
+	output.norm = normalize(mul(input.norm, (float3x3)worldMatrixInverseTranspose));
 	output.Color = input.Color;
 
 	return output;
