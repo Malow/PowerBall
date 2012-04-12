@@ -86,6 +86,7 @@ public:
 
 
 	Light* CreateLight(D3DXVECTOR3 pos);
+	void DeleteLight(Light* light) { this->dx->DeleteLight(light); }
 	Terrain* CreateTerrain(D3DXVECTOR3 position, D3DXVECTOR3 dimension, std::string texture, string heightmap, int vertexSize = 256);
 
 	/*! Stops rendering the Mesh and internally deletes it and the pointer will become NULL. Return depends on if the Mesh was sucessfully removed. */

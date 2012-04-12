@@ -20,7 +20,7 @@ GameManager::~GameManager()
 	SAFE_DELETE(this->mNet);
 	for(int i = 0; i < 5; i++)
 	{
-		//this->mGe->DeleteLight(this->mLights[i]);
+		this->mGe->DeleteLight(this->mLights[i]);
 	}
 }
 

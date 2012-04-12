@@ -89,7 +89,7 @@ HRESULT DxManager::Init()
 	}
 	if( FAILED(hr) )
 		return hr;
-
+	
 	// Create a render target view
 	ID3D11Texture2D* pBackBuffer;
 	hr = Dx_SwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), (LPVOID*)&pBackBuffer );
@@ -149,7 +149,7 @@ HRESULT DxManager::Init()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
-
+	
 	this->Shader_ForwardRendering = new Shader();
 	if(FAILED(this->Shader_ForwardRendering->Init(Dx_Device, Dx_DeviceContext, "Shaders/ForwardRendering.fx", inputDesc, 4)))	// + on last if added above
 	{
@@ -325,7 +325,8 @@ HRESULT DxManager::Init()
 		DescRT.Texture2DArray.ArraySize = 1;
 		DescRT.Texture2DArray.MipSlice = 0;
 
-		if(FAILED(this->Dx_Device->CreateRenderTargetView(this->Dx_GbufferTextures[i], NULL, &this->Dx_GbufferRTs[i])))
+		//if(FAILED(this->Dx_Device->CreateRenderTargetView(this->Dx_GbufferTextures[i], NULL, &this->Dx_GbufferRTs[i])))
+		if(FAILED(this->Dx_Device->CreateRenderTargetView(this->Dx_GbufferTextures[i], &DescRT, &this->Dx_GbufferRTs[i])))
 			MaloW::Debug("Failed to initiate Gbuffer RT");
 
 
