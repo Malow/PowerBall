@@ -2,7 +2,7 @@
 
 SimpleButton::SimpleButton() : Element()
 {
-
+	
 }
 SimpleButton::~SimpleButton()
 {

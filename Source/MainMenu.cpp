@@ -63,15 +63,15 @@ void MainMenu::UpdateMousePosition()
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float lengthFromMiddle = (windowHeight * 0.745f) / 3;
 	
-	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth/2, windowHeight/2);
+	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth / 2, windowHeight / 2);
 	D3DXVECTOR2 mouseVector = this->mGe->GetKeyListener()->GetMousePosition();
-	D3DXVECTOR2 centerToMouseVec = (centerVector-mouseVector);
+	D3DXVECTOR2 centerToMouseVec = (centerVector - mouseVector);
 
 	
 	if(D3DXVec2Length(&centerToMouseVec) != lengthFromMiddle)
 	{
-		centerToMouseVec = (lengthFromMiddle/D3DXVec2Length(&centerToMouseVec))*centerToMouseVec;
-		this->mGe->GetKeyListener()->SetMousePosition(centerVector+(centerToMouseVec*(-1)));
+		centerToMouseVec = (lengthFromMiddle / D3DXVec2Length(&centerToMouseVec)) * centerToMouseVec;
+		this->mGe->GetKeyListener()->SetMousePosition(centerVector + (centerToMouseVec * (-1)));
 	}
 	
 }
@@ -89,7 +89,7 @@ bool MainMenu::Run()
 
 		if(this->mCurrentSet == MAINMENU)
 		{
-			ShowCursor(FALSE);
+			ShowCursor(TRUE);
 			/*Mouse Update*/
 			if(updateMouse < 0)
 			{
