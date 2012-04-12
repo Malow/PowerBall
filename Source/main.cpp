@@ -12,7 +12,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create parameters for the graphics engine
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
-	params.windowWidth = 1500;
+	params.windowWidth = 1200;
 	params.CamType = RTS;
 	
 	// Create the graphics engine
