@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------
 //	Post-process effect: Screen space ambient occlusion (SSAO).
 //	Approximates ambient occlusion by sampling the depth of neighboring pixels in screen space.
-//	Requirements/input:	Normal in view space and depth in normalized device coordinates for each pixel.
-//						Note that normals should be face normals to avoid false occlusion.
+//	Requirements:	Normal in view space and depth in normalized device coordinates for each pixel.
+//					Note that normals should be face normals to avoid false occlusion.
 //------------------------------------------------------------------------------------------------------
 
 
