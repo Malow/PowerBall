@@ -18,7 +18,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
-
+	ge->CreateSkyBox("Media/skymap.dds");
 
 	/*
 	// Example of GE useage
@@ -50,6 +50,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveBackward(diff);
 	}
 	*/
+
 	
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu* mm = new MainMenu(ge);

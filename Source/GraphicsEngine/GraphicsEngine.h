@@ -89,6 +89,8 @@ public:
 	void DeleteLight(Light* light) { this->dx->DeleteLight(light); }
 	Terrain* CreateTerrain(D3DXVECTOR3 position, D3DXVECTOR3 dimension, std::string texture, string heightmap, int vertexSize = 256);
 
+	void CreateSkyBox(string texture);
+
 	/*! Stops rendering the Mesh and internally deletes it and the pointer will become NULL. Return depends on if the Mesh was sucessfully removed. */
 	void DeleteMesh(Mesh* mesh) { this->dx->deleteObject(mesh); }
 

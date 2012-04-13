@@ -239,12 +239,16 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		finalColor = float4(0.5, 0.5, 0.5, 1.0f);
 	*/
 
-	if(finalColor.x < 0.0f)		// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
-		return DiffuseColor;
+	// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
+	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor return without lightcalcs.
+		finalColor = DiffuseColor;
+
+	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor return without lightcalcs.
+		finalColor = DiffuseColor;
 
 	//finalColor = SSAO(input.Pos.xy, NormalAndDepth);
 
-	//finalColor = Lava(input.Pos.xy, Position);
+	finalColor = Lava(finalColor, WorldPos, NormsAndDepth.w);
 
 	return saturate(finalColor);
 }

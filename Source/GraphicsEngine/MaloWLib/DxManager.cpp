@@ -34,6 +34,9 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 	this->Dx_DeferredTexture = NULL;
 	this->Dx_DeferredQuadRT = NULL;
 	this->Dx_DeferredSRV = NULL;
+	this->LavaTexture = NULL;
+	this->skybox = NULL;
+	this->Shader_Skybox = NULL;
 
 	this->framecount = 0;
 	this->TriangleCount = 0;
@@ -75,6 +78,14 @@ DxManager::~DxManager()
 		this->Dx_DeferredQuadRT->Release();
 	if(this->Dx_DeferredSRV)
 		this->Dx_DeferredSRV->Release();
+
+	if(this->LavaTexture)
+		this->LavaTexture->Release();
+
+	if(this->skybox)
+		delete this->skybox;
+	if(this->Shader_Skybox)
+		delete this->Shader_Skybox;
 
 	if(this->Dx_DeviceContext)
 		this->Dx_DeviceContext->Release();
@@ -120,14 +131,14 @@ void DxManager::createObject(Mesh* mesh)
 		BUFFER_INIT_DESC bufferDesc;
 		bufferDesc.ElementSize = sizeof(Vertex);
 		bufferDesc.InitData = strip->getVerts();
-
-	
+		
+		
 		// Last face black, should +1 this to solve it.
 		bufferDesc.NumElements = strip->getNrOfVerts();
 
 		bufferDesc.Type = VERTEX_BUFFER;
 		bufferDesc.Usage = BUFFER_DEFAULT;
-	
+		
 		Buffer* verts = new Buffer();
 		if(FAILED(verts->Init(Dx_Device, Dx_DeviceContext, bufferDesc)))
 			MaloW::Debug("Initiate Buffer Failed in DxManager");
@@ -193,7 +204,7 @@ Object3D* DxManager::createParticleObject(ParticleMesh* mesh)
 		D3DX11_IMAGE_LOAD_INFO loadInfo;
 		ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 		loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		if(FAILED(D3DX11CreateShaderResourceViewFromFile(Dx_Device, mesh->GetTexturePath().c_str(), &loadInfo, NULL, &texture, NULL)))
 			MaloW::Debug("Failed to load texture " + mesh->GetTexturePath());
 	}
@@ -243,7 +254,7 @@ void DxManager::CreateImage(Image* image, string texture)
 	D3DX11_IMAGE_LOAD_INFO loadInfo;
 	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, texture.c_str(), &loadInfo, NULL, &text, NULL)))
 		MaloW::Debug("Failed to load texture " + texture);
 	
@@ -261,7 +272,7 @@ void DxManager::DeleteImage(Image* image)
 
 void DxManager::DeleteText(Text* text)
 {
-
+	
 }
 
 void DxManager::CreateText(Text* text, string font)
@@ -271,15 +282,77 @@ void DxManager::CreateText(Text* text, string font)
 	D3DX11_IMAGE_LOAD_INFO loadInfo;
 	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, font.c_str(), &loadInfo, NULL, &texture, NULL)))
 		MaloW::Debug("Failed to load texture " + font);
 	
 	Font newFont;
 	newFont.texture = texture;
 	font.replace(font.size() - 3, font.size(), "txt");
-
+	
 	// load char texture coords from .txt file to newFont.whatever, create shader for it and a renderer function. ->draw(text.size()); and expand every vertex to a quad. Use 2 int-arrays in shader to represent the string and the coords for every char.
-
+	
 	text->SetFont(newFont);
+}
+
+void DxManager::CreateSkyBox(string texture)
+{
+	if(this->skybox)
+		delete this->skybox;
+
+	SkyBox* sb = new SkyBox(this->camera->getPosition(), 10, 10);
+	MeshStrip* strip = sb->GetStrips()->get(0);
+
+	// Create the desc for the buffer
+	BUFFER_INIT_DESC BufferDesc;
+	BufferDesc.ElementSize = sizeof(Vertex);
+	BufferDesc.InitData = strip->getVerts();
+	BufferDesc.NumElements = strip->getNrOfVerts();
+	BufferDesc.Type = VERTEX_BUFFER;
+	BufferDesc.Usage = BUFFER_DEFAULT;
+
+	// Create the buffer
+	Buffer* VertexBuffer = new Buffer();
+	if(FAILED(VertexBuffer->Init(this->Dx_Device, this->Dx_DeviceContext, BufferDesc)))
+		MaloW::Debug("Failed to init skybox");
+
+
+
+	BUFFER_INIT_DESC indiceBufferDesc;
+	indiceBufferDesc.ElementSize = sizeof(int);
+	indiceBufferDesc.InitData = strip->getIndicies();
+	indiceBufferDesc.NumElements = strip->getNrOfIndicies();
+	indiceBufferDesc.Type = INDEX_BUFFER;
+	indiceBufferDesc.Usage = BUFFER_DEFAULT;
+
+	Buffer* IndexBuffer = new Buffer();
+
+	if(FAILED(IndexBuffer->Init(this->Dx_Device, this->Dx_DeviceContext, indiceBufferDesc)))
+		MaloW::Debug("Failed to init skybox");
+
+	D3DX11_IMAGE_LOAD_INFO loadSMInfo;
+	loadSMInfo.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	ID3D11Texture2D* SMTexture = 0;
+	D3DX11CreateTextureFromFile(this->Dx_Device, texture.c_str(), 
+		&loadSMInfo, 0, (ID3D11Resource**)&SMTexture, 0);
+
+
+	D3D11_TEXTURE2D_DESC SMTextureDesc;
+	SMTexture->GetDesc(&SMTextureDesc);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC SMViewDesc;
+	SMViewDesc.Format = SMTextureDesc.Format;
+	SMViewDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURECUBE;
+	SMViewDesc.TextureCube.MipLevels = SMTextureDesc.MipLevels;
+	SMViewDesc.TextureCube.MostDetailedMip = 0;
+	ID3D11ShaderResourceView* text;
+	this->Dx_Device->CreateShaderResourceView(SMTexture, &SMViewDesc, &text);
+
+	SMTexture->Release();
+
+	Object3D* ro = new Object3D(VertexBuffer, IndexBuffer, text, sb->GetTopology());
+	strip->SetRenderObject(ro);
+
+	this->skybox = sb;
 }

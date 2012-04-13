@@ -383,9 +383,12 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
-	
 	// Set SSAO settings
 	this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
+
+	// Set lava-texture
+	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
+
 	this->Shader_DeferredLightning->Apply(0);
 
 	
@@ -397,6 +400,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetResource("NormalAndDepth", NULL);
 	this->Shader_DeferredLightning->SetResource("Position", NULL);
 	this->Shader_DeferredLightning->SetResource("Specular", NULL);
+	this->Shader_DeferredLightning->SetResource("LavaTexture", NULL);
 	for(int i = 0; i < this->lights.size(); i++)
 	{
 		this->Shader_DeferredLightning->SetResourceAtIndex(i, "ShadowMap", NULL);
@@ -524,6 +528,45 @@ void DxManager::RenderDeferredTexture()
 	this->Shader_DeferredTexture->Apply(0);
 }
 
+void DxManager::RenderDeferredSkybox()
+{
+	if(!this->skybox)
+		return;
+
+	//clear and set render target/depth
+	this->Dx_DeviceContext->OMSetRenderTargets(this->NrOfRenderTargets, this->Dx_GbufferRTs, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+	
+	
+		
+		// Set matrixes
+	D3DXMATRIX world, wvp, view, proj;
+	view = this->camera->GetViewMatrix();
+	proj = this->camera->GetProjectionMatrix();
+	world = this->skybox->GetSkyboxWorldMatrix(this->camera->getPosition());
+	wvp = world * view * proj;
+	
+	this->Shader_Skybox->SetMatrix("gWVP", wvp);
+	this->Shader_Skybox->SetMatrix("worldMatrix", world);
+
+	MeshStrip* strip = this->skybox->GetStrips()->get(0);
+
+	Object3D* obj = strip->GetRenderObject();
+	this->Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
+
+	obj->GetVertBuff()->Apply();
+	this->Shader_Skybox->SetResource("SkyMap", obj->GetTexture());
+	obj->GetIndsBuff()->Apply();
+	
+	this->Shader_Skybox->Apply(0);
+
+	this->Dx_DeviceContext->DrawIndexed(obj->GetIndsBuff()->GetElementCount(), 0, 0);
+
+	// Unbind resources:
+	this->Shader_Skybox->SetResource("SkyMap", NULL);
+	this->Shader_Skybox->Apply(0);
+}
+
 HRESULT DxManager::Render()
 {
 	this->RenderShadowMap();
@@ -531,6 +574,8 @@ HRESULT DxManager::Render()
 	//this->RenderForward();
 
 	this->RenderDeferredGeometry();
+
+	this->RenderDeferredSkybox();
 	
 	// Debug: Render Normals
 	//MaloW::Array<Mesh*>* meshes = &this->objects;

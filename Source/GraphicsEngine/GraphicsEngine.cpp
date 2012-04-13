@@ -308,3 +308,8 @@ void GraphicsEngine::Life()
 		}
 	}
 }
+
+void GraphicsEngine::CreateSkyBox(string texture)
+{
+	this->dx->CreateSkyBox(texture);
+}
