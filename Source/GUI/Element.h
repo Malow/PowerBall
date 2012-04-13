@@ -39,6 +39,8 @@ public:
 	void SetPosition(float x, float y, float z){ this->mX = x; this->mY = y;this->mZ = z; }
 	/*! Saves the position of the element in the parameters*/
 	void GetPosition(float& x, float& y, float& z){ x = this->mX; y = this->mY; z = this->mZ; }
+	/*! Returns the pos as a D3DXVECTOR2*/
+	D3DXVECTOR2 GetPositionD3D(){ return D3DXVECTOR2(this->mX, this->mY); }
 
 	/*! Sets the width of the element*/
 	void SetWidth(float width){ this->mWidth = width; }
@@ -49,6 +51,9 @@ public:
 	void SetHeight(float height){ this->mHeight = height; }
 	/*! Saves the height of the element in parameter*/
 	void GetHeight(float& height){ height = this->mHeight; }
+	
+	/*! Returns the dimension of a D3DXVECTOR2*/
+	D3DXVECTOR2 GetDimension(){ return D3DXVECTOR2(this->mWidth, this->mHeight); }
 
 	/*! Sets the texture variable*/
 	void SetTextureName(string textureName){ this->mTextureName = textureName; }
