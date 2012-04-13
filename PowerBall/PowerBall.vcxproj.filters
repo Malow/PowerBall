@@ -140,6 +140,9 @@
     <ClCompile Include="..\Source\GUI\DropDownList.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\SkyBox.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source\GUI\GUIArchButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
@@ -274,6 +277,9 @@
     <ClInclude Include="..\Source\GUI\DropDownList.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\SkyBox.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Source\GUI\GUIArchButton.h">
       <Filter>GUI</Filter>
     </ClInclude>
@@ -313,6 +319,9 @@
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
     <None Include="Shaders\Lava.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\SkyBox.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
   </ItemGroup>

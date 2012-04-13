@@ -14,6 +14,7 @@
 #include "Image.h"
 #include "SSAO.h"
 #include "Text.h"
+#include "SkyBox.h"
 
 
 
@@ -76,6 +77,10 @@ private:
 	MaloW::Array<Image*> images;
 	MaloW::Array<Text*> texts;
 
+	ID3D11ShaderResourceView* LavaTexture;
+	SkyBox* skybox;
+	Shader* Shader_Skybox;
+
 	// Lightning
 	MaloW::Array<Light*> lights;
 	
@@ -110,6 +115,7 @@ private:
 	void RenderImages();
 	void RenderQuadDeferred();
 	void RenderDeferredTexture();
+	void RenderDeferredSkybox();
 	
 	HRESULT Init();
 
@@ -131,6 +137,7 @@ public:
 	Light* CreateLight(D3DXVECTOR3 pos);
 	void CreateImage(Image* image, string texture);
 	void CreateText(Text* text, string font);
+	void CreateSkyBox(string texture);
 
 	long GetFrameCount() const { return this->framecount; }
 

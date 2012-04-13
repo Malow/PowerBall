@@ -241,8 +241,11 @@ float4 CalcLight(float2 tex, Light light, int lightIndex)
 		{
 			[unroll] for(float q = 0; q < PCF_SIZE; q++)
 			{
-				//shadow += (ShadowMap[lightIndex].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;		
-				shadow += (ShadowMap[0].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;			
+				//shadow += (ShadowMap[lightIndex].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;
+				if(lightIndex == 1)
+					shadow += (ShadowMap[1].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;
+				else
+					shadow += (ShadowMap[0].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;	
 			}
 		}
 		shadow /= PCF_SIZE_SQUARED;

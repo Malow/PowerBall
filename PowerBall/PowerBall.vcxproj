@@ -38,14 +38,15 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\SkyBox.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
-    <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUIArchButton.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
@@ -79,14 +80,15 @@
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\SkyBox.h" />
     <ClInclude Include="..\Source\GraphicsEngine\SSAO.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
-    <ClInclude Include="..\Source\GUI\GUIEvent.h" />
     <ClInclude Include="..\Source\GUI\GUIArchButton.h" />
+    <ClInclude Include="..\Source\GUI\GUIEvent.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
@@ -122,6 +124,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>
       <FileType>Document</FileType>
     </None>
+    <None Include="Shaders\SkyBox.fx" />
     <None Include="Shaders\SSAO.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
