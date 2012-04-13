@@ -193,7 +193,7 @@ Object3D* DxManager::createParticleObject(ParticleMesh* mesh)
 		D3DX11_IMAGE_LOAD_INFO loadInfo;
 		ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 		loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		loadInfo.Format = DXGI_FORMAT_BC1_UNORM;
+		loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		if(FAILED(D3DX11CreateShaderResourceViewFromFile(Dx_Device, mesh->GetTexturePath().c_str(), &loadInfo, NULL, &texture, NULL)))
 			MaloW::Debug("Failed to load texture " + mesh->GetTexturePath());
 	}
@@ -243,7 +243,7 @@ void DxManager::CreateImage(Image* image, string texture)
 	D3DX11_IMAGE_LOAD_INFO loadInfo;
 	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	loadInfo.Format = DXGI_FORMAT_BC1_UNORM;
+	loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, texture.c_str(), &loadInfo, NULL, &text, NULL)))
 		MaloW::Debug("Failed to load texture " + texture);
 	
@@ -271,7 +271,7 @@ void DxManager::CreateText(Text* text, string font)
 	D3DX11_IMAGE_LOAD_INFO loadInfo;
 	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	loadInfo.Format = DXGI_FORMAT_BC1_UNORM;
+	loadInfo.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, font.c_str(), &loadInfo, NULL, &texture, NULL)))
 		MaloW::Debug("Failed to load texture " + font);
 	
