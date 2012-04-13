@@ -107,9 +107,6 @@
     <ClCompile Include="..\Source\GUI\Element.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GUI\GUIPicture.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GUI\GUISet.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
@@ -145,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\SkyBox.cpp">
       <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUIArchButton.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,9 +244,6 @@
     <ClInclude Include="..\Source\GUI\Element.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\GUI\GUIPicture.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\GUI\GUISet.h">
       <Filter>GUI</Filter>
     </ClInclude>
@@ -282,6 +279,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\SkyBox.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUIArchButton.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

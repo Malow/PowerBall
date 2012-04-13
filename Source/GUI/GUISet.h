@@ -10,7 +10,7 @@
 //includes
 #include "Element.h"
 #include "..\GraphicsEngine\GraphicsEngine.h"
-#include "GUIPicture.h"
+#include "GUIArchButton.h"
 #include "SimpleButton.h"
 
 class GUISet

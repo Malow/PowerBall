@@ -45,8 +45,8 @@
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIArchButton.cpp" />
     <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
-    <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
@@ -87,8 +87,8 @@
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
+    <ClInclude Include="..\Source\GUI\GUIArchButton.h" />
     <ClInclude Include="..\Source\GUI\GUIEvent.h" />
-    <ClInclude Include="..\Source\GUI\GUIPicture.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
