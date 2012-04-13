@@ -312,5 +312,8 @@
     <None Include="Shaders\DeferredTexture.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\Lava.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

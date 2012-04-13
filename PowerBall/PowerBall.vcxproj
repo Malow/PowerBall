@@ -115,6 +115,7 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Shaders\FXAA.fx" />
+    <None Include="Shaders\Lava.fx" />
     <None Include="Shaders\ScreenSpaceBillBoard.fx" />
     <None Include="Shaders\ShadowMap.fx">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>

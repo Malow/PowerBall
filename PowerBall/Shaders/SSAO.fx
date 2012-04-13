@@ -52,7 +52,7 @@ cbuffer Fixed
 //------------------------------------------------------------------------------------------------------
 //	State structures
 //------------------------------------------------------------------------------------------------------
-SamplerState LinearSampler 
+SamplerState PointClampSampler 
 {
 	Filter = MIN_MAG_MIP_POINT;  //**
 	AddressU = Clamp;
@@ -74,7 +74,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 
 	//get normal (view space) and depth of the pixel (normalized device coordinates [0,1])
 	float2 texCoord = float2(pixel.x / width, pixel.y / height); //pixel is in screen space, so just devide by with and height
-	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord);
+	float4 normAndDepth = normalAndDepthMap.Sample(PointClampSampler, texCoord);
 	
 	float4 debugColor;
 	//debugColor.w = normAndDepth.w;
@@ -134,7 +134,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			}*/
 
 			//4. get distance between the depth of the sample (offset position) and the depth sampled at that point
-			dist = offsetPos[i].z - normalAndDepthMap.Sample(LinearSampler, offsetPos[i].xy).w;  
+			dist = offsetPos[i].z - normalAndDepthMap.Sample(PointClampSampler, offsetPos[i].xy).w;  
 			
 			//if distance is positive, then the offset position is infront of the pixel and therefore occlude the pixel to some degree
 			if(dist > DEPTH_EPSILON) //use epsilon to avoid using samples behind the pixel
@@ -155,42 +155,6 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 	else
 	{
 		debugColor = float4(0,1,0,1);
-	}
-
-	if(normAndDepth.w < -0.5f)
-	{
-		float INFINITY = 100000.0f;
-		float lavaHeight = 0.0f;
-
-		
-		//convert from screen space to view space **to get z**, z = -1 **z**
-		//x[0,width]
-		float4 pixelPosV = float4(pixel.x, 0.0f, -1.0f, 1.0f);
-		//convert to texture space [0,1]
-		pixelPosV.x /= width;
-		//convert to normalized device coordinates [-1,1]
-		pixelPosV.x = pixelPosV.x * 2.0f - 1.0f;
-		//transform by the inverse projection matrix
-		pixelPosV = mul(pixelPosV, invProjMatrix);
-		//convert to view-space by dividing by w 
-		pixelPosV.x /= pixelPosV.w;
-
-		
-		//set lava height
-		pixelPosV.y = lavaHeight;
-		pixelPosV.z = pixelPosV.x; //**
-
-		//convert depth back to normalized device coordinates
-
-		//convert to clip space z[0,w]
-		pixelPosV = mul(pixelPosV, projMatrix); 
-		//convert to normalized device coordinates z[0,1]
-		pixelPosV.z /= pixelPosV.w; 
-
-		if(pixelPosV.z <= 1.0f && pixelPosV.z >= 0.0f)
-		{
-			debugColor = float4(1,0.5f,0,1);
-		}
 	}
 
 	return debugColor; //**
