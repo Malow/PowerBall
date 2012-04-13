@@ -1,6 +1,6 @@
-#include "GUIPicture.h"
+#include "GUIArchButton.h"
 
-GUIPicture::GUIPicture() : Element()
+GUIArchButton::GUIArchButton() : Element()
 {
 	this->mPressed = false;
 	this->mHovered = false;
@@ -10,13 +10,15 @@ GUIPicture::GUIPicture() : Element()
 
 	this->mPressedImage = NULL;
 	this->mHoveredImage = NULL;
+	
+	this->mEvent = NULL;
 }
-GUIPicture::~GUIPicture()
+GUIArchButton::~GUIArchButton()
 {
-
+	SAFE_DELETE(this->mEvent);
 }
-GUIPicture::GUIPicture(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent, 
-	string mTextureNamePressed, string mTextureNameHovered) : Element(x, y, z, textureName, width, height, 0, 0, 0, 0, tempEvent)
+GUIArchButton::GUIArchButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent, 
+	string mTextureNamePressed, string mTextureNameHovered) : Element(x, y, z, textureName, width, height)
 {
 	this->mPressed = false;
 	this->mHovered = false;
@@ -26,9 +28,11 @@ GUIPicture::GUIPicture(float x, float y, float z, string textureName, float widt
 	
 	this->mPressedImage = NULL;
 	this->mHoveredImage = NULL;
+	
+	this->mEvent = tempEvent;
 }
 
-void GUIPicture::ChangePicture(GraphicsEngine* ge)
+void GUIArchButton::ChangePicture(GraphicsEngine* ge)
 {
 	if(this->mPressed == true && this->mPressedImage == NULL)
 	{
@@ -59,7 +63,7 @@ void GUIPicture::ChangePicture(GraphicsEngine* ge)
 		this->mPressedImage = NULL;
 	}
 }
-bool GUIPicture::RemoveFromRenderer(GraphicsEngine* ge)
+bool GUIArchButton::RemoveFromRenderer(GraphicsEngine* ge)
 {
 	if(this->mHoveredImage != NULL)
 	{

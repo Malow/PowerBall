@@ -2,7 +2,7 @@
 
 #include "Element.h"
 
-class GUIPicture : public Element
+class GUIArchButton : public Element
 {
 private:
 	bool mPressed;
@@ -13,10 +13,12 @@ private:
 
 	Image* mHoveredImage;
 	Image* mPressedImage;
+
+	GUIEvent* mEvent;
 public:
-	GUIPicture();
-	virtual ~GUIPicture();
-	GUIPicture(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent, 
+	GUIArchButton();
+	virtual ~GUIArchButton();
+	GUIArchButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent, 
 		string mTextureNamePressed, string mTextureNameHovered);
 
 	void SetHovered(bool value){ this->mHovered = value; }
@@ -25,7 +27,12 @@ public:
 	void SetPressed(bool value){ this->mPressed = value; }
 	bool GetPressed(){ return this->mPressed; }
 
-	void ChangePicture(GraphicsEngine* ge);
+	/*! Sets the event of the element*/
+	void SetEvent(GUIEvent* tempEvent){ this->mEvent = tempEvent; }
+	/*! Gets the event from the element*/
+	GUIEvent* GetEvent(){ return this->mEvent; }
 
+	void ChangePicture(GraphicsEngine* ge);
+	
 	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
 };

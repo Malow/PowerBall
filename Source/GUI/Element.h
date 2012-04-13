@@ -24,21 +24,14 @@ private:
 	
 	float mWidth;
 	float mHeight;
-
-	float mActiveX;
-	float mActiveY;
-
-	float mActiveWidth;
-	float mActiveHeight;
-
+	
 	string mTextureName;
 
 	Image* mImage;
-	GUIEvent* mEvent;
 
 public:
 	Element();
-	Element(float x, float y, float z, string textureName, float width, float height, float activeX, float activeY, float activeWidth, float activeHeight, GUIEvent* tempEvent);
+	Element(float x, float y, float z, string textureName, float width, float height);
 	/*Element(Element& origObj);*/
 	virtual ~Element();
 
@@ -57,26 +50,6 @@ public:
 	/*! Saves the height of the element in parameter*/
 	void GetHeight(float& height){ height = this->mHeight; }
 
-	/*! Sets the position of active position*/
-	void SetPosition(float x, float y){ this->mActiveX = x; this->mActiveY = y; }
-	/*! Saves the pos of active pos in parameters*/
-	void GetActivePos(float& x, float& y){ x = this->mActiveX; y = this->mActiveY; }
-
-	/*! Saves the actviation width of the button*/
-	void SetActiveWidth(float activeWidth){ this->mActiveWidth = activeWidth; }
-	/*! Returns the actvite width of the button*/
-	void GetActiveWidth(float& width){ width = this->mActiveWidth; }
-
-	/*! Saves the actviation height of the button*/
-	void SetActiveHeight(float activeHeight){ this->mActiveHeight = activeHeight; }
-	/*! Returns the actvite height of the button*/
-	void GetActiveHeight(float& height){ height = this->mActiveHeight; }
-
-	/*! Sets the event of the element*/
-	void SetEvent(GUIEvent* tempEvent){ this->mEvent = tempEvent; }
-	/*! Gets the event from the element*/
-	GUIEvent* GetEvent(){ return this->mEvent; }
-
 	/*! Sets the texture variable*/
 	void SetTextureName(string textureName){ this->mTextureName = textureName; }
 	/*! Saves the texture name in parameter*/
@@ -91,7 +64,4 @@ public:
 	virtual bool AddToRenderer(GraphicsEngine* ge);
 	/*! Removes the element from the renderer*/
 	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
-	
-	/*! Check if the mouse is inside the active area and returns an event if it is*/
-	GUIEvent* CheckCollision(float mouseX, float mouseY);
 };

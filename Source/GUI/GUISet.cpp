@@ -52,7 +52,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 	D3DXVECTOR2 mousePos = ge->GetKeyListener()->GetMousePosition();
 	float windowWidth = (float)ge->GetEngineParameters().windowWidth;
 	float windowHeight = (float)ge->GetEngineParameters().windowHeight;
-	GUIPicture* temp = NULL;
+	GUIArchButton* temp = NULL;
 
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
@@ -65,17 +65,17 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			{
 				if(!mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[4];
-
+					temp = (GUIArchButton*)this->mElements[4];
+					
 					if(temp->GetPressed())
-						returnEvent = this->mElements[4]->GetEvent();
+						returnEvent = temp->GetEvent();
 					temp->SetHovered(true);
 					temp->SetPressed(false);
 					temp->ChangePicture(ge);
 				}
 				else if(mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[4];
+					temp = (GUIArchButton*)this->mElements[4];
 
 					temp->SetHovered(false);
 					temp->SetPressed(true);
@@ -84,7 +84,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			}
 			else
 			{
-				temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIArchButton*)this->mElements[i];
 
 				temp->SetHovered(false);
 				temp->SetPressed(false);
@@ -101,17 +101,17 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			{
 				if(!mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[2];
+					temp = (GUIArchButton*)this->mElements[2];
 
 					if(temp->GetPressed())
-						returnEvent = this->mElements[2]->GetEvent();
+						returnEvent = temp->GetEvent();
 					temp->SetHovered(true);
 					temp->SetPressed(false);
 					temp->ChangePicture(ge);
 				}
 				else if(mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[2];
+					temp = (GUIArchButton*)this->mElements[2];
 
 					temp->SetHovered(false);
 					temp->SetPressed(true);
@@ -120,7 +120,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			}
 			else
 			{
-				temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIArchButton*)this->mElements[i];
 
 				temp->SetHovered(false);
 				temp->SetPressed(false);
@@ -137,17 +137,17 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			{
 				if(!mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[1];
+					temp = (GUIArchButton*)this->mElements[1];
 
 					if(temp->GetPressed())
-						returnEvent = this->mElements[1]->GetEvent();
+						returnEvent = temp->GetEvent();
 					temp->SetHovered(true);
 					temp->SetPressed(false);
 					temp->ChangePicture(ge);
 				}
 				else if(mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[1];
+					temp = (GUIArchButton*)this->mElements[1];
 
 					temp->SetHovered(false);
 					temp->SetPressed(true);
@@ -156,7 +156,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			}
 			else
 			{
-				temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIArchButton*)this->mElements[i];
 
 				temp->SetHovered(false);
 				temp->SetPressed(false);
@@ -173,17 +173,17 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			{
 				if(!mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[3];
+					temp = (GUIArchButton*)this->mElements[3];
 
 					if(temp->GetPressed())
-						returnEvent = this->mElements[3]->GetEvent();
+						returnEvent = temp->GetEvent();
 					temp->SetHovered(true);
 					temp->SetPressed(false);
 					temp->ChangePicture(ge);
 				}
 				else if(mousePressed)
 				{
-					temp = (GUIPicture*)this->mElements[3];
+					temp = (GUIArchButton*)this->mElements[3];
 
 					temp->SetHovered(false);
 					temp->SetPressed(true);
@@ -192,7 +192,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 			}
 			else
 			{
-				temp = (GUIPicture*)this->mElements[i];
+				temp = (GUIArchButton*)this->mElements[i];
 
 				temp->SetHovered(false);
 				temp->SetPressed(false);
@@ -205,7 +205,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 	{
 		for(int i = 1; i < this->mNrOfElements; i++)
 		{
-			temp = (GUIPicture*)this->mElements[i];
+			temp = (GUIArchButton*)this->mElements[i];
 
 			temp->SetHovered(false);
 			temp->ChangePicture(ge);
@@ -221,9 +221,10 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY)
 	GUIEvent* tempReturnEvent;
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
-		if(typeid(*this->mElements[i]) != typeid(GUIPicture))
+		if(typeid(*this->mElements[i]) == typeid(SimpleButton))
 		{
-			tempReturnEvent = this->mElements[i]->CheckCollision(mouseX, mouseY);
+			SimpleButton* temp = (SimpleButton*)this->mElements[i];
+			tempReturnEvent = temp->CheckCollision(mouseX, mouseY);
 			if(tempReturnEvent != NULL)
 			{
 				if(tempReturnEvent->GetEventMessage() != "NoEvent")
