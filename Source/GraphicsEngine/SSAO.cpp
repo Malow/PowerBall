@@ -41,6 +41,8 @@ void SSAO::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 void SSAO::PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam)
 {	
+	shader->SetResource("rndTex", this->mRndTex);
+
 	shader->SetInt("nrOfSamples", this->mNrOfSamples);
 	shader->SetInt("width", engParams.windowWidth);
 	shader->SetInt("height", engParams.windowHeight);
@@ -51,7 +53,6 @@ void SSAO::PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam
 	D3DXMATRIX invProj;
 	D3DXMatrixInverse(&invProj, NULL, &proj);
 	shader->SetMatrix("invProjMatrix", invProj);
-	shader->SetResource("rndTex", this->mRndTex);
 }
 
 void SSAO::PostRender(Shader* shader)

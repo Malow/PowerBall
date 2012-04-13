@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------------------
 //	Post-process effect: Screen space ambient occlusion (SSAO).
-//	Approximates ambient occlusion by sampling the depth of neighboring pixels in screen space.
+//	Approximates ambient occlusion by sampling the depth of neighboring pixels with 3D-offset vectors.
 //	Requirements:	Normal in view space and depth in normalized device coordinates for each pixel.
 //					Note that normals should be face normals to avoid false occlusion.
 //------------------------------------------------------------------------------------------------------
@@ -19,9 +19,9 @@ static const uint		nrOfSamples = 8;	//**temp.**
 cbuffer PerFrame
 {
 	//uint		nrOfSamples;	//size of gRndTex
-	uint		width;			//width of depth map and normal map
-	uint		height;			//height of depth map and normal map**
-	float		radius;			//length multiplier of random-vectors**
+	//uint		width;			//width of depth map and normal map
+	//uint		height;			//height of depth map and normal map**
+	//float		radius;			//length multiplier of random-vectors**
 	float		angleBias;		//angle in radian from plane of pixel to ignore samples
 	float4x4	projMatrix;		//projection matrix
 	float4x4    invProjMatrix;	//inverse projection matrix
@@ -66,9 +66,9 @@ SamplerState LinearSampler
 float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 {
 	//optimera:
-	//uint width = 0;
-	//uint height = 0;
-	//normalAndDepthMap.GetDimensions(width, height);
+	uint width = 0;
+	uint height = 0;
+	normalAndDepthMap.GetDimensions(width, height);
 
 	
 
@@ -102,7 +102,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		float pixelDepth = -1.0f;
 		float occlusionFactor = 0.0f;
 
-		[branch] for(uint i = 0; i < nrOfSamples; i++) //**
+		for(uint i = 0; i < nrOfSamples; i++) //**
 		{
 			//2. add 3D-vectors to this the view position of the pixel
 			offsetVector = uniRndVectors[i];  //gRndTex.Sample(LinearSampler, (float)i);  //sample offset vector //**uniform rnd**
@@ -111,7 +111,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			{
 				offsetVector = -offsetVector;
 			}
-			offsetPos[i] = float4(pixelPosV + offsetVector, 1.0f); //**konvertera vector bara, addera sen på pixel.xy??**
+			offsetPos[i] = float4(pixelPosV.xyz + offsetVector, 1.0f); //**konvertera vector bara, addera sen på pixel.xy??**
 
 			//3. convert offset xy-positions to texture space and z to normalized device coordinates [0,1]
 			//convert to clip space xy[-w,w], z[0,w]
@@ -123,7 +123,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			offsetPos[i].y = 1.0f - offsetPos[i].y; //invert direction of y-axis
 
 			//**debug**		
-			/*[branch] if(offsetPos[i].x >= 0.0f && offsetPos[i].x <= 1.0f 
+			/*if(offsetPos[i].x >= 0.0f && offsetPos[i].x <= 1.0f 
 			&& offsetPos[i].y >= 0.0f && offsetPos[i].y <= 1.0f)
 			{
 				debugColor = float4(1,1,1,1);
@@ -155,6 +155,42 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 	else
 	{
 		debugColor = float4(0,1,0,1);
+	}
+
+	if(normAndDepth.w < -0.5f)
+	{
+		float INFINITY = 100000.0f;
+		float lavaHeight = 0.0f;
+
+		
+		//convert from screen space to view space **to get z**, z = -1 **z**
+		//x[0,width]
+		float4 pixelPosV = float4(pixel.x, 0.0f, -1.0f, 1.0f);
+		//convert to texture space [0,1]
+		pixelPosV.x /= width;
+		//convert to normalized device coordinates [-1,1]
+		pixelPosV.x = pixelPosV.x * 2.0f - 1.0f;
+		//transform by the inverse projection matrix
+		pixelPosV = mul(pixelPosV, invProjMatrix);
+		//convert to view-space by dividing by w 
+		pixelPosV.x /= pixelPosV.w;
+
+		
+		//set lava height
+		pixelPosV.y = lavaHeight;
+		pixelPosV.z = pixelPosV.x; //**
+
+		//convert depth back to normalized device coordinates
+
+		//convert to clip space z[0,w]
+		pixelPosV = mul(pixelPosV, projMatrix); 
+		//convert to normalized device coordinates z[0,1]
+		pixelPosV.z /= pixelPosV.w; 
+
+		if(pixelPosV.z <= 1.0f && pixelPosV.z >= 0.0f)
+		{
+			debugColor = float4(1,0.5f,0,1);
+		}
 	}
 
 	return debugColor; //**

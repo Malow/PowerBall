@@ -1,8 +1,8 @@
 #pragma once
 
-//!-------------------------------------------------------------------
-//!	Class for using screen space ambient occlusion (SSAO)
-//!-------------------------------------------------------------------
+/*!
+	Class for using screen space ambient occlusion (SSAO)
+*/
 
 #include "TextureManager.h"
 #include "Shader.h"
@@ -12,10 +12,10 @@
 class SSAO
 {
 	private:		
-		UINT						mNrOfSamples;	//! The number of samples to use. 8 is default.
-		float						mRadius;		//! Radius of sphere (max length of sample vectors).
-		float						mAngleBias;		//! Angle in radian from plane of pixel to ignore samples. 0.0 is default.
-		ID3D11ShaderResourceView*	mRndTex;		//! Texture to store randomized 3D-vectors x,y,z[-root((radius^2 / 3),root((radius^2 / 3)], length[0,radius].
+		UINT						mNrOfSamples;	/*! The number of samples to use. 8 is default. */
+		float						mRadius;		/*! Radius of sphere (max length of sample vectors). */
+		float						mAngleBias;		/*! Angle in radian from plane of pixel to ignore samples. 0.0 is default. */
+		ID3D11ShaderResourceView*	mRndTex;		/*! Texture to store randomized 3D-vectors x,y,z[-root((radius^2 / 3),root((radius^2 / 3)], length[0,radius]. */
 
 	public:
 		SSAO();
