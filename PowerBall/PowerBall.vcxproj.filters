@@ -146,6 +146,9 @@
     <ClCompile Include="..\Source\GUI\GUIArchButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\FXAA.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -282,6 +285,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\GUIArchButton.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\FXAA.h">
+      <Filter>Graphics Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
