@@ -35,6 +35,6 @@ public:
 	/*! Updates the hover and pressed images*/
 	GUIEvent* UpdateButtons(GraphicsEngine* ge, bool mousePressed);
 
-	GUIEvent* CheckCollision(float mouseX, float mouseY);
+	GUIEvent* CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge);
 
 };

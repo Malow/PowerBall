@@ -215,7 +215,7 @@ GUIEvent* GUISet::UpdateButtons(GraphicsEngine* ge, bool mousePressed)
 	return returnEvent;
 }
 
-GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY)
+GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge)
 {
 	GUIEvent* returnEvent = NULL; // = NoEvent();
 	GUIEvent* tempReturnEvent;
@@ -224,7 +224,7 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY)
 		if(typeid(*this->mElements[i]) == typeid(SimpleButton))
 		{
 			SimpleButton* temp = (SimpleButton*)this->mElements[i];
-			tempReturnEvent = temp->CheckCollision(mouseX, mouseY);
+			tempReturnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
 			if(tempReturnEvent != NULL)
 			{
 				if(tempReturnEvent->GetEventMessage() != "NoEvent")

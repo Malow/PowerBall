@@ -11,11 +11,21 @@ private:
 	float mActiveWidth;
 	float mActiveHeight;
 	
+	bool mPressed;
+	bool mHovered;
+
+	string mTextureNamePressed;
+	string mTextureNameHovered;
+
+	Image* mHoveredImage;
+	Image* mPressedImage;
+
 	GUIEvent* mEvent;
 public:
 	SimpleButton();
 	virtual ~SimpleButton();
-	SimpleButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent);
+	SimpleButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent,
+		string mTextureNamePressed, string mTextureNameHovered, float activeX, float activeY, float activeWidth, float activeHeight);
 
 
 	/*! Sets the position of active position*/
@@ -38,6 +48,8 @@ public:
 	/*! Gets the event from the element*/
 	GUIEvent* GetEvent(){ return this->mEvent; }
 
+	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
+
 	/*! Check if the mouse is inside the active area and returns an event if it is*/
-	GUIEvent* CheckCollision(float mouseX, float mouseY);
+	GUIEvent* CheckCollision(float mouseX, float mouseYm, bool mousePressed, GraphicsEngine* ge);
 };

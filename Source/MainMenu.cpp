@@ -37,22 +37,21 @@ bool MainMenu::Initialize()
 	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonoptions.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(OPTIONS_GAMEPLAY), "Media/clickoptions.png", "Media/mouseoveroptions.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
+	/* Adding the buttons for the options menu*/
+
 	tempElement = new GUIArchButton(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	MaloW::Debug(dx);
-	MaloW::Debug(windowHeight);
-
-	tempElement = new SimpleButton(offSet + dx * (50.0f / 1440), windowHeight * (1015.0f / 1080), 1, "Media/buttonbacktomenu.png", dx * (325.0f / 1440), windowHeight * (30.0f / 1080), new ChangeSetEvent(MAINMENU));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbacktomenu.png", dx, windowHeight, new ChangeSetEvent(MAINMENU), "Media/clickbacktomenu.png" , "Media/mouseoverbacktomenu.png", dx * (18.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (325.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet + dx * (50.0f / 1440), windowHeight * (300.0f / 1080), 1, "Media/buttongraphics.png", dx * (200.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/clickgraphics.png", "Media/mouseovergraphics.png", dx * (42.0f / 1200) + offSet/*ActiveX*/, windowHeight * (198.0f / 900)/*ActiveY*/, dx * (197.0f / 1200)/*ActiveW*/, windowHeight * (30.0f / 900)/*ActiveH*/);
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-
-	tempElement = new SimpleButton(offSet + dx * (450.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonbasic.png", dx * (125.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
+	
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-
-	tempElement = new SimpleButton(offSet + dx * (575.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonadvanced.png", dx * (225.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent());
+	
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	
 	tempElement = NULL;
@@ -157,8 +156,7 @@ bool MainMenu::Run()
 			{
 				D3DXVECTOR2 mousePos;
 				mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-				if(this->mGe->GetKeyListener()->IsClicked(1))
-					returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y);
+				returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y, this->mGe->GetKeyListener()->IsClicked(1), this->mGe);
 
 				if(returnEvent != NULL)
 				{
