@@ -46,6 +46,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		if(eng->GetKeyListener()->IsPressed('W'))
 			eng->GetCamera()->moveForward(diff);
+		if(eng->GetKeyListener()->IsPressed(VK_RETURN))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
+			eng->GetCamera()->moveLeft(diff);
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
 	}
