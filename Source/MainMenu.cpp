@@ -42,16 +42,16 @@ bool MainMenu::Initialize()
 	tempElement = new GUIArchButton(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet + dx * (45.0f / 1440), windowHeight * (1000.0f / 1080), 1, "Media/buttonbacktomenu.png", dx * (365.0f / 1440), windowHeight * (70.0f / 1080), new ChangeSetEvent(MAINMENU), "Media/clickbacktomenu.png" , "Media/mouseoverbacktomenu.png", offSet + dx * (45.0f / 1440) + dx * (15.0f / 1440), windowHeight * (1000.0f / 1080) + windowHeight * (12.5f / 1080), dx * (335.0f / 1440), windowHeight * (45.0f / 1080));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbacktomenu.png", dx, windowHeight, new ChangeSetEvent(MAINMENU), "Media/clickbacktomenu.png" , "Media/mouseoverbacktomenu.png", dx * (18.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (325.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet + dx * (50.0f / 1440), windowHeight * (300.0f / 1080), 1, "Media/buttongraphics.png", dx * (200.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent(), "Media/buttongraphics.png", "Media/buttongraphics.png", offSet + dx * (50.0f / 1440), windowHeight * (300.0f / 1080), dx * (200.0f / 1440), windowHeight * (30.0f / 1080));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/clickgraphics.png", "Media/mouseovergraphics.png", dx * (42.0f / 1200) + offSet/*ActiveX*/, windowHeight * (198.0f / 900)/*ActiveY*/, dx * (197.0f / 1200)/*ActiveW*/, windowHeight * (30.0f / 900)/*ActiveH*/);
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-
-	tempElement = new SimpleButton(offSet + dx * (450.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonbasic.png", dx * (125.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent(), "Media/buttonbasic.png", "Media/buttonbasic.png", offSet + dx * (450.0f / 1440), windowHeight * (30.0f / 1080), dx * (125.0f / 1440), windowHeight * (30.0f / 1080));
+	
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-
-	tempElement = new SimpleButton(offSet + dx * (575.0f / 1440), windowHeight * (30.0f / 1080), 1, "Media/buttonadvanced.png", dx * (225.0f / 1440), windowHeight * (30.0f / 1080), new NoEvent(), "Media/buttonadvanced.png", "Media/buttonadvanced.png", offSet + dx * (575.0f / 1440), windowHeight * (30.0f / 1080), dx * (225.0f / 1440), windowHeight * (30.0f / 1080));
+	
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	
 	tempElement = NULL;
