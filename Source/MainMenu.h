@@ -40,6 +40,8 @@ private:
 
 	/*! Update mouse position*/
 	void UpdateMousePosition();
+
+	void KeyBoardSteering(bool& IsClicked);
 public:
 	/*! This function will create the main menu and init all buttons etc.*/
 	MainMenu(GraphicsEngine* ge);
