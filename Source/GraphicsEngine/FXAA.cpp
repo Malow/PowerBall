@@ -81,6 +81,8 @@ void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
 	shader->SetInt("FXAA_PRESET", this->mPreset);
 	shader->SetFloat4("rcpFrame", D3DXVECTOR4(1.0f / engParams.windowWidth, 1.0f / engParams.windowHeight, 0.0f, 0.0f));
 	
+	//apply pass
+	shader->Apply(0);
 
 	//release **** 
 	SAFE_RELEASE(backBufferTex); 
@@ -92,4 +94,5 @@ void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
 void FXAA::PostRender(Shader* shader)
 {
 	shader->SetResource("sceneTex", NULL);
+	shader->Apply(0);
 }
