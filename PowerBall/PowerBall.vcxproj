@@ -22,6 +22,7 @@
     <ClCompile Include="..\Source\Ball.cpp" />
     <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GameNetwork.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\FXAA.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Buffer.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="..\Source\Ball.h" />
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GameNetwork.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\FXAA.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Buffer.h" />

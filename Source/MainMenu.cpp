@@ -80,6 +80,7 @@ void MainMenu::UpdateMousePosition()
 
 bool MainMenu::Run()
 {
+	bool IsClicked = false;
 	ShowCursor(FALSE);
 	float dt;
 	float updateMouse = 50;
@@ -90,10 +91,11 @@ bool MainMenu::Run()
 	float menuChangeTime = 0;
 	while(this->mGe->isRunning())
 	{
+		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
 		dt = this->mGe->Update();
-		
 		if(this->mCurrentSet == MAINMENU)
 		{
+			this->KeyBoardSteering(IsClicked);
 			//this->mGe->GetKeyListener()->ShowCursor(false);
 			/*Mouse Update*/
 			if(updateMouse < 0)
@@ -109,7 +111,7 @@ bool MainMenu::Run()
 			int i = 0; //this->mGe->GetKeyListener()->ShowCursor(true);
 
 		/*If mouse is clicked*/
-		if(this->mGe->GetKeyListener()->IsClicked(1) && !mousePressed)
+		if(IsClicked && !mousePressed)
 		{
 			mousePressed = true;
 		}
@@ -131,7 +133,8 @@ bool MainMenu::Run()
 						{
 							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 							this->mGm = new GameManager(this->mGe);
-							this->mGm->Play(2, false);
+							//this->mGm->PlayLAN(1);
+							this->mGm->Play(2);
 							SAFE_DELETE(this->mGm);
 							this->mCurrentSet = MAINMENU;
 							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
@@ -156,7 +159,7 @@ bool MainMenu::Run()
 			{
 				D3DXVECTOR2 mousePos;
 				mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-				returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y, this->mGe->GetKeyListener()->IsClicked(1), this->mGe);
+				returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y, IsClicked, this->mGe);
 
 				if(returnEvent != NULL)
 				{
@@ -179,7 +182,7 @@ bool MainMenu::Run()
 			returnEvent = NULL;
 		}
 		/*If mouse is not clicked*/
-		if(!this->mGe->GetKeyListener()->IsClicked(1) && mousePressed)
+		if(!IsClicked && mousePressed)
 		{
 			mousePressed = false;
 		}
@@ -249,4 +252,22 @@ bool MainMenu::Run()
 	}
 
 	return true;
+}
+
+void MainMenu::KeyBoardSteering(bool& IsClicked)
+{
+
+	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	if(this->mGe->GetKeyListener()->IsPressed(VK_RETURN))
+		IsClicked = true;
+
+	if(this->mGe->GetKeyListener()->IsPressed(VK_UP) || this->mGe->GetKeyListener()->IsPressed('W'))
+		this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2( (windowWidth/2), (windowHeight/4)));
+	else if(this->mGe->GetKeyListener()->IsPressed(VK_LEFT) || this->mGe->GetKeyListener()->IsPressed('A'))
+		this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2( (windowWidth/4), (windowHeight/2)));
+	else if(this->mGe->GetKeyListener()->IsPressed(VK_DOWN) || this->mGe->GetKeyListener()->IsPressed('S'))
+		this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2( (windowWidth/2), (windowHeight/4)*3));
+	else if(this->mGe->GetKeyListener()->IsPressed(VK_RIGHT) || this->mGe->GetKeyListener()->IsPressed('D'))
+		this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2( (windowWidth/4)*3, (windowHeight/2)));
 }

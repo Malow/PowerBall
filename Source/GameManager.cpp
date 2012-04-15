@@ -24,11 +24,11 @@ GameManager::~GameManager()
 	}
 }
 
-bool GameManager::Play(const int numPlayers, bool network)
+bool GameManager::Play(const int numPlayers)
 {
 	this->~GameManager();
 	this->mNumPlayers = numPlayers;
-	this->Initialize(network);
+	this->Initialize();
 	bool running = true;
 	
 	
@@ -58,44 +58,26 @@ bool GameManager::Play(const int numPlayers, bool network)
 		if(mGe->GetKeyListener()->IsClicked(2))
 			mBalls[0]->AddForce(Vector3(0,11,0));
 
-		if(network)
-		{
-			this->mNet->Update(this->mBalls[0]); //, this->mPlatform
-			this->mBalls[1]->SetPosition(this->mNet->GetEnemyPos());
-			if(!this->mNet->IsServer())
-			{
-				//this->mPlatform->GetMesh->SetScale(this->mNet->GetPlatformScale());
-			}
-		}
-		else
-		{
-			
-			if(mGe->GetKeyListener()->IsPressed('P'))
-				mGe->GetCamera()->moveForward(diff);
-			if(mGe->GetKeyListener()->IsClicked(1))
-				mGe->GetCamera()->moveBackward(diff);
+		if(mGe->GetKeyListener()->IsPressed('P'))
+			mGe->GetCamera()->moveForward(diff);
+		if(mGe->GetKeyListener()->IsClicked(1))
+			mGe->GetCamera()->moveBackward(diff);
 
-			// move ball 2
-			if(mGe->GetKeyListener()->IsPressed('H'))
-				mBalls[1]->AddForce(Vector3(-1,0,0));	
-			if(mGe->GetKeyListener()->IsPressed('K'))
-				mBalls[1]->AddForce(Vector3(1,0,0));
-			if(mGe->GetKeyListener()->IsPressed('U'))
-				mBalls[1]->AddForce(Vector3(0,0,1));	
-			if(mGe->GetKeyListener()->IsPressed('J'))
-				mBalls[1]->AddForce(Vector3(0,0,-1));
-		}
+		// move ball 2
+		if(mGe->GetKeyListener()->IsPressed('H'))
+			mBalls[1]->AddForce(Vector3(-1,0,0));	
+		if(mGe->GetKeyListener()->IsPressed('K'))
+			mBalls[1]->AddForce(Vector3(1,0,0));
+		if(mGe->GetKeyListener()->IsPressed('U'))
+			mBalls[1]->AddForce(Vector3(0,0,1));	
+		if(mGe->GetKeyListener()->IsPressed('J'))
+			mBalls[1]->AddForce(Vector3(0,0,-1));
+		
 
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			this->mBalls[i]->Update(diff, this->mPlatform);
-			/*Vector3 temp = this->mBalls[i]->GetPositionXZ() - this->mPlatform->GetPositionXZ();
 
-			
-			if( temp.GetLength() < this->mPlatform->GetScaledRadius() )
-				numAlivePlayers += 1;*/
-			
-			
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
 			
@@ -113,16 +95,118 @@ bool GameManager::Play(const int numPlayers, bool network)
 
 			}
 		}
+
+		mPlatform->Update(diff*0.05);
+
 		if(numAlivePlayers <= 1)
 			running = false;
-		mPlatform->Update(diff*0.05);
 	}
 	
 	//returns to menu after some win/draw screen.
 	return true;
 }
+bool GameManager::PlayLAN(const int numPlayers)
+{
+	this->~GameManager();
+	this->mNumPlayers = numPlayers;
+	this->Initialize();
+	bool running = true;
 
-void GameManager::Initialize(bool network)
+	this->mNet = new GameNetwork();
+	this->mNet->SetIP("79.138.27.193");
+	this->mNet->Start();
+	if(this->mNet->IsServer())
+	{
+		this->mBalls[0]->SetPosition(0,14.7f,5);
+		//this->mBalls[1]->SetPosition(0,14.7f,-5);
+	}
+	this->mGe->Update();
+	
+	
+	while(running)
+	{
+		int numAlivePlayers = 0;
+				
+		float diff = mGe->Update();	
+		
+		//this->mNet->Update(this->mBalls, this->mNumPlayers); 
+
+		diff *= 0.05f;
+
+		if(mGe->GetKeyListener()->IsPressed('A'))
+			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-1,0,0));	
+		if(mGe->GetKeyListener()->IsPressed('D'))
+			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(1,0,0));
+		if(mGe->GetKeyListener()->IsPressed('W'))
+			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,1));	
+		if(mGe->GetKeyListener()->IsPressed('S'))
+			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,-1));
+		if(mGe->GetKeyListener()->IsClicked(2))
+			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,11,0));
+
+
+
+		//if(this->mNet->IsServer())
+		{
+			// will be moved to phisics simulation class
+			for(int i = 0; i < this->mNumPlayers; i++)
+			{
+				//this->mBalls[i]->Update(diff, this->mPlatform);
+				for(int j = i+1; j < this->mNumPlayers; j++)
+				{
+					Ball* b1 = this->mBalls[i];
+					Ball* b2 = this->mBalls[j];
+					if(b1->collisionWithSphereSimple(b2))
+						b1->collisionSphereResponse(b2, diff);
+
+				}
+			}
+		}
+			
+		this->mBalls[this->mNet->GetIndex()]->Update(diff, this->mPlatform);
+
+		this->mNet->SetPos(this->mBalls[this->mNet->GetIndex()]->GetPosition());
+		
+
+		
+		this->mNet->Update(this->mBalls, this->mNumPlayers); 
+
+
+		for(int i = 0; i < this->mNumPlayers; i++)
+		{
+			
+			
+			if(this->mBalls[i]->IsAlive())
+				numAlivePlayers += 1;
+			
+		}
+		//mPlatform->Update(diff*0.05);
+
+
+		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
+		{
+			for(int i = this->mNumPlayers; i < this->mNet->GetNumPlayers(); i++)
+			{
+				this->mNumPlayers++;
+				Ball** temp = new Ball*[this->mNumPlayers];
+				for(int i = 0; i < this->mNumPlayers - 1; i++)
+				{
+					temp[i] = this->mBalls[i];
+				}
+				temp[this->mNumPlayers - 1] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,0));
+
+				delete[] this->mBalls;
+				this->mBalls = temp;
+			}
+		}
+
+		//if(numAlivePlayers <= 1 && this->mNet->GetNumPlayers() > 1)
+			//running = false;
+	}
+	//returns to menu after some win/draw screen.
+	return true;
+}
+void GameManager::Initialize()
 {
 	
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
@@ -149,19 +233,6 @@ void GameManager::Initialize(bool network)
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,-5));
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,5));
-	}
-
-	if(network)
-	{
-		this->mNet = new GameNetwork();
-		this->mNet->SetIP("79.138.27.6");
-		this->mNet->Start();
-		if(this->mNet->IsServer())
-		{
-			this->mBalls[0]->SetPosition(0,14.7f,5);
-			this->mBalls[1]->SetPosition(0,14.7f,-5);
-		}
-		this->mGe->Update();
 	}
 
 }

@@ -26,11 +26,14 @@ public:
 	virtual		~GameManager();
 
 	/*! Starts the game with the assigned amount of players. */
-	bool		Play(const int numPlayers, bool network);
+	bool		Play(const int numPlayers);
+
+	/*! Starts LAN game with the assigned amount of players. */
+	bool		PlayLAN(const int numPlayers);
 
 private:
 
 	/*! Initializes the game. (First function-call in Play) */
-	void		Initialize(bool network);
+	void		Initialize();
 
 };
