@@ -48,6 +48,7 @@ public:
 
 	bool		GetReadBuffer(char* bufOut, int size, int clientIndex);
 	void		SetWriteBuffer(char* buf, int size, int clientIndex);
+	void		Close();
 
 	
 	static DWORD WINAPI		TalkToClient(void* param);

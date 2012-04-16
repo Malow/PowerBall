@@ -113,7 +113,7 @@ bool GameManager::PlayLAN(const int numPlayers)
 	bool running = true;
 
 	this->mNet = new GameNetwork();
-	this->mNet->SetIP("79.138.27.193");
+	this->mNet->SetIP("79.138.27.63");
 	this->mNet->Start();
 	if(this->mNet->IsServer())
 	{
@@ -133,24 +133,37 @@ bool GameManager::PlayLAN(const int numPlayers)
 
 		diff *= 0.05f;
 
-		if(mGe->GetKeyListener()->IsPressed('A'))
-			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-1,0,0));	
-		if(mGe->GetKeyListener()->IsPressed('D'))
-			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(1,0,0));
-		if(mGe->GetKeyListener()->IsPressed('W'))
-			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,1));	
-		if(mGe->GetKeyListener()->IsPressed('S'))
-			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,-1));
-		if(mGe->GetKeyListener()->IsClicked(2))
-			mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,11,0));
 
 
 
-		//if(this->mNet->IsServer())
+		if(this->mNet->IsServer())
 		{
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
+				if(i != this->mNet->GetIndex())
+				{
+					if(this->mNet->IsKeyPressed('A', i))
+						mBalls[i]->AddForce(Vector3(-1,0,0));	
+					if(this->mNet->IsKeyPressed('D', i))
+						mBalls[i]->AddForce(Vector3(1,0,0));
+					if(this->mNet->IsKeyPressed('W', i))
+						mBalls[i]->AddForce(Vector3(0,0,1));	
+					if(this->mNet->IsKeyPressed('S', i))
+						mBalls[i]->AddForce(Vector3(0,0,-1));
+				}
+				else
+				{
+					if(mGe->GetKeyListener()->IsPressed('A'))
+						mBalls[i]->AddForce(Vector3(-1,0,0));	
+					if(mGe->GetKeyListener()->IsPressed('D'))
+						mBalls[i]->AddForce(Vector3(1,0,0));
+					if(mGe->GetKeyListener()->IsPressed('W'))
+						mBalls[i]->AddForce(Vector3(0,0,1));	
+					if(mGe->GetKeyListener()->IsPressed('S'))
+						mBalls[i]->AddForce(Vector3(0,0,-1));
+				}	
+
 				//this->mBalls[i]->Update(diff, this->mPlatform);
 				for(int j = i+1; j < this->mNumPlayers; j++)
 				{
@@ -160,15 +173,26 @@ bool GameManager::PlayLAN(const int numPlayers)
 						b1->collisionSphereResponse(b2, diff);
 
 				}
+				this->mBalls[i]->Update(diff, this->mPlatform);
+				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+				Vector3 vel = this->mBalls[i]->GetVelocity();
+				this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
 			}
 		}
-			
-		this->mBalls[this->mNet->GetIndex()]->Update(diff, this->mPlatform);
+		else 
+		{
+			if(mGe->GetKeyListener()->IsPressed('A'))
+				this->mNet->AddKeyInput('A', true);
+			if(mGe->GetKeyListener()->IsPressed('D'))
+				this->mNet->AddKeyInput('D', true);
+			if(mGe->GetKeyListener()->IsPressed('W'))
+				this->mNet->AddKeyInput('W', true);
+			if(mGe->GetKeyListener()->IsPressed('S'))
+				this->mNet->AddKeyInput('S', true);
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,11,0));
+		}
 
-		this->mNet->SetPos(this->mBalls[this->mNet->GetIndex()]->GetPosition());
-		
-
-		
 		this->mNet->Update(this->mBalls, this->mNumPlayers); 
 
 
@@ -185,24 +209,28 @@ bool GameManager::PlayLAN(const int numPlayers)
 
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
-			for(int i = this->mNumPlayers; i < this->mNet->GetNumPlayers(); i++)
+			int old = this->mNumPlayers;
+			this->mNumPlayers = this->mNet->GetNumPlayers();
+			Ball** temp = new Ball*[this->mNumPlayers];
+			for(int i = 0; i < old; i++)
 			{
-				this->mNumPlayers++;
-				Ball** temp = new Ball*[this->mNumPlayers];
-				for(int i = 0; i < this->mNumPlayers - 1; i++)
-				{
-					temp[i] = this->mBalls[i];
-				}
-				temp[this->mNumPlayers - 1] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,0));
-
-				delete[] this->mBalls;
-				this->mBalls = temp;
+				temp[i] = this->mBalls[i];
 			}
+			for(int i = old; i < this->mNumPlayers; i++)
+			{
+				temp[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,0));
+				numAlivePlayers++;
+			}
+			delete[] this->mBalls;
+			this->mBalls = temp;
 		}
 
-		//if(numAlivePlayers <= 1 && this->mNet->GetNumPlayers() > 1)
-			//running = false;
+		if(numAlivePlayers <= 1 && this->mNet->GetNumPlayers() > 1)
+		{
+			running = false;
+		}
 	}
+	this->mNet->Close();
 	//returns to menu after some win/draw screen.
 	return true;
 }
