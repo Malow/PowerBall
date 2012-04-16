@@ -182,7 +182,8 @@ bool GameManager::PlayLAN()
 				mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,11,0));
 		}
 
-		this->mNet->Update(this->mBalls, this->mNumPlayers); 
+		if(!this->mNet->Update(this->mBalls, this->mNumPlayers))
+			running = false;
 
 
 		for(int i = 0; i < this->mNumPlayers; i++)
@@ -214,7 +215,7 @@ bool GameManager::PlayLAN()
 			this->mBalls = temp;
 		}
 
-		if(numAlivePlayers <= 1 && this->mNet->GetNumPlayers() > 1)
+		if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
 		{
 			running = false;
 		}

@@ -75,7 +75,7 @@ public:
 	void		InitializeConnection();
 
 	/*! Sends and receives data over socket, only called by clients at the moment. */
-	void		Update();
+	bool		Update();
 
 	/*! Returns true if you're the LAN host. */
 	bool		IsServer() const {return this->mServer;}

@@ -16,22 +16,23 @@ ServerConnection::ServerConnection()
 }
 ServerConnection::~ServerConnection()
 {
-	closesocket(this->mServerSocket->sock);
 	if(this->mServer)
 	{
 		DWORD exitCode;
-		GetExitCodeThread(this->mServerSocket->handle, &exitCode);
-		ExitThread(exitCode);
+		//GetExitCodeThread(this->mServerSocket->handle, &exitCode);
+		//ExitThread(exitCode);
 		CloseHandle(this->mServerSocket->handle);
+		closesocket(this->mServerSocket->sock);
 		for(int i = 0; i < this->mNumClients; i++)
 		{
-			GetExitCodeThread(this->mClientSocket[i]->handle, &exitCode);
-			ExitThread(exitCode);
+			//GetExitCodeThread(this->mClientSocket[i]->handle, &exitCode);
+			//ExitThread(exitCode);
 			CloseHandle(this->mClientSocket[i]->handle);
 			closesocket(this->mClientSocket[i]->sock);
 			SAFE_DELETE(this->mClientSocket[i]);
 		}
 	}
+	else closesocket(this->mServerSocket->sock);
 	WSACleanup();
 	SAFE_DELETE(this->mServerSocket);
 }
@@ -154,8 +155,13 @@ void ServerConnection::SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& Ex
 	}
 }
 
-void ServerConnection::Update()
+bool ServerConnection::Update()
 {
+	int a = ::WSAGetLastError();
+	if(a == 10054)
+	{
+		return false;
+	}
 	if(!this->mServer)
 	{
 		fd_set ReadFDs, WriteFDs, ExceptFDs;
@@ -177,7 +183,7 @@ void ServerConnection::Update()
 			}
 		}
 	}
-		
+	return true;
 }
 
 bool ServerConnection::GetReadBuffer(char* bufOut, const int size, const int clientIndex)

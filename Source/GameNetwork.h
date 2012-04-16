@@ -16,7 +16,7 @@ private:
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 
 	/*! Updates the client side, (updates LAN - variables). */
-	void				ClientUpdate();
+	bool				ClientUpdate();
 
 	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
@@ -55,7 +55,7 @@ public:
 	bool		IsKeyPressed(const char key, const int index) const;
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
-	void		Update(Ball** balls, int &numBalls);
+	bool		Update(Ball** balls, int &numBalls);
 
 	/*! Starts the game network. */
 	void		Start();

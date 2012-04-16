@@ -37,8 +37,9 @@ bool GameNetwork::IsKeyPressed(const char key, const int index) const
 {
 	return this->mKeyInputs[index][key];
 }
-void GameNetwork::ClientUpdate()
+bool GameNetwork::ClientUpdate()
 {
+	bool ret = true;
 	char bufW[256] = {0};
 
 	int offset = 0;
@@ -57,7 +58,7 @@ void GameNetwork::ClientUpdate()
 	this->mConn->SetWriteBuffer(bufW, 256, 0);
 
 
-	this->mConn->Update();
+	ret = this->mConn->Update();
 
 
 	char buf[256] = {0};
@@ -114,11 +115,12 @@ void GameNetwork::ClientUpdate()
 	
 	for(int a = 0; a < 256; a++)
 		this->mKeyInputs[this->mIndex][a] = false;
+
+	return ret;
 }
 
 void GameNetwork::ServerUpdate()
 {
-	this->mNumPlayers = this->mConn->GetNumConnections();
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
 	{
 
@@ -189,14 +191,24 @@ void GameNetwork::ServerUpdate()
 	}
 
 }
-void GameNetwork::Update(Ball**	balls, int &numBalls)
+bool GameNetwork::Update(Ball**	balls, int &numBalls)
 {
+	bool ret = true;
 	if(this->IsServer())
-	{
+	{	
+		if(this->mNumPlayers != this->mConn->GetNumConnections())
+		{
+			this->mNumPlayers = this->mConn->GetNumConnections();
+			for(int i = 0; i < this->mNumPlayers - 1; i++)
+			{
+				this->mPos[i] = this->mStartPositions[i];
+				balls[i]->SetPosition(this->mStartPositions[i]);
+			}
+		}
 		if(this->mConn->GetNumConnections() > 1)
 			this->ServerUpdate();
 	}
-	else this->ClientUpdate();
+	else ret = this->ClientUpdate();
 
 	if(!this->IsServer())
 	for(int i = 0; i < numBalls; i++)
@@ -207,6 +219,7 @@ void GameNetwork::Update(Ball**	balls, int &numBalls)
 		balls[i]->SetPosition(this->mPos[i]);
 	}
 
+	return ret;
 }
 void GameNetwork::Start()
 {
