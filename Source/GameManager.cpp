@@ -86,16 +86,19 @@ bool GameManager::Play(const int numPlayers)
 		// will be moved to phisics simulation class
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
+			Ball* b1 = this->mBalls[i];
 			for(int j = i+1; j < this->mNumPlayers; j++)
 			{
-				Ball* b1 = this->mBalls[i];
 				Ball* b2 = this->mBalls[j];
 				if(b1->collisionWithSphereSimple(b2))
 					b1->collisionSphereResponse(b2, diff);
 
 			}
+			// check ball[i] against platform
+			if(b1->collisionWithPlatformSimple(this->mPlatform))
+				b1->collisionPlatformResponse(this->mPlatform, diff);
 		}
-
+		
 		mPlatform->Update(diff*0.05);
 
 		if(numAlivePlayers <= 1)
@@ -153,10 +156,9 @@ bool GameManager::PlayLAN()
 					if(mGe->GetKeyListener()->IsPressed('S'))
 						mBalls[i]->AddForce(Vector3(0,0,-1));
 				}	
-
+				Ball* b1 = this->mBalls[i];
 				for(int j = i+1; j < this->mNumPlayers; j++)
 				{
-					Ball* b1 = this->mBalls[i];
 					Ball* b2 = this->mBalls[j];
 					if(b1->collisionWithSphereSimple(b2))
 						b1->collisionSphereResponse(b2, diff);
@@ -243,10 +245,14 @@ void GameManager::Initialize()
 	for(int i = 0; i < this->mNumPlayers; i++)
 	{
 		if( i == 0)
-			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,-5));
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-5));
 		else
-			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,14.7f,5));
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 	}
+	// wait until everything is loaded and then drop the balls from hight above
+	float diff = mGe->Update();
+	while(diff < 1000)
+		diff += mGe->Update();
 
 }
 
