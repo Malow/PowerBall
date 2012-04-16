@@ -1,3 +1,5 @@
+
+#include "stdafx.fx"
 #include "SSAO.fx"
 #include "Lava.fx"
 
@@ -43,25 +45,9 @@ BlendState SrcAlphaBlendingAdd
 // Input and Output Structures
 //-----------------------------------------------------------------------------------------
 
-struct Light
-{
-	float4 LightPosition;
-	float4 LightColor;
-	float LightIntensity;
-	matrix LightViewProj;
-};
 
-cbuffer EveryFrame
-{
-	matrix CameraVP;
-	float4 CameraPosition;
-	
-	float NrOfLights;
-	Light lights[10];
-	float SMAP_DX;
-	//float PCF_SIZE;
-	float PCF_SIZE_SQUARED;
-};
+
+
 
 struct VSIn
 {

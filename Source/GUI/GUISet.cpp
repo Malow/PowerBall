@@ -4,8 +4,8 @@
 GUISet::GUISet()
 {
 	this->mNrOfElements = 0;
-	this->mMaxNrOfElements = 20;
-	this->mElements = new Element*[mMaxNrOfElements];
+	this->mMaxNrOfElements = 30;
+	this->mElements = new Element*[this->mMaxNrOfElements];
 	for(int i = 0; i < this->mMaxNrOfElements; i++)
 		this->mElements[i] = NULL;
 }
@@ -14,10 +14,10 @@ GUISet::~GUISet()
 	if(this->mElements)
 	{
 		for(int i = 0; i < this->mNrOfElements; i++)
-			{
+		{
 			if(this->mElements[i])
-			delete this->mElements[i];
-			}
+				delete this->mElements[i];
+		}
 		delete [] this->mElements;
 	}
 }
@@ -234,7 +234,20 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY, bool mousePressed, 
 				}
 			}
 		}
+		else if(typeid(*this->mElements[i]) == typeid(DropDownList))
+		{
+			DropDownList* temp = (DropDownList*)this->mElements[i];
+			tempReturnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
+			if(tempReturnEvent != NULL)
+			{
+				if(tempReturnEvent->GetEventMessage() != "NoEvent")
+				{
+					returnEvent = tempReturnEvent;
+					break;
+				}
+			}
+		}
 	}
-
+	
 	return returnEvent;
 }

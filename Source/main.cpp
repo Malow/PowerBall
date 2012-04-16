@@ -20,6 +20,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 
+	
 	/*
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
@@ -34,9 +35,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
 	testLight->SetLookAt(testBall->GetPosition());
 	testLight2->SetLookAt(testBall->GetPosition());
-
 	//Text* text = eng->CreateText("LolAwesome", D3DXVECTOR2(300, 300), 20, "Media/Fonts/1.png");
-
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
@@ -52,7 +51,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveBackward(diff);
 	}
 	*/
-	
+
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu* mm = new MainMenu(ge);
 	mm->Run();

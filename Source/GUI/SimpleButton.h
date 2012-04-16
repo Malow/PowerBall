@@ -51,5 +51,5 @@ public:
 	virtual bool RemoveFromRenderer(GraphicsEngine* ge);
 
 	/*! Check if the mouse is inside the active area and returns an event if it is*/
-	GUIEvent* CheckCollision(float mouseX, float mouseYm, bool mousePressed, GraphicsEngine* ge);
+	GUIEvent* CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge);
 };
