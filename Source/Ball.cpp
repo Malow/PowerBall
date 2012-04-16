@@ -25,10 +25,10 @@ void Ball::Update(const float dt, Platform* platform)
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp.x, temp.y, temp.z);
 	Vector3 newPosition = oldPosition + mVelocity*dt;
-	
+	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
 		newPosition.y = 14.7f;	//oldPosition.y;
-	
+	*/
 	Vector3 direction = newPosition - oldPosition;
 	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
@@ -37,7 +37,7 @@ void Ball::Update(const float dt, Platform* platform)
 
 	this->Rotate(direction);
 	
-	Vector3 resAcc = this->mAcceleration*dt;
+	Vector3 resAcc = (this->mAcceleration + this->mSumAddedForce)*dt;
 	// F = ma <-> a = F/m 
 	resAcc += (this->mSumAddedForce / this->mMass );
 	Vector3 oldVelocity = this->mVelocity;
@@ -170,6 +170,7 @@ void Ball::collisionPlatformResponse(Platform* p, float dt)
 	Vector3 v2y = v2 - v2x;					// perpendicular vector 
 	
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
+	//this->AddForce(this->mAcceleration*(-1));
 	// use this line if the platform also has a speed.
 	//b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
 	return;
