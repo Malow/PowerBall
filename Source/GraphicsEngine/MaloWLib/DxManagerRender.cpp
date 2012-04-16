@@ -388,6 +388,7 @@ void DxManager::RenderDeferredPerPixel()
 
 	// Set lava-texture
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
+	this->Shader_DeferredLightning->SetResource("LavaHeightMap", this->LavaHeightMap);
 
 	this->Shader_DeferredLightning->Apply(0);
 
@@ -401,6 +402,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetResource("Position", NULL);
 	this->Shader_DeferredLightning->SetResource("Specular", NULL);
 	this->Shader_DeferredLightning->SetResource("LavaTexture", NULL);
+	this->Shader_DeferredLightning->SetResource("LavaHeightMap", NULL);
 	for(int i = 0; i < this->lights.size(); i++)
 	{
 		this->Shader_DeferredLightning->SetResourceAtIndex(i, "ShadowMap", NULL);
@@ -614,7 +616,7 @@ HRESULT DxManager::Render()
 	
 	this->RenderImages();
 
-	this->RenderAntiAliasing();
+	//this->RenderAntiAliasing();
 	
 
 	// Debugging:
