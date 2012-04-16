@@ -4,32 +4,36 @@
 GameNetwork::GameNetwork()
 {
 	this->mConn = new ServerConnection();
-	this->mPlayerCap = 5;
-	this->mPos = new D3DXVECTOR3[this->mPlayerCap];
-	this->mVel = new D3DXVECTOR3[this->mPlayerCap];
+	this->mPos = new D3DXVECTOR3[PLAYER_CAP];
+	this->mVel = new D3DXVECTOR3[PLAYER_CAP];
 	this->mIndex = 0;
+	this->mNumPlayers = 1;
+
+	//replace with MAP->GETSTARTPOSITIONS() ?
+	this->mStartPositions[0] = D3DXVECTOR3(3,14.7f,-5);
+	this->mStartPositions[1] = D3DXVECTOR3(3,14.7f,5);
+	this->mStartPositions[2] = D3DXVECTOR3(-3,14.7f,-5);
+	this->mStartPositions[3] = D3DXVECTOR3(-3,14.7f,5);
 }
 GameNetwork::~GameNetwork()
 {
-	delete this->mConn;
+	SAFE_DELETE(this->mConn);
+	SAFE_DELETE_ARRAY(this->mPos);
+	SAFE_DELETE_ARRAY(this->mVel);
 }
-D3DXVECTOR3 GameNetwork::GetPos(const int index)
-{
-	return this->mPos[index];
-}
-void GameNetwork::SetPos(D3DXVECTOR3 pos, int index)
+void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
 {
 	this->mPos[index] = pos;
 }
-void GameNetwork::SetVel(D3DXVECTOR3 vel, int index)
+void GameNetwork::SetVel(const D3DXVECTOR3 vel, const int index)
 {
 	this->mVel[index] = vel;
 }
-void GameNetwork::AddKeyInput(char key, bool down)
+void GameNetwork::AddKeyInput(const char key, const bool down)
 {
 	this->mKeyInputs[this->mIndex][key] = down;
 }
-bool GameNetwork::IsKeyPressed(char key, int index)
+bool GameNetwork::IsKeyPressed(const char key, const int index) const
 {
 	return this->mKeyInputs[index][key];
 }
@@ -37,33 +41,7 @@ void GameNetwork::ClientUpdate()
 {
 	char bufW[256] = {0};
 
-	float _x = this->mPos[this->mIndex].x;
-	float _y = this->mPos[this->mIndex].y;
-	float _z = this->mPos[this->mIndex].z;
-
 	int offset = 0;
-
-	memcpy(bufW+offset, &_x, sizeof (float));
-	offset += sizeof (float);
-
-	memcpy(bufW+offset, &_y, sizeof (float));
-	offset += sizeof (float);
-
-	memcpy(bufW+offset, &_z, sizeof (float));
-	offset += sizeof (float);
-	
-	_x = this->mVel[this->mIndex].x;
-	_y = this->mVel[this->mIndex].y;
-	_z = this->mVel[this->mIndex].z;
-
-	memcpy(bufW+offset, &_x, sizeof (float));
-	offset += sizeof (float);
-
-	memcpy(bufW+offset, &_y, sizeof (float));
-	offset += sizeof (float);
-
-	memcpy(bufW+offset, &_z, sizeof (float));
-	offset += sizeof (float);
 
 	char b = '0';
 	for(int i = 0; i < 256; i++)
@@ -115,9 +93,7 @@ void GameNetwork::ClientUpdate()
 			memcpy(&z, &buf[offset], sizeof (float));
 			offset += sizeof (float);
 
-			//float dist = D3DXVec3Length(&(D3DXVECTOR3(x, y, z) - this->mPos[index])); // lägg yill +1
-			//if(dist < 15)
-				this->mPos[index] = D3DXVECTOR3(x, y, z);
+			this->mPos[index] = D3DXVECTOR3(x, y, z);
 
 			x = 0;
 			y = 0;
@@ -138,13 +114,10 @@ void GameNetwork::ClientUpdate()
 	
 	for(int a = 0; a < 256; a++)
 		this->mKeyInputs[this->mIndex][a] = false;
-	//this->mConn->Update();
 }
 
 void GameNetwork::ServerUpdate()
 {
-
-	//this->mConn->Update();
 	this->mNumPlayers = this->mConn->GetNumConnections();
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
 	{
@@ -154,40 +127,8 @@ void GameNetwork::ServerUpdate()
 		{
 			for(int a = 0; a < 256; a++)
 				this->mKeyInputs[i][a] = false;
-			float x = 0;
-			float y = 0;
-			float z = 0;
+
 			int offset = 0;
-
-			memcpy(&x, &buf, sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&y, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&z, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			//float dist = D3DXVec3Length(&(D3DXVECTOR3(x, y, z) - this->mPos[i])); 
-			//if(dist < 15)
-				//this->mPos[i] = D3DXVECTOR3(x, y, z);
-		
-			x = 0;
-			y = 0;
-			z = 0;
-
-			memcpy(&x, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&y, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&z, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-		
-			//this->mVel[i] = D3DXVECTOR3(x, y, z);
-
-
 			char key = '0';
 			for(int a = 0; a < 5; a++)
 			{
@@ -246,21 +187,16 @@ void GameNetwork::ServerUpdate()
 
 		this->mConn->SetWriteBuffer(bufW, 256, a-1);
 	}
-		
-	//this->mConn->Update();
 
 }
 void GameNetwork::Update(Ball**	balls, int &numBalls)
 {
-
 	if(this->IsServer())
 	{
 		if(this->mConn->GetNumConnections() > 1)
 			this->ServerUpdate();
 	}
 	else this->ClientUpdate();
-	//this->mConn->Update();
-
 
 	if(!this->IsServer())
 	for(int i = 0; i < numBalls; i++)
@@ -274,11 +210,12 @@ void GameNetwork::Update(Ball**	balls, int &numBalls)
 }
 void GameNetwork::Start()
 {
-	for(int i = 0; i < this->mPlayerCap; i++)
+	for(int i = 0; i < PLAYER_CAP; i++)
 	{
 		for(int a = 0; a < 256; a++)
 			this->mKeyInputs[i][a]=false;
-		this->mPos[i] = D3DXVECTOR3(0,14.7f,0);
+
+		this->mPos[i] = this->mStartPositions[i];
 		this->mVel[i] = D3DXVECTOR3(0,0,0);
 	}
 	mConn->InitializeConnection();

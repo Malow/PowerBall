@@ -3,33 +3,67 @@
 #include "ServerConnection.h"
 #include "Ball.h"
 using namespace std;
+#define PLAYER_CAP 10
 class GameNetwork
 {
 private:
 	ServerConnection*	mConn;
-	int					mPlayerCap;
 	D3DXVECTOR3*		mPos;
 	D3DXVECTOR3*		mVel;
 	int					mIndex;
 	int					mNumPlayers;
-	bool				mKeyInputs[10][256];
+	bool				mKeyInputs[PLAYER_CAP][256];
+	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 
+	/*! Updates the client side, (updates LAN - variables). */
 	void				ClientUpdate();
+
+	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
-	D3DXVECTOR3 GetPos(const int index);
-	void		SetPos(D3DXVECTOR3 pos, int index);
-	void		SetVel(D3DXVECTOR3 vel, int index);
-	void		AddKeyInput(char key, bool down);
-	bool		IsKeyPressed(char key, int index);
-	void		Update(Ball** balls, int &numBalls);
-	void		Start();
-	void		SetIP(char ip[]);
-	bool		IsServer() const {return this->mConn->IsServer();}
+	
+	/*! Returns the start position on the map of the player with specified index. */
+	D3DXVECTOR3 GetStartPos(const int index) const {return this->mStartPositions[index];}
+
+	/*! Returns the position of the player with specified index. */
+	D3DXVECTOR3 GetPos(const int index) const { return this->mPos[index]; }
+	
+	/*! Returns the velocity of the player with specified index. */
+	D3DXVECTOR3 GetVel(const int index) const { return this->mVel[index]; }
+
+	/*! Returns the index that you is on the LAN. */
 	int			GetIndex() const {return this->mIndex;}
-	int			GetNumPlayers() const{return this->mNumPlayers;}
+
+	/*! Returns the number of players on the LAN. */
+	int			GetNumPlayers() const {return this->mNumPlayers;}
+
+	/*! Sets the position of the player with specified index. */
+	void		SetPos(const D3DXVECTOR3 pos, const int index);
+
+	/*! Sets the velocity of the player with specified index. */
+	void		SetVel(const D3DXVECTOR3 vel, const int index);
+	
+	/*! Sets the IP that the client will connect to. */
+	void		SetIP(char ip[]);
+
+	/*! For client: Sets the key to down/up which will be sent to server. */
+	void		AddKeyInput(const char key, const bool down);
+
+	/*! Returns true if the client is pressing the specified key. */
+	bool		IsKeyPressed(const char key, const int index) const;
+
+	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
+	void		Update(Ball** balls, int &numBalls);
+
+	/*! Starts the game network. */
+	void		Start();
+
+	/*! Returns true if you is the host. */
+	bool		IsServer() const {return this->mConn->IsServer();}
+
+	/*! Closes the game LAN. */
 	void		Close();
 
 };

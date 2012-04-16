@@ -133,7 +133,7 @@ bool MainMenu::Run()
 						{
 							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 							this->mGm = new GameManager(this->mGe);
-							//this->mGm->PlayLAN(1);
+							//this->mGm->PlayLAN();
 							this->mGm->Play(2);
 							SAFE_DELETE(this->mGm);
 							this->mCurrentSet = MAINMENU;
