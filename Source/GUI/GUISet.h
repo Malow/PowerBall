@@ -12,6 +12,7 @@
 #include "..\GraphicsEngine\GraphicsEngine.h"
 #include "GUIArchButton.h"
 #include "SimpleButton.h"
+#include "DropDownList.h"
 
 class GUISet
 {
