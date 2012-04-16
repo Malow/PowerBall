@@ -38,6 +38,9 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 	this->skybox = NULL;
 	this->Shader_Skybox = NULL;
 
+	this->ssao = NULL;
+	this->fxaa = NULL;
+
 	this->framecount = 0;
 	this->TriangleCount = 0;
 
@@ -86,6 +89,10 @@ DxManager::~DxManager()
 		delete this->skybox;
 	if(this->Shader_Skybox)
 		delete this->Shader_Skybox;
+
+	SAFE_DELETE(this->ssao);
+	SAFE_DELETE(this->fxaa);
+	SAFE_DELETE(this->Shader_Fxaa);
 
 	if(this->Dx_DeviceContext)
 		this->Dx_DeviceContext->Release();

@@ -384,7 +384,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
 	// Set SSAO settings
-	this->ssao.PreRender(this->Shader_DeferredLightning, this->params, this->camera);
+	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 
 	// Set lava-texture
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
@@ -407,7 +407,7 @@ void DxManager::RenderDeferredPerPixel()
 	}
 
 	// Unbind SSAO
-	this->ssao.PostRender(this->Shader_DeferredLightning);
+	this->ssao->PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
 }
@@ -508,7 +508,7 @@ void DxManager::RenderDeferredTexture()
 	this->Shader_DeferredTexture->SetResource("LightAccu", this->Dx_DeferredSRV);
 
 	// Set SSAO settings
-	this->ssao.PreRender(this->Shader_DeferredTexture, this->params, this->camera);
+	this->ssao->PreRender(this->Shader_DeferredTexture, this->params, this->camera);
 	this->Shader_DeferredTexture->Apply(0);
 
 	
@@ -523,7 +523,7 @@ void DxManager::RenderDeferredTexture()
 	this->Shader_DeferredTexture->SetResource("LightAccu", NULL);
 
 	// Unbind SSAO
-	this->ssao.PostRender(this->Shader_DeferredTexture);
+	this->ssao->PostRender(this->Shader_DeferredTexture);
 
 	this->Shader_DeferredTexture->Apply(0);
 }
@@ -567,6 +567,27 @@ void DxManager::RenderDeferredSkybox()
 	this->Shader_Skybox->Apply(0);
 }
 
+void DxManager::RenderAntiAliasing()
+{
+	if(!this->fxaa) return;
+
+	//set render target & depth stencil and viewport
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+
+	//set input assembler params
+	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//set shader variables & apply
+	this->fxaa->PreRender(this->Shader_Fxaa, this->params);
+
+	//draw quad (triangle strip)
+	this->Dx_DeviceContext->Draw(4, 0);
+
+	//unbind texture(s) (scene texture) used
+	this->fxaa->PostRender(this->Shader_Fxaa);
+}
+
 HRESULT DxManager::Render()
 {
 	this->RenderShadowMap();
@@ -593,6 +614,7 @@ HRESULT DxManager::Render()
 	
 	this->RenderImages();
 
+	this->RenderAntiAliasing();
 	
 
 	// Debugging:

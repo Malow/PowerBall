@@ -15,6 +15,7 @@
 #include "SSAO.h"
 #include "Text.h"
 #include "SkyBox.h"
+#include "FXAA.h"
 
 
 
@@ -105,7 +106,9 @@ private:
 	ID3D11ShaderResourceView* Dx_DeferredSRV;
 
 	
-	SSAO ssao;
+	SSAO* ssao;
+	FXAA* fxaa;
+	Shader* Shader_Fxaa;
 
 	void RenderForward();
 	void RenderDeferredGeometry();
@@ -116,6 +119,7 @@ private:
 	void RenderQuadDeferred();
 	void RenderDeferredTexture();
 	void RenderDeferredSkybox();
+	void RenderAntiAliasing();
 	
 	HRESULT Init();
 

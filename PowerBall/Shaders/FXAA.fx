@@ -27,7 +27,7 @@ DepthStencilState DisableDepth
     DepthEnable = FALSE;
     DepthWriteMask = ZERO;
 };
-SamplerState LinearSampler 
+SamplerState PointWrapSampler  //**
 {
 	Filter = MIN_MAG_MIP_LINEAR; 
 	AddressU = Wrap;
@@ -54,7 +54,7 @@ BlendState NoBlending
 //-----------------------------------------------------------------------------------------
 // Vertex shader
 //-----------------------------------------------------------------------------------------
-float4 VSScene(uint vertexID : SV_VertexID)
+float4 VSScene(uint vertexID : SV_VertexID) : SV_Position //PSIn VSScene(uint vertexID : SV_VertexID)
 {
 	float4 pos = float4(0,0,0,0);
 	//positions are in clip space [-1,1]
@@ -83,7 +83,11 @@ float4 VSScene(uint vertexID : SV_VertexID)
 //-----------------------------------------------------------------------------------------
 float4 PSScene(float4 pos : SV_Position) : SV_Target
 {	
-	float4 color = float4(0.0f, 1.0f, 1.0f, 1.0f);
+	uint width, height;
+	sceneTex.GetDimensions(width, height);
+
+	float2 texCoord = float2(pos.x / width, pos.y / height);
+	float4 color = sceneTex.Sample(PointWrapSampler, texCoord);
 
 	return color;
 }
