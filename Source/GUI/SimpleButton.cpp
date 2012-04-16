@@ -46,7 +46,7 @@ SimpleButton::SimpleButton(float x, float y, float z, string textureName, float 
 }
 GUIEvent* SimpleButton::CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge)
 {
-	if((mouseX < this->mActiveX || mouseX > (this->mActiveX+this->mActiveWidth)) || (mouseY < this->mActiveY || mouseY > (this->mActiveY+this->mActiveHeight))) // Outside
+	if((mouseX < this->mActiveX || mouseX > (this->mActiveX+this->mActiveWidth)) || (mouseY < this->mActiveY || mouseY > (this->mActiveY+this->mActiveHeight)))
 	{
 		this->mPressed = false;
 		if(this->mPressedImage != NULL)

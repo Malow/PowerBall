@@ -13,7 +13,8 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 }
 MainMenu::~MainMenu()
 {
-	SAFE_DELETE_ARRAY(this->mSets);
+	if(this->mSets)
+		delete [] this->mSets;
 }
 bool MainMenu::Initialize()
 {
@@ -38,14 +39,13 @@ bool MainMenu::Initialize()
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
 	/* Adding the buttons for the options menu*/
-
 	tempElement = new GUIArchButton(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbacktomenu.png", dx, windowHeight, new ChangeSetEvent(MAINMENU), "Media/clickbacktomenu.png" , "Media/mouseoverbacktomenu.png", dx * (18.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (325.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/clickgraphics.png", "Media/mouseovergraphics.png", dx * (42.0f / 1200) + offSet/*ActiveX*/, windowHeight * (198.0f / 900)/*ActiveY*/, dx * (197.0f / 1200)/*ActiveW*/, windowHeight * (30.0f / 900)/*ActiveH*/);
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/clickgraphics.png", "Media/mouseovergraphics.png", dx * (42.0f / 1200) + offSet, windowHeight * (198.0f / 900), dx * (197.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
@@ -53,8 +53,29 @@ bool MainMenu::Initialize()
 	
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-	
+
+
+	//Ugly drop down list to start with
+	tempElement = new DropDownList(0,0,1,"Media/DropDownMenu.png", 370, 141);
+	DropDownList* dropdownlist = (DropDownList*)tempElement;
+	for(int i = 0; i < 5; i++)
+	{
+		dropdownlist->AddButton(200, i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeSetEvent(MAINMENU), "Media/clickbasic.png", "Media/mouseoverbasic.png", offSet+100, i*31, 100, 30);
+	}
+	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
+	/*
+	if(elements)
+	{
+		for(int i = 0; i < 5; i++)
+		{
+			if(elements)
+				delete elements[i];
+		}
+		delete [] elements;
+	}
+	*/
 	tempElement = NULL;
+
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
 	
 	return true;
@@ -64,13 +85,11 @@ void MainMenu::UpdateMousePosition()
 	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float lengthFromMiddle = (windowHeight * 0.745f) / 3;
-	
-	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth / 2, windowHeight / 2);
 	D3DXVECTOR2 mouseVector = this->mGe->GetKeyListener()->GetMousePosition();
+	D3DXVECTOR2 centerVector = D3DXVECTOR2(windowWidth / 2, windowHeight / 2);
 	D3DXVECTOR2 centerToMouseVec = (centerVector - mouseVector);
 
-	
-	if(D3DXVec2Length(&centerToMouseVec) != lengthFromMiddle)
+	if(D3DXVec2Length(&centerToMouseVec) > lengthFromMiddle+1 || D3DXVec2Length(&centerToMouseVec) < lengthFromMiddle-1)
 	{
 		centerToMouseVec = (lengthFromMiddle / D3DXVec2Length(&centerToMouseVec)) * centerToMouseVec;
 		this->mGe->GetKeyListener()->SetMousePosition(centerVector + (centerToMouseVec * (-1)));
