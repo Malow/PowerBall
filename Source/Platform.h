@@ -15,6 +15,7 @@ private:
 	float	mShrink;
 	float	mRadius;
 	float   mScaledRadius;
+	float	mMass;
 
 public:
 	//constructors and destructors
@@ -39,6 +40,9 @@ public:
 	
 	/*! Returns the position of the platform in XZ plane */
 	Vector3 GetPositionXZ() const;
+
+	/*! Returns the mass of the platform. */
+	float GetMass() const { return this->mMass; }
 
 	/*! Returns the scaled radius */
 	float GetScaledRadius() const { return this->mScaledRadius; }
