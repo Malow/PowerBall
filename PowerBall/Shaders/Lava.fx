@@ -46,14 +46,14 @@ float4 Lava(float4 color, float4 pixelWorldPosition, float depth)
 		L = 0.0f;
 	}
 	*/
-	if(pixelWorldPosition.y < L + H)
+	if(pixelWorldPosition.y <= L + H)
 	{
 		float3 E = pixelWorldPosition.xyz - CameraPosition.xyz;
-		normalize(E);
-
+		E = normalize(E);
 
 		float4 W = float4(0, 1, 0, -L);
-		float t = (-L - dot(CameraPosition.xyz, W.xyz)) / dot(E, W.xyz);	/// Kanske fel
+		//float t = (L - dot(CameraPosition.xyz, W.xyz)) / dot(E, W.xyz);	/// Kanske fel
+		float t = (L - CameraPosition.y) / E.y; //billigare sätt att få fram t
 		float3 S = CameraPosition.xyz + t * E;
 
 		float height = 0.0f;
