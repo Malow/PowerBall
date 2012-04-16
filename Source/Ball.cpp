@@ -102,26 +102,6 @@ void Ball::collisionSphereResponse(Ball* b1, float dt)
 	float x2 = nColl.GetDotProduct(v2);		// factor in nColl dir
 	Vector3 v2x = nColl*x2;					// projetion done
 	Vector3 v2y = v2 - v2x;					// perpendicular vector 
-	/* 
-	
-	float m1, m2, x1, x2;
-	Vector3 v1temp, v1, v2, v1x, v2x, v1y, v2y, x(this->GetPositionVector3() - b1->GetPositionVector3());
-
-	x.normalize();
-	v1 = this->mVelocity;
-	x1 = x.GetDotProduct(v1); //this->GetPositionVector3().GetDotProduct(v1);
-	v1x = x * x1;
-	v1y = v1 - v1x;
-	m1 = this->mMass;
-	x = x*-1;
-	v2 = b1->mVelocity;
-	x2 = x.GetDotProduct(v2); //b1->GetPositionVector3().GetDotProduct(v2);
-	v2x = x * x2;
-	v2y = v2 - v2x;
-	m2 = b1->mMass;
-	this->mVelocity = Vector3( v1x*(m1-m2)/(m1+m2) + v2x*(2*m2)/(m1+m2) + v1y )*dt;
-	b1->mVelocity = Vector3( v1x*(2*m1)/(m1+m2) + v2x*(m2-m1)/(m1+m2) + v2y )*dt;
-	*/
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
 	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
 }
