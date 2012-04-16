@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
-//#include <winsock2.h>
+#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 256
@@ -48,6 +48,7 @@ public:
 
 	bool		GetReadBuffer(char* bufOut, int size, int clientIndex);
 	void		SetWriteBuffer(char* buf, int size, int clientIndex);
+	void		Close();
 
 	
 	static DWORD WINAPI		TalkToClient(void* param);

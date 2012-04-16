@@ -33,15 +33,9 @@ void Ball::Update(const float dt, Platform* platform)
 	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
 	this->GetMesh()->SetPosition(temp);
-	float angleRad = (direction.GetLength()/(2*PI*this->mRadius))*(180/PI);
 	temp = D3DXVECTOR3(direction.x, direction.y, direction.z);
-	//this->mMesh->Rotate(temp*angleRad);
 
-	Vector3 around = direction.GetCrossProduct(Vector3(0,1,0));
-	around.normalize();
-	D3DXVECTOR3 aroundD3D = D3DXVECTOR3(around.x, around.y, around.z);
-	angleRad = (direction.GetLength()/(2*PI*this->mRadius))*2*PI;
-	this->mMesh->RotateAxis(aroundD3D, angleRad);
+	this->Rotate(direction);
 	
 	Vector3 resAcc = this->mAcceleration*dt;
 	// F = ma <-> a = F/m 
@@ -63,7 +57,7 @@ bool Ball::IsAlive() const
 	bool alive = false;
 	D3DXVECTOR3 pos = this->mMesh->GetPosition();
 
-	if(pos.y > 0)
+	if(pos.y > -25)
 		alive = true;
 
 	return alive;
@@ -130,4 +124,14 @@ void Ball::collisionSphereResponse(Ball* b1, float dt)
 	*/
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
 	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
+}
+void Ball::Rotate(Vector3 direction)
+{
+	float angleRad = (direction.GetLength()/(2*PI*this->mRadius))*(180/PI);
+
+	Vector3 around = direction.GetCrossProduct(Vector3(0,1,0));
+	around.normalize();
+	D3DXVECTOR3 aroundD3D = D3DXVECTOR3(around.x, around.y, around.z);
+	angleRad = (direction.GetLength()/(2*PI*this->mRadius))*2*PI;
+	this->mMesh->RotateAxis(aroundD3D, angleRad);
 }

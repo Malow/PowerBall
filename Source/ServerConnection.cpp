@@ -29,9 +29,11 @@ ServerConnection::~ServerConnection()
 			ExitThread(exitCode);
 			CloseHandle(this->mClientSocket[i]->handle);
 			closesocket(this->mClientSocket[i]->sock);
+			delete this->mClientSocket[i];
 		}
 	}
 	WSACleanup();
+	delete this->mServerSocket;
 }
 void ServerConnection::SetIP(char ip[])
 {
@@ -308,11 +310,9 @@ void ServerConnection::SetWriteBuffer(char* buf, int size, int clientIndex)
 }
 DWORD WINAPI ServerConnection::TalkToClient(void* param)
 {
-	while(true)
+	Connection* conn = (Connection*)param;
+	while(conn->sock != INVALID_SOCKET)
 	{
-		Connection* conn = (Connection*)param;
-		
-
 		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
 		conn->numCharsInBuf += numBytes;
 		
@@ -335,9 +335,9 @@ DWORD WINAPI ServerConnection::TalkToClient(void* param)
 }
 DWORD WINAPI ServerConnection::TalkToServer(void* param)
 {
-	while(true)
+	Connection* conn = (Connection*)param;
+	while(conn->sock != INVALID_SOCKET)
 	{
-		Connection* conn = (Connection*)param;
 	
 		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
 		conn->numCharsInBuf += numBytes;
@@ -357,4 +357,19 @@ DWORD WINAPI ServerConnection::TalkToServer(void* param)
 		
 	}
 	return 0;
+}
+void ServerConnection::Close()
+{
+	//DisconnectEx(sock, NULL, 0, 0); // retrieve this function pointer with WSAIoctl(WSAID_DISCONNECTEX).
+	closesocket(this->mServerSocket->sock);
+	this->mServerSocket->sock = INVALID_SOCKET;
+	if(this->mServer)
+	{
+		for(int i = 0; i < this->mNumClients; i++)
+		{
+			closesocket(this->mClientSocket[i]->sock);
+			this->mClientSocket[i]->sock = INVALID_SOCKET;
+		}
+	}
+	WSACleanup();
 }

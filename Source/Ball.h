@@ -97,4 +97,7 @@ public:
 
 	/*! Sphere To Sphere Collision Response. */
 	void collisionSphereResponse(Ball* b1, float dt);
+
+	/*! Rotates the ball-mesh. */
+	void Rotate(Vector3 direction);
 };
