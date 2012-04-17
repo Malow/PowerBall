@@ -10,8 +10,8 @@ DropDownList::DropDownList(float x, float y, float z, string textureName, float 
 	: Element(x, y, z, textureName, width, height)
 {
 	// temp for testing
-	this->mActiveX = 0;
-	this->mActiveY = 0;
+	this->mActiveX = x;
+	this->mActiveY = y;
 	this->mActiveHeight = 50;
 	this->mActiveWidth = 50;
 	//////

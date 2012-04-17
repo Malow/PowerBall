@@ -56,24 +56,15 @@ bool MainMenu::Initialize()
 	*/
 
 	//Ugly drop down list to start with
-	tempElement = new DropDownList(0,0,1,"Media/DropDownMenu.png", 370, 141);
+	int dropX = 50, dropY = 50;
+	tempElement = new DropDownList(dropX,dropY,1,"Media/DropDownMenu.png", 370, 141);
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	for(int i = 0; i < 5; i++)
 	{
-		dropdownlist->AddButton(200, i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeResEvent(1200, 900), "Media/clickbasic.png", "Media/mouseoverbasic.png", offSet+100, i*31, 100, 30);
+		//Shall be changes later
+		dropdownlist->AddButton(dropX+200, dropY+i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeResEvent(1200, 900), "Media/clickbasic.png", "Media/mouseoverbasic.png", dropX+offSet+100, dropY+i*31, 100, 30);
 	}
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-	/*
-	if(elements)
-	{
-		for(int i = 0; i < 5; i++)
-		{
-			if(elements)
-				delete elements[i];
-		}
-		delete [] elements;
-	}
-	*/
 	tempElement = NULL;
 
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
@@ -110,8 +101,10 @@ bool MainMenu::Run()
 	float menuChangeTime = 0;
 	while(this->mGe->isRunning())
 	{
-		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
+		returnEvent = NULL;
 		dt = this->mGe->Update();
+		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
+
 		if(this->mCurrentSet == MAINMENU)
 		{
 			this->KeyBoardSteering(IsClicked);
@@ -137,135 +130,65 @@ bool MainMenu::Run()
 
 		if(!menuChange)
 		{
-			if(this->mCurrentSet == MAINMENU)
-			{
-				returnEvent = this->mSets[this->mCurrentSet].UpdateButtons(this->mGe, mousePressed);
+			D3DXVECTOR2 mousePos = this->mGe->GetKeyListener()->GetMousePosition();
+			returnEvent = this->mSets[this->mCurrentSet].UpdateAndCheckCollision(mousePos.x, mousePos.y, IsClicked, this->mGe);
 
-				if(returnEvent != NULL)
+			if(returnEvent != NULL)
+			{
+				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
 				{
-					if(returnEvent->GetEventMessage() == "ChangeSetEvent")
+					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
+					int tempEventSet = NULL;
+					tempReturnEvent->GetSet(tempEventSet);
+					if(tempEventSet == PLAY)
 					{
-						ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
-						int tempEventSet = NULL;
-						tempReturnEvent->GetSet(tempEventSet);
-						if(tempEventSet == PLAY)
-						{
-							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-							this->mGm = new GameManager(this->mGe);
-							//this->mGm->PlayLAN();
-							this->mGm->Play(2);
-							SAFE_DELETE(this->mGm);
-							this->mCurrentSet = MAINMENU;
-							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-						}
-						if(tempEventSet == EXIT)
-						{
-							SAFE_DELETE(this->mGm);
-							return true;
-						}
-						if(tempEventSet == OPTIONS_GAMEPLAY)
-						{
-							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-							this->mCurrentSet = OPTIONS_GAMEPLAY;
-							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-							menuChange = true;
-							menuChangeTime = 50;
-						}
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mGm = new GameManager(this->mGe);
+						//this->mGm->PlayLAN();
+						this->mGm->Play(2);
+						SAFE_DELETE(this->mGm);
+						this->mCurrentSet = MAINMENU;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
 					}
-					else if(returnEvent->GetEventMessage() == "ChangeResEvent")
+					else if(tempEventSet == EXIT)
 					{
-						ChangeResEvent* tempReturnEvent = (ChangeResEvent*)returnEvent;
-						int width = 0, height = 0;
-						/*
-						Make something that change res here
-						*/
+						SAFE_DELETE(this->mGm);
+						return true;
+					}
+					else if(tempEventSet == OPTIONS_GAMEPLAY)
+					{
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mCurrentSet = OPTIONS_GAMEPLAY;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						menuChange = true;
+						menuChangeTime = 50;
+					}
+					else if(tempEventSet == MAINMENU)
+					{
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mCurrentSet = MAINMENU;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						menuChange = true;
+						menuChangeTime = 50;
 					}
 				}
-			}
-			else if(this->mCurrentSet == OPTIONS_GAMEPLAY) 
-			{
-				D3DXVECTOR2 mousePos;
-				mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-				returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y, IsClicked, this->mGe);
-
-				if(returnEvent != NULL)
+				else if(returnEvent->GetEventMessage() == "ChangeResEvent")
 				{
-					if(returnEvent->GetEventMessage() == "ChangeSetEvent")
-					{
-						int whatSet;
-						ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
-						temp->GetSet(whatSet);
-						if(whatSet == MAINMENU)
-						{
-							this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-							this->mCurrentSet = MAINMENU;
-							this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-							menuChange = true;
-							menuChangeTime = 50;
-						}
-					}
+					ChangeResEvent* tempReturnEvent = (ChangeResEvent*)returnEvent;
+					int width = 0, height = 0;
+					width = tempReturnEvent->GetWidth();
+					height = tempReturnEvent->GetHeight();
+					/*
+					Make something that change res here
+					*/
 				}
 			}
-			returnEvent = NULL;
 		}
 		/*If mouse is not clicked*/
 		if(!IsClicked && mousePressed)
 		{
 			mousePressed = false;
 		}
-		/*if(this->mGe->GetKeyListener()->IsClicked(1))
-		{
-			this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-			this->mGm->Play(2);
-			delete this->mGm;
-			this->mGm = new GameManager(this->mGe);
-			this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-		}*/
-		/*if(this->mGe->GetKeyListener()->IsClicked(1))
-		{
-			D3DXVECTOR2 mousePos;
-			mousePos = this->mGe->GetKeyListener()->GetMousePosition();
-			returnEvent = this->mSets[this->mCurrentSet].CheckCollision(mousePos.x, mousePos.y);
-			if(returnEvent != NULL)
-			{
-				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
-				{
-					int whatSet;
-					ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
-					temp->GetSet(whatSet);
-					if(whatSet == PLAY)
-					{
-						this->mSets[BACKGROUND].RemoveSetFromRenderer(this->mGe);
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mGm->Play(2);
-						this->mCurrentSet = 0;
-					}
-					if(whatSet == QUIT)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						return false;
-					}
-					if(whatSet == OPTIONS)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = OPTIONS;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-					if(whatSet == MAINMENU)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = MAINMENU;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-					if(whatSet == CREDIT)
-					{
-						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-						this->mCurrentSet = CREDIT;
-						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
-					}
-				}
-			}
-		}*/
 		else
 		{
 			menuChangeTime = menuChangeTime - dt;

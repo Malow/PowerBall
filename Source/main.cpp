@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MainMenu.h"
 #include "GraphicsEngine.h"
+#include "InGameMenu.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
@@ -51,12 +52,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveBackward(diff);
 	}
 	*/
-
 	// Create the MainMenu and send the graphics engine, and then run Run();
+	
 	MainMenu* mm = new MainMenu(ge);
 	mm->Run();
-
-	
 	delete mm;
 	// Delete graphics engine
 	delete ge;
