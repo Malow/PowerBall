@@ -100,6 +100,7 @@ bool MainMenu::Run()
 	float menuChangeTime = 0;
 	while(this->mGe->isRunning())
 	{
+		
 		returnEvent = NULL;
 		dt = this->mGe->Update();
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
@@ -197,9 +198,8 @@ bool MainMenu::Run()
 				menuChange = false;
 			}
 		}
-		
 	}
-
+	
 	return true;
 }
 
