@@ -21,12 +21,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 
-	
 	/*
+	//#define LOLTEST
+	#ifdef LOLTEST
+	
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
-	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, 0));
-	eng->GetCamera()->LookAt(D3DXVECTOR3(10, 10, 10));
+	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
+	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
 	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	Mesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
@@ -48,9 +50,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveForward(diff);
 		if(eng->GetKeyListener()->IsPressed(VK_RETURN))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
 			eng->GetCamera()->moveLeft(diff);
+		if(eng->GetKeyListener()->IsPressed('A'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
+			eng->GetCamera()->moveLeft(diff);
+		if(eng->GetKeyListener()->IsPressed('S'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
+			eng->GetCamera()->moveBackward(diff);
+		if(eng->GetKeyListener()->IsPressed('D'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
+			eng->GetCamera()->moveRight(diff);
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
 	}
+	
+	#endif
 	*/
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	

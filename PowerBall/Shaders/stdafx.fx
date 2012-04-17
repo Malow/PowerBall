@@ -25,6 +25,8 @@ cbuffer EveryFrame
 	float SMAP_DX;
 	//float PCF_SIZE;
 	float PCF_SIZE_SQUARED;
+
+	float timer;
 };
 
 #endif

@@ -24,7 +24,7 @@ class FXAA
 
 		UINT GetPreset() const;
 
-		/*! Set preset. Range is 0-6. If out of range preset is set to 0. */
+		/*! Set preset. Range is 0-6. If out of range preset is set to 0 (No FXAA). */
 		void SetPreset(UINT preset);
 
 		/*! Sets all FXAA settings to the shader. */

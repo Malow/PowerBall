@@ -2,8 +2,8 @@
 //	Post-process effect: Fast Approximate Anti-Aliasing (FXAA).
 //	Reduces all aliasing while maintaining sharpness at a low cost.	
 //	Requirements: Scene buffer as input texture.
+//	Notes: This is a stripped and slightly modified version of the one provided by NVIDIA. **
 //-----------------------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------------------
 // Global variables
@@ -15,23 +15,28 @@ Texture2D sceneTex;
 //-----------------------------------------------------------------------------------------
 cbuffer PerFrame
 {
-	uint FXAA_PRESET;
+	uint FXAAPreset;
 	float4 rcpFrame;
 };
 
 //-----------------------------------------------------------------------------------------
-// State structures **
+// State structures 
 //-----------------------------------------------------------------------------------------
 DepthStencilState DisableDepth
 {
     DepthEnable = FALSE;
     DepthWriteMask = ZERO;
 };
-SamplerState PointWrapSampler  //**
+SamplerState AnisotropicSampler 
 {
-	Filter = MIN_MAG_MIP_LINEAR; 
-	AddressU = Wrap;
-	AddressV = Wrap;
+	Filter = ANISOTROPIC;
+	AddressU = Clamp;
+	AddressV = Clamp;
+	AddressW = Clamp;
+	MaxAnisotropy = 4;
+	ComparisonFunc = ALWAYS;
+	MaxLOD = 0.0f;
+	MinLOD = 0.0f;
 };
 RasterizerState NoCulling
 {
@@ -50,14 +55,137 @@ BlendState NoBlending
     RenderTargetWriteMask[0] = 0x0F;
 };
 
+//-----------------------------------------------------------------------------------------
+// Other structures 
+//-----------------------------------------------------------------------------------------
+struct FxaaTex 
+{ 
+	SamplerState smpl; 
+	Texture2D tex; 
+};
+
+//-----------------------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------------------
+float3 FxaaToFloat3(float a)
+{
+	return float3(a, a, a);
+}
+float4 FxaaTexLod0(FxaaTex tex, float2 pos) 
+{
+	return tex.tex.SampleLevel(tex.smpl, pos.xy, 0.0);
+}
+float4 FxaaTexGrad(FxaaTex tex, float2 pos, float2 grad) 
+{
+    return tex.tex.SampleGrad(tex.smpl, pos.xy, grad, grad);
+}
+float4 FxaaTexOff(FxaaTex tex, float2 pos, int2 off, float2 rcpFrame) 
+{
+    return tex.tex.SampleLevel(tex.smpl, pos.xy, 0.0, off.xy);
+}
+float FxaaLuma(float3 rgb) 
+{
+    return rgb.y * (0.587/0.299) + rgb.x; 
+} 
+float3 FxaaLerp3(float3 a, float3 b, float amountOfA) 
+{
+	return (FxaaToFloat3(-amountOfA) * b) + ((a * FxaaToFloat3(amountOfA)) + b); 
+} 
+
+void SetSettings(uint preset)
+{ 
+	switch(preset)
+	{
+		case 1:
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/4.0)
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/12.0)
+			#define FXAA_SEARCH_STEPS        2
+			#define FXAA_SEARCH_ACCELERATION 4
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
+			#define FXAA_SUBPIX              1
+			#define FXAA_SUBPIX_FASTER       1
+			#define FXAA_SUBPIX_CAP          (2.0/3.0)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
+		}
+		break;
+		case 2:
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/16.0)
+			#define FXAA_SEARCH_STEPS        4
+			#define FXAA_SEARCH_ACCELERATION 3
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
+			#define FXAA_SUBPIX              1
+			#define FXAA_SUBPIX_FASTER       0
+			#define FXAA_SUBPIX_CAP          (3.0/4.0)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
+		}
+		break;
+		case 3:
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
+			#define FXAA_SEARCH_STEPS        8
+			#define FXAA_SEARCH_ACCELERATION 2
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
+			#define FXAA_SUBPIX              1
+			#define FXAA_SUBPIX_FASTER       0
+			#define FXAA_SUBPIX_CAP          (3.0/4.0)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
+		}
+		break;
+		case 4:
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
+			#define FXAA_SEARCH_STEPS        16
+			#define FXAA_SEARCH_ACCELERATION 1
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
+			#define FXAA_SUBPIX              1
+			#define FXAA_SUBPIX_FASTER       0
+			#define FXAA_SUBPIX_CAP          (3.0/4.0)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
+		}
+		break;
+		case 5:
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
+			#define FXAA_SEARCH_STEPS        24
+			#define FXAA_SEARCH_ACCELERATION 1
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
+			#define FXAA_SUBPIX              1
+			#define FXAA_SUBPIX_FASTER       0
+			#define FXAA_SUBPIX_CAP          (3.0/4.0)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
+		}
+		break;
+		case 6: 
+		{
+			#define FXAA_EDGE_THRESHOLD      (1.0/16.0) //overkill
+			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/32.0) //visible limit
+			#define FXAA_SEARCH_STEPS        32			//maximum number of search steps
+			#define FXAA_SEARCH_ACCELERATION 1			//no acceleration (using anisotropic filtering)
+			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)	//seems to be best quality
+			#define FXAA_SUBPIX              2			//full force (ignore FXAA_SUBPIX_TRIM and CAP)
+			#define FXAA_SUBPIX_FASTER       0			//do not use 
+			#define FXAA_SUBPIX_CAP          (3.0/4.0)	//overriden (ignored)
+			#define FXAA_SUBPIX_TRIM         (1.0/4.0)	//overriden (ignored)
+		}
+		break;
+	};
+
+	#define FXAA_SUBPIX_TRIM_SCALE (1.0/(1.0 - FXAA_SUBPIX_TRIM))
+}
 
 //-----------------------------------------------------------------------------------------
 // Vertex shader
 //-----------------------------------------------------------------------------------------
-float4 VSScene(uint vertexID : SV_VertexID) : SV_Position //PSIn VSScene(uint vertexID : SV_VertexID)
+float4 VSScene(uint vertexID : SV_VertexID) : SV_Position
 {
-	float4 pos = float4(0,0,0,0);
-	//positions are in clip space [-1,1]
+	float4 pos = float4(0,0,0,0); //positions are in clip space [-1,1]
+	
 	if(vertexID == 0)
 	{
 		pos = float4(-1.0f, 1.0f, 0.0f, 1.0f);
@@ -78,197 +206,16 @@ float4 VSScene(uint vertexID : SV_VertexID) : SV_Position //PSIn VSScene(uint ve
 	return pos;
 }
 
-//-----------------------------------------------------------------------------------------
-// Pixel Shader
-//-----------------------------------------------------------------------------------------
-float4 PSScene(float4 pos : SV_Position) : SV_Target
-{	
-	uint width, height;
-	sceneTex.GetDimensions(width, height);
-
-	float2 texCoord = float2(pos.x / width, pos.y / height);
-	float4 color = sceneTex.Sample(PointWrapSampler, texCoord);
-
-	return color;
-}
-
-
-//-----------------------------------------------------------------------------------------
-// Technique
-//-----------------------------------------------------------------------------------------
-technique10 FXAATech
-{
-    pass p0
-    {
-        SetVertexShader(CompileShader(vs_4_0, VSScene()));
-		SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_4_0, PSScene()));
-       
-	    SetRasterizerState(NoCulling);
-	    SetDepthStencilState(DisableDepth, 0);
-		SetBlendState(NoBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
-    }  
-}
-
-
-
-
-
-
-
-
-/*
-//#define FXAA_HLSL_4 1 //**0?**
-
-//#if FXAA_HLSL_4
-#define FxaaInt2 int2
-#define FxaaFloat2 float2
-#define FxaaFloat3 float3
-#define FxaaFloat4 float4
-#define FxaaBool2Float(a) (a) //**anv. inte**
-#define FxaaPow3(x, y) pow(x, y)
-#define FxaaSel3(f, t, b) ((f)*(!b) + (t)*(b))
-struct FxaaTex 
-{ 
-	SamplerState smpl; 
-	Texture2D tex; 
-};
-//#endif
-#define FxaaToFloat3(a) FxaaFloat3((a), (a), (a))
-
-
-
-//**functions**
-float4 FxaaTexLod0(FxaaTex tex, float2 pos) 
-{
-	return tex.tex.SampleLevel(tex.smpl, pos.xy, 0.0);
-}
-
-float4 FxaaTexGrad(FxaaTex tex, float2 pos, float2 grad) 
-{
-    return tex.tex.SampleGrad(tex.smpl, pos.xy, grad, grad);
-}
-
-float4 FxaaTexOff(FxaaTex tex, float2 pos, int2 off, float2 rcpFrame) 
-{
-    return tex.tex.SampleLevel(tex.smpl, pos.xy, 0.0, off.xy);
-}
-
-//#ifndef FXAA_PRESET
-//    #define FXAA_PRESET 3 //**cpu-variabel?**
-//#endif
-
-#if (FXAA_PRESET == 0)
-    #define FXAA_EDGE_THRESHOLD      (1.0/4.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/12.0)
-    #define FXAA_SEARCH_STEPS        2
-    #define FXAA_SEARCH_ACCELERATION 4
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       1
-    #define FXAA_SUBPIX_CAP          (2.0/3.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#if (FXAA_PRESET == 1)
-    #define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/16.0)
-    #define FXAA_SEARCH_STEPS        4
-    #define FXAA_SEARCH_ACCELERATION 3
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       0
-    #define FXAA_SUBPIX_CAP          (3.0/4.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#if (FXAA_PRESET == 2)
-    #define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-    #define FXAA_SEARCH_STEPS        8
-    #define FXAA_SEARCH_ACCELERATION 2
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       0
-    #define FXAA_SUBPIX_CAP          (3.0/4.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#if (FXAA_PRESET == 3)
-    #define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-    #define FXAA_SEARCH_STEPS        16
-    #define FXAA_SEARCH_ACCELERATION 1
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       0
-    #define FXAA_SUBPIX_CAP          (3.0/4.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#if (FXAA_PRESET == 4)
-    #define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-    #define FXAA_SEARCH_STEPS        24
-    #define FXAA_SEARCH_ACCELERATION 1
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       0
-    #define FXAA_SUBPIX_CAP          (3.0/4.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#if (FXAA_PRESET == 5) //*upperlimit***höja/sänka värden, göra tester/vis skillnader**
-    #define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-    #define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-    #define FXAA_SEARCH_STEPS        32
-    #define FXAA_SEARCH_ACCELERATION 1
-    #define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-    #define FXAA_SUBPIX              1
-    #define FXAA_SUBPIX_FASTER       0
-    #define FXAA_SUBPIX_CAP          (3.0/4.0)
-    #define FXAA_SUBPIX_TRIM         (1.0/4.0)
-#endif
-
-#define FXAA_SUBPIX_TRIM_SCALE (1.0/(1.0 - FXAA_SUBPIX_TRIM))
-
-//**functions**
-float FxaaLuma(float3 rgb) 
-{
-    return rgb.y * (0.587/0.299) + rgb.x; 
-} 
-
-float3 FxaaLerp3(float3 a, float3 b, float amountOfA) 
-{
-	return (FxaaToFloat3(-amountOfA) * b) + ((a * FxaaToFloat3(amountOfA)) + b); 
-} 
-
-float3 FxaaFilterReturn(float3 rgb)  //**
-{
-    return rgb;
-}
-
-//------------------------------------------------------------------------------------------------------
-//	Vertex Shader
-//------------------------------------------------------------------------------------------------------
-float2 FxaaVertexShader(float2 inPos) 
-{
-    float2 pos;
-    pos.xy = (inPos.xy * FxaaFloat2(0.5, 0.5)) + FxaaFloat2(0.5, 0.5);
-    
-	return pos; 
-}  
-
 //------------------------------------------------------------------------------------------------------
 //	Pixel Shader function
 //------------------------------------------------------------------------------------------------------
 float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame) 
 {
-    float3 rgbN = FxaaTexOff(tex, pos.xy, FxaaInt2( 0,-1), rcpFrame).xyz;
-    float3 rgbW = FxaaTexOff(tex, pos.xy, FxaaInt2(-1, 0), rcpFrame).xyz;
-    float3 rgbM = FxaaTexOff(tex, pos.xy, FxaaInt2( 0, 0), rcpFrame).xyz;
-    float3 rgbE = FxaaTexOff(tex, pos.xy, FxaaInt2( 1, 0), rcpFrame).xyz;
-    float3 rgbS = FxaaTexOff(tex, pos.xy, FxaaInt2( 0, 1), rcpFrame).xyz;
+    float3 rgbN = FxaaTexOff(tex, pos.xy, int2(0,-1), rcpFrame).xyz;
+    float3 rgbW = FxaaTexOff(tex, pos.xy, int2(-1, 0), rcpFrame).xyz;
+    float3 rgbM = FxaaTexOff(tex, pos.xy, int2( 0, 0), rcpFrame).xyz;
+    float3 rgbE = FxaaTexOff(tex, pos.xy, int2( 1, 0), rcpFrame).xyz;
+    float3 rgbS = FxaaTexOff(tex, pos.xy, int2( 0, 1), rcpFrame).xyz;
     float lumaN = FxaaLuma(rgbN);
     float lumaW = FxaaLuma(rgbW);
     float lumaM = FxaaLuma(rgbM);
@@ -279,7 +226,7 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
     float range = rangeMax - rangeMin;
  
     if(range < max(FXAA_EDGE_THRESHOLD_MIN, rangeMax * FXAA_EDGE_THRESHOLD)) {
-        return FxaaFilterReturn(rgbM); }
+        return rgbM; }
     #if FXAA_SUBPIX > 0
         #if FXAA_SUBPIX_FASTER
             float3 rgbL = (rgbN + rgbW + rgbE + rgbS + rgbM) * 
@@ -302,10 +249,10 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
         float blendL = rangeL / range; 
     #endif
     
-    float3 rgbNW = FxaaTexOff(tex, pos.xy, FxaaInt2(-1,-1), rcpFrame).xyz;
-    float3 rgbNE = FxaaTexOff(tex, pos.xy, FxaaInt2( 1,-1), rcpFrame).xyz;
-    float3 rgbSW = FxaaTexOff(tex, pos.xy, FxaaInt2(-1, 1), rcpFrame).xyz;
-    float3 rgbSE = FxaaTexOff(tex, pos.xy, FxaaInt2( 1, 1), rcpFrame).xyz;
+    float3 rgbNW = FxaaTexOff(tex, pos.xy, int2(-1,-1), rcpFrame).xyz;
+    float3 rgbNE = FxaaTexOff(tex, pos.xy, int2( 1,-1), rcpFrame).xyz;
+    float3 rgbSW = FxaaTexOff(tex, pos.xy, int2(-1, 1), rcpFrame).xyz;
+    float3 rgbSE = FxaaTexOff(tex, pos.xy, int2( 1, 1), rcpFrame).xyz;
     #if (FXAA_SUBPIX_FASTER == 0) && (FXAA_SUBPIX > 0)
         rgbL += (rgbNW + rgbNE + rgbSW + rgbSE);
         rgbL *= FxaaToFloat3(1.0/9.0);
@@ -346,30 +293,30 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
 
     float2 posP = posN;
     float2 offNP = horzSpan ? 
-        FxaaFloat2(rcpFrame.x, 0.0) :
-        FxaaFloat2(0.0f, rcpFrame.y); 
+        float2(rcpFrame.x, 0.0) :
+        float2(0.0f, rcpFrame.y); 
     float lumaEndN = lumaN;
     float lumaEndP = lumaN;
     bool doneN = false;
     bool doneP = false;
     #if FXAA_SEARCH_ACCELERATION == 1
-        posN += offNP * FxaaFloat2(-1.0, -1.0);
-        posP += offNP * FxaaFloat2( 1.0,  1.0);
+        posN += offNP * float2(-1.0, -1.0);
+        posP += offNP * float2( 1.0,  1.0);
     #endif
     #if FXAA_SEARCH_ACCELERATION == 2
-        posN += offNP * FxaaFloat2(-1.5, -1.5);
-        posP += offNP * FxaaFloat2( 1.5,  1.5);
-        offNP *= FxaaFloat2(2.0, 2.0);
+        posN += offNP * float2(-1.5, -1.5);
+        posP += offNP * float2( 1.5,  1.5);
+        offNP *= float2(2.0, 2.0);
     #endif
     #if FXAA_SEARCH_ACCELERATION == 3
-        posN += offNP * FxaaFloat2(-2.0, -2.0);
-        posP += offNP * FxaaFloat2( 2.0,  2.0);
-        offNP *= FxaaFloat2(3.0, 3.0);
+        posN += offNP * float2(-2.0, -2.0);
+        posP += offNP * float2( 2.0,  2.0);
+        offNP *= float2(3.0, 3.0);
     #endif
     #if FXAA_SEARCH_ACCELERATION == 4
-        posN += offNP * FxaaFloat2(-2.5, -2.5);
-        posP += offNP * FxaaFloat2( 2.5,  2.5);
-        offNP *= FxaaFloat2(4.0, 4.0);
+        posN += offNP * float2(-2.5, -2.5);
+        posP += offNP * float2( 2.5,  2.5);
+        offNP *= float2(4.0, 4.0);
     #endif
     for(int i = 0; i < FXAA_SEARCH_STEPS; i++) {
         #if FXAA_SEARCH_ACCELERATION == 1
@@ -406,50 +353,44 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
     float subPixelOffset = (0.5 + (dstN * (-1.0/spanLength))) * lengthSign;
 
 
-    float3 rgbF = FxaaTexLod0(tex, FxaaFloat2(
+    float3 rgbF = FxaaTexLod0(tex, float2(
         pos.x + (horzSpan ? 0.0 : subPixelOffset),
         pos.y + (horzSpan ? subPixelOffset : 0.0))).xyz;
     #if FXAA_SUBPIX == 0
-        return FxaaFilterReturn(rgbF); 
+        return rgbF; 
     #else        
-        return FxaaFilterReturn(FxaaLerp3(rgbL, rgbF, blendL)); 
+        return FxaaLerp3(rgbL, rgbF, blendL); 
     #endif
 }
 
-
-
-//cbuffer cbFxaa : register(b1) 
-//{ 
-//	float4 rcpFrame : packoffset(c0); 
-//};
-
-struct FxaaVS_Output 
-{  
-	float4 Pos : SV_POSITION;              
-    float2 Tex : TEXCOORD0; 
-};
-
-FxaaVS_Output FxaaVS(uint id : SV_VertexID) 
-{
-    FxaaVS_Output Output;
-
-    Output.Tex = float2((id << 1) & 2, id & 2);
-    Output.Pos = float4(Output.Tex * float2(2.0f, -2.0f) + float2(-1.0f, 1.0f), 0.0f, 1.0f);
-    
-	return Output; 
+//-----------------------------------------------------------------------------------------
+// Pixel Shader
+//-----------------------------------------------------------------------------------------
+float4 PSScene(float4 pos : SV_Position) : SV_Target
+{	
+	SetSettings(FXAAPreset);
+	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	uint width, height;
+	sceneTex.GetDimensions(width, height);
+	float2 texCoord = float2(pos.x / width, pos.y / height);
+	float4 color = float4(FxaaPixelShader(texCoord, tex, rcpFrame.xy), 1.0f);
+	
+	return color; 
 }
 
-SamplerState anisotropicSampler : register(s3);
-Texture2D	 inputTexture       : register(t0);
-
-//------------------------------------------------------------------------------------------------------
-//	Pixel Shader
-//------------------------------------------------------------------------------------------------------
-float4 FxaaPS(FxaaVS_Output Input) : SV_TARGET 
+//-----------------------------------------------------------------------------------------
+// Technique
+//-----------------------------------------------------------------------------------------
+technique10 FXAATech
 {
-	FxaaTex tex = { anisotropicSampler, inputTexture };
-
-	return float4(FxaaPixelShader(Input.Tex.xy, tex, rcpFrame.xy), 1.0f); 
+    pass p0
+    {
+        SetVertexShader(CompileShader(vs_4_0, VSScene()));
+		SetGeometryShader(NULL);
+        SetPixelShader(CompileShader(ps_4_0, PSScene()));
+       
+	    SetRasterizerState(NoCulling);
+	    SetDepthStencilState(DisableDepth, 0);
+		SetBlendState(NoBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+    }  
 }
-
-*/
