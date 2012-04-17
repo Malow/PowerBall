@@ -336,5 +336,8 @@
     <None Include="Shaders\SkyBox.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\stdafx.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

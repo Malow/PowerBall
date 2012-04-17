@@ -98,6 +98,12 @@ public:
 	/*! Sphere To Sphere Collision Response. */
 	void collisionSphereResponse(Ball* b1, float dt);
 
+	/*! Simple Collision Detection between Sphere and Platform. */
+	bool collisionWithPlatformSimple(Platform* p);
+
+	/*! Sphere To Planform Collision Response. */
+	void collisionPlatformResponse(Platform* p, float dt);
+
 	/*! Rotates the ball-mesh. */
 	void Rotate(Vector3 direction);
 };

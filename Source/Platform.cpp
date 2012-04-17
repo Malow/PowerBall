@@ -6,6 +6,7 @@ Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 	this->mShrink	     = 0.01f;
 	this->mRadius	     = 10.0f;
 	this->mScaledRadius  = this->mRadius;
+	this->mMass			 = 10000;
 	
 }
 Platform::~Platform()
