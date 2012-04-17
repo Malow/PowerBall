@@ -382,6 +382,7 @@ void DxManager::RenderDeferredPerPixel()
 	D3DXMATRIX vp = this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
+	this->Shader_DeferredLightning->SetFloat("timer", this->TimerAnimation);
 	
 	// Set SSAO settings
 	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
@@ -592,6 +593,14 @@ void DxManager::RenderAntiAliasing()
 
 HRESULT DxManager::Render()
 {
+	// Timer
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	float diff = (li.QuadPart - prevTimeStamp) / this->PCFreq;
+	this->prevTimeStamp = li.QuadPart;
+
+	this->TimerAnimation += diff / 1000.0f;
+
 	this->RenderShadowMap();
 
 	//this->RenderForward();

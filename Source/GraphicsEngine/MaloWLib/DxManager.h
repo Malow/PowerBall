@@ -111,6 +111,12 @@ private:
 	FXAA* fxaa;
 	Shader* Shader_Fxaa;
 
+	// Timer
+	float PCFreq;
+	__int64 prevTimeStamp;
+
+	float TimerAnimation;
+
 	void RenderForward();
 	void RenderDeferredGeometry();
 	void RenderDeferredPerPixel();

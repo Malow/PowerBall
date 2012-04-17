@@ -116,7 +116,7 @@ bool GameManager::PlayLAN()
 	bool running = true;
 
 	this->mNet = new GameNetwork();
-	this->mNet->SetIP("79.138.27.63");
+	this->mNet->SetIP("192.168.1.126");
 	this->mNet->Start();
 	this->mGe->Update();
 	

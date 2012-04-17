@@ -25,7 +25,7 @@ protected:
 	D3DXQUATERNION rotQuat;
 	D3DXVECTOR3 scale;
 	D3DXMATRIX worldMatrix;
-
+	
 public:
 	Mesh(D3DXVECTOR3 pos);
 	virtual ~Mesh();
@@ -45,7 +45,7 @@ public:
 	D3DXMATRIX GetWorldMatrix() { return this->worldMatrix; }
 	void RecreateWorldMatrix();
 	D3D_PRIMITIVE_TOPOLOGY GetTopology() const { return this->topology; }
-
+	
 	void LoadFromFile(string file);
 
 	MaloW::Array<MeshStrip*>* GetStrips() const { return this->strips; }
