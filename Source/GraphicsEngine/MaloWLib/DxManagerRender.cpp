@@ -573,6 +573,7 @@ void DxManager::RenderDeferredSkybox()
 void DxManager::RenderAntiAliasing()
 {
 	if(!this->fxaa) return;
+	if(!this->fxaa->GetPreset()) return; //return if preset is set to 0. (No FXAA).
 
 	//set render target & depth stencil and viewport
 	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
@@ -625,7 +626,7 @@ HRESULT DxManager::Render()
 	
 	this->RenderImages();
 
-	//this->RenderAntiAliasing();
+	this->RenderAntiAliasing();
 	
 
 	// Debugging:

@@ -372,6 +372,7 @@ HRESULT DxManager::Init()
 	this->ssao = new SSAO(8, 1.0f, 0.0f);
 	this->ssao->Init(this->Dx_Device, this->Dx_DeviceContext);
 	this->fxaa = new FXAA();
+	this->fxaa->SetPreset(6);
 	this->fxaa->Init(this->Dx_Device, this->Dx_DeviceContext, this->Dx_SwapChain);
 	this->Shader_Fxaa = new Shader();
 	this->Shader_Fxaa->Init(this->Dx_Device, this->Dx_DeviceContext, "Shaders/FXAA.fx", NULL, 0);

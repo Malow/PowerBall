@@ -26,7 +26,7 @@ UINT FXAA::GetPreset() const
 
 void FXAA::SetPreset(UINT preset)
 {
-	if(preset > -1 && preset < 7)
+	if(0 <= preset && preset <= 6)
 	{
 		this->mPreset = preset;
 	}
@@ -78,7 +78,7 @@ void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
 
 	//set shader variables
 	shader->SetResource("sceneTex", sceneSRV);
-	shader->SetInt("FXAA_PRESET", this->mPreset);
+	shader->SetInt("FXAAPreset", this->mPreset);
 	shader->SetFloat4("rcpFrame", D3DXVECTOR4(1.0f / engParams.windowWidth, 1.0f / engParams.windowHeight, 0.0f, 0.0f));
 	
 	//apply pass
