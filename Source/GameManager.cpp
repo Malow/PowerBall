@@ -108,7 +108,7 @@ bool GameManager::Play(const int numPlayers)
 	//returns to menu after some win/draw screen.
 	return true;
 }
-bool GameManager::PlayLAN()
+bool GameManager::PlayLAN(char ip[])
 {
 	this->~GameManager();
 	this->mNumPlayers = 0;
@@ -116,7 +116,7 @@ bool GameManager::PlayLAN()
 	bool running = true;
 
 	this->mNet = new GameNetwork();
-	this->mNet->SetIP("192.168.1.126");
+	this->mNet->SetIP(ip);
 	this->mNet->Start();
 	this->mGe->Update();
 	
@@ -164,7 +164,18 @@ bool GameManager::PlayLAN()
 						b1->collisionSphereResponse(b2, diff);
 
 				}
+
+				
+				// check ball[i] against platform
+				//if(b1->collisionWithPlatformSimple(this->mPlatform))
+					//b1->collisionPlatformResponse(this->mPlatform, diff);
+
+
 				this->mBalls[i]->Update(diff, this->mPlatform);
+				
+				if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
+					this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
+
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 				Vector3 vel = this->mBalls[i]->GetVelocity();
 				this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
@@ -190,11 +201,8 @@ bool GameManager::PlayLAN()
 
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
-			
-			
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
-			
 		}
 		//mPlatform->Update(diff*0.05);
 
