@@ -10,10 +10,10 @@ DropDownList::DropDownList(float x, float y, float z, string textureName, float 
 	: Element(x, y, z, textureName, width, height)
 {
 	// temp for testing
-	this->mActiveX = x;
-	this->mActiveY = y;
-	this->mActiveHeight = 50;
-	this->mActiveWidth = 50;
+	this->mActiveX = x+50;
+	this->mActiveY = y+30;
+	this->mActiveHeight = 24;
+	this->mActiveWidth = 24;
 	//////
 	this->mPressed = false;
 	this->mDropActive = false;
@@ -78,9 +78,22 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 				this->mDropActive = false;
 				this->RemoveListFromRenderer(ge);
 			}
+			for(int i = 0; i < this->mNrOfElements; i++)
+			{
+				if(typeid(*this->mElements[i]) == typeid(SimpleButton))
+				{
+					SimpleButton* temp = (SimpleButton*)this->mElements[i];
+					returnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
+					if(returnEvent != NULL)
+					{
+						/*Change positions here*/
+						return returnEvent;
+					}
+				}
+			}
 		}
 	}
-	else if(this->mDropActive)
+	if(this->mDropActive)
 	{
 		for(int i = 0; i < this->mNrOfElements; i++)
 		{
@@ -89,7 +102,11 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 				SimpleButton* temp = (SimpleButton*)this->mElements[i];
 				returnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
 				if(returnEvent != NULL)
+				{
+					/*Change positions here*/
 					return returnEvent;
+				}
+
 			}
 		}
 	}

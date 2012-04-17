@@ -56,14 +56,13 @@ bool MainMenu::Initialize()
 	*/
 
 	//Ugly drop down list to start with
-	int dropX = 50, dropY = 50;
-	tempElement = new DropDownList(dropX,dropY,1,"Media/DropDownMenu.png", 370, 141);
+	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/DropDownMenu.png", 300.0f, 60.0f);
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
-	for(int i = 0; i < 5; i++)
-	{
-		//Shall be changes later
-		dropdownlist->AddButton(dropX+200, dropY+i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeResEvent(1200, 900), "Media/clickbasic.png", "Media/mouseoverbasic.png", dropX+offSet+100, dropY+i*31, 100, 30);
-	}
+
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Options1920x1080.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "Media/PressedOptions1920x1080.png", "Media/MouseOverOptions1920x1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Options1680x1050.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/PressedOptions1680x1050.png", "Media/MouseOverOptions1680x1050.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	tempElement = NULL;
 
