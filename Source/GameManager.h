@@ -29,7 +29,7 @@ public:
 	bool		Play(const int numPlayers);
 
 	/*! Starts LAN game with the assigned amount of players. */
-	bool		PlayLAN();
+	bool		PlayLAN(char ip[]);
 
 private:
 

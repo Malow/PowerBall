@@ -108,7 +108,7 @@ bool GameManager::Play(const int numPlayers)
 	//returns to menu after some win/draw screen.
 	return true;
 }
-bool GameManager::PlayLAN()
+bool GameManager::PlayLAN(char ip[])
 {
 	this->~GameManager();
 	this->mNumPlayers = 0;
@@ -116,7 +116,7 @@ bool GameManager::PlayLAN()
 	bool running = true;
 
 	this->mNet = new GameNetwork();
-	this->mNet->SetIP("79.138.27.97");
+	this->mNet->SetIP(ip);
 	this->mNet->Start();
 	this->mGe->Update();
 	

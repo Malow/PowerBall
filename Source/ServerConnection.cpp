@@ -5,7 +5,7 @@ ServerConnection::ServerConnection()
 	WSADATA wsaData = {0};
 	WSAStartup(MAKEWORD(2,2), &wsaData);
 	this->mPort = 10000;
-	this->mIp = "127.0.0.1";
+	this->mIp = "123";
 	this->mServerSocket = new Connection(socket( AF_INET, SOCK_STREAM, IPPROTO_IP ));
 
     //u_long noBlocking = 1;
