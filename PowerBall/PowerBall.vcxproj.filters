@@ -149,6 +149,9 @@
     <ClCompile Include="..\Source\GraphicsEngine\FXAA.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -288,6 +291,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\FXAA.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\ChangeResEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
 #include "GUI\GUISet.h"
 #include "GUI\GUIEvent.h"
 #include "GUI\NoEvent.h"
+#include "GUI\ChangeResEvent.h"
 #include "GUI\ChangeSetEvent.h"
 #include "GameManager.h"
 #include "GraphicsEngine.h"

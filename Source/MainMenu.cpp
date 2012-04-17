@@ -50,17 +50,17 @@ bool MainMenu::Initialize()
 	
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-	
+	/*
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-
+	*/
 
 	//Ugly drop down list to start with
 	tempElement = new DropDownList(0,0,1,"Media/DropDownMenu.png", 370, 141);
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	for(int i = 0; i < 5; i++)
 	{
-		dropdownlist->AddButton(200, i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeSetEvent(MAINMENU), "Media/clickbasic.png", "Media/mouseoverbasic.png", offSet+100, i*31, 100, 30);
+		dropdownlist->AddButton(200, i*31, 1, "Media/PowerBall.png", 100, 30, new ChangeResEvent(1200, 900), "Media/clickbasic.png", "Media/mouseoverbasic.png", offSet+100, i*31, 100, 30);
 	}
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	/*
@@ -171,6 +171,14 @@ bool MainMenu::Run()
 							menuChange = true;
 							menuChangeTime = 50;
 						}
+					}
+					else if(returnEvent->GetEventMessage() == "ChangeResEvent")
+					{
+						ChangeResEvent* tempReturnEvent = (ChangeResEvent*)returnEvent;
+						int width = 0, height = 0;
+						/*
+						Make something that change res here
+						*/
 					}
 				}
 			}

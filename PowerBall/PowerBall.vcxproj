@@ -43,6 +43,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
+    <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\SSAO.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
+    <ClInclude Include="..\Source\GUI\ChangeResEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
