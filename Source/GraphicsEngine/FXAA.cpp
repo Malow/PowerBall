@@ -84,7 +84,7 @@ void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
 	//apply pass
 	shader->Apply(0);
 
-	//release **** 
+	//release
 	SAFE_RELEASE(backBufferTex); 
 	SAFE_RELEASE(sceneTex);
 	SAFE_RELEASE(backBufferRTV);
