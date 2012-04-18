@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
-//#include <winsock2.h>
+#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 256
