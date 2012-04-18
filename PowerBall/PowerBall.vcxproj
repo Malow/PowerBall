@@ -27,6 +27,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Buffer.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Camera.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManager.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerInit.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerRender.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="..\Source\MainMenu.cpp" />
     <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp" />
     <ClCompile Include="..\Source\MaloWLib\Process.cpp" />
+    <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
   </ItemGroup>
@@ -69,6 +71,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Buffer.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Camera.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManager.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDebugging.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.h" />
@@ -106,6 +109,7 @@
     <ClInclude Include="..\Source\MaloWLib\MaloWFileDebug.h" />
     <ClInclude Include="..\Source\MaloWLib\Process.h" />
     <ClInclude Include="..\Source\MaloWLib\Queue.h" />
+    <ClInclude Include="..\Source\MaloWLib\TCBSpline.h" />
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />
     <ClInclude Include="..\Source\stdafx.h" />
@@ -218,7 +222,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

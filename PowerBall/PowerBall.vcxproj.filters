@@ -155,6 +155,12 @@
     <ClCompile Include="..\Source\InGameMenu.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp">
+      <Filter>Other\MaloWLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -300,6 +306,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\InGameMenu.h">
       <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MaloWLib\TCBSpline.h">
+      <Filter>Other\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
