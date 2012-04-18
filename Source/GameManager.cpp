@@ -40,7 +40,7 @@ bool GameManager::Play(const int numPlayers)
 		
 
 		
-		diff *= 0.05f;
+		//diff *= 0.05f;
 		/* the move of ball 1 and ball 2 should be done using a 
 		*  timer that perhaps is set to only add force every 
 		*  intervall. so we don't get a jumpy motion of the 
@@ -48,15 +48,15 @@ bool GameManager::Play(const int numPlayers)
 		*/
 		// move ball 1
 		if(mGe->GetKeyListener()->IsPressed('A'))
-			mBalls[0]->AddForce(Vector3(-1,0,0));	
+			mBalls[0]->AddForce(Vector3(-10,0,0));	
 		if(mGe->GetKeyListener()->IsPressed('D'))
-			mBalls[0]->AddForce(Vector3(1,0,0));
+			mBalls[0]->AddForce(Vector3(10,0,0));
 		if(mGe->GetKeyListener()->IsPressed('W'))
-			mBalls[0]->AddForce(Vector3(0,0,1));	
+			mBalls[0]->AddForce(Vector3(0,0,10));	
 		if(mGe->GetKeyListener()->IsPressed('S'))
-			mBalls[0]->AddForce(Vector3(0,0,-1));
+			mBalls[0]->AddForce(Vector3(0,0,-10));
 		if(mGe->GetKeyListener()->IsClicked(2))
-			mBalls[0]->AddForce(Vector3(0,11,0));
+			mBalls[0]->AddForce(Vector3(0,90,0));
 
 		if(mGe->GetKeyListener()->IsPressed('P'))
 			mGe->GetCamera()->moveForward(diff);
@@ -65,13 +65,13 @@ bool GameManager::Play(const int numPlayers)
 
 		// move ball 2
 		if(mGe->GetKeyListener()->IsPressed('H'))
-			mBalls[1]->AddForce(Vector3(-1,0,0));	
+			mBalls[1]->AddForce(Vector3(-10,0,0));	
 		if(mGe->GetKeyListener()->IsPressed('K'))
-			mBalls[1]->AddForce(Vector3(1,0,0));
+			mBalls[1]->AddForce(Vector3(10,0,0));
 		if(mGe->GetKeyListener()->IsPressed('U'))
-			mBalls[1]->AddForce(Vector3(0,0,1));	
+			mBalls[1]->AddForce(Vector3(0,0,10));	
 		if(mGe->GetKeyListener()->IsPressed('J'))
-			mBalls[1]->AddForce(Vector3(0,0,-1));
+			mBalls[1]->AddForce(Vector3(0,0,-10));
 		
 
 		for(int i = 0; i < this->mNumPlayers; i++)
@@ -99,7 +99,7 @@ bool GameManager::Play(const int numPlayers)
 				b1->collisionPlatformResponse(this->mPlatform, diff);
 		}
 		
-		mPlatform->Update(diff*0.05);
+		mPlatform->Update(diff);
 
 		if(numAlivePlayers <= 1)
 			running = false;

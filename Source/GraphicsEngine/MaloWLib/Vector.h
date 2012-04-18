@@ -162,6 +162,10 @@ namespace MaloW
             y *= scalar;
             z *= scalar;
         }
+		float GetLengthSquared()
+		{
+			return this->GetDotProduct(*this);
+		}
 	};
 };
 

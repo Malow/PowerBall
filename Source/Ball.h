@@ -19,7 +19,9 @@ private:
 	Vector3		mSumAddedForce;
 	Vector3		mVelocity;
 	float		mMaxVelocity;
-	Vector3		mAcceleration; //insert physics.
+	Vector3		mAcceleration;
+	Vector3		mAcceleration2;//insert physics.
+	float		mRestitution;
 	//vector3	mForward;
 
 public:
@@ -71,6 +73,9 @@ public:
 	/*! Sets the position of the ball in world space. */
 	void SetPosition(const float x, const float y, const float z) { this->mMesh->SetPosition(D3DXVECTOR3(x,y,z)); }
 
+	/*! Sets the position of the ball in world space. */
+	void SetPosition(const Vector3 position) { this->mMesh->SetPosition(D3DXVECTOR3(position.x,position.y,position.z)); }
+
 	/*! Sets the balls current velocity. */
 	void SetVelocity(Vector3 vel) { this->mVelocity = vel; } 
 
@@ -90,7 +95,7 @@ public:
 	/*! Returns false if the position of the ball is outside the game field. */
 	bool IsAlive() const;
 	/*! Adds a force to this ball. */
-	void AddForce(const Vector3 &force) { this->mSumAddedForce += force; }
+	void AddForce(const Vector3 &force) { this->mSumAddedForce += force*0.05f; }
 
 	/*! Simple Collision Detection between Sphere and Sphere. */
 	bool collisionWithSphereSimple(Ball* b1);
@@ -106,4 +111,7 @@ public:
 
 	/*! Rotates the ball-mesh. */
 	void Rotate(Vector3 direction);
+
+	/*! Returns true if ray intersect triangle and u, v and time is saved. */
+	bool RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector3 p1, Vector3 p2, float &u, float &v, float &t);
 };
