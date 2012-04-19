@@ -3,7 +3,7 @@ InGameMenu::InGameMenu()
 {
 	this->mNrOfSets = 0;
 	this->mCurrentSet = 0;
-	this->mIsRunning = 0;
+	this->mIsRunning = false;
 
 	this->mSets = NULL;
 	this->mGe = NULL;
@@ -59,13 +59,13 @@ bool InGameMenu::Initialize()
 	*/
 	tempElement = NULL;
 
-	this->mSets[IGNBACKGROUND].AddSetToRenderer(this->mGe);
-	this->mSets[INGAMEMENU].AddSetToRenderer(this->mGe);
 
 	return true;
 }
 bool InGameMenu::Run()
 {
+	this->mSets[IGNBACKGROUND].AddSetToRenderer(this->mGe);
+	this->mSets[INGAMEMENU].AddSetToRenderer(this->mGe);
 	this->mIsRunning = true;
 	bool IsClicked = false;
 	bool mousePressed = false;
@@ -94,11 +94,15 @@ bool InGameMenu::Run()
 				temp->GetSet(whatSet);
 				if(whatSet == IGNQUIT)
 				{
+					
+					this->mSets[INGAMEMENU].RemoveSetFromRenderer(this->mGe);
 					this->mIsRunning = false;
 					return false;
 				}
 				if(whatSet == IGNRESUME)
 				{
+					
+					this->mSets[INGAMEMENU].RemoveSetFromRenderer(this->mGe);
 					this->mIsRunning = false;
 					return true;
 				}
@@ -121,6 +125,5 @@ bool InGameMenu::Run()
 			mousePressed = false;
 		}
 	}
-	
 	return true;
 }
