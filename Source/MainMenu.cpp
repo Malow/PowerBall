@@ -65,8 +65,6 @@ bool MainMenu::Initialize()
 
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	tempElement = NULL;
-
-	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
 	
 	return true;
 }
@@ -89,6 +87,7 @@ void MainMenu::UpdateMousePosition()
 
 bool MainMenu::Run()
 {
+	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
 	bool IsClicked = false;
 	ShowCursor(FALSE);
 	float dt;
@@ -97,8 +96,9 @@ bool MainMenu::Run()
 	GUIEvent *returnEvent = NULL;
 	bool menuChange = false;
 	bool mousePressed = false;
+	bool isRunning = true;
 	float menuChangeTime = 0;
-	while(this->mGe->isRunning())
+	while(isRunning)
 	{
 		
 		returnEvent = NULL;
@@ -144,8 +144,8 @@ bool MainMenu::Run()
 					{
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
-						//this->mGm->PlayLAN("79.138.27.56"); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
-						this->mGm->Play(2);
+						this->mGm->PlayLAN("127.0.0.1"); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
+						//this->mGm->Play(2);
 						SAFE_DELETE(this->mGm);
 						this->mCurrentSet = MAINMENU;
 						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
@@ -153,6 +153,7 @@ bool MainMenu::Run()
 					else if(tempEventSet == EXIT)
 					{
 						SAFE_DELETE(this->mGm);
+						isRunning = false;
 						return true;
 					}
 					else if(tempEventSet == OPTIONS_GAMEPLAY)

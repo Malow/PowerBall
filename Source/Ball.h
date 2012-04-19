@@ -95,7 +95,7 @@ public:
 	/*! Returns false if the position of the ball is outside the game field. */
 	bool IsAlive() const;
 	/*! Adds a force to this ball. */
-	void AddForce(const Vector3 &force) { this->mSumAddedForce += force*0.05f; }
+	void AddForce(const Vector3 &force) { this->mSumAddedForce += force*10.0f; }
 
 	/*! Simple Collision Detection between Sphere and Sphere. */
 	bool collisionWithSphereSimple(Ball* b1);

@@ -389,7 +389,6 @@ void DxManager::RenderDeferredPerPixel()
 
 	// Set lava-texture
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
-	this->Shader_DeferredLightning->SetResource("LavaHeightMap", this->LavaHeightMap);
 
 	this->Shader_DeferredLightning->Apply(0);
 

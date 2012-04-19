@@ -5,10 +5,10 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
-	this->mMaxVelocity	 = 3.0f;
-	this->mAcceleration	 = Vector3(0,-9.81f,0);
+	this->mMaxVelocity	 = 2.0f;
+	this->mAcceleration	 = Vector3(0,-9.81f * 50,0);
 	this->mAcceleration2 = Vector3(0,-0.981f,0);
-	this->mDamping		 = 0.999f; //0.995
+	this->mDamping		 = 0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
 	this->mRestitution   = 0.95f; //0.95f
@@ -24,11 +24,11 @@ Vector3 Ball::GetPositionXZ() const
 }
 void Ball::Update(const float dt, Platform* platform)
 {
-	float newdt = dt*0.05f;
+	float newdt = dt * 0.001f;
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp.x, temp.y, temp.z);
 
-	Vector3 newPosition = oldPosition + mVelocity*newdt;
+	Vector3 newPosition = oldPosition + mVelocity * newdt * 50;
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
 		newPosition.y = 14.7f;	//oldPosition.y;
@@ -41,16 +41,16 @@ void Ball::Update(const float dt, Platform* platform)
 
 	this->Rotate(direction);
 	
-	Vector3 resAcc = this->mAcceleration*newdt;
+	Vector3 resAcc = this->mAcceleration * newdt * 50;
 	// F = ma <-> a = F/m 
 	resAcc += (this->mSumAddedForce / this->mMass );
 	//resAcc += this->mSumAddedForce;
 	Vector3 oldVelocity = this->mVelocity;
-	this->mVelocity += resAcc*newdt;
-	/*
+	this->mVelocity += resAcc * newdt;
+	
 	if (this->mVelocity.GetLength() > this->mMaxVelocity )
 		this->mVelocity = oldVelocity;
-		*/
+		
 	// so that the ball will lose some force due to friction for example
 	this->mVelocity *= this->mDamping;
 
@@ -63,7 +63,7 @@ bool Ball::IsAlive() const
 	bool alive = false;
 	D3DXVECTOR3 pos = this->mMesh->GetPosition();
 
-	if(pos.y > -25)
+	if(pos.y > -6)
 		alive = true;
 
 	return alive;

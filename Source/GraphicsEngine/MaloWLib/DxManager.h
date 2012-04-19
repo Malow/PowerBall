@@ -79,7 +79,6 @@ private:
 	MaloW::Array<Text*> texts;
 
 	ID3D11ShaderResourceView* LavaTexture;
-	ID3D11ShaderResourceView* LavaHeightMap;
 	SkyBox* skybox;
 	Shader* Shader_Skybox;
 

@@ -35,7 +35,6 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 	this->Dx_DeferredQuadRT = NULL;
 	this->Dx_DeferredSRV = NULL;
 	this->LavaTexture = NULL;
-	this->LavaHeightMap = NULL;
 	this->skybox = NULL;
 	this->Shader_Skybox = NULL;
 
@@ -94,8 +93,6 @@ DxManager::~DxManager()
 
 	if(this->LavaTexture)
 		this->LavaTexture->Release();
-	if(this->LavaHeightMap)
-		this->LavaHeightMap->Release();
 
 	if(this->skybox)
 		delete this->skybox;

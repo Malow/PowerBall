@@ -116,7 +116,7 @@ namespace MaloW
 		{
 			Vector3 retVec;
 			retVec.x = this->y * vec.z - vec.y * this->z;
-			retVec.y = -(this->x * vec.z - vec.x * this->x);
+			retVec.y = -(this->x * vec.z - vec.x * this->z);
 			retVec.z = this->x * vec.y - vec.x * this->y;
 
 			return retVec;
