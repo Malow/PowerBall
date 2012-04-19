@@ -10,15 +10,17 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "Ball.h"
 #include "GraphicsEngine.h"
 #include "GameNetwork.h"
+#include "InGameMenu.h"
 
 class GameManager
 {
 private:
 	int				mNumPlayers;
 	Platform*		mPlatform;
-	Ball**			mBalls; //size = mNumPlayers (intialized in Initialize();)
+	Ball**			mBalls; 
 	GameNetwork*	mNet; 
 	GraphicsEngine* mGe;
+	InGameMenu*		mIGM;
 	Light*			mLights[5];
 public:
 	//constructors and destructors

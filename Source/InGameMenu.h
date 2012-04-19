@@ -9,7 +9,7 @@
 #include "GUI\GUIEvent.h"
 #include "GUI\NoEvent.h"
 #include "GUI\ChangeSetEvent.h"
-#include "GameManager.h"
+//#include "GameManager.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 

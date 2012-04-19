@@ -7,6 +7,7 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mBalls		= NULL;
 	this->mGe			= ge;
 	this->mNet			= NULL;
+	this->mIGM			= NULL;
 }
 GameManager::~GameManager()
 {
@@ -22,6 +23,7 @@ GameManager::~GameManager()
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
+	SAFE_DELETE(this->mIGM);
 }
 
 bool GameManager::Play(const int numPlayers)
@@ -72,6 +74,9 @@ bool GameManager::Play(const int numPlayers)
 			mBalls[1]->AddForce(Vector3(0,0,10));	
 		if(mGe->GetKeyListener()->IsPressed('J'))
 			mBalls[1]->AddForce(Vector3(0,0,-10));
+
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+			running = this->mIGM->Run();
 		
 
 		for(int i = 0; i < this->mNumPlayers; i++)
@@ -125,6 +130,9 @@ bool GameManager::PlayLAN(char ip[])
 	{
 		int numAlivePlayers = 0;
 		float diff = mGe->Update();	
+
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+			running = this->mIGM->Run();
 
 		if(this->mNet->IsServer())
 		{
@@ -246,6 +254,7 @@ void GameManager::Initialize()
 	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 20, 5));
 	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(5, 25, 0));
 	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-5, 25, 0));
+	this->mIGM			= new InGameMenu(this->mGe);
 
 	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 	this->mBalls		= new Ball*[this->mNumPlayers];
