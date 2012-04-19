@@ -1,5 +1,6 @@
 /*
 	Class for making smooth, adjustable splines (curves) along a set of controlpoints.
+	Todo: use src-tangent (continuity parameter) (GetPoint()) & if necessary delete src and and dest tangents in Clear()**
 */
 
 #pragma once

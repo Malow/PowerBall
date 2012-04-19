@@ -130,7 +130,7 @@ void CamRecording::Play()
 	if(this->mHasRecorded) 
 	{
 		this->mIsPlaying = true;
-		this->mPlayTime = (int)(((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) / 1000.0f); //** //** * this->mPlaySpeed**
+		this->mPlayTime = (int)((((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) / 1000.0f) * this->mPlaySpeed);
 	}
 	else
 	{
@@ -168,40 +168,37 @@ void CamRecording::Open(string fileName)
 
 	if(this->gDevice) //if rendering is used, initialize rendering
 	{
-		//CamRecording::InitDrawing(this->gDevice); **todo**
+		//CamRecording::InitDrawing(this->gDevice); todo**
 	}
 }
 
 void CamRecording::Update(float deltaTime)
 {
-	static float time = 0.0f; //**time**
+	static float time = 0.0f;
 
 	if(this->mIsRecording)
 	{
-		time += deltaTime; //**time**
-		if((int)(time * 1000.0f) % this->mInterval == 0)
+		time += deltaTime;
+		if((int)(time * 1000.0f) % this->mInterval == 0) //epsilon**
 		{
 			this->mCamPosSpline->AddControlPoint(this->gCamera->getPosition());
-			this->mCamAtSpline->AddControlPoint(this->gCamera->getForward()); //**
+			this->mCamAtSpline->AddControlPoint(this->gCamera->getForward()); //at?**
 		}
 	}
-	else if(this->mIsPlaying)
+	else if(this->mIsPlaying) //todo: disable camera input**
 	{
-		this->mCurrentPlayTime += (int)(deltaTime * 1000.0f); //**
+		this->mCurrentPlayTime += (int)(deltaTime * 1000.0f); 
 
 		if(this->mCurrentPlayTime < this->mPlayTime)
 		{
 			float t = (float)this->mCurrentPlayTime / (float)this->mPlayTime;
 			D3DXVECTOR3 pos, at;
 			pos = this->mCamPosSpline->GetPoint(t) + this->mPathOffset;
-			at = this->mCamAtSpline->GetPoint(t) - pos + this->mPathOffset; //**lookat**
+			at = this->mCamAtSpline->GetPoint(t) - pos + this->mPathOffset; //at?**
 			
 			D3DXVec3Normalize(&at, &at);
 			this->gCamera->setPosition(pos);
-			this->gCamera->setForward(at); //**
-		
-			//this->gCamera->Update();
-			//this->gCamera->Move(deltaTime);
+			this->gCamera->setForward(at); //at?**
 		}
 		else
 		{
@@ -211,33 +208,14 @@ void CamRecording::Update(float deltaTime)
 	}
 }
 
-
 /*
-void CamRecording::AddPosControlPoint(D3DXVECTOR3 pos)
-{
-	this->mCamPosSpline->AddControlPoint(pos);
-}
-void CamRecording::AddAtControlPoint(D3DXVECTOR3 at)
-{
-	this->mCamAtSpline->AddControlPoint(at);
-}
-
-D3DXVECTOR3 CamRecording::GetCamPos(float t) const
-{
-	return this->mCamPosSpline->GetPos(t);
-}
-D3DXVECTOR3 CamRecording::GetCamAt(float t) const
-{
-	return this->mCamAtSpline->GetPos(t);
-}
-
-void CamRecording::DrawPath(D3DXMATRIX worldViewProj, int nrOfPoints = -1)
+void CamRecording::Render(int nrOfPoints = -1)
 {
 	if(this->mNrOfVertices > 1)
 	{
 		UINT stride = 12;
 		UINT offset = 0;
-		this->mEffect->GetConstantBufferByName("cbPerFrame")->GetMemberByName("pf_WVP")->AsMatrix()->SetMatrix(worldViewProj);
+		this->mEffect->GetConstantBufferByName("cbPerFrame")->GetMemberByName("pf_WVP")->AsMatrix()->SetMatrix(viewProj);
 		this->gDevice->IASetInputLayout(this->mInputLayout);
 		this->gDevice->IASetVertexBuffers(0, 1, &this->mVertexBuffer, &stride, &offset);
 		this->gDevice->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);

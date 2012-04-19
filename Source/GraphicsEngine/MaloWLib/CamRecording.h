@@ -1,6 +1,7 @@
 /*!
 	Class for recording and playing recorded camera movement.
 	Note that time is handled in milliseconds.
+	Todo: rendering and disable camera input when playing**
 */
 
 #pragma once
@@ -34,14 +35,14 @@ class CamRecording
 		D3DXVECTOR3					mPathOffset;
 		TCBSpline*					mCamPosSpline;
 		TCBSpline*					mCamAtSpline;
-		//For rendering: **bufferklass?**
+		//For rendering: use bufferclass?**
 		int							mNrOfVertices;
 		D3DXVECTOR3**				mVertices;
 		ID3D11Buffer*				mVertexBuffer;
 
 	private:
 		void DeletePreviousRecording();
-		//**InitRendering()**
+		//InitRendering()**
 
 	public:
 		CamRecording(int interval = 1000);
@@ -78,20 +79,10 @@ class CamRecording
 		/*! Open camera path (points from file. */
 		void Open(string fileName);
 
-		
+		/*! Used to update recording and playing. */
 		void Update(float deltaTime);
 
 
-
-		//** D3DXVECTOR3 GetCamPos(float t) const;
-		//** D3DXVECTOR3 GetCamAt(float t) const;
-		//** sitta "attached" på camera klassen? **
-		//void AddPosControlPoint(D3DXVECTOR3 pos);
-		//void AddAtControlPoint(D3DXVECTOR3 at);
-		//**update internt innehålla/hålla reda på addpos & play?**
-		
-		
-
 		/*! Render the camera path (points). */
-		//void Render(D3DXMATRIX worldViewProj, int nrOfPoints = -1);
+		//void Render(int nrOfPoints = -1);**
 };

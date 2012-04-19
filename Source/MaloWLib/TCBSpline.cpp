@@ -188,7 +188,6 @@ D3DXVECTOR3 TCBSpline::GetPoint(float t) const
 		float localT = tmp - cpIndex;
 		float a0, a1, a2, a3;
 		D3DXVECTOR3 cp0, cp1, d0, d1, p;
-		//**src-vector används inte**
 	
 		cp0 = *this->mControlPoints[cpIndex];	
 		cp1 = *this->mControlPoints[cpIndex + 1];	
@@ -316,7 +315,6 @@ void TCBSpline::Clear()
 		for(int i = 0; i < this->mNrOfControlPoints; i++)
 		{
 			SAFE_DELETE(this->mControlPoints[i]);
-			//**delete source & destination tangents?**
 		}
 		this->mNrOfControlPoints = 0;
 	}
