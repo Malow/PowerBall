@@ -23,6 +23,7 @@ CamRecording::CamRecording(int interval)
 	this->mPlayTime = 0;
 	this->mCurrentPlayTime = -1;
 	this->mPlaySpeed = 1.0f;
+	this->mPathOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	this->mCamPosSpline = new TCBSpline();
 	this->mCamAtSpline = new TCBSpline();
 	
@@ -83,6 +84,10 @@ float CamRecording::GetPlaySpeed() const
 {
 	return this->mPlaySpeed;
 }
+D3DXVECTOR3 CamRecording::GetPathOffset() const
+{
+	return this->mPathOffset;
+}
 
 //set
 void CamRecording::SetInterval(int interval)
@@ -92,6 +97,10 @@ void CamRecording::SetInterval(int interval)
 void CamRecording::SetPlaySpeed(float playSpeed)
 {
 	this->mPlaySpeed = playSpeed;
+}
+void CamRecording::SetPathOffset(D3DXVECTOR3 pathOffset)
+{
+	this->mPathOffset = pathOffset;
 }
 
 //other
@@ -121,7 +130,7 @@ void CamRecording::Play()
 	if(this->mHasRecorded) 
 	{
 		this->mIsPlaying = true;
-		this->mPlayTime = (int)(((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) * 1000.0f); //**
+		this->mPlayTime = (int)(((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) / 1000.0f); //** //** * this->mPlaySpeed**
 	}
 	else
 	{
@@ -140,25 +149,65 @@ void CamRecording::Open(string fileName)
 	bool success = false;
 	success = this->mCamPosSpline->ReadControlPointsFromFile("Pos_" + fileName);
 	if(!success)
-	{
-		MaloW::Debug("CamRecording: Warning: Failed to read control points from file");
-	}
+		MaloW::Debug("CamRecording: Warning: Failed to read control points from file.");
 	success = this->mCamAtSpline->ReadControlPointsFromFile("At_" + fileName);
 	if(!success)
-	{
-		MaloW::Debug("CamRecording: Warning: Failed to read control points from file");
-	}
+		MaloW::Debug("CamRecording: Warning: Failed to read control points from file.");
 	else //if succesful read, initialize splines
 	{
-		this->mCamPosSpline->Init();
-		this->mCamAtSpline->Init();
+		HRESULT hr = S_OK;
+		hr = this->mCamPosSpline->Init();
+		if(FAILED(hr))
+			MaloW::Debug("CamRecording: Error: Failed to initialize splines from file.");
+		hr = this->mCamAtSpline->Init();
+		if(FAILED(hr))
+			MaloW::Debug("CamRecording: Error: Failed to initialize splines from file.");	
 	}
 	
 	this->mHasRecorded = true;
 
 	if(this->gDevice) //if rendering is used, initialize rendering
 	{
-		//CamRecording::InitDrawing(this->gDevice); **
+		//CamRecording::InitDrawing(this->gDevice); **todo**
+	}
+}
+
+void CamRecording::Update(float deltaTime)
+{
+	static float time = 0.0f; //**time**
+
+	if(this->mIsRecording)
+	{
+		time += deltaTime; //**time**
+		if((int)(time * 1000.0f) % this->mInterval == 0)
+		{
+			this->mCamPosSpline->AddControlPoint(this->gCamera->getPosition());
+			this->mCamAtSpline->AddControlPoint(this->gCamera->getForward()); //**
+		}
+	}
+	else if(this->mIsPlaying)
+	{
+		this->mCurrentPlayTime += (int)(deltaTime * 1000.0f); //**
+
+		if(this->mCurrentPlayTime < this->mPlayTime)
+		{
+			float t = (float)this->mCurrentPlayTime / (float)this->mPlayTime;
+			D3DXVECTOR3 pos, at;
+			pos = this->mCamPosSpline->GetPoint(t) + this->mPathOffset;
+			at = this->mCamAtSpline->GetPoint(t) - pos + this->mPathOffset; //**lookat**
+			
+			D3DXVec3Normalize(&at, &at);
+			this->gCamera->setPosition(pos);
+			this->gCamera->setForward(at); //**
+		
+			//this->gCamera->Update();
+			//this->gCamera->Move(deltaTime);
+		}
+		else
+		{
+			this->mIsPlaying = false;
+			this->mCurrentPlayTime = 0;
+		}
 	}
 }
 
@@ -180,32 +229,6 @@ D3DXVECTOR3 CamRecording::GetCamPos(float t) const
 D3DXVECTOR3 CamRecording::GetCamAt(float t) const
 {
 	return this->mCamAtSpline->GetPos(t);
-}
-void CamRecording::Update(float deltaTime, D3DXVECTOR3 offset)
-{
-	this->mCurrPlayTime += deltaTime;
-	//play cutscene if not **reached end**
-	if(this->mCurrPlayTime <= this->mPlayTime)
-	{
-		float t = this->mCurrPlayTime / this->mPlayTime;
-		D3DXVECTOR3 pos, at;
-		pos = this->mCamPosSpline->GetPos(t);
-		pos += offset;
-		at = this->mCamAtSpline->GetPos(t) - pos; //**ska inte behövas**
-		at += offset;
-		D3DXVec3Normalize(&at, &at);
-		this->gCamera->SetPos(pos);
-		this->gCamera->SetLookAt(at); 
-		
-		this->gCamera->Update();
-		this->gCamera->Move(deltaTime); 
-	}
-	else
-	{
-		this->mIsPlaying = false;
-		this->mCurrPlayTime = 0.0f;
-		//this->mPlayTime = 0.0f;
-	}
 }
 
 void CamRecording::DrawPath(D3DXMATRIX worldViewProj, int nrOfPoints = -1)

@@ -45,6 +45,10 @@ float4 Lava(float4 color, float4 pixelWorldPosition, float depth)
 		L = 0.0f;
 	}
 	*/
+
+	if(CameraPosition.y < L)
+		return float4(0,0,0,0);
+
 	if(pixelWorldPosition.y <= L + H)
 	{
 		float3 E = pixelWorldPosition.xyz - CameraPosition.xyz;

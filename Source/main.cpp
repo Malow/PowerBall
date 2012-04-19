@@ -3,6 +3,8 @@
 #include "GraphicsEngine.h"
 #include "InGameMenu.h"
 
+#include "..\Source\GraphicsEngine\MaloWLib\CamRecording.h"
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
 #if defined(DEBUG) || defined(_DEBUG)
@@ -38,6 +40,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	testLight->SetLookAt(testBall->GetPosition());
 	testLight2->SetLookAt(testBall->GetPosition());
 	//Text* text = eng->CreateText("LolAwesome", D3DXVECTOR2(300, 300), 20, "Media/Fonts/1.png");
+
+	CamRecording* camRec = new CamRecording();
+	camRec->Init(eng->GetCamera());
+	//camRec->Open("spline.txt");
+
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
@@ -57,8 +64,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			eng->GetCamera()->moveRight(diff);
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
+
+
+		if(eng->GetKeyListener()->IsPressed('R'))	
+			camRec->Record(true);
+		if(eng->GetKeyListener()->IsPressed('T'))	
+			camRec->Record(false);
+		camRec->Update(0.0034f);
 	}
-	
+	// Delete camera recording
+	delete camRec;
+
 	#endif
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	
