@@ -143,14 +143,19 @@ bool GameManager::PlayLAN(char ip[])
 				{
 					if(i != this->mNet->GetIndex())
 					{
+						int flip = 1;
+						if(this->mNet->GetStartPos(i) > 0)
+							flip = -1;
 						if(this->mNet->IsKeyPressed('A', i))
-							mBalls[i]->AddForce(Vector3(-10 * diff,0,0));	
+							mBalls[i]->AddForce(Vector3(-10 * diff * flip,0,0));	
 						if(this->mNet->IsKeyPressed('D', i))
-							mBalls[i]->AddForce(Vector3(10 * diff,0,0));
+							mBalls[i]->AddForce(Vector3(10 * diff * flip,0,0));
 						if(this->mNet->IsKeyPressed('W', i))
-							mBalls[i]->AddForce(Vector3(0,0,10 * diff));	
+							mBalls[i]->AddForce(Vector3(0,0,10 * diff * flip));	
 						if(this->mNet->IsKeyPressed('S', i))
-							mBalls[i]->AddForce(Vector3(0,0,-10 * diff));
+							mBalls[i]->AddForce(Vector3(0,0,-10 * diff * flip));
+						if(this->mNet->IsKeyPressed(VK_SPACE, i))
+							mBalls[i]->AddForce(Vector3(0,90 * diff,0));
 					}
 					else
 					{
@@ -162,6 +167,9 @@ bool GameManager::PlayLAN(char ip[])
 							mBalls[i]->AddForce(Vector3(0,0,10 * diff));	
 						if(mGe->GetKeyListener()->IsPressed('S'))
 							mBalls[i]->AddForce(Vector3(0,0,-10 * diff));
+
+						if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+							mBalls[i]->AddForce(Vector3(0,90 * diff,0));
 					}	
 					Ball* b1 = this->mBalls[i];
 					for(int j = i+1; j < this->mNumPlayers; j++)
@@ -172,8 +180,8 @@ bool GameManager::PlayLAN(char ip[])
 
 					}
 					// check ball[i] against platform
-					if(b1->collisionWithPlatformSimple(this->mPlatform))
-						b1->collisionPlatformResponse(this->mPlatform, diff);
+					//if(b1->collisionWithPlatformSimple(this->mPlatform))
+						//b1->collisionPlatformResponse(this->mPlatform, diff);
 				}
 
 				
@@ -182,8 +190,8 @@ bool GameManager::PlayLAN(char ip[])
 
 				this->mBalls[i]->Update(diff, this->mPlatform);
 				
-				//if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
-					//this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
+				if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
+					this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
 
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 				Vector3 vel = this->mBalls[i]->GetVelocity();
@@ -200,8 +208,9 @@ bool GameManager::PlayLAN(char ip[])
 				this->mNet->AddKeyInput('W', true);
 			if(mGe->GetKeyListener()->IsPressed('S'))
 				this->mNet->AddKeyInput('S', true);
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,11,0));
+
+			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+				this->mNet->AddKeyInput(VK_SPACE, true);
 		}
 
 		if(!this->mNet->Update(this->mBalls, this->mNumPlayers))
@@ -214,6 +223,7 @@ bool GameManager::PlayLAN(char ip[])
 				numAlivePlayers += 1;
 		}
 		//mPlatform->Update(diff*0.05);
+
 
 
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
@@ -232,6 +242,9 @@ bool GameManager::PlayLAN(char ip[])
 			}
 			delete[] this->mBalls;
 			this->mBalls = temp;
+
+			mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 3));
+			mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 		}
 
 		if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)

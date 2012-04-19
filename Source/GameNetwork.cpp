@@ -41,75 +41,31 @@ bool GameNetwork::ClientUpdate()
 {
 	bool ret = true;
 	char bufW[256] = {0};
-
 	int offset = 0;
 
-	char b = '0';
 	for(int i = 0; i < 256; i++)
 	{
 		if(this->mKeyInputs[this->mIndex][i])
 		{
-			b = i;
-			memcpy(bufW+offset, &i, sizeof (char));
-			offset += sizeof (char);
+			this->AddToBuffer(bufW, offset, (char)i);
 		}
 	}
-
 	this->mConn->SetWriteBuffer(bufW, 256, 0);
 
-
 	ret = this->mConn->Update();
-
 
 	char buf[256] = {0};
 	if(this->mConn->GetReadBuffer(buf, 256, 0))
 	{
-		float x = 0;
-		float y = 0;
-		float z = 0;
-		int index = 0;
-		int numPlayers = 0;
 		offset = 0;
-		char b = '0';
-		memcpy(&b, &buf, sizeof (char));
-		offset += sizeof (char);
-		this->mIndex = b;
+		this->mIndex = (int) this->GetFromBufferC(buf, offset);
+		this->mNumPlayers = (int) this->GetFromBufferC(buf, offset);
 
-		memcpy(&b, &buf[offset], sizeof (char));
-		offset += sizeof (char);
-		numPlayers = b;
-		this->mNumPlayers = numPlayers;
-		for(int i = 0; i < numPlayers; i++) // lägg till +1
+		for(int i = 0; i < this->mNumPlayers; i++) 
 		{
-			memcpy(&b, &buf[offset], sizeof (char));
-			offset += sizeof (char);
-			index = b;
-
-			memcpy(&x, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&y, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&z, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			this->mPos[index] = D3DXVECTOR3(x, y, z);
-
-			x = 0;
-			y = 0;
-			z = 0;
-
-			memcpy(&x, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&y, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(&z, &buf[offset], sizeof (float));
-			offset += sizeof (float);
-
-			this->mVel[index] = D3DXVECTOR3(x, y, z);
+			int index = (int) this->GetFromBufferC(buf, offset);
+			this->mPos[index] = this->GetFromBufferD(buf, offset);
+			this->mVel[index] = this->GetFromBufferD(buf, offset);
 		}
 	}
 	
@@ -123,7 +79,6 @@ void GameNetwork::ServerUpdate()
 {
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
 	{
-
 		char buf[256];
 		if(this->mConn->GetReadBuffer(buf, 256, i - 1))
 		{
@@ -131,60 +86,26 @@ void GameNetwork::ServerUpdate()
 				this->mKeyInputs[i][a] = false;
 
 			int offset = 0;
-			char key = '0';
 			for(int a = 0; a < 5; a++)
 			{
-				memcpy(&key, &buf[offset], sizeof (char));
-				offset += sizeof (char);
-
-				this->mKeyInputs[i][key] = true;
+				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = true;
 			}
 		}
 	}
 	
-	int numPlayers = this->mConn->GetNumConnections();
-	for(int a = 1; a < numPlayers; a++)
+	for(int a = 1; a < this->mNumPlayers; a++)
 	{
 		char bufW[256] = {0};
 		int offset = 0;
-		char b = a;
-		memcpy(bufW, &b, sizeof (char));
-		offset += sizeof (char);
 
-		b = numPlayers;
-		memcpy(bufW + offset, &b, sizeof (char));
-		offset += sizeof (char);
+		this->AddToBuffer(bufW, offset, (char)a);
+		this->AddToBuffer(bufW, offset, (char)this->mNumPlayers);
 
-		for(int i = 0; i < numPlayers; i++)
+		for(int i = 0; i < this->mNumPlayers; i++)
 		{
-			float _x = this->mPos[i].x;
-			float _y = this->mPos[i].y;
-			float _z = this->mPos[i].z;
-			b = i;
-			memcpy(bufW + offset, &b, sizeof (char));
-			offset += sizeof (char);
-
-			memcpy(bufW + offset, &_x, sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(bufW+offset, &_y, sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(bufW+offset, &_z, sizeof (float));
-			offset += sizeof (float);
-
-			_x = this->mVel[i].x;
-			_y = this->mVel[i].y;
-			_z = this->mVel[i].z;
-
-			memcpy(bufW + offset, &_x, sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(bufW+offset, &_y, sizeof (float));
-			offset += sizeof (float);
-
-			memcpy(bufW+offset, &_z, sizeof (float));
-			offset += sizeof (float);
+			this->AddToBuffer(bufW, offset, (char)i);
+			this->AddToBuffer(bufW, offset, this->mPos[i]);
+			this->AddToBuffer(bufW, offset, this->mVel[i]);
 		}
 
 		this->mConn->SetWriteBuffer(bufW, 256, a-1);
@@ -240,4 +161,42 @@ void GameNetwork::SetIP(char ip[])
 void GameNetwork::Close()
 {
 	this->mConn->Close();
+}
+void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, float in)
+{
+	memmove(bufOut + offsetOut, &in, sizeof (in));
+	offsetOut += sizeof (in);
+}
+void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, char in)
+{
+	memmove(bufOut + offsetOut, &in, sizeof (in));
+	offsetOut += sizeof (in);
+}
+void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, D3DXVECTOR3 in)
+{
+	this->AddToBuffer(bufOut, offsetOut, in.x);
+	this->AddToBuffer(bufOut, offsetOut, in.y);
+	this->AddToBuffer(bufOut, offsetOut, in.z);
+}
+float GameNetwork::GetFromBufferF(char* buf, int &offsetOut)
+{
+	float out = 0.0f;
+	memmove(&out, &buf[offsetOut], sizeof (float));
+	offsetOut += sizeof (float);
+	return out;
+}
+char GameNetwork::GetFromBufferC(char* buf, int &offsetOut)
+{
+	char out = '0';
+	memmove(&out, &buf[offsetOut], sizeof (char));
+	offsetOut += sizeof (char);
+	return out;
+}
+D3DXVECTOR3	GameNetwork::GetFromBufferD(char* buf, int &offsetOut)
+{
+	D3DXVECTOR3 out;
+	out.x = this->GetFromBufferF(buf, offsetOut);
+	out.y = this->GetFromBufferF(buf, offsetOut);
+	out.z = this->GetFromBufferF(buf, offsetOut);
+	return out;
 }

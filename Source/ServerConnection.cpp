@@ -1,5 +1,6 @@
 #include "ServerConnection.h"
-using namespace std;
+
+volatile bool running = true;
 ServerConnection::ServerConnection()
 {
 	WSADATA wsaData = {0};
@@ -7,7 +8,7 @@ ServerConnection::ServerConnection()
 	this->mPort = 10000;
 	this->mIp = "123";
 	this->mServerSocket = new Connection(socket( AF_INET, SOCK_STREAM, IPPROTO_IP ));
-
+	running = true;
     //u_long noBlocking = 1;
     //ioctlsocket(this->mServerSocket->sock, FIONBIO, &noBlocking);
 
@@ -16,18 +17,12 @@ ServerConnection::ServerConnection()
 }
 ServerConnection::~ServerConnection()
 {
+	running = false;
 	if(this->mServer)
 	{
-		DWORD exitCode;
-		//GetExitCodeThread(this->mServerSocket->handle, &exitCode);
-		//ExitThread(exitCode);
-		CloseHandle(this->mServerSocket->handle);
 		closesocket(this->mServerSocket->sock);
 		for(int i = 0; i < this->mNumClients; i++)
 		{
-			//GetExitCodeThread(this->mClientSocket[i]->handle, &exitCode);
-			//ExitThread(exitCode);
-			CloseHandle(this->mClientSocket[i]->handle);
 			closesocket(this->mClientSocket[i]->sock);
 			SAFE_DELETE(this->mClientSocket[i]);
 		}
@@ -48,7 +43,7 @@ void ServerConnection::InitializeConnection()
 {
 	sockaddr_in saServer = {0};
 	saServer.sin_family = AF_INET;
-	saServer.sin_port = htons(this->mPort);
+	saServer.sin_port = htons((u_short)this->mPort);
 	saServer.sin_addr.s_addr = inet_addr(this->mIp);
 	connect(this->mServerSocket->sock, (sockaddr*)&saServer, sizeof( sockaddr ));
 
@@ -67,11 +62,8 @@ void ServerConnection::InitializeConnection()
 		this->mServer = false;
 		if(FD_ISSET(this->mServerSocket->sock, &write))
         {
-			DWORD n;
-			//CreateThread(0, 0, &ReadFromServer, (void*) this->mServerSocket, 0, &n) ;
-			//CreateThread(0, 0, &WriteToServer, (void*) this->mServerSocket, 0, &n) ;
+			//CreateThread(0, 0, &TalkToServer, (void*) this->mServerSocket, 0, 0) ;
         }
-
 	}
 	else
 	{
@@ -80,20 +72,24 @@ void ServerConnection::InitializeConnection()
 		this->mServer = true;
 		sockaddr_in saListen = {0};
 		saListen.sin_family = AF_INET;
-		saListen.sin_port = htons(this->mPort);
+		saListen.sin_port = htons((u_short)this->mPort);
 		saListen.sin_addr.s_addr = htonl(INADDR_ANY);
 		bind(this->mServerSocket->sock, (sockaddr*)&saListen, sizeof(sockaddr_in));
 		listen(this->mServerSocket->sock, SOMAXCONN);
 
-        DWORD n;
-		this->mServerSocket->handle = CreateThread(0, 0, &ListenForClient, (void*) this, 0, &n);
+		this->mServerSocket->handle = CreateThread(0, 0, &ListenForClient, (void*) this, 0, 0);
 	}
 }
 DWORD WINAPI ServerConnection::ListenForClient(void* param)
 {
 	ServerConnection* sc = (ServerConnection*) param;
-	while(sc->mServerSocket->sock != INVALID_SOCKET)
+	while(running)
 	{
+		int err = WSAGetLastError();
+		if(err > 0) //connection lost 
+		{
+			running = false;
+		}
 		sockaddr_in saClient = {0};
 		int nSALen = sizeof(sockaddr);
 		int ret = 0;
@@ -106,8 +102,8 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 			Connection* client = new Connection(sock);
 			sc->mClientSocket.push_back(client);
 			sc->mNumClients++;
-			DWORD n;
-			client->handle = CreateThread(0, 0, &TalkToClient, (void*) client, 0, &n) ;
+
+			client->handle = CreateThread(0, 0, &TalkToClient, (void*) client, 0, 0) ;
 		}
 	}
 	return 0;
@@ -158,8 +154,8 @@ void ServerConnection::SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& Ex
 
 bool ServerConnection::Update()
 {
-	int a = ::WSAGetLastError();
-	if(a == 10054)
+	int err = WSAGetLastError();
+	if(err > 0) //connection lost 
 	{
 		return false;
 	}
@@ -236,8 +232,13 @@ void ServerConnection::SetWriteBuffer(const char* buf, const int size, const int
 DWORD WINAPI ServerConnection::TalkToClient(void* param)
 {
 	Connection* conn = (Connection*)param;
-	while(conn->sock != INVALID_SOCKET)
+	while(running)
 	{
+		int err = WSAGetLastError();
+		if(err > 0) //connection lost 
+		{
+			running = false;
+		}
 		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
 		conn->numCharsInBuf += numBytes;
 		
@@ -261,9 +262,8 @@ DWORD WINAPI ServerConnection::TalkToClient(void* param)
 DWORD WINAPI ServerConnection::TalkToServer(void* param)
 {
 	Connection* conn = (Connection*)param;
-	while(conn->sock != INVALID_SOCKET)
+	while(running)
 	{
-	
 		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
 		conn->numCharsInBuf += numBytes;
 
@@ -283,40 +283,8 @@ DWORD WINAPI ServerConnection::TalkToServer(void* param)
 	}
 	return 0;
 }
-DWORD WINAPI ServerConnection::ReadFromServer(void* param)
-{
-	Connection* conn = (Connection*)param;
-	while(conn->sock != INVALID_SOCKET)
-	{
-		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
-		conn->numCharsInBuf += numBytes;	
-	}
-	return 0;
-}
-DWORD WINAPI ServerConnection::WriteToServer(void* param)
-{
-	Connection* conn = (Connection*)param;
-	while(conn->sock != INVALID_SOCKET)
-	{
-		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
-		{
-			int numBytes = 0;
-		
-			numBytes = send(conn->sock, conn->bufW, conn->numCharsInBufW, 0 );
-			if(numBytes != conn->numCharsInBufW  && conn->sock != INVALID_SOCKET) 
-			{        
-				conn->numCharsInBufW -= numBytes;
-				memmove(conn->bufW, conn->bufW + numBytes, conn->numCharsInBufW);
-			}
-			else conn->numCharsInBufW = 0;
-		}
-		
-	}
-	return 0;
-}
 void ServerConnection::Close()
 {
-	//DisconnectEx(sock, NULL, 0, 0); // retrieve this function pointer with WSAIoctl(WSAID_DISCONNECTEX).
 	closesocket(this->mServerSocket->sock);
 	this->mServerSocket->sock = INVALID_SOCKET;
 	if(this->mServer)

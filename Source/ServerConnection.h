@@ -37,11 +37,8 @@ private:
 	/*! Thread for communication between server and client. */
 	static DWORD WINAPI		TalkToClient(void* param);
 
-	// SPLIT INTO TWO! --->>>----<<<
 	/*! Thread for communication between client and server. */
 	static DWORD WINAPI		TalkToServer(void* param);
-	static DWORD WINAPI		ReadFromServer(void* param);
-	static DWORD WINAPI		WriteToServer(void* param);
 
 	/*! Thread for the LAN host that listens for new client conections. */
 	static DWORD WINAPI		ListenForClient(void* param);
