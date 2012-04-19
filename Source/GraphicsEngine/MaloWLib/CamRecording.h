@@ -28,9 +28,9 @@ class CamRecording
 		bool						mIsRecording;
 		bool						mHasRecorded;
 		bool						mIsPlaying;
-		int							mInterval;
-		int							mPlayTime; 
-		int							mCurrentPlayTime;
+		int							mInterval; //in milliseconds
+		float						mPlayTime; //in seconds
+		float						mCurrentPlayTime; //in seconds
 		float						mPlaySpeed;
 		D3DXVECTOR3					mPathOffset;
 		TCBSpline*					mCamPosSpline;
@@ -57,10 +57,10 @@ class CamRecording
 		bool IsRecording() const;
 		bool HasRecorded() const;
 		bool IsPlaying() const;
-		/*! Returns play time in milliseconds. */
-		int GetPlayTime() const;
-		/*! Returns current play time in milliseconds. */
-		int GetCurrentPlayTime() const;
+		/*! Returns play time in seconds. */
+		float GetPlayTime() const;
+		/*! Returns current play time in seconds. */
+		float GetCurrentPlayTime() const;
 		float GetPlaySpeed() const;
 		D3DXVECTOR3 GetPathOffset() const;
 
