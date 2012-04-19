@@ -124,45 +124,45 @@ bool GameManager::PlayLAN(char ip[])
 	while(running)
 	{
 		int numAlivePlayers = 0;
-				
 		float diff = mGe->Update();	
-		
-		diff *= 0.05f;
 
 		if(this->mNet->IsServer())
 		{
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
-				if(i != this->mNet->GetIndex())
+				if(this->mPlatform->IsOnPlatform(mBalls[i]->GetPosition().x, mBalls[i]->GetPosition().z))
 				{
-					if(this->mNet->IsKeyPressed('A', i))
-						mBalls[i]->AddForce(Vector3(-1,0,0));	
-					if(this->mNet->IsKeyPressed('D', i))
-						mBalls[i]->AddForce(Vector3(1,0,0));
-					if(this->mNet->IsKeyPressed('W', i))
-						mBalls[i]->AddForce(Vector3(0,0,1));	
-					if(this->mNet->IsKeyPressed('S', i))
-						mBalls[i]->AddForce(Vector3(0,0,-1));
-				}
-				else
-				{
-					if(mGe->GetKeyListener()->IsPressed('A'))
-						mBalls[i]->AddForce(Vector3(-1,0,0));	
-					if(mGe->GetKeyListener()->IsPressed('D'))
-						mBalls[i]->AddForce(Vector3(1,0,0));
-					if(mGe->GetKeyListener()->IsPressed('W'))
-						mBalls[i]->AddForce(Vector3(0,0,1));	
-					if(mGe->GetKeyListener()->IsPressed('S'))
-						mBalls[i]->AddForce(Vector3(0,0,-1));
-				}	
-				Ball* b1 = this->mBalls[i];
-				for(int j = i+1; j < this->mNumPlayers; j++)
-				{
-					Ball* b2 = this->mBalls[j];
-					if(b1->collisionWithSphereSimple(b2))
-						b1->collisionSphereResponse(b2, diff);
+					if(i != this->mNet->GetIndex())
+					{
+						if(this->mNet->IsKeyPressed('A', i))
+							mBalls[i]->AddForce(Vector3(-10,0,0));	
+						if(this->mNet->IsKeyPressed('D', i))
+							mBalls[i]->AddForce(Vector3(10,0,0));
+						if(this->mNet->IsKeyPressed('W', i))
+							mBalls[i]->AddForce(Vector3(0,0,10));	
+						if(this->mNet->IsKeyPressed('S', i))
+							mBalls[i]->AddForce(Vector3(0,0,-10));
+					}
+					else
+					{
+						if(mGe->GetKeyListener()->IsPressed('A'))
+							mBalls[i]->AddForce(Vector3(-10,0,0));	
+						if(mGe->GetKeyListener()->IsPressed('D'))
+							mBalls[i]->AddForce(Vector3(10,0,0));
+						if(mGe->GetKeyListener()->IsPressed('W'))
+							mBalls[i]->AddForce(Vector3(0,0,10));	
+						if(mGe->GetKeyListener()->IsPressed('S'))
+							mBalls[i]->AddForce(Vector3(0,0,-10));
+					}	
+					Ball* b1 = this->mBalls[i];
+					for(int j = i+1; j < this->mNumPlayers; j++)
+					{
+						Ball* b2 = this->mBalls[j];
+						if(b1->collisionWithSphereSimple(b2))
+							b1->collisionSphereResponse(b2, diff);
 
+					}
 				}
 
 				

@@ -68,7 +68,8 @@ void ServerConnection::InitializeConnection()
 		if(FD_ISSET(this->mServerSocket->sock, &write))
         {
 			DWORD n;
-			//CreateThread(0, 0, &TalkToServer, (void*) this->mServerSocket, 0, &n) ;
+			//CreateThread(0, 0, &ReadFromServer, (void*) this->mServerSocket, 0, &n) ;
+			//CreateThread(0, 0, &WriteToServer, (void*) this->mServerSocket, 0, &n) ;
         }
 
 	}
@@ -269,6 +270,37 @@ DWORD WINAPI ServerConnection::TalkToServer(void* param)
 		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
 		{
 			numBytes = 0;
+		
+			numBytes = send(conn->sock, conn->bufW, conn->numCharsInBufW, 0 );
+			if(numBytes != conn->numCharsInBufW  && conn->sock != INVALID_SOCKET) 
+			{        
+				conn->numCharsInBufW -= numBytes;
+				memmove(conn->bufW, conn->bufW + numBytes, conn->numCharsInBufW);
+			}
+			else conn->numCharsInBufW = 0;
+		}
+		
+	}
+	return 0;
+}
+DWORD WINAPI ServerConnection::ReadFromServer(void* param)
+{
+	Connection* conn = (Connection*)param;
+	while(conn->sock != INVALID_SOCKET)
+	{
+		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
+		conn->numCharsInBuf += numBytes;	
+	}
+	return 0;
+}
+DWORD WINAPI ServerConnection::WriteToServer(void* param)
+{
+	Connection* conn = (Connection*)param;
+	while(conn->sock != INVALID_SOCKET)
+	{
+		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
+		{
+			int numBytes = 0;
 		
 			numBytes = send(conn->sock, conn->bufW, conn->numCharsInBufW, 0 );
 			if(numBytes != conn->numCharsInBufW  && conn->sock != INVALID_SOCKET) 
