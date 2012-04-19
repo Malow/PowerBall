@@ -47,7 +47,7 @@ class TCBSpline
 		void SetBias(float bias);
 		void SetContinuity(float continuity);
 
-		void AddControlPoint(D3DXVECTOR3& controlPoint);
+		void AddControlPoint(D3DXVECTOR3 controlPoint);
 		/*! Returns the interpolated position along the set of control points,
 			Example:	t = 0 would return the first control point,
 						t = 1 would return the last control point,

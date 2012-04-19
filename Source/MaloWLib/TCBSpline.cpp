@@ -168,7 +168,7 @@ void TCBSpline::SetContinuity(float continuity)
 }
 
 //other
-void TCBSpline::AddControlPoint(D3DXVECTOR3& controlPoint)
+void TCBSpline::AddControlPoint(D3DXVECTOR3 controlPoint)
 {
 	if(this->mNrOfControlPoints == this->mControlCap)
 	{
