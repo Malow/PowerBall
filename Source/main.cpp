@@ -14,8 +14,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine
 	GraphicsEngineParams params;
-	params.windowHeight = 600;
-	params.windowWidth = 800;
+	params.windowHeight = 900;
+	params.windowWidth = 1600;
 	params.CamType = RTS;
 	
 	// Create the graphics engine
