@@ -323,7 +323,7 @@ void GraphicsEngine::CreateSkyBox(string texture)
 
 void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarTexture)
 {
-	Image* bg = this->CreateImage(D3DXVECTOR2(0,0), D3DXVECTOR2(this->parameters.windowWidth,this->parameters.windowHeight), BackgroundTexture);
+	Image* bg = this->CreateImage(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->parameters.windowWidth, (float)this->parameters.windowHeight), BackgroundTexture);
 	Image* pb = this->CreateImage(D3DXVECTOR2((this->parameters.windowWidth / 4.0f), ((this->parameters.windowHeight * 3.0f) / 4.0f)), D3DXVECTOR2(0, this->parameters.windowHeight / 10.0f), ProgressBarTexture);
 
 	int TotalItems = this->GetEventQueueSize();
@@ -335,7 +335,7 @@ void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarT
 	bool go = true;
 	while(go)
 	{
-		float diff = this->Update();
+		this->Update();
 
 		int ItemsToGo = this->GetEventQueueSize();
 		

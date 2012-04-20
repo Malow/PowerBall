@@ -20,23 +20,25 @@ SkyBox::SkyBox(D3DXVECTOR3 pos, int latitude, int longitude) : Mesh(pos)
 	
 	for(int i = 0; i < latitude-2; ++i)
 	{
-		spherePitch = (i+1) * (3.14/(latitude-1));
+		spherePitch = (i + 1) * (3.14f / (latitude - 1));
 		D3DXMatrixRotationX(&rotationx, spherePitch);
 		for(int j = 0; j < longitude; ++j)
 		{
-			sphereYaw = j * (6.28/(longitude));
+			sphereYaw = j * (6.28f / (longitude));
 			D3DXMatrixRotationZ(&rotationy, sphereYaw);
-			D3DXVec3TransformCoord(&currVertPos, &D3DXVECTOR3(0.0f, 0.0f, 1.0f), &(rotationx * rotationy) );	
+			D3DXVECTOR3 pv = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+			D3DXMATRIX pm = rotationx * rotationy;
+			D3DXVec3TransformCoord(&currVertPos, &pv, &pm);	
 			D3DXVec3Normalize(&currVertPos, &currVertPos );
-			vertices[i*longitude+j+1].pos.x = currVertPos.x;
-			vertices[i*longitude+j+1].pos.y = currVertPos.y;
-			vertices[i*longitude+j+1].pos.z = currVertPos.z;
+			vertices[i * longitude + j + 1].pos.x = currVertPos.x;
+			vertices[i * longitude + j + 1].pos.y = currVertPos.y;
+			vertices[i * longitude + j + 1].pos.z = currVertPos.z;
 		}
 	}
 
-	vertices[m_numSphereVertices-1].pos.x =  0.0f;
-	vertices[m_numSphereVertices-1].pos.y =  0.0f;
-	vertices[m_numSphereVertices-1].pos.z = -1.0f;
+	vertices[m_numSphereVertices - 1].pos.x =  0.0f;
+	vertices[m_numSphereVertices - 1].pos.y =  0.0f;
+	vertices[m_numSphereVertices - 1].pos.z = -1.0f;
 
 
 	MeshStrip* strip = new MeshStrip();
