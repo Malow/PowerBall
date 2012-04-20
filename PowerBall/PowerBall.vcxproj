@@ -40,6 +40,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MorphAnimation.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\SkyBox.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MorphAnimation.h" />
     <ClInclude Include="..\Source\GraphicsEngine\SkyBox.h" />
     <ClInclude Include="..\Source\GraphicsEngine\SSAO.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
