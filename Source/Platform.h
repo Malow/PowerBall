@@ -16,6 +16,7 @@ private:
 	float	mRadius;
 	float   mScaledRadius;
 	float	mMass;
+	float   mRestitution;
 
 public:
 	//constructors and destructors
@@ -46,6 +47,9 @@ public:
 
 	/*! Returns the scaled radius */
 	float GetScaledRadius() const { return this->mScaledRadius; }
+
+	/*! Returns the Restitution- */
+	float GetRestitution() const { return this->mRestitution; }
 	//Set-Functions
 	
 	/*! Sets the shrinking value, the platform will shrink by x units per second. */

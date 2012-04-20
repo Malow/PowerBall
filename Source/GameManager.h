@@ -22,6 +22,7 @@ private:
 	GraphicsEngine* mGe;
 	InGameMenu*		mIGM;
 	Light*			mLights[5];
+	float counter;
 public:
 	//constructors and destructors
 				GameManager(GraphicsEngine* ge);

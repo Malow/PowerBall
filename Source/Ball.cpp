@@ -5,16 +5,46 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
-	this->mMaxVelocity	 = 2.0f;
-	this->mAcceleration	 = Vector3(0,-9.81f * 50,0);
-	this->mAcceleration2 = Vector3(0,-0.981f,0);
-	this->mDamping		 = 0.9995f; //0.995
+	this->mMaxVelocity	 = 6.0f;
+	this->mAcceleration	 = Vector3(0,-9.81f,0);
+	this->mDamping		 = 0.70;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
-	this->mRestitution   = 0.95f; //0.95f
+	this->mRestitution   = 0.30f; //0.95f
+	this->mForcePress	 = 9.0f;
+	this->mInTheAir		 = true;	// we are dropped from air
+	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
+	file.open ("Verts.txt", ios::out );
+	/*
+	*	Now it is working with deltaTime, the value above are in seconds and movement
+	*	are the ones that are used in directx api
+	*	If your speed is vx = 1, that means that you are traveling one position in
+	*	worldspace in the direction as e1 (that is x-axis) per second.
+	*	if you are dropping the balls from a height of 30 in our game (knockout map)
+	*	the formula for position is:
+	*	s = s0 + v0*t + (acceleration/2)*t*t = s0 + v0*t + 4.9*t*t
+	*
+	*   s = the point we want
+	*	s0 = the startpoint
+	*	v0 = the startvelocity
+	*	t = time
+	*
+	*	This gives us: 
+	*	14.7 = 30 + 0*t + 4.9*t*t -> t = sqrt(15,3/4,9) = 1,78 sek
+
+	*	Now put a breakpoint inside the 'if statement' when collition to platform is
+	*	true. Now check your counter above, it will show something like 1900 milisek
+	*	and that is approx the same as 1.78 sek because we use drag in form of mDamping
+	*	above.
+	*
+	*	Damping can we see as a combination of Friction in form of wind or against platform
+	*	Restitution is a messurement of how the collision make a object loose speed.
+	*
+	*/
 }
 Ball::~Ball()
 {
+	file.close();
 	GetGraphicsEngine()->DeleteMesh(this->mMesh);
 }
 Vector3 Ball::GetPositionXZ() const
@@ -24,11 +54,30 @@ Vector3 Ball::GetPositionXZ() const
 }
 void Ball::Update(const float dt, Platform* platform)
 {
+
+	/*
+	*	Try to avoid changing the algoritm below its okey for now.
+	*	If you are unhappy with settings for the ball try to 
+	*	change in the constructor insted. There you
+	*	can change most things like how much "engergy" you loose at impact 
+	*	this->mRestitution, for ball is only ball to ball. In the platform
+	*	class you can change the Restitution value for impact ball against
+	*	platform
+	*
+	*	this->mDamping is used as velocity loose such that airDrag and so on. 
+	*
+	*	how much tangental velocity that is loost due to friction on impact
+	*	only in use when ball is against platform
+	*	this->mFriction
+	*	
+	*	This can be changed if we feel its not working. Give me some pointers
+	*	so we can make this better :)
+	*/
+	
 	float newdt = dt * 0.001f;
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
-	Vector3 oldPosition = Vector3(temp.x, temp.y, temp.z);
-
-	Vector3 newPosition = oldPosition + mVelocity * newdt * 50;
+	Vector3 oldPosition = Vector3(temp);
+	Vector3 newPosition = oldPosition + mVelocity * newdt;
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
 		newPosition.y = 14.7f;	//oldPosition.y;
@@ -41,18 +90,37 @@ void Ball::Update(const float dt, Platform* platform)
 
 	this->Rotate(direction);
 	
-	Vector3 resAcc = this->mAcceleration * newdt * 50;
+	Vector3 resAcc = this->mAcceleration;
 	// F = ma <-> a = F/m 
 	resAcc += (this->mSumAddedForce / this->mMass );
 	//resAcc += this->mSumAddedForce;
 	Vector3 oldVelocity = this->mVelocity;
-	this->mVelocity += resAcc * newdt;
-	
+	Vector3 newVelocity = this->mVelocity + resAcc * newdt;
+	Vector3 controlledMovedVelocity = newVelocity;
+	controlledMovedVelocity.y = 0.0f;
+	file <<"Velocity: "<< controlledMovedVelocity.GetLength() <<endl;
+	if(controlledMovedVelocity.GetLength() > this->mMaxVelocity)
+	{
+		resAcc.x = 0;
+		resAcc.z = 0;
+		this->mVelocity += resAcc * newdt;
+		//this->mVelocity.y *= pow(this->mDamping, newdt);
+		this->mVelocity *= pow(this->mDamping, newdt);
+	}
+	else
+	{
+		this->mVelocity += resAcc * newdt;
+		this->mVelocity *= pow(this->mDamping, newdt);
+	}
+	controlledMovedVelocity = this->mVelocity;
+	controlledMovedVelocity.y = 0;
+	file <<"Velocity Changed to: "<< controlledMovedVelocity.GetLength() <<endl;
+	/*
 	if (this->mVelocity.GetLength() > this->mMaxVelocity )
 		this->mVelocity = oldVelocity;
-		
+	*/	
 	// so that the ball will lose some force due to friction for example
-	this->mVelocity *= this->mDamping;
+	//this->mVelocity *= pow(this->mDamping, newdt);
 
 	// remove the forces that did push against this ball
 	this->mSumAddedForce = Vector3(0,0,0);
@@ -88,7 +156,7 @@ bool Ball::collisionWithSphereSimple(Ball* b1)
 	*	this gives ut the following:
 	*	d	 = distance = p1-p2
 	*	rV	 = relative velocity = v2-v1
-	*	sumR = sumRadius = r1 + r2
+	*	sumR = sumRadius = r1 + r2 
 	*
 	*	t    = - rV.dot(d)/|rV|^2 +- sqrt( rV.dot(d)^2/|rV|^4 - (sumR^2 - |d|^2) / |rV|^2
 	*
@@ -155,57 +223,126 @@ void Ball::collisionSphereResponse(Ball* b1, float dt)
 	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
 }
 
-bool Ball::collisionWithPlatformSimple(Platform* p)
+bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 {
-	/*
-	MaloW::Array<MeshStrip*>* temp = this->mMesh->GetStrips();
+	MaloW::Array<MeshStrip*>* temp = p->GetMesh()->GetStrips();
 	int sizeMstrip = temp->size();
 	int sizeVertexS0 = temp->get(0)->getNrOfVerts();
 	int sizeIndS0 = temp->get(0)->getNrOfIndicies();
-	
 	Vertex* verts;
+	Vector3 origin = this->GetPositionVector3();
+	Vector3 dir = this->mVelocity;
+	Vector3 dirN = dir/dir.GetLength();
 	for(int i = 0;i<sizeMstrip;i++)
 	{
 		verts = temp->get(0)->getVerts();
 	}
+	Vector3 p0,p1,p2, normal, v1,v2;
+	float dInPlane, distance;
+	float dP0, dP1,dP2, avr;
+	float smalestTime = -1;
+	bool firstHit = false;
+	int s;
+	bool hit = false;
+	float u, v,t;
+	float lengthProjN;
+	Vector3 p0Store, p1Store,p2Store, normalStore;
 	Vector3 pos = Vector3(p->GetMesh()->GetPosition());
-	ofstream file;
-	file.open ("Verts.txt", ios::out);
-	file << "Verts: "<<endl;
-	file <<"Position object:" << " x: " << pos.x << " y: " <<pos.y << " z: " << pos.z <<endl;
-	
-	
-	for(int i = 0; i< sizeVertexS0;i++)
+	Vector3 posS = this->GetPositionVector3();
+	Vector3 rayDirection;
+	for(int i =0; i< sizeVertexS0; i+=3)
 	{
-		verts[i].pos += D3DXVECTOR3(pos.x, pos.y, pos.z);
-		file << "Position: " << "x: " << verts[i].pos.x << " y: " << verts[i].pos.y << " z: " << verts[i].pos.z << endl;
-		file << "Normal: " << "x: " << verts[i].normal.x << " y: " << verts[i].normal.y << " z: " << verts[i].normal.z << endl<<endl;
-	}
-	Vector3 p0,p1,p2;
-	Vector3 origin = this->GetPositionVector3();
-	Vector3 dir = this->GetVelocity();
-	Vector3 dirN = this->GetVelocity();
-	dirN.normalize();
-	float u,v,t;
-	for(int i =0; i< sizeVertexS0; i +=3)
-	{
-		p0 = Vector3(verts[i].pos);
-		p1 = Vector3(verts[i+1].pos);
-		p2 = Vector3(verts[i+2].pos);
-		if(RayTriIntersect(origin + dirN*this->mRadius, dir, p0, p1, p2,u,v,t))
+		p0 = Vector3(verts[i].pos) + pos;
+		p1 = Vector3(verts[i+1].pos) +pos;
+		p2 = Vector3(verts[i+2].pos) + pos;
+		v1 = p1-p0;
+		v2 = p2-p0;
+		rayDirection = v1.GetCrossProduct(v2);
+		rayDirection.normalize();
+		float tempLength;
+		if(RayTriIntersect(origin , rayDirection, p0, p1, p2, u, v, t) )
 		{
-			Vector3 newPosition = origin + dir*t;
-			this->SetPosition(newPosition);
-			file <<"Closest: " <<endl;
-			file << "Position: " << "x: " << verts[i].pos.x << " y: " << verts[i].pos.y << " z: " << verts[i].pos.z << endl;
-			file << "Normal: " << "x: " << verts[i].normal.x << " y: " << verts[i].normal.y << " z: " << verts[i].normal.z << endl<<endl;
+			/*
+			v1 = p1-p0;
+			v2 = p2-p0;
+			normal = v1.GetCrossProduct(v2);			
+			normal.normalize();
+			
+			Vector3 ny = origin - p0;
+			Vector3 projN = normal*ny.GetDotProduct(normal);
+			float tempLength = projN.GetLength();
+			*/
+			normal = rayDirection;
+			Vector3 ny = origin - p0;
+			Vector3 projN = normal*ny.GetDotProduct(normal);
+			tempLength = projN.GetLength();
+			if(!firstHit)
+			{
+				firstHit = true;
+				smalestTime = t;
+				lengthProjN = tempLength;
+				p0Store = p0;
+				p1Store = p1;
+				p2Store = p2;
+				normalStore = rayDirection;
+				s = i;
+			}
+			else
+			{
+				if( tempLength < lengthProjN )
+				{
+					smalestTime = t;
+					s = i;
+					lengthProjN = tempLength;
+					p0Store = p0;
+					p1Store = p1;
+					p2Store = p2;
+					normalStore = rayDirection;
+				}
+			}			
+		}
+		
+	}
+	if(firstHit)
+	{
+		// for checking if the ball are in the air not turned on at the moment, 
+		int eps = 0.0001f;
+		if( (lengthProjN > (this->mRadius - eps)) && (lengthProjN < (this->mRadius + eps)) )
+			this->mInTheAir = true;
+		else 
+			this->mInTheAir = false;
+
+		if( lengthProjN < this->mRadius)
+		{
+
+			float diff = abs(lengthProjN-this->mRadius);
+			
+			//Vector3 newPo = origin -dirN*diff;
+			Vector3 projVel = normalStore * this->mVelocity.GetDotProduct(normalStore);
+			Vector3 newPo = origin + normalStore*diff;
+			/*
+			if( projVel.GetDotProduct(normalStore) < 0.0f)
+			{
+				newPo = origin - normalStore*diff;
+				return false;
+			}
+			else
+				newPo = origin + normalStore*diff;
+			*/
+			this->SetPosition(newPo);
+			normalPlane = normalStore;
 			return true;
 		}
-		return false;
+		else
+		{
+			normalPlane = Vector3(0,0,0);
+			return false;
+		}
+		
 	}
-	file.close();
+	normalPlane = Vector3(0,0,0);
 	return false;
-	*/
+	
 	/* start here
 	float distance = this->GetPositionVector3().GetLength;
 	if ( this->mRadius
@@ -213,13 +350,15 @@ bool Ball::collisionWithPlatformSimple(Platform* p)
 	*/
 	
 	//p->GetNormalClosestToThisPosition(this->GetPositionVector3());
+
+	/*
 	Vector3 pos = this->GetPositionVector3();
 	if(pos.y >= 14.7f || !p->IsOnPlatform(pos.x, pos.z) )
 	{
 		//this->mAcceleration = this->mAcceleration2;
 		return false;
 	}
-	
+	*/
 	/*  we have collision but we need to move the ball so its not in the platform
 	*	solve this equation: ((pos1.y - t*v.y) = 14.7
 	*
@@ -227,7 +366,7 @@ bool Ball::collisionWithPlatformSimple(Platform* p)
 	*	t = (pos1.y - 14.7)/v.y
 	*
 	*/
-	
+	/*
 	Vector3 pos1 = this->GetPositionVector3();
 	Vector3 vec1 = this->GetVelocity();
 	float time = (pos1.y - 14.7f)/vec1.y;
@@ -237,10 +376,10 @@ bool Ball::collisionWithPlatformSimple(Platform* p)
 	//this->SetPosition(pos1.x, 14.7f, pos1.y);
 	
 	return true;
-	
+	*/
 }
 
-void Ball::collisionPlatformResponse(Platform* p, float dt)
+void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 {
 	/* simple response
 	Vector3 normal = Vector3(0,1,0);
@@ -251,7 +390,8 @@ void Ball::collisionPlatformResponse(Platform* p, float dt)
 	*/
 	// normal of the "collision plane"
 	
-	Vector3 nColl = Vector3(0,-1,0); //this->GetPositionVector3() - p->GetPositionVector3();
+	//Vector3 nColl = Vector3(0,-1,0); //this->GetPositionVector3() - p->GetPositionVector3();
+	Vector3 nColl = normalPlane;
 	// for easy projecting of vector, no div by |n|^2 in proj formula
 	nColl.normalize();
 
@@ -273,9 +413,11 @@ void Ball::collisionPlatformResponse(Platform* p, float dt)
 	Vector3 v2x = nColl*x2;					// projetion done
 	Vector3 v2y = v2 - v2x;					// perpendicular vector 
 	
-	float e = this->mRestitution;
-
-	this->mVelocity = Vector3( v1x*(m1-e*m2)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y );
+	//float e = this->mRestitution;
+	float e = p->GetRestitution();
+	float newdt = dt*0.001f;
+	v1y -= v1y*this->mFriction*newdt;
+	this->mVelocity = Vector3( v1x*(m1-e*m2)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y);
 	//this->mAcceleration = Vector3(0,0,0);
 	//this->mSumAddedForce += this->mAcceleration*(-1);
 	// use this line if the platform also has a speed.
@@ -298,10 +440,11 @@ bool Ball::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector
 {
 	Vector3 e1, e2, q, s, r;
 	u = v = t = 0;
-	float a,f, eps = 0.0001f;
+	float a,f, eps = 0.00001f;
 	e1 = p1 - p0;
 	e2 = p2 - p0;
-	q  = e2.GetCrossProduct(e2);
+	//q  = direction.GetCrossProduct(e2);
+	q  = e2.GetCrossProduct(direction);
 	a = e1.GetDotProduct(q);
 	if( a > - eps && a < eps)
 		return false;
@@ -310,9 +453,10 @@ bool Ball::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector
 	u = f*(s.GetDotProduct(q));
 	if( u < 0.0f)
 		return false;
+	//r = s.GetCrossProduct(e1);
 	r = e1.GetCrossProduct(s);
 	v = f*(direction.GetDotProduct(r));
-	if( v < 0.0 || u+v > 1.0)
+	if( v < 0.0f || u+v > 1.0f)
 		return false;
 	t = f*(e2.GetDotProduct(q));
 	return true;

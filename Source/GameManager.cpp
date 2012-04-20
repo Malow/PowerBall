@@ -8,6 +8,7 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mGe			= ge;
 	this->mNet			= NULL;
 	this->mIGM			= NULL;
+	counter = 0.0f;
 }
 GameManager::~GameManager()
 {
@@ -33,32 +34,34 @@ bool GameManager::Play(const int numPlayers)
 	this->Initialize();
 	bool running = true;
 	
-	
+	counter = 0;
 	while(running)
 	{
 		int numAlivePlayers = 0;
 				
 		float diff = mGe->Update();	
-		
+		counter += diff;
 
 		
-		//diff *= 0.05f;
+
 		/* the move of ball 1 and ball 2 should be done using a 
 		*  timer that perhaps is set to only add force every 
 		*  intervall. so we don't get a jumpy motion of the 
 		*  balls :)
+		*
+		*  Use the settings in ball to change sensitivity on moving the ball
 		*/
 		// move ball 1
 		if(mGe->GetKeyListener()->IsPressed('A'))
-			mBalls[0]->AddForce(Vector3(-10 * diff,0,0));	
+			mBalls[0]->AddForce(Vector3(- diff,0,0));	
 		if(mGe->GetKeyListener()->IsPressed('D'))
-			mBalls[0]->AddForce(Vector3(10 * diff,0,0));
+			mBalls[0]->AddForce(Vector3(diff,0,0));
 		if(mGe->GetKeyListener()->IsPressed('W'))
-			mBalls[0]->AddForce(Vector3(0,0,10 * diff));	
+			mBalls[0]->AddForce(Vector3(0,0,diff));	
 		if(mGe->GetKeyListener()->IsPressed('S'))
-			mBalls[0]->AddForce(Vector3(0,0,-10 * diff));
+			mBalls[0]->AddForce(Vector3(0,0,-diff));
 		if(mGe->GetKeyListener()->IsClicked(2))
-			mBalls[0]->AddForce(Vector3(0,90 * diff,0));
+			mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
 
 		if(mGe->GetKeyListener()->IsPressed('P'))
 			mGe->GetCamera()->moveForward(diff);
@@ -67,13 +70,13 @@ bool GameManager::Play(const int numPlayers)
 
 		// move ball 2
 		if(mGe->GetKeyListener()->IsPressed('H'))
-			mBalls[1]->AddForce(Vector3(-10 * diff,0,0));	
+			mBalls[1]->AddForce(Vector3(-diff,0,0));	
 		if(mGe->GetKeyListener()->IsPressed('K'))
-			mBalls[1]->AddForce(Vector3(10 * diff,0,0));
+			mBalls[1]->AddForce(Vector3(diff,0,0));
 		if(mGe->GetKeyListener()->IsPressed('U'))
-			mBalls[1]->AddForce(Vector3(0,0,10 * diff));	
+			mBalls[1]->AddForce(Vector3(0,0,diff));	
 		if(mGe->GetKeyListener()->IsPressed('J'))
-			mBalls[1]->AddForce(Vector3(0,0,-10 * diff));
+			mBalls[1]->AddForce(Vector3(0,0,-diff));
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
@@ -100,8 +103,12 @@ bool GameManager::Play(const int numPlayers)
 
 			}
 			// check ball[i] against platform
-			if(b1->collisionWithPlatformSimple(this->mPlatform))
-				b1->collisionPlatformResponse(this->mPlatform, diff);
+			Vector3 normalPlane;
+			if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+			{
+				
+				b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+			}
 		}
 		
 		mPlatform->Update(diff);
@@ -144,24 +151,24 @@ bool GameManager::PlayLAN(char ip[])
 					if(i != this->mNet->GetIndex())
 					{
 						if(this->mNet->IsKeyPressed('A', i))
-							mBalls[i]->AddForce(Vector3(-10 * diff,0,0));	
+							mBalls[i]->AddForce(Vector3(-diff,0,0));	
 						if(this->mNet->IsKeyPressed('D', i))
-							mBalls[i]->AddForce(Vector3(10 * diff,0,0));
+							mBalls[i]->AddForce(Vector3(diff,0,0));
 						if(this->mNet->IsKeyPressed('W', i))
-							mBalls[i]->AddForce(Vector3(0,0,10 * diff));	
+							mBalls[i]->AddForce(Vector3(0,0,diff));	
 						if(this->mNet->IsKeyPressed('S', i))
-							mBalls[i]->AddForce(Vector3(0,0,-10 * diff));
+							mBalls[i]->AddForce(Vector3(0,0,-diff));
 					}
 					else
 					{
 						if(mGe->GetKeyListener()->IsPressed('A'))
-							mBalls[i]->AddForce(Vector3(-10 * diff,0,0));	
+							mBalls[i]->AddForce(Vector3(-diff,0,0));	
 						if(mGe->GetKeyListener()->IsPressed('D'))
-							mBalls[i]->AddForce(Vector3(10 * diff,0,0));
+							mBalls[i]->AddForce(Vector3(diff,0,0));
 						if(mGe->GetKeyListener()->IsPressed('W'))
-							mBalls[i]->AddForce(Vector3(0,0,10 * diff));	
+							mBalls[i]->AddForce(Vector3(0,0,diff));	
 						if(mGe->GetKeyListener()->IsPressed('S'))
-							mBalls[i]->AddForce(Vector3(0,0,-10 * diff));
+							mBalls[i]->AddForce(Vector3(0,0,-diff));
 					}	
 					Ball* b1 = this->mBalls[i];
 					for(int j = i+1; j < this->mNumPlayers; j++)
@@ -171,9 +178,9 @@ bool GameManager::PlayLAN(char ip[])
 							b1->collisionSphereResponse(b2, diff);
 
 					}
-					// check ball[i] against platform
-					if(b1->collisionWithPlatformSimple(this->mPlatform))
-						b1->collisionPlatformResponse(this->mPlatform, diff);
+					Vector3 normalPlane;
+					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 				}
 
 				
@@ -257,16 +264,32 @@ void GameManager::Initialize()
 	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-5, 25, 0));
 	this->mIGM			= new InGameMenu(this->mGe);
 
-	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	
+	this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
+	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
 
 	for(int i = 0; i < this->mNumPlayers; i++)
 	{
 		if( i == 0)
-			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,15.0f,-5));
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-10));
 		else
-			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,15.0f,5));
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 	}
+	/*
+	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	
+	this->mBalls		= new Ball*[this->mNumPlayers];
+
+	for(int i = 0; i < this->mNumPlayers; i++)
+	{
+		if( i == 0)
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-5));
+		else
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
+	}
+	*/
 	// wait until everything is loaded and then drop the balls from hight above
 	float diff = mGe->Update();
 	while(diff < 1000)

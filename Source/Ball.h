@@ -20,8 +20,11 @@ private:
 	Vector3		mVelocity;
 	float		mMaxVelocity;
 	Vector3		mAcceleration;
-	Vector3		mAcceleration2;//insert physics.
 	float		mRestitution;
+	float		mForcePress;
+	float		mInTheAir;
+	float	    mFriction;
+	ofstream file;
 	//vector3	mForward;
 
 public:
@@ -85,6 +88,9 @@ public:
 	/*! Sets the acceleration value. */
 	void SetAcceleration(Vector3 acc) { this->mAcceleration = acc; }
 
+	/*! Sets if the ball is in the air. */
+	void SetInTheAir(bool isInAir) { this->mInTheAir = isInAir; }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -95,7 +101,7 @@ public:
 	/*! Returns false if the position of the ball is outside the game field. */
 	bool IsAlive() const;
 	/*! Adds a force to this ball. */
-	void AddForce(const Vector3 &force) { this->mSumAddedForce += force*10.0f; }
+	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * 10.0f * this->mForcePress; }
 
 	/*! Simple Collision Detection between Sphere and Sphere. */
 	bool collisionWithSphereSimple(Ball* b1);
@@ -104,10 +110,10 @@ public:
 	void collisionSphereResponse(Ball* b1, float dt);
 
 	/*! Simple Collision Detection between Sphere and Platform. */
-	bool collisionWithPlatformSimple(Platform* p);
+	bool collisionWithPlatformSimple(Platform* p, Vector3 &normal);
 
-	/*! Sphere To Planform Collision Response. */
-	void collisionPlatformResponse(Platform* p, float dt);
+	/*! Sphere To Platform Collision Response. */
+	void collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt);
 
 	/*! Rotates the ball-mesh. */
 	void Rotate(Vector3 direction);

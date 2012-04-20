@@ -4,9 +4,10 @@ Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh		     = GetGraphicsEngine()->CreateMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
 	this->mShrink	     = 0.01f;
-	this->mRadius	     = 10.0f;
+	this->mRadius	     = 100000.0f;
 	this->mScaledRadius  = this->mRadius;
 	this->mMass			 = 10000;
+	this->mRestitution   = 0.60f;
 	
 }
 Platform::~Platform()
@@ -41,9 +42,11 @@ Vector3 Platform::GetPositionXZ() const
 void Platform::Update(const float dt)
 {
 	//this->mMesh->RotateAxis(D3DXVECTOR3(0,1,0), dt*0.01);
-	float fraction = 1.0f-this->mShrink*dt*0.05f*0.05;
+	
+	float fraction = 1.0f-this->mShrink*dt*0.001;//0.05*0.05
 	this->mScaledRadius *= fraction;//this->mScaledRadius/this->mRadius;
 	this->mMesh->Scale(D3DXVECTOR3(fraction,1,fraction));
+	
 }
 /*void Platform::Update(const float dt)
 {
