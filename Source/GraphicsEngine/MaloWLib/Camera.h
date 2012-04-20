@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "GraphicsEngineParameters.h"
 #include "Mesh.h"
+#include "CursorControl.h"
 
 class Camera
 {

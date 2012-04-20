@@ -3,7 +3,7 @@
 #include "GraphicsEngine.h"
 #include "InGameMenu.h"
 
-#include "..\Source\GraphicsEngine\MaloWLib\CamRecording.h"
+#include "CamRecording.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
@@ -51,13 +51,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		testBall->Rotate(D3DXVECTOR3(2*PI, 0, 0) * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
 		//testBall->RotateAxis(D3DXVECTOR3(1, 0, 0),  2* PI * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
+		CursorControl cc;
 
 		if(eng->GetKeyListener()->IsPressed('W'))
 			eng->GetCamera()->moveForward(diff);
 		if(eng->GetKeyListener()->IsPressed(VK_RETURN))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
-			eng->GetCamera()->moveLeft(diff);
+			cc.SetVisibility(true);
 		if(eng->GetKeyListener()->IsPressed('A'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
-			eng->GetCamera()->moveLeft(diff);
+			cc.SetVisibility(false);
 		if(eng->GetKeyListener()->IsPressed('S'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
 			eng->GetCamera()->moveBackward(diff);
 		if(eng->GetKeyListener()->IsPressed('D'))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys

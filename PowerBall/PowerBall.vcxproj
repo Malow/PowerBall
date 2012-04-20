@@ -66,6 +66,7 @@
     <ClInclude Include="..\Source\Ball.h" />
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GameNetwork.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\CursorControl.h" />
     <ClInclude Include="..\Source\GraphicsEngine\FXAA.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Image.h" />

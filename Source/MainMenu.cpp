@@ -89,7 +89,10 @@ bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
 	bool IsClicked = false;
-	ShowCursor(FALSE);
+
+	CursorControl cc;
+	cc.SetVisibility(false);
+
 	float dt;
 	float updateMouse = 50;
 	this->mGe->GetKeyListener()->SetMousePosition(D3DXVECTOR2((float)this->mGe->GetEngineParameters().windowWidth / 2, (float)this->mGe->GetEngineParameters().windowHeight / 3));
@@ -108,7 +111,10 @@ bool MainMenu::Run()
 		if(this->mCurrentSet == MAINMENU)
 		{
 			this->KeyBoardSteering(IsClicked);
-			//this->mGe->GetKeyListener()->ShowCursor(false);
+
+			CursorControl cc;
+			cc.SetVisibility(false);
+
 			/*Mouse Update*/
 			if(updateMouse < 0)
 			{
@@ -120,7 +126,10 @@ bool MainMenu::Run()
 			else{ updateMouse -= dt; }
 		}
 		else if(this->mCurrentSet == OPTIONS_GAMEPLAY)
-			int i = 0; //this->mGe->GetKeyListener()->ShowCursor(true);
+		{
+			CursorControl cc;
+			cc.SetVisibility(true);
+		}
 
 		/*If mouse is clicked*/
 		if(IsClicked && !mousePressed)
@@ -142,6 +151,9 @@ bool MainMenu::Run()
 					tempReturnEvent->GetSet(tempEventSet);
 					if(tempEventSet == PLAY)
 					{
+						CursorControl cc;
+						cc.SetVisibility(true);
+
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 						//this->mGm->PlayLAN("127.0.0.1"); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)

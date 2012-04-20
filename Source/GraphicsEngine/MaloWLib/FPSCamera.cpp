@@ -6,7 +6,9 @@ FPSCamera::FPSCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, 
 	this->forward = D3DXVECTOR3(0, 0, 1);
 	this->DistanceFromTarget = 6.0f;
 
-	ShowCursor(FALSE);
+	CursorControl cc;
+	cc.SetVisibility(false);
+
 	POINT np;
 	np.x = this->params.windowWidth/2;
 	np.y = this->params.windowHeight/2;

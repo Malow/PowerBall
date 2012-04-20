@@ -8,6 +8,8 @@ MaloW::KeyListener* GraphicsEngine::kl = NULL;
 
 GraphicsEngine* gfxeng::eng = NULL;
 
+bool CursorControl::visable = true;
+
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {
 	if(!this->initDone)
