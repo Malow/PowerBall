@@ -82,6 +82,8 @@ Mesh* MorphAnimation::GetInterpolatedMesh()
 		//**
 		this->mKeyFrames[firstIndex]->GetStrips()->get(i)->getVerts();
 	}
+
+	return NULL; //**
 }
 
 //set
