@@ -14,8 +14,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine
 	GraphicsEngineParams params;
-	params.windowHeight = 600;
-	params.windowWidth = 800;
+	params.windowHeight = 900;
+	params.windowWidth = 1600;
 	params.CamType = RTS;
 	
 	// Create the graphics engine
@@ -31,7 +31,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
 	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
-	Mesh* testCylinder = eng->CreateMesh("Media/KOTHMap1.obj", D3DXVECTOR3(10, 10, 10));
+	Mesh* testCylinder = eng->CreateMesh("Media/CTFMap1.obj", D3DXVECTOR3(10, 10, 10));
 	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
