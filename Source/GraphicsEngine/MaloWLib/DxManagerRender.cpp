@@ -15,7 +15,7 @@ void DxManager::Life()
 {
 	while(this->stayAlive)
 	{
-		if(MaloW::ProcessEvent* ev = this->PeekEvent())
+		while(MaloW::ProcessEvent* ev = this->PeekEvent())
 		{
 			if(dynamic_cast<RendererEvent*>(ev) != NULL)
 			{
