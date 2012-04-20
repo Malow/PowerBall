@@ -138,7 +138,7 @@ void ObjLoader::trianglulate(string& filename)
 			line = line.substr(1);
 			int NrOfSlashes = 0;
 			int pos = 0;
-			while(pos < line.length())
+			while(pos < (int)line.length())
 			{
 				if(line[pos] == '/')
 					NrOfSlashes++;
@@ -167,7 +167,7 @@ void ObjLoader::trianglulate(string& filename)
 			{
 				int NrOfSlashes = 0;
 				int pos = 0;
-				while(pos < line.length())
+				while(pos < (int)line.length())
 				{
 					if(line[pos] == '/')
 						NrOfSlashes++;
@@ -537,7 +537,7 @@ void ObjLoader::CreateBinaryFile(string filename, ObjData* returndata)
 	{
 		FaceData fd = returndata->faces->get(i);
 		char materialName[50] = {0};
-		for(int u = 0; u < fd.material.size(); u++)
+		for(int u = 0; u < (int)fd.material.size(); u++)
 			materialName[u] = fd.material[u];
 
 		binfile.write((char*)(&materialName), sizeof(materialName));
@@ -556,14 +556,14 @@ void ObjLoader::CreateBinaryFile(string filename, ObjData* returndata)
 	{
 		MaterialData md = returndata->mats->get(i);
 		char materialName[50] = {0};
-		for(int u = 0; u < md.name.size(); u++)
+		for(int u = 0; u < (int)md.name.size(); u++)
 			materialName[u] = md.name[u];
 
 		binfile.write((char*)(&materialName), sizeof(materialName));
 
 
 		char texture[50] = {0};
-		for(int u = 0; u < md.texture.size(); u++)
+		for(int u = 0; u < (int)md.texture.size(); u++)
 			texture[u] = md.texture[u];
 
 		binfile.write((char*)(&texture), sizeof(texture));

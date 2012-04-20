@@ -91,7 +91,7 @@ bool Terrain::LoadAndApplyHeightMap(string fileName)
 		fin.close();
 
 		Vertex* verts = this->strips->get(0)->getVerts();
-		for(int i = 0; i < vertexHeights.size(); i++)
+		for(int i = 0; i < (int)vertexHeights.size(); i++)
 		{
 			verts[i].pos.y *= (float)vertexHeights[i]/10;
 		}

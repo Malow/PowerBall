@@ -470,8 +470,8 @@ void DxManager::RenderQuadDeferred()
 	this->Shader_DeferredQuad->SetMatrix("CameraProj", p);
 	this->Shader_DeferredQuad->SetFloat("CameraFar", 200.0f);
 	this->Shader_DeferredQuad->SetFloat("CameraNear", 1.0f);
-	this->Shader_DeferredQuad->SetFloat("ScreenWidth", this->params.windowWidth);
-	this->Shader_DeferredQuad->SetFloat("ScreenHeight", this->params.windowHeight);
+	this->Shader_DeferredQuad->SetFloat("ScreenWidth", (float)this->params.windowWidth);
+	this->Shader_DeferredQuad->SetFloat("ScreenHeight", (float)this->params.windowHeight);
 	this->Shader_DeferredQuad->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
 	this->Shader_DeferredQuad->Apply(0);
