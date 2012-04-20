@@ -21,7 +21,7 @@ class CamRecording
 		//For rendering:
 		ID3D11Device*			gDevice;
 		ID3D11DeviceContext*	gDeviceContext;
-		Shader*					gShader;
+		Shader*					gShader;//**outside class**
 
 		//Local variables:
 		//For recording/playing:
