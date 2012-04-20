@@ -73,6 +73,7 @@ namespace MaloW
 
 		long getID() { return this->id; }
 		long getNrOfProcs() { return this->nextPID; }
+		int GetEventQueueSize() const { return this->EvQueue->size(); }
 
 		static unsigned long __stdcall threadProc(void* p)
 		{

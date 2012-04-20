@@ -62,6 +62,7 @@ private:
 	float fpsTimer;
 
 	bool keepRunning;
+	bool loading;
 
 	GraphicsEngineParams parameters;
 
@@ -108,6 +109,12 @@ public:
 
 	/*! Updates the Camera and takes care of all key-inputs and returns diff in milliseconds (47.0f as return = 47 ms, IE. NOT SECONDS) */
 	float Update();
+
+	/*! 
+	Takes control of the thread and renders a loading-screen with a progress bar. Returns once all objects that have been sent to load is loaded.
+	To use it first make all CreateMesh()-calls that you need and then call LoadingScreen(.,.) directly after, and it will return once all the meshes are
+	created and being rendered in the background. */
+	void LoadingScreen(string BackgroundTexture, string ProgressBarTexture);
 
 
 	bool isRunning();

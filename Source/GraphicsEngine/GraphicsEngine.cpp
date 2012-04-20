@@ -21,6 +21,7 @@ GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance,
 		this->hWnd = NULL;
 
 		this->keepRunning = true;
+		this->loading = false;
 
 		LARGE_INTEGER li;
 		if(!QueryPerformanceFrequency(&li))
@@ -286,6 +287,7 @@ void GraphicsEngine::Life()
 	{
 		if(MaloW::ProcessEvent* ev = this->WaitEvent())
 		{
+			this->loading = true;
 			if(dynamic_cast<LoadMeshEvent*>(ev) != NULL)
 			{
 				string filename = ((LoadMeshEvent*)ev)->GetFileName();
@@ -307,6 +309,9 @@ void GraphicsEngine::Life()
 			}
 
 			delete ev;
+
+			if(this->GetEventQueueSize() == 0)
+				this->loading = false;
 		}
 	}
 }
@@ -314,4 +319,31 @@ void GraphicsEngine::Life()
 void GraphicsEngine::CreateSkyBox(string texture)
 {
 	this->dx->CreateSkyBox(texture);
+}
+
+void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarTexture)
+{
+	Image* bg = this->CreateImage(D3DXVECTOR2(0,0), D3DXVECTOR2(this->parameters.windowWidth,this->parameters.windowHeight), BackgroundTexture);
+	Image* pb = this->CreateImage(D3DXVECTOR2((this->parameters.windowWidth / 4.0f), ((this->parameters.windowHeight * 3.0f) / 4.0f)), D3DXVECTOR2(0, this->parameters.windowHeight / 10.0f), ProgressBarTexture);
+
+	int TotalItems = this->GetEventQueueSize();
+
+	float dx = (this->parameters.windowWidth / 2.0f) / TotalItems;
+	float y = this->parameters.windowHeight / 10.0f;
+
+
+	bool go = true;
+	while(go)
+	{
+		float diff = this->Update();
+
+		int ItemsToGo = this->GetEventQueueSize();
+		
+		pb->SetDimensions(D3DXVECTOR2(dx * (TotalItems - ItemsToGo), y));
+		if(!this->loading)
+			go = false;
+	}
+
+	this->DeleteImage(pb);
+	this->DeleteImage(bg);
 }

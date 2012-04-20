@@ -23,6 +23,5 @@ public:
 	ID3D11ShaderResourceView* GetTexture() const { return this->texture; }
 	void SetTexture(ID3D11ShaderResourceView* text) { this->texture = text; }
 	D3DXVECTOR2 GetDimensions() const { return this->dimensions; }
-	float GetAlphaAt(int x, int y);
-
+	void SetDimensions(D3DXVECTOR2 dims) { this->dimensions = dims; }
 };
