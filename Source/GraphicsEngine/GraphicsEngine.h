@@ -13,8 +13,6 @@ Singleton.
 #include "Image.h"
 
 
-
-
 // Class for communication between processes for loading meshes
 class LoadMeshEvent : public MaloW::ProcessEvent
 {
@@ -86,7 +84,7 @@ public:
 	Mesh* CreateMesh(string filename, D3DXVECTOR3 pos);
 
 
-	Light* CreateLight(D3DXVECTOR3 pos);
+	Light* CreateLight(D3DXVECTOR3 pos, bool UseShadowMap = true);
 	void DeleteLight(Light* light) { this->dx->DeleteLight(light); }
 	Terrain* CreateTerrain(D3DXVECTOR3 position, D3DXVECTOR3 dimension, std::string texture, string heightmap, int vertexSize = 256);
 
@@ -126,8 +124,6 @@ public:
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }
 
-	void MoveLight(int id, D3DXVECTOR3 moveBy) { this->dx->MoveLight(id, moveBy); }
-	void SetShadowMapQuality(int quality) { this->dx->ChangeShadowMapSize(quality); }
 	virtual void Life();
 };
 

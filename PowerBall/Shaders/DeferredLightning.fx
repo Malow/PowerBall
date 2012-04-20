@@ -44,7 +44,12 @@ BlendState SrcAlphaBlendingAdd
 //-----------------------------------------------------------------------------------------
 // Input and Output Structures
 //-----------------------------------------------------------------------------------------
-
+cbuffer ef
+{
+	float SMAP_DX;
+	float PCF_SIZE;
+	float PCF_SIZE_SQUARED;
+};
 
 
 
@@ -117,17 +122,6 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	float4 DiffuseColor = Texture.Sample(linearSampler, input.tex);		
 	float4 NormsAndDepth = NormalAndDepth.Sample(linearSampler, input.tex);
 	
-	
-	if(NormsAndDepth.w < -0.5f)
-	{
-		//return DiffuseColor;			// Fråga stefan! Decreasar FPS, ska increasa för att den ska skippa ljusberäkningar! Den returnar inte här utan den gör allt under också, fast den returnar colorn här
-	}
-	if(NormsAndDepth.w < -0.5f)
-	{
-		//float4 asd = ShadowMap[500].Sample(linearSampler, input.tex);		// Garantued crash if it comes here
-	}
-
-
 	float4 WorldPos = Position.Sample(linearSampler, input.tex);
 
 	DiffuseColor.w = 1.0f;
@@ -135,9 +129,6 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	float4 AmbientLight = float4(DiffuseColor.xyz * 0.5f, 1.0f);
 	float SpecularPower = Specular.Sample(linearSampler, input.tex).w;
 	float4 SpecularColor = float4(Specular.Sample(linearSampler, input.tex).xyz, 1.0f);
-
-
-	float PCF_SIZE = 3.0f;								////// Not able to move this to cbuffer, why?
 
 	float diffuseLighting = 0.0f;
 	float specLighting = 0.0f;
@@ -168,7 +159,11 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		float depth = posLight.z / posLight.w;
 
 		float SHADOW_EPSILON = 0.00001f;			////////////// PUT THIS WHERE?
-		
+
+
+		//float PCF_SIZE = 3.0f;								////// Not able to move this to cbuffer, why?
+
+
 		// PCF
 		float shadow = 0.0f;
 		if(smTex.x < 0 || smTex.x > 1 || smTex.y < 0 || smTex.y > 1)
@@ -177,14 +172,14 @@ float4 PSScene(PSSceneIn input) : SV_Target
 			shadow = 1.0f;
 		else
 		{
-			[unroll] for(float s = 0; s < PCF_SIZE; s++)
+			for(float s = 0; s < PCF_SIZE; s++)
 			{
-				[unroll] for(float q = 0; q < PCF_SIZE; q++)
+				for(float q = 0; q < PCF_SIZE; q++)
 				{
-					shadow += (ShadowMap[i].Sample(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2))).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;
+					shadow += (ShadowMap[i].SampleLevel(shadowMapSampler, smTex + float2(SMAP_DX * (s - PCF_SIZE/2) , SMAP_DX * (q - PCF_SIZE/2)), 0).r + SHADOW_EPSILON < depth) ? 0.0f : 1.0f;
 				}
 			}
-			shadow /= PCF_SIZE_SQUARED;
+			shadow *= PCF_SIZE_SQUARED;
 		}
 
 
@@ -197,7 +192,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 			speclight /= coef / 10.0f;
 			*/
 		speclight /= coef;
-
+		
 		difflight *= shadow;
 		speclight *= shadow;
 		
@@ -210,6 +205,17 @@ float4 PSScene(PSSceneIn input) : SV_Target
 
 	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), DiffuseColor.w);
 
+	
+
+
+
+	// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
+	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor return without lightcalcs.
+		finalColor = DiffuseColor;
+
+	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor return without lightcalcs.
+		finalColor = DiffuseColor;
+	
 	
 	/*
 	// Basic fog:
@@ -225,13 +231,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		finalColor = float4(0.5, 0.5, 0.5, 1.0f);
 	*/
 
-	// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
-	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
-
-	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
-
+	
 	//finalColor = SSAO(input.Pos.xy, NormalAndDepth);
 
 	finalColor = Lava(finalColor, WorldPos, NormsAndDepth.w);

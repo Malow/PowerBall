@@ -38,17 +38,17 @@ enum LightType
 		int ShadowMapHeight;
 		D3DXMATRIX ViewProj;
 
-		ID3D11Texture2D* shadowMap[5];
-		ID3D11DepthStencilView* shadowMapDepthView[5];
-		ID3D11ShaderResourceView* shadowMapSRView[5];
-		D3D11_VIEWPORT ShadowMapViewPort[5];
+		ID3D11Texture2D* shadowMap;
+		ID3D11DepthStencilView* shadowMapDepthView;
+		ID3D11ShaderResourceView* shadowMapSRView;
+		D3D11_VIEWPORT ShadowMapViewPort;
 
 	public:
 		Light();
 		Light(D3DXVECTOR3 pos, LightType type = POINT_LIGHT);
 		virtual ~Light();
 
-		HRESULT InitShadowMap(ID3D11Device* g_Device);
+		HRESULT InitShadowMap(ID3D11Device* g_Device, int quality);
 
 		D3DXMATRIX GetViewProjMatrix();
 		void SetViewProjMatrix(D3DXMATRIX vp) { this->ViewProj = vp; }
@@ -59,7 +59,7 @@ enum LightType
 		void SetPosition(D3DXVECTOR3 pos) { this->pos = pos; }
 		D3DXVECTOR3 GetPosition() const { return this->pos; }
 		void Move(D3DXVECTOR3 moveBy) { this->pos += moveBy; }
-		void SetLookAt(D3DXVECTOR3 la) { this->lookAt = la; }
+		void SetLookAt(D3DXVECTOR3 la);
 		D3DXVECTOR3 GetLookAt() const { return this->lookAt; }
 		void SetUp(D3DXVECTOR3 up) { this->up = up; }
 		D3DXVECTOR3 GetUp() const { return this->up; }
@@ -69,10 +69,10 @@ enum LightType
 
 
 		bool IsUsingShadowMap() const { return this->UseShadowMap; }
-		D3D11_VIEWPORT GetShadowMapViewPort(int pos) const { return this->ShadowMapViewPort[pos]; }
-		ID3D11ShaderResourceView* GetShadowMapSRV(int pos) const { return this->shadowMapSRView[pos]; }
-		ID3D11DepthStencilView* GetShadowMapDSV(int pos) const { return this->shadowMapDepthView[pos]; }
-		ID3D11Texture2D* GetShadowMap(int pos) const { return this->shadowMap[pos]; }
+		D3D11_VIEWPORT GetShadowMapViewPort() const { return this->ShadowMapViewPort; }
+		ID3D11ShaderResourceView* GetShadowMapSRV() const { return this->shadowMapSRView; }
+		ID3D11DepthStencilView* GetShadowMapDSV() const { return this->shadowMapDepthView; }
+		ID3D11Texture2D* GetShadowMap() const { return this->shadowMap; }
 	};
 //};
 

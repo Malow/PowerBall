@@ -14,6 +14,8 @@ class GraphicsEngineParams
 public:
 	int windowWidth;
 	int windowHeight;
+	int ShadowMapSettings;
+	int FXAAQuality;
 	MaloW::KeyListener* kl;
 	CameraType CamType;
 
@@ -21,6 +23,8 @@ public:
 	{
 		this->windowWidth = 1024;
 		this->windowHeight = 768;
+		this->ShadowMapSettings = 0;
+		this->FXAAQuality = 0;
 		this->kl = NULL;
 		this->CamType = FPS;
 	}

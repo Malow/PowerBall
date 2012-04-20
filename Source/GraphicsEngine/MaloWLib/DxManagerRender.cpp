@@ -22,9 +22,13 @@ void DxManager::Life()
 				string msg = ((RendererEvent*)ev)->getMessage();
 				if(msg == "Add Mesh")
 					this->objects.add(((RendererEvent*)ev)->GetMesh());
+				else if(msg == "Add Light with shadows")
+				{
+					((RendererEvent*)ev)->GetLight()->InitShadowMap(this->Dx_Device, this->params.ShadowMapSettings);
+					this->lights.add(((RendererEvent*)ev)->GetLight());
+				}
 				else if(msg == "Add Light")
 				{
-					((RendererEvent*)ev)->GetLight()->InitShadowMap(this->Dx_Device);
 					this->lights.add(((RendererEvent*)ev)->GetLight());
 				}
 				else if(msg == "Delete Mesh")
@@ -138,10 +142,10 @@ void DxManager::RenderShadowMap()
 	// Generate and send shadowmaps to the main-shader
 	for (int l = 0; l < this->lights.size(); l++)
 	{
-		Dx_DeviceContext->OMSetRenderTargets(0, 0, this->lights[l]->GetShadowMapDSV(this->currentShadowMapSize));
-		D3D11_VIEWPORT wp = this->lights[l]->GetShadowMapViewPort(this->currentShadowMapSize);
+		Dx_DeviceContext->OMSetRenderTargets(0, 0, this->lights[l]->GetShadowMapDSV());
+		D3D11_VIEWPORT wp = this->lights[l]->GetShadowMapViewPort();
 		Dx_DeviceContext->RSSetViewports(1, &wp);
-		Dx_DeviceContext->ClearDepthStencilView(this->lights[l]->GetShadowMapDSV(this->currentShadowMapSize), D3D11_CLEAR_DEPTH, 1.0f, 0);
+		Dx_DeviceContext->ClearDepthStencilView(this->lights[l]->GetShadowMapDSV(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 		for(int i = 0; i < this->objects.size(); i++)
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
@@ -169,45 +173,61 @@ void DxManager::RenderShadowMap()
 					Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
 			}
 		}
-		this->Shader_ForwardRendering->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV(this->currentShadowMapSize));
 		D3DXMATRIX vp = this->lights[l]->GetViewProjMatrix();
+
+		/*
+		// Forward
+		this->Shader_ForwardRendering->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV());
 		this->Shader_ForwardRendering->SetStructMemberAtIndexAsMatrix(l, "lights", "LightViewProj", vp);
 		this->Shader_ForwardRendering->SetStructMemberAtIndexAsFloat4(l, "lights", "LightPosition", D3DXVECTOR4(this->lights[l]->GetPosition(), 1));
 		this->Shader_ForwardRendering->SetStructMemberAtIndexAsFloat4(l, "lights", "LightColor", D3DXVECTOR4(this->lights[l]->GetColor(), 1));
 		this->Shader_ForwardRendering->SetStructMemberAtIndexAsFloat(l, "lights", "LightIntensity", this->lights[l]->GetIntensity());
+		*/
 
 		// For deferred:
-		this->Shader_DeferredLightning->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV(this->currentShadowMapSize));
+		this->Shader_DeferredLightning->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV());
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsMatrix(l, "lights", "LightViewProj", vp);
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat4(l, "lights", "LightPosition", D3DXVECTOR4(this->lights[l]->GetPosition(), 1));
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat4(l, "lights", "LightColor", D3DXVECTOR4(this->lights[l]->GetColor(), 1));
 		this->Shader_DeferredLightning->SetStructMemberAtIndexAsFloat(l, "lights", "LightIntensity", this->lights[l]->GetIntensity());
-
+		
+		/*
 		// For deferred quad:
-		this->Shader_DeferredQuad->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV(this->currentShadowMapSize));
+		this->Shader_DeferredQuad->SetResourceAtIndex(l, "ShadowMap", this->lights[l]->GetShadowMapSRV());
 		this->Shader_DeferredQuad->SetStructMemberAtIndexAsMatrix(l, "lights", "LightViewProj", vp);
 		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat4(l, "lights", "LightPosition", D3DXVECTOR4(this->lights[l]->GetPosition(), 1));
 		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat4(l, "lights", "LightColor", D3DXVECTOR4(this->lights[l]->GetColor(), 1));
 		this->Shader_DeferredQuad->SetStructMemberAtIndexAsFloat(l, "lights", "LightIntensity", this->lights[l]->GetIntensity());
-
+		*/
 	}
-	float PCF_SIZE = 3.0f;
-	this->Shader_ForwardRendering->SetFloat("PCF_SIZE", (float)(int)PCF_SIZE);
-	this->Shader_ForwardRendering->SetFloat("PCF_SIZE_SQUARED", PCF_SIZE * PCF_SIZE);
-	this->Shader_ForwardRendering->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->currentShadowMapSize)));
+	
+	float PCF_SIZE = (float)this->params.ShadowMapSettings + 1;
+	float PCF_SQUARED = 1 / (PCF_SIZE * PCF_SIZE);
+
+	/*
+	// Forward
+	this->Shader_ForwardRendering->SetFloat("PCF_SIZE", PCF_SIZE);
+	this->Shader_ForwardRendering->SetFloat("PCF_SIZE_SQUARED", PCF_SQUARED);
+	this->Shader_ForwardRendering->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->params.ShadowMapSettings/2)));
 	this->Shader_ForwardRendering->SetFloat("NrOfLights", (float)this->lights.size());
+	*/
 
+	
 	// Deferred:
-	this->Shader_DeferredLightning->SetFloat("PCF_SIZE", (float)(int)PCF_SIZE);
-	this->Shader_DeferredLightning->SetFloat("PCF_SIZE_SQUARED", PCF_SIZE * PCF_SIZE);
-	this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->currentShadowMapSize)));
+	this->Shader_DeferredLightning->SetFloat("PCF_SIZE", PCF_SIZE);
+	this->Shader_DeferredLightning->SetFloat("PCF_SIZE_SQUARED", PCF_SQUARED);
+	//this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->params.ShadowMapSettings/2)));
+	this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / 256.0f);
 	this->Shader_DeferredLightning->SetFloat("NrOfLights", (float)this->lights.size());
-
+	
+	
+	/*
 	// for deferred quad:
-	this->Shader_DeferredQuad->SetFloat("PCF_SIZE", (float)(int)PCF_SIZE);
-	this->Shader_DeferredQuad->SetFloat("PCF_SIZE_SQUARED", PCF_SIZE * PCF_SIZE);
-	this->Shader_DeferredQuad->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->currentShadowMapSize)));
+	this->Shader_DeferredQuad->SetFloat("PCF_SIZE", PCF_SIZE);
+	this->Shader_DeferredQuad->SetFloat("PCF_SIZE_SQUARED", PCF_SQUARED);
+	this->Shader_DeferredQuad->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->params.ShadowMapSettings/2)));
 	this->Shader_DeferredQuad->SetFloat("NrOfLights", (float)this->lights.size());
+	*/
 }
 
 void DxManager::RenderForward()
@@ -217,7 +237,7 @@ void DxManager::RenderForward()
 	view = this->camera->GetViewMatrix();
 	proj = this->camera->GetProjectionMatrix();
 
-
+	
 	//clear render target
 	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
 	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
@@ -269,7 +289,7 @@ void DxManager::RenderForward()
 				inds->Apply();
 			
 			this->Shader_ForwardRendering->Apply(0);
-
+			
 			// draw
 			if(inds)
 				this->Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
@@ -604,7 +624,7 @@ HRESULT DxManager::Render()
 	this->RenderShadowMap();
 
 	//this->RenderForward();
-
+	
 	this->RenderDeferredGeometry();
 
 	this->RenderDeferredSkybox();
@@ -625,24 +645,23 @@ HRESULT DxManager::Render()
 	
 	this->RenderImages();
 
-	this->RenderAntiAliasing();
-	
 
 	// Debugging:
-
 	
-	// Render RTs pictures
 	/*
+	// Render RTs pictures
 	this->Dx_DeviceContext->ClearDepthStencilView(this->Dx_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);	
 	for(int q = 0; q < this->NrOfRenderTargets; q++)
-		DrawScreenSpaceBillboard(this->Dx_DeviceContext, this->Shader_BillBoard, this->Dx_GbufferSRVs[q], q); 
+		DrawScreenSpaceBillboardDebug(this->Dx_DeviceContext, this->Shader_BillBoard, this->Dx_GbufferSRVs[q], q); 
 	*/
 	
-	// Render shadowmap pictures:
 	/*
+	// Render shadowmap pictures:
 	for(int q = 0; q < this->lights.size(); q++)
-		DrawScreenSpaceBillboard(this->Dx_DeviceContext, this->Shader_BillBoard, this->lights[q]->GetShadowMapSRV(this->currentShadowMapSize), q); 
+		DrawScreenSpaceBillboardDebug(this->Dx_DeviceContext, this->Shader_BillBoard, this->lights[q]->GetShadowMapSRV(), q); 
 	*/
+
+	this->RenderAntiAliasing();
 
 	if(FAILED(Dx_SwapChain->Present( 0, 0 )))
 		return E_FAIL;

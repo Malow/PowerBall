@@ -12,17 +12,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 #endif
 	
 	MaloW::ClearDebug();
-	// Create parameters for the graphics engine
+	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1600;
+	params.FXAAQuality = 3;			// 0 - 6
+	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = RTS;
 	
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
-
+	
 	//#define LOLTEST
 	#ifdef LOLTEST
 	
@@ -31,15 +33,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
 	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
-	Mesh* testCylinder = eng->CreateMesh("Media/CTFMap1.obj", D3DXVECTOR3(10, 10, 10));
+	Mesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(13, 20, 13));
-	Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
-	testLight->SetLookAt(testBall->GetPosition());
-	testLight2->SetLookAt(testBall->GetPosition());
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	//testLight->SetPosition(testBall->GetPosition() + D3DXVECTOR3(0, 5, 0));
+	//testLight->SetLookAt(testLight->GetPosition() - D3DXVECTOR3(0, 5, 0));
+	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
 	//Text* text = eng->CreateText("LolAwesome", D3DXVECTOR2(300, 300), 20, "Media/Fonts/1.png");
 
 	CamRecording* camRec = new CamRecording();

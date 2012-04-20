@@ -270,11 +270,14 @@ void GameManager::Initialize()
 	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, -15));
 	mGe->GetCamera()->LookAt(centerPlatform);
 	//Image* testImg = mGe->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 25, 0));
-	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 20, -5)); 
-	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 20, 5));
-	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(5, 25, 0));
-	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-5, 25, 0));
+	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
+	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
+	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 50, 20));
+	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(10, 50, 0));
+	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-10, 50, 0));
+	for(int i = 0; i < 5; i++)
+		this->mLights[i]->SetIntensity(30.0f);
+
 	this->mIGM			= new InGameMenu(this->mGe);
 
 	//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);

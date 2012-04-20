@@ -17,7 +17,6 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 
 	this->Shader_BillBoard = NULL;
 
-	this->currentShadowMapSize = 0;
 	for(int i = 0; i < NrOfRenderTargets; i++)
 	{
 		this->Dx_GbufferTextures[i] = NULL;
@@ -253,12 +252,20 @@ void DxManager::DeleteLight(Light* light)
 	this->PutEvent(re);
 }
 
-Light* DxManager::CreateLight(D3DXVECTOR3 pos)
+Light* DxManager::CreateLight(D3DXVECTOR3 pos, bool UseShadowMap)
 {
 	Light* light = new Light(pos);
 
-	RendererEvent* re = new RendererEvent("Add Light", NULL, light);
-	this->PutEvent(re);
+	if(UseShadowMap)
+	{
+		RendererEvent* re = new RendererEvent("Add Light with shadows", NULL, light);
+		this->PutEvent(re);
+	}
+	else
+	{
+		RendererEvent* re = new RendererEvent("Add Light", NULL, light);
+		this->PutEvent(re);
+	}
 
 	return light;
 }

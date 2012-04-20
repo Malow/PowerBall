@@ -113,13 +113,34 @@ inline void DrawWireFrame(MaloW::Array<Mesh*>* meshes, ID3D11Device* g_Device, I
 	delete ShadeWF;
 }
 
-inline void DrawScreenSpaceBillboard(ID3D11DeviceContext* g_DeviceContext, Shader* Shader, ID3D11ShaderResourceView* view, int ScreenPosition)
+inline void DrawScreenSpaceBillboardDebug(ID3D11DeviceContext* g_DeviceContext, Shader* Shader, ID3D11ShaderResourceView* view, int ScreenPosition)
 {
-	g_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	Shader->SetInt("pos", ScreenPosition);
+	D3DXVECTOR2 pos = D3DXVECTOR2(-1.0f, 0.5f);
+	D3DXVECTOR2 dim = D3DXVECTOR2(0.5f, 0.5f);
+
+	switch(ScreenPosition)
+	{
+	case 1:
+		pos = D3DXVECTOR2(-1.0f, 0.0f);
+		break;
+	case 2:
+		pos = D3DXVECTOR2(-1.0f, -0.5f);
+		break;
+	case 3:
+		pos = D3DXVECTOR2(-1.0f, -1.0f);
+		break;
+	}
+
+
+	Shader->SetFloat("posx", pos.x);
+	Shader->SetFloat("posy", pos.y);
+	Shader->SetFloat("dimx", dim.x);
+	Shader->SetFloat("dimy", dim.y);
+		
 	Shader->SetResource("tex2D", view);
 	Shader->Apply(0);
 	g_DeviceContext->Draw(1, 0);
+	
 	Shader->SetResource("tex2D", NULL);
 	Shader->Apply(0);
 }

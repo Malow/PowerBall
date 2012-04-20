@@ -199,9 +199,9 @@ Mesh* GraphicsEngine::CreateMesh(string filename, D3DXVECTOR3 pos, Material* mat
 	return mesh;
 }
 
-Light* GraphicsEngine::CreateLight(D3DXVECTOR3 pos)
+Light* GraphicsEngine::CreateLight(D3DXVECTOR3 pos, bool UseShadowMap)
 {
-	return this->dx->CreateLight(pos);
+	return this->dx->CreateLight(pos, UseShadowMap);
 }
 
 Terrain* GraphicsEngine::CreateTerrain(D3DXVECTOR3 position, D3DXVECTOR3 dimension, std::string texture, string heightmap, int vertexSize)

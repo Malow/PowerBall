@@ -86,7 +86,6 @@ private:
 	MaloW::Array<Light*> lights;
 	
 	// Shadow map:
-	int currentShadowMapSize;
 	Shader* Shader_ShadowMap;
 	Shader* Shader_BillBoard;
 	
@@ -144,7 +143,7 @@ public:
 
 	void createObject(Mesh* mesh);
 	Object3D* createParticleObject(ParticleMesh* mesh);
-	Light* CreateLight(D3DXVECTOR3 pos);
+	Light* CreateLight(D3DXVECTOR3 pos, bool UseShadowMap);
 	void CreateImage(Image* image, string texture);
 	void CreateText(Text* text, string font);
 	void CreateSkyBox(string texture);
@@ -158,9 +157,6 @@ public:
 
 	void SetCamera(Camera* cam) { this->camera = cam; }
 	Camera* GetCamera() const { return this->camera; }
-	
-	void MoveLight(int id, D3DXVECTOR3 moveBy) { if(id < this->lights.size()) this->lights[id]->Move(moveBy); }
-	void ChangeShadowMapSize(int index) { if(index < 5 && index > -1) this->currentShadowMapSize = index; }
 
 	int GetTriangleCount() { return this->TriangleCount; }
 };
