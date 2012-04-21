@@ -21,9 +21,9 @@ class MorphAnimation
 		float	mTime; //in seconds
 		UINT	mNrOfKeyFrames;
 		UINT	mCapacity;
+		float**	mTimeTable; //**
 		Mesh**	mKeyFrames;
 		Mesh*	mInterpolatedMesh;
-		//float	mTimeTable;
 
 	private:
 		void Expand(); //**

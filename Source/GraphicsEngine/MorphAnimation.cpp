@@ -104,3 +104,31 @@ void MorphAnimation::Update(float deltaTime)
 }
 
 
+
+
+
+//inputlayout för morph
+D3D10_INPUT_ELEMENT_DESC vertex[] =
+	{
+		{"POSITION",       0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D10_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL",         0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D10_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD",       0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D10_INPUT_PER_VERTEX_DATA, 0},
+		{"POSITION_MORPH", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0,  D3D10_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL_MORPH",   0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 12, D3D10_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD_MORPH", 0, DXGI_FORMAT_R32G32_FLOAT,    1, 24, D3D10_INPUT_PER_VERTEX_DATA, 0},
+	};												  //   ^
+													  //   |
+										//raden här specificerar vilken vertexbuffer den ska hämta från
+										//dvs, första 3 hämtar den från buffer 0 och de tre sista från buffer 1
+										//Directx 10 kan max skicka upp 8 vertexbuffer per draw call
+//De va inputlayouten, så här skickar ni in flera vertexbuffrar												
+ID3D10Buffer* vertexBuffer;
+ID3D10Buffer* vertexBuffer2;
+/*
+Initialisera buffrarna här
+*/				
+UINT strides [] = {sizeof(Vertex), sizeof(Vertex)};
+UINT offsets [] = {0, 0};
+ID3D10Buffer* vertexBuffers [] = {vertexBuffer, vertexBuffer2};
+m_Device->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);					
+										
