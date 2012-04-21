@@ -106,7 +106,7 @@ void MorphAnimation::Update(float deltaTime)
 
 
 
-
+/*
 //inputlayout för morph
 D3D10_INPUT_ELEMENT_DESC vertex[] =
 	{
@@ -124,11 +124,12 @@ D3D10_INPUT_ELEMENT_DESC vertex[] =
 //De va inputlayouten, så här skickar ni in flera vertexbuffrar												
 ID3D10Buffer* vertexBuffer;
 ID3D10Buffer* vertexBuffer2;
-/*
-Initialisera buffrarna här
-*/				
+
+//Initialisera buffrarna här
+			
 UINT strides [] = {sizeof(Vertex), sizeof(Vertex)};
 UINT offsets [] = {0, 0};
 ID3D10Buffer* vertexBuffers [] = {vertexBuffer, vertexBuffer2};
 m_Device->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);					
 										
+*/
