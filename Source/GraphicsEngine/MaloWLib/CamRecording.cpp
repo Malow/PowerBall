@@ -130,7 +130,7 @@ void CamRecording::Play()
 	if(this->mHasRecorded) 
 	{
 		this->mIsPlaying = true;
-		this->mPlayTime = (int)((((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) / 1000.0f) * this->mPlaySpeed);
+		this->mPlayTime = (int)((((this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval) * 0.001f) * this->mPlaySpeed);
 	}
 	else
 	{

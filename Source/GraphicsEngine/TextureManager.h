@@ -3,6 +3,7 @@
 //!-----------------------------------------------------
 #pragma once
 
+#include <ctime>
 #include "stdafx.h"
 
 class TextureManager

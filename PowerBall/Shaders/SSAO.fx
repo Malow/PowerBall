@@ -5,11 +5,12 @@
 //					Note that normals should be face normals to avoid false occlusion.
 //------------------------------------------------------------------------------------------------------
 
+#include "stdafx.fx"
 
 //------------------------------------------------------------------------------------------------------
 //	Global variables (non-numeric values cannot be added to constant buffers)
 //------------------------------------------------------------------------------------------------------
-Texture1D<float3> gRndTex;	//used for sampling. contains randomized 3D-vectors x,y,z[-1,1] = length[0,3]
+Texture1D<float3> rndTex;	//used for sampling. contains randomized 3D-vectors x,y,z[-1,1] = length[0,3]
 float DEPTH_EPSILON = 0.001f;
 static const uint		nrOfSamples = 8;	//**temp.**
 
@@ -18,7 +19,7 @@ static const uint		nrOfSamples = 8;	//**temp.**
 //------------------------------------------------------------------------------------------------------
 cbuffer PerFrame
 {
-	//uint		nrOfSamples;	//size of gRndTex
+	//uint		nrOfSamples;	//size of rndTex
 	//uint		width;			//width of depth map and normal map
 	//uint		height;			//height of depth map and normal map**
 	//float		radius;			//length multiplier of random-vectors**
@@ -26,38 +27,8 @@ cbuffer PerFrame
 	float4x4	projMatrix;		//projection matrix
 	float4x4    invProjMatrix;	//inverse projection matrix
 };
-cbuffer Fixed
-{
-	float3 uniRndVectors[8] = 
-	{
-		normalize(float3(0.527837, -0.085868 ,0.527837)),
-		normalize(float3(-0.040088, 0.536087, -0.040088)),
-		normalize(float3(-0.670445, -0.179949, -0.670445)),
-		normalize(float3(-0.419418, -0.616039, -0.419418)),
-		normalize(float3(0.440453, -0.639399, 0.440453)),
-		normalize(float3(-0.757088, 0.349334, -0.757088)),
-		normalize(float3(0.574619, 0.685879,0.574619)),
-		normalize(float3(0.03851, -0.939059, 0.03851)),
-		/*normalize(float3(0.527837, -0.085868 ,0.527837)),
-		normalize(float3(-0.040088, 0.536087, -0.040088)),
-		normalize(float3(-0.670445, -0.179949, -0.670445)),
-		normalize(float3(-0.419418, -0.616039, -0.419418)),
-		normalize(float3(0.440453, -0.639399, 0.440453)),
-		normalize(float3(-0.757088, 0.349334, -0.757088)),
-		normalize(float3(0.574619, 0.685879,0.574619)),
-		normalize(float3(0.03851, -0.939059, 0.03851))*/
-	};
-};
 
-//------------------------------------------------------------------------------------------------------
-//	State structures
-//------------------------------------------------------------------------------------------------------
-SamplerState PointClampSampler 
-{
-	Filter = MIN_MAG_MIP_POINT;  //**
-	AddressU = Clamp;
-	AddressV = Clamp;
-};
+
 
 
 //------------------------------------------------------------------------------------------------------
@@ -65,7 +36,7 @@ SamplerState PointClampSampler
 //------------------------------------------------------------------------------------------------------
 float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 {
-	//optimera:
+	//optimera:**
 	uint width = 0;
 	uint height = 0;
 	normalAndDepthMap.GetDimensions(width, height);
@@ -73,11 +44,10 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 	
 
 	//get normal (view space) and depth of the pixel (normalized device coordinates [0,1])
-	float2 texCoord = float2(pixel.x / width, pixel.y / height); //pixel is in screen space, so just devide by with and height
-	float4 normAndDepth = normalAndDepthMap.Sample(PointClampSampler, texCoord);
+	float2 texCoord = float2(pixel.x / width, pixel.y / height); 
+	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord);
 	
 	float4 debugColor;
-	//debugColor.w = normAndDepth.w;
 	if(normAndDepth.w > -DEPTH_EPSILON) //exclude pixels with no depth data (-1.0f)
 	{
 		debugColor = float4(1,1,1,1);
@@ -105,7 +75,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		for(uint i = 0; i < nrOfSamples; i++) //**
 		{
 			//2. add 3D-vectors to this the view position of the pixel
-			offsetVector = uniRndVectors[i];  //gRndTex.Sample(LinearSampler, (float)i);  //sample offset vector //**uniform rnd**
+			offsetVector = rndTex.Sample(LinearSampler, (float)i);  //sample offset vector
 			//check if offset vector is above surface of the pixel and within angle bias, if not, flip **flip med bias eller godta ev. förlust?**
 			if(dot(offsetVector, normAndDepth.xyz) > 0.0f)
 			{
@@ -134,7 +104,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			}*/
 
 			//4. get distance between the depth of the sample (offset position) and the depth sampled at that point
-			dist = offsetPos[i].z - normalAndDepthMap.Sample(PointClampSampler, offsetPos[i].xy).w;  
+			dist = offsetPos[i].z - normalAndDepthMap.Sample(LinearSampler, offsetPos[i].xy).w;  
 			
 			//if distance is positive, then the offset position is infront of the pixel and therefore occlude the pixel to some degree
 			if(dist > DEPTH_EPSILON) //use epsilon to avoid using samples behind the pixel

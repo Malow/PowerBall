@@ -68,6 +68,7 @@ class CamRecording
 		void SetInterval(int interval);
 		/*! Set the play speed. Normal is 1. */
 		void SetPlaySpeed(float playSpeed);
+		/*! Set the offset to the camera path. Default 0. */
 		void SetPathOffset(D3DXVECTOR3 pathOffset);
 
 		/*! Start/end recording */

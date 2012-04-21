@@ -7,6 +7,10 @@ Include file for all samplers, rasterizer states, and blend states and constant 
 #ifndef STDAFX_FX
 #define STDAFX_FX
 
+
+//------------------------------------------------------------------------------------------------------
+//	Own structures
+//------------------------------------------------------------------------------------------------------
 struct Light
 {
 	float4 LightPosition;
@@ -15,6 +19,10 @@ struct Light
 	matrix LightViewProj;
 };
 
+
+//------------------------------------------------------------------------------------------------------
+//	Constant buffers
+//------------------------------------------------------------------------------------------------------
 cbuffer EveryFrame
 {
 	matrix CameraVP;
@@ -27,6 +35,16 @@ cbuffer EveryFrame
 	//float PCF_SIZE_SQUARED;
 
 	float timer;
+};
+
+//------------------------------------------------------------------------------------------------------
+//	State structures
+//------------------------------------------------------------------------------------------------------
+SamplerState LinearSampler
+{
+	Filter = MIN_MAG_MIP_LINEAR; 
+	AddressU = Wrap;
+	AddressV = Wrap;
 };
 
 #endif

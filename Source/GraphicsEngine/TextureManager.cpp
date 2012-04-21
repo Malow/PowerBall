@@ -17,13 +17,15 @@ void TextureManager::Init(ID3D11Device* device, ID3D11DeviceContext* deviceConte
 {
 	this->gDevice = device;
 	this->gDeviceContext = deviceContext;
+	
+	srand((unsigned int)(time(NULL)));
 }
 
 
 ID3D11ShaderResourceView* TextureManager::CreateRndTex1DVec3(UINT size, float min, float max)
 {
 	HRESULT hr = S_OK;
-
+	
 	D3DXVECTOR3* randomValues = new D3DXVECTOR3[size];
 	for(UINT i = 0; i < size; i++)
 	{
