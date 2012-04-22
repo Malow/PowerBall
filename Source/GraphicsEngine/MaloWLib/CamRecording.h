@@ -21,16 +21,16 @@ class CamRecording
 		//For rendering:
 		ID3D11Device*			gDevice;
 		ID3D11DeviceContext*	gDeviceContext;
-		Shader*					gShader;//**outside class**
+		Shader*					gShader; //**outside of class**
 
 		//Local variables:
 		//For recording/playing:
 		bool						mIsRecording;
 		bool						mHasRecorded;
 		bool						mIsPlaying;
-		int							mInterval;
-		int							mPlayTime; 
-		int							mCurrentPlayTime;
+		int							mInterval; //in milliseconds
+		float						mPlayTime; //in seconds
+		float						mCurrentPlayTime; //in seconds
 		float						mPlaySpeed;
 		D3DXVECTOR3					mPathOffset;
 		TCBSpline*					mCamPosSpline;
@@ -57,10 +57,10 @@ class CamRecording
 		bool IsRecording() const;
 		bool HasRecorded() const;
 		bool IsPlaying() const;
-		/*! Returns play time in milliseconds. */
-		int GetPlayTime() const;
-		/*! Returns current play time in milliseconds. */
-		int GetCurrentPlayTime() const;
+		/*! Returns play time in seconds. */
+		float GetPlayTime() const;
+		/*! Returns current play time in seconds. */
+		float GetCurrentPlayTime() const;
 		float GetPlaySpeed() const;
 		D3DXVECTOR3 GetPathOffset() const;
 
@@ -68,9 +68,13 @@ class CamRecording
 		void SetInterval(int interval);
 		/*! Set the play speed. Normal is 1. */
 		void SetPlaySpeed(float playSpeed);
-		/*! Set the offset to the camera path. Default 0. */
+		/*! Set the offset to the camera path when playing. */
 		void SetPathOffset(D3DXVECTOR3 pathOffset);
 
+		/*! Add position to the camera position-path. */
+		void AddCameraPosition(D3DXVECTOR3 position);
+		/*! Add position to the camera lookAt-path. */
+		void AddCameraLookAt(D3DXVECTOR3 lookAt);
 		/*! Start/end recording */
 		void Record(bool record);
 		/*! Start playing what has been recording. */
