@@ -63,31 +63,31 @@ inline D3DXVECTOR3 RandUnitVec3()
 #pragma comment (lib,"dxerr.lib")
 
 #ifdef _DEBUG
-/*! Graphic debug libs */
-#pragma comment(lib, "d3dx11d.lib")
-#pragma comment(lib, "Effects11D.lib")
-#pragma comment(lib, "d3dx10d.lib")
-/*! Sound debug libs */
-/*! 64 bit */
-#if _WIN64 || __amd64__ //**
-#pragma comment(lib, "fmodexL64_vc.lib")
-/*! 32 bit */
+	/*! Graphic debug libs */
+	#pragma comment(lib, "d3dx11d.lib")
+	#pragma comment(lib, "Effects11D.lib")
+	#pragma comment(lib, "d3dx10d.lib")
+	/*! Sound debug libs */
+	/*! 64 bit */
+	#if _WIN64 || __amd64__ //**
+		#pragma comment(lib, "fmodexL64_vc.lib")
+	/*! 32 bit */
+	#else
+		#pragma comment(lib, "fmodexL_vc.lib") 
+	#endif
 #else
-#pragma comment(lib, "fmodexL_vc.lib") 
-#endif
-#else
-/*! Graphic libs */
-#pragma comment(lib, "d3dx11.lib")
-#pragma comment(lib, "Effects11.lib")
-#pragma comment(lib, "d3dx10.lib")
-/*! Sound libs */
-/*! 64 bit */
-#if _WIN64 || __amd64__ //**
-#pragma comment(lib, "fmodex64_vc.lib")
-/*! 32 bit */
-#else
-#pragma comment(lib, "fmodex_vc.lib")
-#endif
+	/*! Graphic libs */
+	#pragma comment(lib, "d3dx11.lib")
+	#pragma comment(lib, "Effects11.lib")
+	#pragma comment(lib, "d3dx10.lib")
+	/*! Sound libs */
+	/*! 64 bit */
+	#if _WIN64 || __amd64__ //**
+		#pragma comment(lib, "fmodex64_vc.lib")
+	/*! 32 bit */
+	#else
+		#pragma comment(lib, "fmodex_vc.lib")
+	#endif
 #endif
 
 

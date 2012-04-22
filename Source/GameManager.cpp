@@ -306,10 +306,13 @@ void GameManager::Initialize()
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 	}
 	*/
+
 	// wait until everything is loaded and then drop the balls from hight above
+	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW
+	/*
 	float diff = mGe->Update();
 	while(diff < 1000)
 		diff += mGe->Update();
-
+		*/
 }
 
