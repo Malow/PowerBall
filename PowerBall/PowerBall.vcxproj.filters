@@ -33,6 +33,9 @@
     <Filter Include="Game Files\Network">
       <UniqueIdentifier>{30a8626e-046c-4981-b1d8-1d3210e82d03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sound Engine Files">
+      <UniqueIdentifier>{a4843cc2-979d-4f6c-9809-013d07a66b92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -163,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\MorphAnimation.cpp">
       <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
+      <Filter>Sound Engine Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +327,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\MorphAnimation.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">
+      <Filter>Sound Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

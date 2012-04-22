@@ -62,6 +62,7 @@
     <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
+    <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Ball.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="..\Source\MaloWLib\TCBSpline.h" />
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />
+    <ClInclude Include="..\Source\SoundEngine\SoundEngine.h" />
     <ClInclude Include="..\Source\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -191,8 +193,8 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\Source\SoundEngine\Include;..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Source\SoundEngine\Lib\x86;..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -200,8 +202,8 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\Source\SoundEngine\Include;..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Source\SoundEngine\Lib\x64;..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -209,8 +211,8 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\Source\SoundEngine\Include;..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Source\SoundEngine\Lib\x86;..\Source\External\D3D\Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)R32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -218,8 +220,8 @@
     <OutDir>../../PowerBallBin/</OutDir>
     <IntDir>../../PowerBallIntermediate/</IntDir>
     <ExecutablePath>..\Source\External\D3D\Utilities\bin\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\Source\SoundEngine\Include;..\Source\GraphicsEngine\MaloWLib;..\Source\MaloWLib;..\Source\GraphicsEngine;..\Source;..\Source\External\D3D\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Source\SoundEngine\Lib\x64;..\Source\External\D3D\Lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)R64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
