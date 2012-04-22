@@ -74,7 +74,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			camRec->Record(true);
 		if(eng->GetKeyListener()->IsPressed('T'))	
 			camRec->Record(false);
-		camRec->Update(0.0034f);
+		if(eng->GetKeyListener()->IsPressed('G'))	
+			camRec->Play();
+		camRec->Update(diff);
 	}
 	// Delete camera recording
 	delete camRec;
