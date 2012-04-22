@@ -250,11 +250,12 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 	Vector3 pos = Vector3(p->GetMesh()->GetPosition());
 	Vector3 posS = this->GetPositionVector3();
 	Vector3 rayDirection;
+	Vector3 scalingMesh = p->GetMesh()->GetScaling();
 	for(int i =0; i< sizeVertexS0; i+=3)
 	{
-		p0 = Vector3(verts[i].pos) + pos;
-		p1 = Vector3(verts[i+1].pos) +pos;
-		p2 = Vector3(verts[i+2].pos) + pos;
+		p0 = Vector3(verts[i].pos).GetComponentMultiplication(scalingMesh) + pos;
+		p1 = Vector3(verts[i+1].pos).GetComponentMultiplication(scalingMesh) +pos;
+		p2 = Vector3(verts[i+2].pos).GetComponentMultiplication(scalingMesh) + pos;
 		v1 = p1-p0;
 		v2 = p2-p0;
 		rayDirection = v1.GetCrossProduct(v2);
@@ -262,16 +263,6 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 		float tempLength;
 		if(RayTriIntersect(origin , rayDirection, p0, p1, p2, u, v, t) )
 		{
-			/*
-			v1 = p1-p0;
-			v2 = p2-p0;
-			normal = v1.GetCrossProduct(v2);			
-			normal.normalize();
-			
-			Vector3 ny = origin - p0;
-			Vector3 projN = normal*ny.GetDotProduct(normal);
-			float tempLength = projN.GetLength();
-			*/
 			normal = rayDirection;
 			Vector3 ny = origin - p0;
 			Vector3 projN = normal*ny.GetDotProduct(normal);
@@ -342,41 +333,6 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 	}
 	normalPlane = Vector3(0,0,0);
 	return false;
-	
-	/* start here
-	float distance = this->GetPositionVector3().GetLength;
-	if ( this->mRadius
-	return true;
-	*/
-	
-	//p->GetNormalClosestToThisPosition(this->GetPositionVector3());
-
-	/*
-	Vector3 pos = this->GetPositionVector3();
-	if(pos.y >= 14.7f || !p->IsOnPlatform(pos.x, pos.z) )
-	{
-		//this->mAcceleration = this->mAcceleration2;
-		return false;
-	}
-	*/
-	/*  we have collision but we need to move the ball so its not in the platform
-	*	solve this equation: ((pos1.y - t*v.y) = 14.7
-	*
-	*	this gives ut the following:
-	*	t = (pos1.y - 14.7)/v.y
-	*
-	*/
-	/*
-	Vector3 pos1 = this->GetPositionVector3();
-	Vector3 vec1 = this->GetVelocity();
-	float time = (pos1.y - 14.7f)/vec1.y;
-	Vector3 newPos = pos1 - vec1*time;
-	Vector3 diff = Vector3(0,0,0);
-	this->SetPosition(newPos + diff);
-	//this->SetPosition(pos1.x, 14.7f, pos1.y);
-	
-	return true;
-	*/
 }
 
 void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)

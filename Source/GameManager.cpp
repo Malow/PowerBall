@@ -279,9 +279,7 @@ void GameManager::Initialize()
 		this->mLights[i]->SetIntensity(30.0f);
 
 	this->mIGM			= new InGameMenu(this->mGe);
-
-	//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
-	
+	/*
 	this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
 	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
@@ -293,11 +291,24 @@ void GameManager::Initialize()
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 	}
+	*/
 	/*
-	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
-	
+	this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
+	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
 
+	for(int i = 0; i < this->mNumPlayers; i++)
+	{
+		if( i == 0)
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+		else
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,15));
+	}
+	*/
+	
+	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	this->mBalls		= new Ball*[this->mNumPlayers];
+	
 	for(int i = 0; i < this->mNumPlayers; i++)
 	{
 		if( i == 0)
@@ -305,7 +316,8 @@ void GameManager::Initialize()
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 	}
-	*/
+	
+
 
 	// wait until everything is loaded and then drop the balls from hight above
 	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW
