@@ -128,43 +128,10 @@ void Mesh::Rotate(D3DXQUATERNION quat)
 
 void Mesh::RotateAxis(D3DXVECTOR3 around, float angle)
 {
-	
-	/*
-	float q1 = around.x*sin(angle/2);
-	float q2 = around.y*sin(angle/2);
-	float q3 = around.z*sin(angle/2);
-	float q4 = cos(angle/2);
-	D3DXQUATERNION quaternion = D3DXQUATERNION(q1,q2,q3,q4);
-	this->rotQuat = quaternion;
-	D3DXQuaternionNormalize(&this->rotQuat, &this->rotQuat);
-	*/
-	D3DXQUATERNION quaternion;
+	D3DXQUATERNION quaternion = D3DXQUATERNION(0, 0, 0, 1);
 	D3DXQuaternionRotationAxis(&quaternion, &around, -angle);
-	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quaternion);
-
-	/*
-	D3DXMATRIX rotAxisMatrix;
-	//D3DXMatrixRotationQuaternion(&rotAxisMatrix, &quaternion);
 	
-	D3DXMatrixRotationAxis(&rotAxisMatrix, &around, angle);
-	D3DXVECTOR3 tempRot;
-	tempRot.x = atan2(rotAxisMatrix._32,rotAxisMatrix._33);
-
-	float m32Sq = rotAxisMatrix._32*rotAxisMatrix._32;
-	float m33Sq = rotAxisMatrix._33*rotAxisMatrix._33;
-
-	//tempRot.y = -asin(rotAxisMatrix._31);
-	tempRot.y = atan2(-rotAxisMatrix._31,sqrt(m32Sq+m33Sq));
-	tempRot.z = atan2(rotAxisMatrix._21,rotAxisMatrix._11);
-	this->rot += tempRot;
-	if( rot.x >= 2*PI)
-		rot.x -= 2*PI;
-	if( rot.y >= 2*PI)
-		rot.y -= 2*PI;
-	if( rot.z >= 2*PI)
-		rot.z -= 2*PI;
-	*/
-
+	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quaternion);
 	this->RecreateWorldMatrix();
 }
 

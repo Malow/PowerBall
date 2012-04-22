@@ -99,9 +99,13 @@ namespace MaloW
 		void normalize()
 		{
 			float length = this->GetLength();
-			this->x /= length;
-			this->y /= length;
-			this->z /= length;
+			
+			if(length > 0.0f)
+			{
+				this->x /= length;
+				this->y /= length;
+				this->z /= length;
+			}
 		}
 
 		float GetDotProduct(Vector3& compObj)

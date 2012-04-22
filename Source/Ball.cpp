@@ -428,11 +428,11 @@ void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 void Ball::Rotate(Vector3 direction)
 {
 	float angleRad = (direction.GetLength()/(2*PI*this->mRadius))*(180/PI);
-
 	Vector3 around = direction.GetCrossProduct(Vector3(0,1,0));
 	around.normalize();
 	D3DXVECTOR3 aroundD3D = D3DXVECTOR3(around.x, around.y, around.z);
 	angleRad = (direction.GetLength()/(2*PI*this->mRadius))*2*PI;
+
 	this->mMesh->RotateAxis(aroundD3D, angleRad);
 }
 
