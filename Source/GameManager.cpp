@@ -26,6 +26,7 @@ GameManager::~GameManager()
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
 	SAFE_DELETE(this->mIGM);
+	this->mGe->DeleteMesh(this->mEnemyFlag);
 }
 
 bool GameManager::Play(const int numPlayers)
@@ -204,8 +205,8 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 
 				this->mBalls[i]->Update(diff, this->mPlatform);
 				
-				if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
-					this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
+				//if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
+					//this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
 
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 				Vector3 vel = this->mBalls[i]->GetVelocity();
@@ -236,7 +237,7 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
 		}
-		//mPlatform->Update(diff*0.05);
+		mPlatform->Update(diff);
 
 
 
@@ -288,9 +289,7 @@ void GameManager::Initialize()
 		this->mLights[i]->SetIntensity(30.0f);
 
 	this->mIGM			= new InGameMenu(this->mGe);
-
-	//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
-	
+	/*
 	this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
 	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
@@ -302,11 +301,24 @@ void GameManager::Initialize()
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 	}
-	/*
-	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	*/
 	
+	this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
+	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
 
+	for(int i = 0; i < this->mNumPlayers; i++)
+	{
+		if( i == 0)
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+		else
+			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,15));
+	}
+	
+	/*
+	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+	this->mBalls		= new Ball*[this->mNumPlayers];
+	
 	for(int i = 0; i < this->mNumPlayers; i++)
 	{
 		if( i == 0)
@@ -317,8 +329,8 @@ void GameManager::Initialize()
 	*/
 	if(this->mGameMode == CTF)
 	{
-		mEnemyFlag = mGe->CreateMesh("Media/Flag.obj", D3DXVECTOR3(0,20,20));
-		mEnemyFlag->Rotate(D3DXQUATERNION(0,1,0,1));
+		mEnemyFlag = mGe->CreateMesh("Media/Flag.obj", D3DXVECTOR3(0, 17, 13));
+		mEnemyFlag->Rotate(D3DXQUATERNION(0, 0.1, 0, 1));
 	}
 	// wait until everything is loaded and then drop the balls from hight above
 	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW
@@ -330,9 +342,9 @@ void GameManager::Initialize()
 }
 void GameManager::CaptureTheFlag()
 {
-	D3DXVECTOR3 BallToFlag = D3DXVECTOR3(this->mEnemyFlag->GetPosition() - this->mBalls[0]->GetPosition());
+	D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetPosition() + D3DXVECTOR3(0, 2, 0))- this->mBalls[0]->GetPosition());
 
-	if(D3DXVec3Length(&BallToFlag) < 5)
+	if(D3DXVec3Length(&BallToFlag) < this->mBalls[0]->GetRadius())
 	{
 		this->mBalls[0]->AddItem(this->mEnemyFlag);
 	}

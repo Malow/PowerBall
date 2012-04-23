@@ -170,6 +170,10 @@ namespace MaloW
 		{
 			return this->GetDotProduct(*this);
 		}
+		Vector3 GetComponentMultiplication(const Vector3 & compVec)
+		{
+			return Vector3(this->x*compVec.x, this->y*compVec.y, this->z*compVec.z);
+		}
 	};
 };
 
