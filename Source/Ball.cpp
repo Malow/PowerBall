@@ -131,6 +131,9 @@ void Ball::Update(const float dt, Platform* platform)
 	
 	if(this->mMesh->GetPosition().y < -6)
 	{
+		if(this->mLivesLeft == 1) //Dont respawn if you lost your last life
+			this->mLivesLeft = 0;
+
 		this->mRespawnTimeLeft -= newdt;
 		if(this->mRespawnTimeLeft <= 0.0f)
 		{
