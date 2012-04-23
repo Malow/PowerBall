@@ -14,6 +14,10 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mForcePress	 = 9.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
+	this->mStartPos		 = position;
+	this->mLivesLeft	 = 2;
+	this->mRespawnTime	 = 5.0f;
+	this->mRespawnTimeLeft	= this->mRespawnTime;
 	file.open ("Verts.txt", ios::out );
 	/*
 	*	Now it is working with deltaTime, the value above are in seconds and movement
@@ -125,13 +129,22 @@ void Ball::Update(const float dt, Platform* platform)
 	// remove the forces that did push against this ball
 	this->mSumAddedForce = Vector3(0,0,0);
 	
+	if(this->mMesh->GetPosition().y < -6)
+	{
+		this->mRespawnTimeLeft -= newdt;
+		if(this->mRespawnTimeLeft <= 0.0f)
+		{
+			this->mLivesLeft--;
+			this->mMesh->SetPosition(this->mStartPos);
+			this->mVelocity = Vector3(0,0,0);
+			this->mRespawnTimeLeft = this->mRespawnTime;
+		}
 	}
+}
 bool Ball::IsAlive() const
 {
 	bool alive = false;
-	D3DXVECTOR3 pos = this->mMesh->GetPosition();
-
-	if(pos.y > -6)
+	if(this->mLivesLeft > 0)
 		alive = true;
 
 	return alive;
