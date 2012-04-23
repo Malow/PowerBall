@@ -70,6 +70,7 @@ bool InGameMenu::Run()
 	bool IsClicked = false;
 	bool mousePressed = false;
 	GUIEvent *returnEvent = NULL;
+	this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
 	while(this->mIsRunning)
 	{
 		/*If mouse is clicked*/
@@ -77,7 +78,13 @@ bool InGameMenu::Run()
 		{
 			mousePressed = true;
 		}
-
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+		{
+			this->mSets[INGAMEMENU].RemoveSetFromRenderer(this->mGe);
+			this->mIsRunning = false;
+			this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
+			return true;
+		}
 		this->mGe->Update();
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
 

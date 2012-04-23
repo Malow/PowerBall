@@ -25,6 +25,11 @@ private:
 	float		mInTheAir;
 	float	    mFriction;
 	ofstream file;
+	Mesh*		mInventory;
+	/*
+	float		mMaxNrOfItems;
+	float		mNrOfItems;
+	*/
 	//vector3	mForward;
 
 public:
@@ -64,6 +69,11 @@ public:
 	/*! Returns the balls forward vector (the direction the ball is moving). */
 	//vector3	GetForwardVector() const { return this->mForward; }
 
+	/*! Adds a item to the ball*/
+	void AddItem(Mesh* item){ this->mInventory = item; }
+
+	/*! Reset inventory*/
+	void ResetInventory(){ this->mInventory = NULL; }
 
 	//Set-Functions
 	

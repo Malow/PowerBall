@@ -11,6 +11,12 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "GraphicsEngine.h"
 #include "GameNetwork.h"
 #include "InGameMenu.h"
+enum GAMEMODE{
+	NONE,
+	CTF,
+	KOTH
+};
+
 
 class GameManager
 {
@@ -22,6 +28,8 @@ private:
 	GraphicsEngine* mGe;
 	InGameMenu*		mIGM;
 	Light*			mLights[5];
+	int				mGameMode;
+	Mesh*			mEnemyFlag;
 	float counter;
 public:
 	//constructors and destructors
@@ -32,11 +40,13 @@ public:
 	bool		Play(const int numPlayers);
 
 	/*! Starts LAN game with the assigned amount of players. */
-	bool		PlayLAN(char ip[]);
+	bool		PlayLAN(char ip[], int GameMode);
 
 private:
 
 	/*! Initializes the game. (First function-call in Play) */
 	void		Initialize();
+
+	void		CaptureTheFlag();
 
 };

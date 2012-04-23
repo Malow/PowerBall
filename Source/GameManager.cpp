@@ -8,6 +8,7 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mGe			= ge;
 	this->mNet			= NULL;
 	this->mIGM			= NULL;
+	this->mGameMode		= NULL;
 	counter = 0.0f;
 }
 GameManager::~GameManager()
@@ -120,8 +121,9 @@ bool GameManager::Play(const int numPlayers)
 	//returns to menu after some win/draw screen.
 	return true;
 }
-bool GameManager::PlayLAN(char ip[])
+bool GameManager::PlayLAN(char ip[], int GameMode)
 {
+	this->mGameMode = GameMode;
 	this->~GameManager();
 	this->mNumPlayers = 0;
 	this->Initialize();
@@ -136,7 +138,12 @@ bool GameManager::PlayLAN(char ip[])
 	while(running)
 	{
 		int numAlivePlayers = 0;
-		float diff = mGe->Update();	
+		float diff = mGe->Update();
+
+		if(mGe->GetKeyListener()->IsPressed('P'))
+			mGe->GetCamera()->moveForward(diff);
+		if(mGe->GetKeyListener()->IsClicked(1))
+			mGe->GetCamera()->moveBackward(diff);
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
@@ -258,6 +265,8 @@ bool GameManager::PlayLAN(char ip[])
 		{
 			running = false;
 		}
+		if(this->mGameMode == CTF)
+			this->CaptureTheFlag();
 	}
 	this->mNet->Close();
 	//returns to menu after some win/draw screen.
@@ -306,7 +315,11 @@ void GameManager::Initialize()
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 	}
 	*/
-
+	if(this->mGameMode == CTF)
+	{
+		mEnemyFlag = mGe->CreateMesh("Media/Flag.obj", D3DXVECTOR3(0,20,20));
+		mEnemyFlag->Rotate(D3DXQUATERNION(0,1,0,1));
+	}
 	// wait until everything is loaded and then drop the balls from hight above
 	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW
 	/*
@@ -315,4 +328,13 @@ void GameManager::Initialize()
 		diff += mGe->Update();
 		*/
 }
+void GameManager::CaptureTheFlag()
+{
+	D3DXVECTOR3 BallToFlag = D3DXVECTOR3(this->mEnemyFlag->GetPosition() - this->mBalls[0]->GetPosition());
 
+	if(D3DXVec3Length(&BallToFlag) < 5)
+	{
+		this->mBalls[0]->AddItem(this->mEnemyFlag);
+	}
+
+}
