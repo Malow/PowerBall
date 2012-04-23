@@ -71,10 +71,8 @@ class CamRecording
 		/*! Set the offset to the camera path when playing. */
 		void SetPathOffset(D3DXVECTOR3 pathOffset);
 
-		/*! Add position to the camera position-path. */
-		void AddCameraPosition(D3DXVECTOR3 position);
-		/*! Add position to the camera lookAt-path. */
-		void AddCameraLookAt(D3DXVECTOR3 lookAt);
+		/* ! Add position and lookat to path. */
+		void AddCameraWaypoint(D3DXVECTOR3 position, D3DXVECTOR3 lookAt);
 		/*! Start/end recording */
 		void Record(bool record);
 		/*! Start playing what has been recording. */

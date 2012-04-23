@@ -103,15 +103,14 @@ void CamRecording::SetPathOffset(D3DXVECTOR3 pathOffset)
 	this->mPathOffset = pathOffset;
 }
 
-//other
-void CamRecording::AddCameraPosition(D3DXVECTOR3 position)
+// other
+void CamRecording::AddCameraWaypoint(D3DXVECTOR3 position, D3DXVECTOR3 lookAt)
 {
 	this->mCamPosSpline->AddControlPoint(position);
-}
-void CamRecording::AddCameraLookAt(D3DXVECTOR3 lookAt)
-{
 	this->mCamAtSpline->AddControlPoint(lookAt);
+	this->mHasRecorded = true;
 }
+
 void CamRecording::Record(bool record)
 {
 	this->mIsRecording = record;
@@ -122,24 +121,22 @@ void CamRecording::Record(bool record)
 			CamRecording::DeletePreviousRecording();
 		}
 	}
-	else //initialize the splines when finished recording
-	{
-		HRESULT hr = S_OK;
-
+	else 
 		this->mHasRecorded = true;
-
+}
+void CamRecording::Play()
+{
+	if(this->mHasRecorded) 
+	{
+		//initialize the splines when starting play
+		HRESULT hr = S_OK;
 		hr = this->mCamPosSpline->Init();
 		if(hr == S_OK) hr = this->mCamAtSpline->Init();
 		if(FAILED(hr))
 		{
 			MaloW::Debug("CamRecording: Error: Failed to initialize spline(s)");
 		}
-	}
-}
-void CamRecording::Play()
-{
-	if(this->mHasRecorded) 
-	{
+
 		this->mIsPlaying = true;
 		this->mPlayTime = (this->mCamPosSpline->GetNrOfControlPoints() - 1) * this->mInterval * 0.001f * this->mPlaySpeed;
 	}

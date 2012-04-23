@@ -25,7 +25,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 	
-	//#define LOLTEST
+	#define LOLTEST
 	#ifdef LOLTEST
 	
 	// Example of GE useage
@@ -44,9 +44,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
 	//Text* text = eng->CreateText("LolAwesome", D3DXVECTOR2(300, 300), 20, "Media/Fonts/1.png");
 
-	CamRecording* camRec = new CamRecording();
+
+	CamRecording* camRec = new CamRecording(2000);	// How many milliseconds between each way point
 	camRec->Init(eng->GetCamera());
-	//camRec->Open("spline.txt");
+	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(8, 16, 8));
+	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 30, 0), D3DXVECTOR3(8, 16, 8));
+	camRec->AddCameraWaypoint(D3DXVECTOR3(30, 30, 30), D3DXVECTOR3(8, 16, 8));
+	camRec->AddCameraWaypoint(D3DXVECTOR3(-20, 20, 30), D3DXVECTOR3(8, 16, 8));
+	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 50, 0), D3DXVECTOR3(8, 16, 8));
+	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 20, 0), D3DXVECTOR3(8, 16, 8));
+
 
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
@@ -69,14 +76,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		if(eng->GetKeyListener()->IsClicked(1))
 			eng->GetCamera()->moveBackward(diff);
 
-
-		if(eng->GetKeyListener()->IsPressed('R'))	
-			camRec->Record(true);
-		if(eng->GetKeyListener()->IsPressed('T'))	
-			camRec->Record(false);
 		if(eng->GetKeyListener()->IsPressed('G'))	
-			camRec->Play();
-		camRec->Update(diff);
+			camRec->Play();						// Play to start moving the camera along the path
+		camRec->Update(diff);					// update needed to move the camera when play is initialized.
 	}
 	// Delete camera recording
 	delete camRec;
