@@ -197,8 +197,8 @@ bool GameManager::PlayLAN(char ip[])
 
 				this->mBalls[i]->Update(diff, this->mPlatform);
 				
-				if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
-					this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
+				//if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
+					//this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
 
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 				Vector3 vel = this->mBalls[i]->GetVelocity();
@@ -229,7 +229,7 @@ bool GameManager::PlayLAN(char ip[])
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
 		}
-		//mPlatform->Update(diff*0.05);
+		mPlatform->Update(diff);
 
 
 

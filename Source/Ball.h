@@ -25,6 +25,10 @@ private:
 	float		mInTheAir;
 	float	    mFriction;
 	ofstream file;
+	int			mLivesLeft;
+	D3DXVECTOR3	mStartPos;
+	float		mRespawnTime;
+	float		mRespawnTimeLeft;
 	//vector3	mForward;
 
 public:
@@ -60,6 +64,15 @@ public:
 	
 	/*! Returns a pointer to the mesh of this ball. */
 	Mesh* GetMesh() { return this->mMesh; }
+	
+	/*! Returns the current time until the ball respawns. */
+	float GetRespawnTimeLeft() const { return this->mRespawnTimeLeft; }
+
+	/*! Returns the intial time for the ball to respawn. */
+	float GetIntialRespawnTime() const { return this->mRespawnTime; }
+	
+	/*! Returns the number of lives left for the ball. */
+	int GetNumLivesLeft() const { return this->mLivesLeft; }
 
 	/*! Returns the balls forward vector (the direction the ball is moving). */
 	//vector3	GetForwardVector() const { return this->mForward; }
@@ -91,6 +104,12 @@ public:
 	/*! Sets if the ball is in the air. */
 	void SetInTheAir(bool isInAir) { this->mInTheAir = isInAir; }
 
+	/*! Sets the respawn time for the ball. */
+	void SetRespawnTime(const float respawnTime) { this->mRespawnTime = respawnTime; }
+	
+	/*! Sets the number of lives for the ball. */
+	void SetNumLives(const int numLives) { this->mLivesLeft = numLives; }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -98,8 +117,9 @@ public:
 	/*! Updates the ball. */
 	void Update(const float dt, Platform* platform);
 	
-	/*! Returns false if the position of the ball is outside the game field. */
+	/*! Returns false if the number of ball lives reaches 0. */
 	bool IsAlive() const;
+
 	/*! Adds a force to this ball. */
 	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * 10.0f * this->mForcePress; }
 

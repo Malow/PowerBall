@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
-#include <winsock2.h>
+//#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 256
@@ -56,6 +56,7 @@ private:
 	void		SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& ExceptFDs);
 
 public:
+	bool				mRunning;
 				ServerConnection();
 	virtual		~ServerConnection();
 
@@ -76,6 +77,8 @@ public:
 
 	/*! Initializes the connection, if connection fails you will become LAN host. */
 	void		InitializeConnection();
+	void		Host();
+	void		Connect();
 
 	/*! Sends and receives data over socket, only called by clients at the moment. */
 	bool		Update();

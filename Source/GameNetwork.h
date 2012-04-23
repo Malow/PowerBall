@@ -20,6 +20,24 @@ private:
 
 	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
+
+	/*! Adds a float to the char buffer and counts up the offset. */
+	void		AddToBuffer(char* bufOut, int &offsetOut, float in);
+
+	/*! Adds a char to the char buffer and counts up the offset. */
+	void		AddToBuffer(char* bufOut, int &offsetOut, char in);
+
+	/*! Adds a d3dxvector3 to the char buffer and counts up the offset. */
+	void		AddToBuffer(char* bufOut, int &offsetOut, D3DXVECTOR3 in);
+	
+	/*! Retrieves a float from the char buffer and counts up the offset. */
+	float		GetFromBufferF(char* buf, int &offsetOut);
+	
+	/*! Retrieves a char from the char buffer and counts up the offset. */
+	char		GetFromBufferC(char* buf, int &offsetOut);
+	
+	/*! Retrieves a d3dxvector3 from the char buffer and counts up the offset. */
+	D3DXVECTOR3	GetFromBufferD(char* buf, int &offsetOut);
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
