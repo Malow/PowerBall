@@ -16,6 +16,8 @@
 #include "Text.h"
 #include "SkyBox.h"
 #include "FXAA.h"
+#include "StaticMesh.h"
+#include "AnimatedMesh.h"
 
 
 
@@ -23,13 +25,13 @@ class RendererEvent : public MaloW::ProcessEvent
 {
 private:
 	string message;
-	Mesh* mesh;
+	StaticMesh* mesh;
 	Light* light;
 	Image* image;
 	bool deleteSelf;
 
 public:
-	RendererEvent(string message = "", Mesh* mesh = NULL, Light* light = NULL, Image* image = NULL) 
+	RendererEvent(string message = "", StaticMesh* mesh = NULL, Light* light = NULL, Image* image = NULL) 
 	{ 
 		this->message = message; 
 		this->mesh = mesh; 
@@ -50,7 +52,7 @@ public:
 		}
 	}
 	string getMessage() { return this->message; }
-	Mesh* GetMesh() { this->deleteSelf = false; return this->mesh; }
+	StaticMesh* GetMesh() { this->deleteSelf = false; return this->mesh; }
 	Light* GetLight() { this->deleteSelf = false; return this->light; }
 	Image* GetImage() { this->deleteSelf = false; return this->image; }
 };
@@ -73,7 +75,8 @@ private:
 	long framecount;
 	GraphicsEngineParams params;
 	Camera* camera;
-	MaloW::Array<Mesh*> objects;
+	MaloW::Array<StaticMesh*> objects;
+	MaloW::Array<AnimatedMesh*> animations;
 
 	MaloW::Array<Image*> images;
 	MaloW::Array<Text*> texts;
@@ -103,6 +106,8 @@ private:
 	ID3D11Texture2D* Dx_DeferredTexture;
 	ID3D11RenderTargetView* Dx_DeferredQuadRT;
 	ID3D11ShaderResourceView* Dx_DeferredSRV;
+
+	Shader* Shader_DeferredAnimatedGeometry;
 
 	
 	SSAO* ssao;
@@ -141,7 +146,8 @@ public:
 
 	void CreateSmokeEffect();
 
-	void createObject(Mesh* mesh);
+	void CreateStaticMesh(StaticMesh* mesh);
+	void CreateAnimatedMesh(AnimatedMesh* mesh);
 	Object3D* createParticleObject(ParticleMesh* mesh);
 	Light* CreateLight(D3DXVECTOR3 pos, bool UseShadowMap);
 	void CreateImage(Image* image, string texture);
@@ -150,7 +156,8 @@ public:
 
 	long GetFrameCount() const { return this->framecount; }
 
-	void deleteObject(Mesh* mesh);
+	void DeleteStaticMesh(StaticMesh* mesh);
+	void DeleteAnimatedMesh(AnimatedMesh* mesh);
 	void DeleteLight(Light* light);
 	void DeleteImage(Image* image);
 	void DeleteText(Text* text);

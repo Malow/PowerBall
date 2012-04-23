@@ -43,12 +43,15 @@ public:
 	D3DXVECTOR3 GetScaling() const { return this->scale; }
 
 	D3DXMATRIX GetWorldMatrix() { return this->worldMatrix; }
+
+	/* ! Is used internally when needed, but can be used from the outside for debugging. */
 	void RecreateWorldMatrix();
+
 	D3D_PRIMITIVE_TOPOLOGY GetTopology() const { return this->topology; }
 	
-	void LoadFromFile(string file);
+	virtual void LoadFromFile(string file);
 
-	MaloW::Array<MeshStrip*>* GetStrips() const { return this->strips; }
+	virtual MaloW::Array<MeshStrip*>* GetStrips() = 0;
 };
 
 class ParticleMesh

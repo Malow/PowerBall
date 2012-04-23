@@ -2,7 +2,7 @@
 
 Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 {
-	this->mMesh			 = GetGraphicsEngine()->CreateMesh(meshFilePath, position); 
+	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
 	this->mMaxVelocity	 = 6.0f;
@@ -49,7 +49,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 Ball::~Ball()
 {
 	file.close();
-	GetGraphicsEngine()->DeleteMesh(this->mMesh);
+	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
 }
 Vector3 Ball::GetPositionXZ() const
 {

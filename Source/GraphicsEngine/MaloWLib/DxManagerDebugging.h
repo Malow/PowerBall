@@ -1,7 +1,7 @@
 #include "DxManager.h"
 
 // Draw normals:
-inline void DrawNormals(MaloW::Array<Mesh*>* meshes, ID3D11Device* g_Device, ID3D11DeviceContext* g_DeviceContext, D3DXMATRIX VP)
+inline void DrawNormals(MaloW::Array<StaticMesh*>* meshes, ID3D11Device* g_Device, ID3D11DeviceContext* g_DeviceContext, D3DXMATRIX VP)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -57,7 +57,7 @@ inline void DrawNormals(MaloW::Array<Mesh*>* meshes, ID3D11Device* g_Device, ID3
 	delete shadnorm;
 }
 
-inline void DrawWireFrame(MaloW::Array<Mesh*>* meshes, ID3D11Device* g_Device, ID3D11DeviceContext* g_DeviceContext, D3DXMATRIX VP)
+inline void DrawWireFrame(MaloW::Array<StaticMesh*>* meshes, ID3D11Device* g_Device, ID3D11DeviceContext* g_DeviceContext, D3DXMATRIX VP)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },

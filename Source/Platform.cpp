@@ -2,7 +2,7 @@
 
 Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 {
-	this->mMesh		     = GetGraphicsEngine()->CreateMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
+	this->mMesh		     = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
 	this->mShrink	     = 0.01f;
 	this->mRadius	     = 100000.0f;
 	this->mScaledRadius  = this->mRadius;
@@ -12,7 +12,7 @@ Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 }
 Platform::~Platform()
 {
-	GetGraphicsEngine()->DeleteMesh(this->mMesh);
+	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
 }
 
 float Platform::GetY(const float x, const float z) const

@@ -24,17 +24,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
+
+
+	AnimatedMesh am(D3DXVECTOR3(0,0,0));
+	am.LoadFromFile("AniTest.ani");
 	
-	#define LOLTEST
+	//#define LOLTEST
 	#ifdef LOLTEST
 	
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
-	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
-	Mesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
-	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	StaticMesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
+	StaticMesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
+	StaticMesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");

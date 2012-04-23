@@ -1,6 +1,6 @@
 #include "Terrain.h"
 
-Terrain::Terrain(D3DXVECTOR3 pos, D3DXVECTOR3 dimension, string texture, string heightmap, int vertexSize) : Mesh(pos)
+Terrain::Terrain(D3DXVECTOR3 pos, D3DXVECTOR3 dimension, string texture, string heightmap, int vertexSize) : StaticMesh(pos)
 {
 	//this->scale = dimension;
 

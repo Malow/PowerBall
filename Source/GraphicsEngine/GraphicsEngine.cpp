@@ -173,9 +173,9 @@ void GraphicsEngine::InitObjects()
 	this->dx->Start();
 }
 
-Mesh* GraphicsEngine::CreateMesh(string filename, D3DXVECTOR3 pos)
+StaticMesh* GraphicsEngine::CreateStaticMesh(string filename, D3DXVECTOR3 pos)
 {
-	Mesh* mesh = new Mesh(pos);
+	StaticMesh* mesh = new StaticMesh(pos);
 
 	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, NULL);
 	this->PutEvent(re);
@@ -183,15 +183,15 @@ Mesh* GraphicsEngine::CreateMesh(string filename, D3DXVECTOR3 pos)
 	return mesh;
 }
 
-Mesh* GraphicsEngine::CreateMesh(string filename, D3DXVECTOR3 pos, MaterialType material)
+StaticMesh* GraphicsEngine::CreateStaticMesh(string filename, D3DXVECTOR3 pos, MaterialType material)
 {
 	Material* mat = new Material(material);
-	return this->CreateMesh(filename, pos, mat);
+	return this->CreateStaticMesh(filename, pos, mat);
 }
 
-Mesh* GraphicsEngine::CreateMesh(string filename, D3DXVECTOR3 pos, Material* material)
+StaticMesh* GraphicsEngine::CreateStaticMesh(string filename, D3DXVECTOR3 pos, Material* material)
 {
-	Mesh* mesh = new Mesh(pos);
+	StaticMesh* mesh = new StaticMesh(pos);
 
 	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, material);
 	this->PutEvent(re);
@@ -207,7 +207,7 @@ Light* GraphicsEngine::CreateLight(D3DXVECTOR3 pos, bool UseShadowMap)
 Terrain* GraphicsEngine::CreateTerrain(D3DXVECTOR3 position, D3DXVECTOR3 dimension, std::string texture, string heightmap, int vertexSize)
 {
 	Terrain* terrain = new Terrain(position, dimension, texture, heightmap, vertexSize);
-	this->dx->createObject(terrain);
+	this->dx->CreateStaticMesh(terrain);
 
 	return terrain;
 }
@@ -291,10 +291,10 @@ void GraphicsEngine::Life()
 			if(dynamic_cast<LoadMeshEvent*>(ev) != NULL)
 			{
 				string filename = ((LoadMeshEvent*)ev)->GetFileName();
-				Mesh* mesh = ((LoadMeshEvent*)ev)->GetMesh();
+				StaticMesh* mesh = ((LoadMeshEvent*)ev)->GetMesh();
 
 				mesh->LoadFromFile(filename);
-				this->dx->createObject(mesh);
+				this->dx->CreateStaticMesh(mesh);
 
 				if(Material* material = ((LoadMeshEvent*)ev)->GetMaterial())
 				{

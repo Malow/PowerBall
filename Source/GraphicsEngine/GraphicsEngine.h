@@ -18,12 +18,12 @@ class LoadMeshEvent : public MaloW::ProcessEvent
 {
 private:
 	string fileName;
-	Mesh* mesh;
+	StaticMesh* mesh;
 	Material* mat;
 	bool selfdelete;
 
 public:
-	LoadMeshEvent(string fileName, Mesh* mesh, Material* mat) 
+	LoadMeshEvent(string fileName, StaticMesh* mesh, Material* mat) 
 	{ 
 		this->fileName = fileName; 
 		this->mesh = mesh; 
@@ -41,7 +41,7 @@ public:
 		}
 	}
 	string GetFileName() { return this->fileName; }
-	Mesh* GetMesh() { this->selfdelete = false; return this->mesh; }
+	StaticMesh* GetMesh() { this->selfdelete = false; return this->mesh; }
 	Material* GetMaterial() { this->selfdelete = false; return this->mat; }
 };
 
@@ -79,9 +79,9 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	/*! Creates a Mesh and starts rendering it every frame. Return is a pointer to the Mesh created. To stop rendering it call DeleteMesh on the engine with the Mesh as parameter. */
-	Mesh* CreateMesh(string filename, D3DXVECTOR3 pos, MaterialType material);
-	Mesh* CreateMesh(string filename, D3DXVECTOR3 pos, Material* material);
-	Mesh* CreateMesh(string filename, D3DXVECTOR3 pos);
+	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos, MaterialType material);
+	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos, Material* material);
+	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos);
 
 
 	Light* CreateLight(D3DXVECTOR3 pos, bool UseShadowMap = true);
@@ -91,7 +91,7 @@ public:
 	void CreateSkyBox(string texture);
 
 	/*! Stops rendering the Mesh and internally deletes it and the pointer will become NULL. Return depends on if the Mesh was sucessfully removed. */
-	void DeleteMesh(Mesh* mesh) { this->dx->deleteObject(mesh); }
+	void DeleteStaticMesh(StaticMesh* mesh) { this->dx->DeleteStaticMesh(mesh); }
 
 	/*! Create an Image and starts rendering it every frame. Return is a pointer to the image created. Coordinates are in screen-space. 
 	To stop rendering it call DeleteImage on the engine with the image as parameter. */
