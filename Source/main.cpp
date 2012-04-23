@@ -16,8 +16,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1600;
-	params.FXAAQuality = 0;			// 0 - 6
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
+	params.FXAAQuality = 3;			// 0 - 6
+	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = RTS;
 	
 	// Create the graphics engine
@@ -32,9 +32,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngine* eng = GetGraphicsEngine();
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
-	Mesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
-	Mesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
-	Mesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	StaticMesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
+	StaticMesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
+	StaticMesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");

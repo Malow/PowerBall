@@ -4,11 +4,11 @@
 #include "Vertex.h"
 #include "Buffer.h"
 #include "Shader.h"
-#include "Mesh.h"
+#include "StaticMesh.h"
 
 using namespace std;
 
-class SkyBox : public Mesh
+class SkyBox : public StaticMesh
 {
 private: //Private variables
 

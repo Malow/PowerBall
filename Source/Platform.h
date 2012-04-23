@@ -11,7 +11,7 @@ using namespace std;
 class Platform
 {
 private:
-	Mesh*	mMesh;
+	StaticMesh*	mMesh;
 	float	mShrink;
 	float	mRadius;
 	float   mScaledRadius;
@@ -37,7 +37,7 @@ public:
 	float GetShrinkValue() const { return this->mShrink; }
 
 	/*! Returns a pointer to the mesh of this platform. */
-	Mesh* GetMesh() { return this->mMesh; }
+	StaticMesh* GetMesh() { return this->mMesh; }
 	
 	/*! Returns the position of the platform in XZ plane */
 	Vector3 GetPositionXZ() const;

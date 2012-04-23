@@ -170,8 +170,25 @@
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
       <Filter>Sound Engine Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\Source\Flag.cpp">
       <Filter>Game Files</Filter>
+=======
+    <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDeferred.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerForwardRendering.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerPostProcess.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp">
+      <Filter>Graphics Engine Files</Filter>
+>>>>>>> 80fa183a59db1c3c7d80499cb26658c5510881a0
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,8 +351,16 @@
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">
       <Filter>Sound Engine Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Source\Flag.h">
       <Filter>Game Files</Filter>
+=======
+    <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h">
+      <Filter>Graphics Engine Files</Filter>
+>>>>>>> 80fa183a59db1c3c7d80499cb26658c5510881a0
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -381,7 +406,7 @@
     <None Include="Shaders\stdafx.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
-    <None Include="Shaders\MorphAnimation.fx">
+    <None Include="Shaders\DeferredAnimatedGeometry.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
   </ItemGroup>

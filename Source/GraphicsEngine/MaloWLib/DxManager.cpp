@@ -29,6 +29,7 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 
 	this->Shader_DeferredQuad = NULL;
 	this->Shader_DeferredTexture = NULL;
+	this->Shader_DeferredAnimatedGeometry = NULL;
 
 	this->Dx_DeferredTexture = NULL;
 	this->Dx_DeferredQuadRT = NULL;
@@ -83,6 +84,9 @@ DxManager::~DxManager()
 	if(this->Shader_DeferredTexture)
 		delete this->Shader_DeferredTexture;
 
+	if(this->Shader_DeferredAnimatedGeometry)
+		delete this->Shader_DeferredAnimatedGeometry;
+
 	if(this->Dx_DeferredTexture)
 		this->Dx_DeferredTexture->Release();
 	if(this->Dx_DeferredQuadRT)
@@ -135,7 +139,7 @@ DxManager::~DxManager()
 		delete this->lights.getAndRemove(0);
 }
 
-void DxManager::createObject(Mesh* mesh)
+void DxManager::CreateStaticMesh(StaticMesh* mesh)
 {
 	MaloW::Array<MeshStrip*>* strips = mesh->GetStrips();
 
@@ -194,6 +198,74 @@ void DxManager::createObject(Mesh* mesh)
 	this->PutEvent(re);
 }
 
+void DxManager::CreateAnimatedMesh(AnimatedMesh* mesh)
+{
+	MaloW::Array<KeyFrame*>* kfs = mesh->GetKeyFrames();
+	
+	for(int j = 0; j < kfs->size(); j++)
+	{
+
+		MaloW::Array<MeshStrip*>* strips = kfs->get(j)->strips;
+
+		for(int i = 0; i < strips->size(); i++)
+		{
+			MeshStrip* strip = strips->get(i);
+
+			BUFFER_INIT_DESC bufferDesc;
+			bufferDesc.ElementSize = sizeof(Vertex);
+			bufferDesc.InitData = strip->getVerts();
+		
+		
+			// Last face black, should +1 this to solve it.
+			bufferDesc.NumElements = strip->getNrOfVerts();
+
+			bufferDesc.Type = VERTEX_BUFFER;
+			bufferDesc.Usage = BUFFER_DEFAULT;
+		
+			Buffer* verts = new Buffer();
+			if(FAILED(verts->Init(Dx_Device, Dx_DeviceContext, bufferDesc)))
+				MaloW::Debug("Initiate Buffer Failed in DxManager");
+
+			Buffer* inds = NULL;
+			if(strip->getIndicies())
+			{
+				BUFFER_INIT_DESC bufferInds;
+				bufferInds.ElementSize = sizeof(int);
+				bufferInds.InitData = strip->getIndicies();
+				bufferInds.NumElements = strip->getNrOfIndicies();
+				bufferInds.Type = INDEX_BUFFER;
+				bufferInds.Usage = BUFFER_DEFAULT;
+	
+				inds = new Buffer();
+				if(FAILED(inds->Init(Dx_Device, Dx_DeviceContext, bufferInds)))
+					MaloW::Debug("CreateIndsBuffer Failed");
+			}
+
+			ID3D11ShaderResourceView* texture = NULL;
+			if(strip->GetTexturePath() != "")
+			{
+				D3DX11_IMAGE_LOAD_INFO loadInfo;
+				ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
+				loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+				loadInfo.Format = DXGI_FORMAT_BC1_UNORM;
+				if(FAILED(D3DX11CreateShaderResourceViewFromFile(Dx_Device, strip->GetTexturePath().c_str(), &loadInfo, NULL, &texture, NULL)))
+					MaloW::Debug("Failed to load texture " + strip->GetTexturePath());
+			}
+
+			Object3D* obj = new Object3D(verts, inds, texture, mesh->GetTopology()); 
+			strip->SetRenderObject(obj);
+		}
+	}
+
+	mesh->RecreateWorldMatrix(); 
+	
+	/*
+	RendererEvent* re = new RendererEvent("Add Mesh", mesh, NULL);
+	this->PutEvent(re);
+	*/
+}
+
+
 Object3D* DxManager::createParticleObject(ParticleMesh* mesh)
 {
 	BUFFER_INIT_DESC bufferDesc;
@@ -240,10 +312,18 @@ void DxManager::CreateSmokeEffect()
 	this->PutEvent(re);
 }
 
-void DxManager::deleteObject(Mesh* mesh)
+void DxManager::DeleteStaticMesh(StaticMesh* mesh)
 {
 	RendererEvent* re = new RendererEvent("Delete Mesh", mesh, NULL);
 	this->PutEvent(re);
+}
+
+void DxManager::DeleteAnimatedMesh(AnimatedMesh* mesh)
+{
+	/*
+	RendererEvent* re = new RendererEvent("Delete Mesh", mesh, NULL);
+	this->PutEvent(re);
+	*/
 }
 
 void DxManager::DeleteLight(Light* light)

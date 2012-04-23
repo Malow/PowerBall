@@ -202,6 +202,30 @@ HRESULT DxManager::Init()
 		return E_FAIL;
 	}
 
+
+	MaloW::Debug("LOLLOL");
+	// Deferred Rendering Geo pass for animated
+	D3D11_INPUT_ELEMENT_DESC DeferredGeometryDescAni[] = 
+	{
+		{"POSITION",       0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL",         0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD",       0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR",			0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"POSITION_MORPH", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL_MORPH",   0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD_MORPH", 0, DXGI_FORMAT_R32G32_FLOAT,    1, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR_MORPH",			0, DXGI_FORMAT_R32G32B32_FLOAT,    1, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};			
+	this->Shader_DeferredAnimatedGeometry = new Shader();
+	if(FAILED(this->Shader_DeferredAnimatedGeometry->Init(Dx_Device, Dx_DeviceContext, "Shaders/DeferredAnimatedGeometry.fx", DeferredGeometryDescAni, 8)))	// + on last if added above
+	{
+		MaloW::Debug("Failed to open DeferredAnimatedGeometry.fx");
+		return E_FAIL;
+	}
+
+	MaloW::Debug("QIJHWTIQUWTRIHOQWTRLOLLOL");
+
+
 	// Lightning pass
 	D3D11_INPUT_ELEMENT_DESC DeferredLightningDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },

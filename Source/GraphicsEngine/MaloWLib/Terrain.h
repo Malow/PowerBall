@@ -3,11 +3,11 @@
 
 #include "stdafx.h"
 #include "Vertex.h"
-#include "Mesh.h"
+#include "StaticMesh.h"
 #include "Vector.h"
 
 
-class Terrain : public Mesh
+class Terrain : public StaticMesh
 {
 private:
 	int SIZE;

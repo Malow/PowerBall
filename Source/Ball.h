@@ -12,7 +12,7 @@ class Ball
 {
 private:
 	
-	Mesh*		mMesh;
+	StaticMesh*		mMesh;
 	float		mRadius;
 	float		mMass;
 	float		mDamping;
@@ -68,7 +68,7 @@ public:
 	Vector3 GetAcceleration() const { return this->mAcceleration; }
 	
 	/*! Returns a pointer to the mesh of this ball. */
-	Mesh* GetMesh() { return this->mMesh; }
+	StaticMesh* GetMesh() { return this->mMesh; }
 	
 	/*! Returns the current time until the ball respawns. */
 	float GetRespawnTimeLeft() const { return this->mRespawnTimeLeft; }

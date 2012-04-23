@@ -23,6 +23,7 @@
     <ClCompile Include="..\Source\Flag.cpp" />
     <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GameNetwork.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\FXAA.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp" />
@@ -30,7 +31,10 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Camera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManager.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDeferred.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerForwardRendering.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerInit.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerPostProcess.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerRender.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\FPSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Light.cpp" />
@@ -41,9 +45,12 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\RTSCamera.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Shader.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\Terrain.cpp" />
-    <ClCompile Include="..\Source\GraphicsEngine\MorphAnimation.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\MorphAnimation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\SkyBox.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\SSAO.cpp" />
+    <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp" />
@@ -70,6 +77,7 @@
     <ClInclude Include="..\Source\Flag.h" />
     <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GameNetwork.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\CursorControl.h" />
     <ClInclude Include="..\Source\GraphicsEngine\FXAA.h" />
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h" />
@@ -92,9 +100,12 @@
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Terrain.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vector.h" />
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\Vertex.h" />
-    <ClInclude Include="..\Source\GraphicsEngine\MorphAnimation.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\MorphAnimation.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\SkyBox.h" />
     <ClInclude Include="..\Source\GraphicsEngine\SSAO.h" />
+    <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
     <ClInclude Include="..\Source\GUI\ChangeResEvent.h" />
@@ -135,7 +146,7 @@
     </None>
     <None Include="Shaders\FXAA.fx" />
     <None Include="Shaders\Lava.fx" />
-    <None Include="Shaders\MorphAnimation.fx" />
+    <None Include="Shaders\DeferredAnimatedGeometry.fx" />
     <None Include="Shaders\ScreenSpaceBillBoard.fx" />
     <None Include="Shaders\ShadowMap.fx">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
