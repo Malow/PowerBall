@@ -12,23 +12,17 @@
 //------------------------------------------------------------------------------------------------------
 Texture1D<float3> rndTex;	//used for sampling. contains randomized 3D-vectors x,y,z[-1,1] = length[0,3]
 float DEPTH_EPSILON = 0.001f;
-static const uint		nrOfSamples = 8;	//**temp.**
+static const uint		nrOfSamples = 8;	//temp**
 
 //------------------------------------------------------------------------------------------------------
 //	Constant buffers
 //------------------------------------------------------------------------------------------------------
 cbuffer PerFrame
 {
-	//uint		nrOfSamples;	//size of rndTex
-	//uint		width;			//width of depth map and normal map
-	//uint		height;			//height of depth map and normal map**
-	//float		radius;			//length multiplier of random-vectors**
 	float		angleBias;		//angle in radian from plane of pixel to ignore samples
 	float4x4	projMatrix;		//projection matrix
 	float4x4    invProjMatrix;	//inverse projection matrix
 };
-
-
 
 
 //------------------------------------------------------------------------------------------------------
@@ -40,8 +34,6 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 	uint width = 0;
 	uint height = 0;
 	normalAndDepthMap.GetDimensions(width, height);
-
-	
 
 	//get normal (view space) and depth of the pixel (normalized device coordinates [0,1])
 	float2 texCoord = float2(pixel.x / width, pixel.y / height); 
@@ -61,9 +53,9 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		//convert to normalized device coordinates [-1,1]
 		pixelPosV.y = 1.0f - pixelPosV.y; //first invert direction of y-axis
 		pixelPosV.xy = pixelPosV.xy * 2.0f - 1.0f;
-		//transform by the inverse projection matrix; //**
+		//transform by the inverse projection matrix; 
 		pixelPosV = mul(pixelPosV, invProjMatrix);
-		//convert to view-space by dividing by w //**
+		//convert to view-space by dividing by w
 		pixelPosV.xyz /= pixelPosV.w;
 
 		float4 offsetPos[nrOfSamples];
@@ -72,16 +64,16 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		float pixelDepth = -1.0f;
 		float occlusionFactor = 0.0f;
 
-		for(uint i = 0; i < nrOfSamples; i++) //**
+		for(uint i = 0; i < nrOfSamples; i++) 
 		{
 			//2. add 3D-vectors to this the view position of the pixel
 			offsetVector = rndTex.Sample(LinearSampler, (float)i);  //sample offset vector
-			//check if offset vector is above surface of the pixel and within angle bias, if not, flip **flip med bias eller godta ev. förlust?**
-			if(dot(offsetVector, normAndDepth.xyz) > 0.0f)
+			//check if offset vector is above surface of the pixel and within angle bias, if not, flip and hope for the best
+			if(dot(offsetVector, normAndDepth.xyz) > angleBias)
 			{
 				offsetVector = -offsetVector;
 			}
-			offsetPos[i] = float4(pixelPosV.xyz + offsetVector, 1.0f); //**konvertera vector bara, addera sen på pixel.xy??**
+			offsetPos[i] = float4(pixelPosV.xyz + offsetVector, 1.0f); 
 
 			//3. convert offset xy-positions to texture space and z to normalized device coordinates [0,1]
 			//convert to clip space xy[-w,w], z[0,w]
@@ -92,33 +84,22 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 			offsetPos[i].xy = (offsetPos[i].xy + 1) * 0.5f;
 			offsetPos[i].y = 1.0f - offsetPos[i].y; //invert direction of y-axis
 
-			//**debug**		
-			/*if(offsetPos[i].x >= 0.0f && offsetPos[i].x <= 1.0f 
-			&& offsetPos[i].y >= 0.0f && offsetPos[i].y <= 1.0f)
-			{
-				debugColor = float4(1,1,1,1);
-			}
-			else
-			{
-				debugColor = float4(1,0,1,1);
-			}*/
-
 			//4. get distance between the depth of the sample (offset position) and the depth sampled at that point
 			dist = offsetPos[i].z - normalAndDepthMap.Sample(LinearSampler, offsetPos[i].xy).w;  
 			
 			//if distance is positive, then the offset position is infront of the pixel and therefore occlude the pixel to some degree
 			if(dist > DEPTH_EPSILON) //use epsilon to avoid using samples behind the pixel
 			{
-				//5. **todo: occlusion function - quadratic**
+				//5. todo: occlusion function - quadratic?
 				//
 				//	negative depth deltas give zero occlusion
 				//	smaller depth deltas give higher occlusion 
 				//	the occlusion value falls to zero again beyond a certain depth delta value
 				//
 
-				debugColor -= (1.0f / nrOfSamples) * float4(1,1,1,0); //**
+				debugColor -= (1.0f / nrOfSamples) * float4(1,1,1,0); 
 
-				//6. **todo: blur (bilateral) - separate pass/shader?**
+				//6. todo: blur (bilateral)
 			}
 		}
 	}
@@ -127,6 +108,6 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		debugColor = float4(0,1,0,1);
 	}
 
-	return debugColor; //**
+	return debugColor; 
 }
 
