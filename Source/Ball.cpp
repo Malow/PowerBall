@@ -261,11 +261,13 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 		rayDirection = v1.GetCrossProduct(v2);
 		rayDirection.normalize();
 		float tempLength;
+		Vector3 ny;
+		Vector3 projN;
 		if(RayTriIntersect(origin , rayDirection, p0, p1, p2, u, v, t) )
 		{
 			normal = rayDirection;
-			Vector3 ny = origin - p0;
-			Vector3 projN = normal*ny.GetDotProduct(normal);
+			ny = origin - p0;
+			projN = normal*ny.GetDotProduct(normal);
 			tempLength = projN.GetLength();
 			if(!firstHit)
 			{
@@ -275,7 +277,7 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 				p0Store = p0;
 				p1Store = p1;
 				p2Store = p2;
-				normalStore = rayDirection;
+				normalStore = normal;
 				s = i;
 			}
 			else
@@ -288,11 +290,113 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 					p0Store = p0;
 					p1Store = p1;
 					p2Store = p2;
-					normalStore = rayDirection;
+					normalStore = normal;
 				}
 			}			
 		}
-		
+		// check agains all edges
+		Vector3 lineDirection;
+		float scalarProj;
+		Vector3 projOnLine;
+		Vector3 normalToLine;
+		// edge 1:
+		ny = origin - p0;
+		lineDirection = p1 - p0;
+		scalarProj = (ny.GetDotProduct(lineDirection)/lineDirection.GetLengthSquared());
+		projOnLine = lineDirection * scalarProj;
+		if( (scalarProj >= 0.0f) && (scalarProj <= 1) )
+		{
+			normalToLine = ny - projOnLine;
+			tempLength = normalToLine.GetLength();
+			if(!firstHit)
+			{
+				firstHit = true;
+				lengthProjN = tempLength;
+				p0Store = p0;
+				p1Store = p1;
+				p2Store = p2;
+				normalStore = normalToLine;
+				normalStore.normalize();
+			}
+			else
+			{
+				if( tempLength < lengthProjN )
+				{
+					lengthProjN = tempLength;
+					p0Store = p0;
+					p1Store = p1;
+					p2Store = p2;
+					normalStore = normalToLine;
+					normalStore.normalize();
+				}
+			}	
+
+		}
+		// edge 2:
+		ny = origin - p1;
+		lineDirection = p2 - p1;
+		scalarProj = (ny.GetDotProduct(lineDirection)/lineDirection.GetLengthSquared());
+		projOnLine = lineDirection * scalarProj;
+		if( (scalarProj >= 0.0f) && (scalarProj <= 1) )
+		{
+			normalToLine = ny - projOnLine;
+			tempLength = normalToLine.GetLength();
+			if(!firstHit)
+			{
+				firstHit = true;
+				lengthProjN = tempLength;
+				p0Store = p0;
+				p1Store = p1;
+				p2Store = p2;
+				normalStore = normalToLine;
+				normalStore.normalize();
+			}
+			else
+			{
+				if( tempLength < lengthProjN )
+				{
+					lengthProjN = tempLength;
+					p0Store = p0;
+					p1Store = p1;
+					p2Store = p2;
+					normalStore = normalToLine;
+					normalStore.normalize();
+				}
+			}	
+
+		}
+		// edge 3:
+		ny = origin - p2;
+		lineDirection = p0 - p2;
+		scalarProj = (ny.GetDotProduct(lineDirection)/lineDirection.GetLengthSquared());
+		projOnLine = lineDirection * scalarProj;
+		if( (scalarProj >= 0.0f) && (scalarProj <= 1) )
+		{
+			normalToLine = ny - projOnLine;
+			tempLength = normalToLine.GetLength();
+			if(!firstHit)
+			{
+				firstHit = true;
+				lengthProjN = tempLength;
+				p0Store = p0;
+				p1Store = p1;
+				p2Store = p2;
+				normalStore = normalToLine;
+				normalStore.normalize();
+			}
+			else
+			{
+				if( tempLength < lengthProjN )
+				{
+					lengthProjN = tempLength;
+					p0Store = p0;
+					p1Store = p1;
+					p2Store = p2;
+					normalStore = normal;
+				}
+			}	
+
+		}
 	}
 	if(firstHit)
 	{
@@ -309,7 +413,7 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 			float diff = abs(lengthProjN-this->mRadius);
 			
 			//Vector3 newPo = origin -dirN*diff;
-			Vector3 projVel = normalStore * this->mVelocity.GetDotProduct(normalStore);
+			//Vector3 projVel = normalStore * this->mVelocity.GetDotProduct(normalStore);
 			Vector3 newPo = origin + normalStore*diff;
 			/*
 			if( projVel.GetDotProduct(normalStore) < 0.0f)

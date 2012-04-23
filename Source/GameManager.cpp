@@ -292,7 +292,7 @@ void GameManager::Initialize()
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 	}
 	*/
-	/*
+	
 	this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
 	this->mPlatform->SetShrinkValue(0.0f);
 	this->mBalls		= new Ball*[this->mNumPlayers];
@@ -304,8 +304,8 @@ void GameManager::Initialize()
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,15));
 	}
-	*/
 	
+	/*
 	this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 	this->mBalls		= new Ball*[this->mNumPlayers];
 	
@@ -316,7 +316,7 @@ void GameManager::Initialize()
 		else
 			this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 	}
-	
+	*/
 
 
 	// wait until everything is loaded and then drop the balls from hight above
