@@ -11,9 +11,12 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "GraphicsEngine.h"
 #include "GameNetwork.h"
 #include "InGameMenu.h"
+#include "Flag.h"
+
 enum GAMEMODE{
 	NONE,
 	CTF,
+	DM,
 	KOTH
 };
 
@@ -22,6 +25,7 @@ class GameManager
 {
 private:
 	int				mNumPlayers;
+	int				mRounds;
 	Platform*		mPlatform;
 	Ball**			mBalls; 
 	GameNetwork*	mNet; 
@@ -29,7 +33,8 @@ private:
 	InGameMenu*		mIGM;
 	Light*			mLights[5];
 	int				mGameMode;
-	Mesh*			mEnemyFlag;
+	Flag*			mEnemyFlag;
+	Flag*			mFriendlyFlag;
 	float counter;
 public:
 	//constructors and destructors
@@ -47,6 +52,6 @@ private:
 	/*! Initializes the game. (First function-call in Play) */
 	void		Initialize();
 
-	void		CaptureTheFlag();
+	bool		CaptureTheFlag();
 
 };

@@ -170,6 +170,9 @@
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
       <Filter>Sound Engine Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Flag.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -330,6 +333,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">
       <Filter>Sound Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Flag.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
