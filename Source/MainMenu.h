@@ -1,6 +1,6 @@
 #pragma once
 /**
-* Auther: Rikard Johansson
+* Author: Rikard Johansson
 * Create Date: 28/03/2012
 *
 * This class handels the main menu of the game
@@ -20,7 +20,10 @@
 
 enum MENU {BACKGROUND,
 	MAINMENU,
-	PLAY, 
+	MAINMENU_PLAY,
+	PLAY_ONLINE,
+	PLAY_HOTSEAT,
+	PLAY_LAN,
 	OPTIONS_GAMEPLAY, 
 	CREDIT,
 	EXIT};

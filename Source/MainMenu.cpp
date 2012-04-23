@@ -26,7 +26,7 @@ bool MainMenu::Initialize()
 	Element* tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/mainmenu.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), " ", " ");
 	this->mSets[MAINMENU].AddElement(tempElement);
 	
-	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonplay.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(PLAY), "Media/clickplay.png", "Media/mouseoverplay.png");
+	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonplay.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(MAINMENU_PLAY), "Media/clickplay.png", "Media/mouseoverplay.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
 
 	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttoncredits.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(CREDIT), "Media/clickcredits.png", "Media/mouseovercredits.png");
@@ -37,6 +37,23 @@ bool MainMenu::Initialize()
 
 	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonoptions.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(OPTIONS_GAMEPLAY), "Media/clickoptions.png", "Media/mouseoveroptions.png");
 	this->mSets[MAINMENU].AddElement(tempElement);
+
+	/*Hotseat Lan Online etc*/
+
+	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/mainmenu.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new NoEvent(), " ", " ");
+	this->mSets[MAINMENU_PLAY].AddElement(tempElement);
+	
+	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttononline.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(PLAY_ONLINE), "Media/clickonline.png", "Media/mouseoveronline.png");
+	this->mSets[MAINMENU_PLAY].AddElement(tempElement);
+
+	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonlan.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(PLAY_LAN), "Media/clicklan.png", "Media/mouseoverlan.png");
+	this->mSets[MAINMENU_PLAY].AddElement(tempElement);
+	
+	tempElement	 = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonbacktomenucircle.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(MAINMENU), "Media/clickbacktomenucircle.png", "Media/mouseoverbacktomenucircle.png");
+	this->mSets[MAINMENU_PLAY].AddElement(tempElement);
+
+	tempElement = new GUIArchButton((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, "Media/buttonhotseat.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f, new ChangeSetEvent(PLAY_HOTSEAT), "Media/clickhotseat.png", "Media/mouseoverhotseat.png");
+	this->mSets[MAINMENU_PLAY].AddElement(tempElement);
 	
 	/* Adding the buttons for the options menu*/
 	tempElement = new GUIArchButton(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
@@ -65,6 +82,8 @@ bool MainMenu::Initialize()
 
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	tempElement = NULL;
+	
+	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");
 	
 	return true;
 }
@@ -108,7 +127,7 @@ bool MainMenu::Run()
 		dt = this->mGe->Update();
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
 
-		if(this->mCurrentSet == MAINMENU)
+		if(this->mCurrentSet == MAINMENU || this->mCurrentSet == MAINMENU_PLAY)
 		{
 			this->KeyBoardSteering(IsClicked);
 
@@ -149,7 +168,7 @@ bool MainMenu::Run()
 					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
 					int tempEventSet = NULL;
 					tempReturnEvent->GetSet(tempEventSet);
-					if(tempEventSet == PLAY)
+					if(tempEventSet == PLAY_LAN)
 					{
 						CursorControl cc;
 						cc.SetVisibility(true);
@@ -157,8 +176,44 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 						
-						this->mGm->PlayLAN("", NONE); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
-						//this->mGm->Play(2);
+						this->mGm->PlayLAN("", CTF); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
+						
+						SAFE_DELETE(this->mGm);
+						this->mCurrentSet = MAINMENU;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+					}
+					if(tempEventSet == PLAY_ONLINE)
+					{
+						/*CursorControl cc;
+						cc.SetVisibility(true);
+
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mGm = new GameManager(this->mGe);
+						
+						//this->mGm->PlayONLINE("", CTF); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
+						this->mGm->Play(2);
+						
+						SAFE_DELETE(this->mGm);
+						this->mCurrentSet = MAINMENU;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);*/
+					}
+					if(tempEventSet == MAINMENU_PLAY)
+					{
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mCurrentSet = MAINMENU_PLAY;
+						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
+						menuChange = true;
+						menuChangeTime = 50;
+					}
+					if(tempEventSet == PLAY_HOTSEAT)
+					{
+						CursorControl cc;
+						cc.SetVisibility(true);
+
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mGm = new GameManager(this->mGe);
+
+						this->mGm->Play(2);
 						
 						SAFE_DELETE(this->mGm);
 						this->mCurrentSet = MAINMENU;

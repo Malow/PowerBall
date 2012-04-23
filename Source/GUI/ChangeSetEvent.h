@@ -1,6 +1,6 @@
 #pragma once
 /**
-* Auther: Rikard Johansson
+* Author: Rikard Johansson
 * Create Date: 04/04/2012
 *
 * This event will be returned when you are going into a new menu

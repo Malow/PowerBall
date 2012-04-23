@@ -1,6 +1,6 @@
 #pragma once
 /**
-* Auther: Rikard Johansson
+* Author: Rikard Johansson
 * Create Date: 05/04/2012
 * 
 * This class is used when you are ingame and press a button to get to the menu ingame.
