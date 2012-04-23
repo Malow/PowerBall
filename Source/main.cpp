@@ -24,10 +24,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
-
-
-	AnimatedMesh am(D3DXVECTOR3(0,0,0));
-	am.LoadFromFile("AniTest.ani");
 	
 	//#define LOLTEST
 	#ifdef LOLTEST

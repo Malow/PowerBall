@@ -11,7 +11,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
 	this->mRestitution   = 0.30f; //0.95f
-	this->mForcePress	 = 9.0f;
+	this->mForcePress	 = 18.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
 	this->mStartPos		 = position;
@@ -19,6 +19,13 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	file.open ("Verts.txt", ios::out );
+	/*
+	this->mMaxNrOfItems = 6;
+	this->mNrOfItems = 0;
+	*/
+	this->mInventory = NULL;
+	
+
 	/*
 	*	Now it is working with deltaTime, the value above are in seconds and movement
 	*	are the ones that are used in directx api
@@ -50,6 +57,7 @@ Ball::~Ball()
 {
 	file.close();
 	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
+	this->mInventory = NULL;
 }
 Vector3 Ball::GetPositionXZ() const
 {
@@ -90,6 +98,8 @@ void Ball::Update(const float dt, Platform* platform)
 	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
 	this->GetMesh()->SetPosition(temp);
+	if(this->mInventory != NULL)
+		this->mInventory->SetPosition(this->mMesh->GetPosition());
 	temp = D3DXVECTOR3(direction.x, direction.y, direction.z);
 
 	this->Rotate(direction);
