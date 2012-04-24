@@ -188,6 +188,9 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerPostProcess.cpp">
       <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\MainMenuII.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
