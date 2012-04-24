@@ -13,12 +13,7 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "InGameMenu.h"
 #include "Flag.h"
 
-enum GAMEMODE{
-	NONE,
-	CTF,
-	DM,
-	KOTH
-};
+
 
 
 class GameManager
