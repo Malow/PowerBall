@@ -4,16 +4,29 @@
 #include "Ball.h"
 using namespace std;
 #define PLAYER_CAP 10
+#define INTERPOS_MIN 0.025f //if the position difference (vector length) is lesser than this -> sets local position to network position
+#define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
+#define INTERPOS_MOD 0.85f // 1 = setting local position to latest network position, 0 = ignore network position.
+
+enum GAMEMODE{
+	NONE,
+	CTF,
+	DM,
+	KOTH
+};
+
 class GameNetwork
 {
 private:
 	ServerConnection*	mConn;
 	D3DXVECTOR3*		mPos;
 	D3DXVECTOR3*		mVel;
+	D3DXVECTOR3*		mFlagPos;
 	int					mIndex;
 	int					mNumPlayers;
 	bool				mKeyInputs[PLAYER_CAP][256];
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
+	GAMEMODE			mGameMode;
 
 	/*! Updates the client side, (updates LAN - variables). */
 	bool				ClientUpdate();
@@ -38,6 +51,9 @@ private:
 	
 	/*! Retrieves a d3dxvector3 from the char buffer and counts up the offset. */
 	D3DXVECTOR3	GetFromBufferD(char* buf, int &offsetOut);
+
+	/*! Sends CTF parameters to the clients. */
+	void		SendCTFParams();
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
@@ -51,6 +67,9 @@ public:
 	/*! Returns the velocity of the player with specified index. */
 	D3DXVECTOR3 GetVel(const int index) const { return this->mVel[index]; }
 
+	/*! Returns the position of the flag with specified index. */
+	D3DXVECTOR3 GetFlagPos(const int index) const { return this->mFlagPos[index]; }
+
 	/*! Returns the index that you is on the LAN. */
 	int			GetIndex() const {return this->mIndex;}
 
@@ -62,6 +81,9 @@ public:
 
 	/*! Sets the velocity of the player with specified index. */
 	void		SetVel(const D3DXVECTOR3 vel, const int index);
+
+	/*! Sets the position of the flag with specified index. */
+	void		SetFlagPos(const D3DXVECTOR3 pos, const int index);
 	
 	/*! Sets the IP that the client will connect to. */
 	void		SetIP(char ip[]);
@@ -73,10 +95,10 @@ public:
 	bool		IsKeyPressed(const char key, const int index) const;
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
-	bool		Update(Ball** balls, int &numBalls);
+	bool		Update(Ball** balls, int &numBalls, float dt);
 
 	/*! Starts the game network. */
-	void		Start();
+	void		Start(bool host, GAMEMODE gameMode);
 
 	/*! Returns true if you is the host. */
 	bool		IsServer() const {return this->mConn->IsServer();}

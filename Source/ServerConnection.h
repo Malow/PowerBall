@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
-#include <winsock2.h>
+//#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 256
@@ -12,6 +12,7 @@ private:
 	
 	struct Connection 
 	{
+		sockaddr_in adress;
 		HANDLE handle;
 		SOCKET sock;
 		char buf[BUFFER_SIZE];
@@ -56,7 +57,6 @@ private:
 	void		SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& ExceptFDs);
 
 public:
-	bool				mRunning;
 				ServerConnection();
 	virtual		~ServerConnection();
 
@@ -76,7 +76,7 @@ public:
 	bool		GetReadBuffer(char* bufOut, const int size, const int clientIndex);
 
 	/*! Initializes the connection, if connection fails you will become LAN host. */
-	void		InitializeConnection();
+	void		InitializeConnection(); //temporary for trying out LAN with multiple clients on the same computer.
 	void		Host();
 	void		Connect();
 
