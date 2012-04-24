@@ -292,7 +292,7 @@ HRESULT DxManager::Render()
 	float diff = (li.QuadPart - prevTimeStamp) / this->PCFreq;
 	this->prevTimeStamp = li.QuadPart;
 
-	this->TimerAnimation += diff / 1000.0f;
+	this->TimerAnimation += diff;// / 1000.0f;
 
 	this->RenderShadowMap();
 

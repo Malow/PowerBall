@@ -34,7 +34,7 @@ cbuffer EveryFrame
 	//float PCF_SIZE;
 	//float PCF_SIZE_SQUARED;
 
-	float timer;
+	float timerMillis;
 };
 
 //------------------------------------------------------------------------------------------------------

@@ -136,30 +136,31 @@ bool GameManager::Play(const int numPlayers)
 }
 bool GameManager::PlayLAN(char ip[], int GameMode)
 {
-	this->mGameMode = GameMode;
 	this->~GameManager();
+	this->mGameMode = GameMode;
 	this->mNumPlayers = 0;
 	this->Initialize();
 	bool running = true;
 
 	this->mNet = new GameNetwork();
 	this->mNet->SetIP(ip);
-	this->mNet->Start();
+	if(ip != "")
+		this->mNet->Start(false, GAMEMODE(GameMode));
+	else this->mNet->Start(true, GAMEMODE(GameMode));
 	this->mGe->Update();
 	
 	
 	while(running)
 	{
 		int numAlivePlayers = 0;
-		float diff = mGe->Update();
-
-		if(mGe->GetKeyListener()->IsPressed('P'))
-			mGe->GetCamera()->moveForward(diff);
-		if(mGe->GetKeyListener()->IsClicked(1))
-			mGe->GetCamera()->moveBackward(diff);
+		float diff = mGe->Update();	
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
+		
+
+		if(!this->mNet->Update(this->mBalls, this->mNumPlayers, diff))
+			running = false;
 
 		if(this->mNet->IsServer())
 		{
@@ -174,15 +175,15 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 						if(this->mNet->GetStartPos(i) > 0)
 							flip = -1;
 						if(this->mNet->IsKeyPressed('A', i))
-							mBalls[i]->AddForce(Vector3(-10 * diff * flip,0,0));	
+							mBalls[i]->AddForce(Vector3(-diff * flip,0,0));	
 						if(this->mNet->IsKeyPressed('D', i))
-							mBalls[i]->AddForce(Vector3(10 * diff * flip,0,0));
+							mBalls[i]->AddForce(Vector3(diff * flip,0,0));
 						if(this->mNet->IsKeyPressed('W', i))
-							mBalls[i]->AddForce(Vector3(0,0,10 * diff * flip));	
+							mBalls[i]->AddForce(Vector3(0,0,diff * flip));	
 						if(this->mNet->IsKeyPressed('S', i))
-							mBalls[i]->AddForce(Vector3(0,0,-10 * diff * flip));
+							mBalls[i]->AddForce(Vector3(0,0,-diff * flip));
 						if(this->mNet->IsKeyPressed(VK_SPACE, i))
-							mBalls[i]->AddForce(Vector3(0,90 * (11.0f / 6.0f),0));
+							mBalls[i]->AddForce(Vector3(0, diff,0));
 					}
 					else
 					{
@@ -196,7 +197,7 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 							mBalls[i]->AddForce(Vector3(0,0,-diff));
 
 						if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
-							mBalls[i]->AddForce(Vector3(0,90 * (11.0f / 6.0f),0));
+							mBalls[i]->AddForce(Vector3(0,diff,0));
 					}	
 					Ball* b1 = this->mBalls[i];
 					for(int j = i+1; j < this->mNumPlayers; j++)
@@ -238,10 +239,59 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 
 			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
 				this->mNet->AddKeyInput(VK_SPACE, true);
-		}
 
-		if(!this->mNet->Update(this->mBalls, this->mNumPlayers))
-			running = false;
+			if(this->mNet->GetIndex() < this->mNumPlayers)
+			{
+				
+				int flip = 1;
+				if(this->mNet->GetStartPos(this->mNet->GetIndex()) > 0)
+					flip = -1;
+				if(mGe->GetKeyListener()->IsPressed('A'))
+					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-diff*flip,0,0));	
+				if(mGe->GetKeyListener()->IsPressed('D'))
+					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(diff*flip,0,0));
+				if(mGe->GetKeyListener()->IsPressed('W'))
+					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,diff*flip));	
+				if(mGe->GetKeyListener()->IsPressed('S'))
+					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,-diff*flip));
+
+				/*this->mBalls[this->mNet->GetIndex()]->Update(diff, this->mPlatform);
+
+				Ball* b1 = this->mBalls[this->mNet->GetIndex()];
+
+				for(int i = 0; i < this->mNumPlayers; i++)
+				{
+					if(i != this->mNet->GetIndex())
+					{
+						Ball* b2 = this->mBalls[i];
+						if(b1->collisionWithSphereSimple(b2))
+							b1->collisionSphereResponse(b2, diff);
+					}
+
+				}
+
+				Vector3 normalPlane;
+				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);*/
+				for(int i = 0; i < this->mNumPlayers; i++)
+					this->mBalls[i]->Update(diff, this->mPlatform);
+
+				for(int i = 0; i < this->mNumPlayers; i++)
+				{
+					Ball* b1 = this->mBalls[i];
+					for(int j = i+1; j < this->mNumPlayers; j++)
+					{
+						Ball* b2 = this->mBalls[j];
+						if(b1->collisionWithSphereSimple(b2))
+							b1->collisionSphereResponse(b2, diff);
+
+					}
+					Vector3 normalPlane;
+					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				}
+			}
+		}
 
 
 		for(int i = 0; i < this->mNumPlayers; i++)
@@ -270,10 +320,11 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 			delete[] this->mBalls;
 			this->mBalls = temp;
 
-			mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 3));
+			mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
 			mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 		}
 
+		if(this->mNet->IsServer())
 		if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
 		{
 			running = false;
@@ -386,5 +437,33 @@ bool GameManager::CaptureTheFlag()
 				return false;
 		}
 	}
+
+
+	//just copied temporarily to try
+	if(this->mNumPlayers > 1)
+	{
+		D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mFriendlyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[1]->GetRadius(), 0))- this->mBalls[1]->GetPosition());
+
+		if(D3DXVec3Length(&BallToFlag) < (this->mBalls[1]->GetRadius()))
+		{
+			this->mBalls[1]->AddItem(this->mFriendlyFlag->GetMesh());
+			this->mFriendlyFlag->SetAtBase(false);
+		}
+		if(!this->mFriendlyFlag->GetAtBase())
+		{
+			D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mFriendlyFlag->GetMesh()->GetPosition() - this->mEnemyFlag->GetMesh()->GetPosition());
+			if(D3DXVec3Length(&distBetweenFlags) < (this->mBalls[1]->GetRadius()) && this->mEnemyFlag->GetAtBase())
+			{
+				this->mBalls[1]->ResetInventory();
+				this->mFriendlyFlag->Reset();
+				this->mFriendlyFlag->SetAtBase(true);
+				this->mRounds--;
+				if(this->mRounds <= 0)
+					return false;
+			}
+		}
+	}
+	this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
+	this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
 	return true;
 }

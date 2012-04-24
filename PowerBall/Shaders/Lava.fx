@@ -51,6 +51,7 @@ float4 Lava(float4 color, float4 pixelWorldPosition, float depth)
 
 	if(pixelWorldPosition.y <= L + H)
 	{
+		float timer = timerMillis * 0.001f;
 		float3 E = pixelWorldPosition.xyz - CameraPosition.xyz;
 		E = normalize(E);
 

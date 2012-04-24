@@ -202,7 +202,7 @@ void DxManager::RenderDeferredPerPixel()
 	D3DXMATRIX vp = this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
-	this->Shader_DeferredLightning->SetFloat("timer", this->TimerAnimation);
+	this->Shader_DeferredLightning->SetFloat("timerMillis", this->TimerAnimation);
 	
 	// Set SSAO settings
 	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
