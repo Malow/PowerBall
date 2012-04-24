@@ -23,6 +23,9 @@ enum MENU {BACKGROUND,
 	MAINMENU_PLAY,
 	PLAY_ONLINE,
 	PLAY_HOTSEAT,
+	OPTIONS_HOTSEAT,
+	OPTIONS_ONLINE,
+	OPTIONS_LAN,
 	PLAY_LAN,
 	OPTIONS_GAMEPLAY, 
 	CREDIT,
@@ -46,6 +49,12 @@ private:
 	void UpdateMousePosition();
 
 	void KeyBoardSteering(bool& IsClicked);
+
+	void CreateCircleMenu();
+	void CreateOptionsMenu();
+	void CreateHotseatMenu();
+	void CreateOnlineAndLanMenu();
+
 public:
 	/*! This function will create the main menu and init all buttons etc.*/
 	MainMenu(GraphicsEngine* ge);

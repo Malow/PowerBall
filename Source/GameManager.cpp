@@ -325,7 +325,7 @@ void GameManager::Initialize()
 	**/
 	else if(this->mGameMode == CTF)
 	{
-		this->mRounds = 1;
+		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mBalls		= new Ball*[this->mNumPlayers];
