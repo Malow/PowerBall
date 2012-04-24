@@ -190,6 +190,9 @@
       <Filter>Graphics Engine Files</Filter>
 >>>>>>> 80fa183a59db1c3c7d80499cb26658c5510881a0
     </ClCompile>
+    <ClCompile Include="..\Source\Flag.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -361,6 +364,9 @@
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h">
       <Filter>Graphics Engine Files</Filter>
 >>>>>>> 80fa183a59db1c3c7d80499cb26658c5510881a0
+    </ClInclude>
+    <ClInclude Include="..\Source\Flag.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

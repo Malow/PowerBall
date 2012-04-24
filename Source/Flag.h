@@ -11,12 +11,12 @@
 class Flag
 {
 private:
-	Mesh* mMesh;
+	StaticMesh* mMesh;
 	bool mAtBase;
 	D3DXVECTOR3 mStartPosition;
 public:
 	Flag();
-	Flag(Mesh* mesh, D3DXVECTOR3 startPosition);
+	Flag(StaticMesh* mesh, D3DXVECTOR3 startPosition);
 	~Flag();
 
 	void SetAtBase(bool atBase){ this->mAtBase = atBase; }
@@ -27,6 +27,6 @@ public:
 
 	void Reset();
 
-	void SetMesh(Mesh* mesh){ this->mMesh = mesh; }
-	Mesh* GetMesh(){ return this->mMesh; }
+	void SetMesh(StaticMesh* mesh){ this->mMesh = mesh; }
+	StaticMesh* GetMesh(){ return this->mMesh; }
 };

@@ -30,9 +30,10 @@ GameManager::~GameManager()
 	}
 	SAFE_DELETE(this->mIGM);
 	if((this->mEnemyFlag))
-		this->mGe->DeleteMesh(this->mEnemyFlag->GetMesh());
+		this->mGe->DeleteStaticMesh(this->mEnemyFlag->GetMesh());
 	if((this->mFriendlyFlag))
-		this->mGe->DeleteMesh(this->mFriendlyFlag->GetMesh());
+		this->mGe->DeleteStaticMesh(this->mFriendlyFlag->GetMesh());
+		
 	if(this->mEnemyFlag)
 		SAFE_DELETE(this->mEnemyFlag);
 	if(this->mFriendlyFlag)
@@ -336,8 +337,8 @@ void GameManager::Initialize()
 			else
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 		}
-		this->mEnemyFlag = new Flag(mGe->CreateMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
-		this->mFriendlyFlag = new Flag(mGe->CreateMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
+		this->mEnemyFlag = new Flag(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
+		this->mFriendlyFlag = new Flag(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
 	}
 	/**
 	* DeathMatch

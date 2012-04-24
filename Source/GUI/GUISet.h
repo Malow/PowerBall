@@ -1,6 +1,6 @@
 #pragma once
 /**
-* Auther: Rikard Johansson
+* Author: Rikard Johansson
 * Create Date: 28/03/2012
 *
 * This class will contain a number of buttons and
