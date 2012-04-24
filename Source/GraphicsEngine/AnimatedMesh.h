@@ -1,8 +1,14 @@
+/*
+	Class for doing (linear) morph animation with keyframes.
+	todo**: Requirements: (number of verts must be the same, 
+	same with faces and attributes, material must be equal,
+	textures must be the same, shaders, etc must be the same**
+*/
+
 #pragma once
 
 #include "stdafx.h"
 #include "Mesh.h"
-
 
 class KeyFrame
 {
@@ -27,20 +33,39 @@ public:
 
 class AnimatedMesh : public Mesh
 {
-private:
-	MaloW::Array<KeyFrame*>* keyframes;
-	float timer;
+	private:
+		bool						mLoopNormal;
+		bool						mLoopSeamless;
+		bool						mHasLooped;
+		float						mTimer;
+		MaloW::Array<KeyFrame*>*	mKeyFrames;
+		
+		//Loop/noloop
+		//loop Seamless (använda keyframe första som sista keyframe)
+		
+		//spela fram & tillbaka**
+	private:
+		void ComputeCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime) const;
 
-public:
-	AnimatedMesh(D3DXVECTOR3 pos);
-	virtual ~AnimatedMesh();
+	public:
+		AnimatedMesh(D3DXVECTOR3 pos);
+		virtual ~AnimatedMesh();
 
-	void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float time);
+		bool IsLooping() const;
+		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time. Note that currentTime is expected to be in milliseconds. */
+		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime);
 
-	virtual void LoadFromFile(string file);
+		/*! Prevents looping. Default. */
+		void NoLooping();
+		/*! Loops by returning to the first keyframe when last keyframe is reached. */
+		void LoopNormal();
+		/*! Loops by adding the first keyframe as the last keyframe to prevent seamed(normal) looping */
+		void LoopSeamless(); 
 
-	/* ! Doesnt work atm, let us know if u need it work. Allways returns NULL atm. */
-	virtual MaloW::Array<MeshStrip*>* GetStrips();
+		virtual void LoadFromFile(string file);
 
-	MaloW::Array<KeyFrame*>* GetKeyFrames() { return this->keyframes; }
+		/* ! Doesnt work atm, let us know if u need it work. Allways returns NULL atm. */
+		virtual MaloW::Array<MeshStrip*>* GetStrips();
+
+		MaloW::Array<KeyFrame*>* GetKeyFrames() { return this->mKeyFrames; }
 };

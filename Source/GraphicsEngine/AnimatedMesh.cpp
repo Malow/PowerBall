@@ -1,31 +1,104 @@
 #include "AnimatedMesh.h"
 
+
+void AnimatedMesh::ComputeCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime) const
+{
+	//compute the indices for the keyframes to interpolate
+	int currentPlayTimeMillis = (int)currentTime % this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
+	UINT firstIndex = (UINT)((this->mKeyFrames->size() - 1) * (currentPlayTimeMillis * 0.001f * 0.001f)); //**seamless %**
+
+	//get previous and next keyframes
+	*one = this->mKeyFrames->get(firstIndex);
+	*two = this->mKeyFrames->get(firstIndex + 1);
+
+	//compute interpolation value t
+	int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe 1 & 2. (new time for keyframe #1 is 0.)
+	int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
+	t = (float)newCurrentTimeMillis / (float)newTimeTwo; //convert to range [0,1]
+}
+
+
+
 AnimatedMesh::AnimatedMesh(D3DXVECTOR3 pos) : Mesh(pos)
 {
-	this->keyframes = new MaloW::Array<KeyFrame*>();
+	this->mLoopNormal = false;
+	this->mLoopSeamless = false;
+	this->mHasLooped = false;
+	this->mTimer = 0.0f; //**
+	this->mKeyFrames = new MaloW::Array<KeyFrame*>();
 }
 
 AnimatedMesh::~AnimatedMesh()
 {
-	if(this->keyframes)
+	if(this->mKeyFrames)
 	{
-		while(this->keyframes->size() > 0)
-			delete this->keyframes->getAndRemove(0);
+		while(this->mKeyFrames->size() > 0)
+			delete this->mKeyFrames->getAndRemove(0);
 		
-		delete this->keyframes;
+		delete this->mKeyFrames;
 	}
 }
 
-void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float time)
-{
-	this->timer = time;
 
-	// Just test
-	*one = this->keyframes->get(0);
-	*two = this->keyframes->get(1);
-	t = ((int)this->timer % 5000) / 1000.0f;
-	//
+bool AnimatedMesh::IsLooping() const
+{
+	return this->mLoopNormal || this->mLoopSeamless;
 }
+void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime)
+{
+	//this->mTimer = currentTime; //**används ej**
+
+	
+	if(this->IsLooping())
+	{
+		if(this->mLoopNormal)
+		{
+			this->ComputeCurrentKeyFrames(one, two, t, currentTime);
+		}
+	}
+	else
+	{
+		if(!this->mHasLooped)
+		{
+			int intDiv = (int)currentTime / this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
+			if(intDiv >= 1)
+			{
+				this->mHasLooped = true;
+			}
+			else
+			{
+				this->ComputeCurrentKeyFrames(one, two, t, currentTime);
+			}
+		}
+		
+		if(this->mHasLooped)
+		{
+			*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
+			*two = *one;
+			t = 0.0f;
+		}
+	}
+}
+
+
+
+void AnimatedMesh::NoLooping()
+{
+	this->mLoopNormal = false;
+	this->mLoopSeamless = false;
+}
+void AnimatedMesh::LoopNormal()
+{
+	this->mLoopNormal = true;
+	this->mLoopSeamless = false;
+}
+void AnimatedMesh::LoopSeamless()
+{
+	this->mLoopNormal = false;
+	this->mLoopSeamless = true;
+}
+
+
 
 void AnimatedMesh::LoadFromFile(string file)
 {
@@ -139,7 +212,7 @@ void AnimatedMesh::LoadFromFile(string file)
 				delete od;
 
 			}
-			this->keyframes->add(frame);
+			this->mKeyFrames->add(frame);
 			
 		}
 	}
