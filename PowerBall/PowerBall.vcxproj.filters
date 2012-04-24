@@ -173,6 +173,21 @@
     <ClCompile Include="..\Source\Flag.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerDeferred.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerForwardRendering.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerPostProcess.cpp">
+      <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -336,6 +351,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\Flag.h">
       <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h">
+      <Filter>Graphics Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
