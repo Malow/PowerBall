@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "MainMenu.h"
 #include "GraphicsEngine.h"
-#include "InGameMenu.h"
-
-#include "CamRecording.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {

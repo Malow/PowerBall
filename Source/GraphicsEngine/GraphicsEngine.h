@@ -11,6 +11,7 @@ Singleton.
 #include "FPSCamera.h"
 #include "RTSCamera.h"
 #include "Image.h"
+#include "CamRecording.h"
 
 
 // Class for communication between processes for loading meshes
