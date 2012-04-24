@@ -26,7 +26,14 @@ public:
 
 			delete this->strips;
 		}
-
+	}
+	KeyFrame(const KeyFrame* origObj)
+	{
+		this->time = origObj->time;
+		for(int i = 0; i < origObj->strips->size(); i++)
+		{
+			this->strips->add(new MeshStrip(origObj->strips->get(i)));
+		}
 	}
 };
 
@@ -34,9 +41,10 @@ public:
 class AnimatedMesh : public Mesh
 {
 	private:
+		UINT						mNrOfTimesLooped;
 		bool						mLoopNormal;
 		bool						mLoopSeamless;
-		bool						mHasLooped;
+		//loopa växelström**
 		float						mTimer;
 		MaloW::Array<KeyFrame*>*	mKeyFrames;
 		
@@ -44,20 +52,19 @@ class AnimatedMesh : public Mesh
 		//loop Seamless (använda keyframe första som sista keyframe)
 		
 		//spela fram & tillbaka**
-	private:
-		void ComputeCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime) const;
 
 	public:
 		AnimatedMesh(D3DXVECTOR3 pos);
 		virtual ~AnimatedMesh();
 
+		UINT GetNrOfTimesLooped() const;
 		bool IsLooping() const;
 		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time. Note that currentTime is expected to be in milliseconds. */
 		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime);
 
 		/*! Prevents looping. Default. */
 		void NoLooping();
-		/*! Loops by returning to the first keyframe when last keyframe is reached. */
+		/*! Loops by returning to the first keyframe when last keyframe is reached. Note that this kind of looping is not seamless. */
 		void LoopNormal();
 		/*! Loops by adding the first keyframe as the last keyframe to prevent seamed(normal) looping */
 		void LoopSeamless(); 

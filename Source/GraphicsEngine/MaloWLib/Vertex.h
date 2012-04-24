@@ -39,6 +39,13 @@ struct Vertex
 		normal = D3DXVECTOR3(0, 0, 0);
 		color = D3DXVECTOR3(0, 0, 0);
 	}
+	Vertex(const Vertex* origObj)
+	{
+		pos = origObj->pos;
+		texCoord = origObj->texCoord;
+		normal = origObj->normal;
+		color = origObj->color;
+	}
 };
 
 struct ParticleVertex

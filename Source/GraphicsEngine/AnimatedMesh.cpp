@@ -1,29 +1,13 @@
 #include "AnimatedMesh.h"
 
 
-void AnimatedMesh::ComputeCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime) const
-{
-	//compute the indices for the keyframes to interpolate
-	int currentPlayTimeMillis = (int)currentTime % this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
-	UINT firstIndex = (UINT)((this->mKeyFrames->size() - 1) * (currentPlayTimeMillis * 0.001f * 0.001f)); //**seamless %**
-
-	//get previous and next keyframes
-	*one = this->mKeyFrames->get(firstIndex);
-	*two = this->mKeyFrames->get(firstIndex + 1);
-
-	//compute interpolation value t
-	int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe 1 & 2. (new time for keyframe #1 is 0.)
-	int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
-	t = (float)newCurrentTimeMillis / (float)newTimeTwo; //convert to range [0,1]
-}
-
 
 
 AnimatedMesh::AnimatedMesh(D3DXVECTOR3 pos) : Mesh(pos)
 {
+	this->mNrOfTimesLooped = 0;
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
-	this->mHasLooped = false;
 	this->mTimer = 0.0f; //**
 	this->mKeyFrames = new MaloW::Array<KeyFrame*>();
 }
@@ -40,6 +24,10 @@ AnimatedMesh::~AnimatedMesh()
 }
 
 
+UINT AnimatedMesh::GetNrOfTimesLooped() const
+{
+	return this->mNrOfTimesLooped;
+}
 bool AnimatedMesh::IsLooping() const
 {
 	return this->mLoopNormal || this->mLoopSeamless;
@@ -48,35 +36,43 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 {
 	//this->mTimer = currentTime; //**används ej**
 
-	
-	if(this->IsLooping())
+	//**test**
+	static bool once = false;
+	if(!once)
 	{
-		if(this->mLoopNormal)
-		{
-			this->ComputeCurrentKeyFrames(one, two, t, currentTime);
-		}
+		//this->LoopSeamless();
+		once = !once;
+	}
+	//**test**
+
+	if(this->IsLooping() || !this->mNrOfTimesLooped)
+	{
+		//test**
+		KeyFrame* test = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
+		float tmp = test->time;
+		//test**
+
+		this->mNrOfTimesLooped = (int)currentTime / this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
+
+		//compute the indices for the keyframes to interpolate
+		int currentPlayTimeMillis = (int)currentTime % this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
+		UINT firstIndex = (UINT)((this->mKeyFrames->size() - 1) * (currentPlayTimeMillis * 0.000001f)); 
+
+		//get previous and next keyframes
+		*one = this->mKeyFrames->get(firstIndex);
+		*two = this->mKeyFrames->get(firstIndex + 1);
+
+		//compute interpolation value t
+		int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe 1 & 2. (new time for keyframe #1 is 0.)
+		int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
+		//convert to range [0,1]
+		t = ((float)newCurrentTimeMillis / (float)newTimeTwo) / (this->mKeyFrames->size() - 1); 
 	}
 	else
 	{
-		if(!this->mHasLooped)
-		{
-			int intDiv = (int)currentTime / this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
-			if(intDiv >= 1)
-			{
-				this->mHasLooped = true;
-			}
-			else
-			{
-				this->ComputeCurrentKeyFrames(one, two, t, currentTime);
-			}
-		}
-		
-		if(this->mHasLooped)
-		{
-			*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
-			*two = *one;
-			t = 0.0f;
-		}
+		*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
+		*two = *one;
+		t = 0.0f;
 	}
 }
 
@@ -84,16 +80,33 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 
 void AnimatedMesh::NoLooping()
 {
+	//remove last keyframe if seamless looping has been used
+	if(this->mLoopSeamless)
+	{
+		this->mKeyFrames->getAndRemove(this->mKeyFrames->size() - 1);
+	}
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
 }
 void AnimatedMesh::LoopNormal()
 {
+	//remove last keyframe if seamless looping has been used
+	if(this->mLoopSeamless)
+	{
+		this->mKeyFrames->getAndRemove(this->mKeyFrames->size() - 1);
+	}
 	this->mLoopNormal = true;
 	this->mLoopSeamless = false;
 }
 void AnimatedMesh::LoopSeamless()
 {
+	//add first keyframe as last key frame
+	KeyFrame* seamless = new KeyFrame(this->mKeyFrames->get(0));
+	//change time by adding the time-difference between the last and second last keyframes to the time of the last keyframe.
+	int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
+	seamless->time = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
+	this->mKeyFrames->add(seamless);
+	
 	this->mLoopNormal = false;
 	this->mLoopSeamless = true;
 }
@@ -105,7 +118,6 @@ void AnimatedMesh::LoadFromFile(string file)
 	// if substr of the last 4 = .obj do this:    - else load other format / print error
 	ObjLoader oj;
 
-	
 	// Get the directory correct
 	string tempFilename = file;
 	string pathfolder = "";
@@ -116,8 +128,6 @@ void AnimatedMesh::LoadFromFile(string file)
 		pathfolder += tempFilename.substr(0, slashpos+1);
 		tempFilename = tempFilename.substr(slashpos + 1);
 	}
-
-	
 
 	ifstream anifile;
 	anifile.open(file);
@@ -172,8 +182,6 @@ void AnimatedMesh::LoadFromFile(string file)
 							norm = od->faces->get(i).data[1][2] - 1;
 							tempverts[nrOfVerts] = Vertex(od->vertspos->get(vertpos), od->textcoords->get(textcoord), od->vertsnorms->get(norm));
 							nrOfVerts++;
-
-
 
 							hasFace = true;
 						}
