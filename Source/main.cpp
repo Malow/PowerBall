@@ -32,9 +32,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngine* eng = GetGraphicsEngine();
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
-	StaticMesh* testBall = eng->CreateMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
-	StaticMesh* testCylinder = eng->CreateMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
-	StaticMesh* bth = eng->CreateMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
+	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
+	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+
+	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
+
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");

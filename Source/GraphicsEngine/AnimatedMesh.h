@@ -35,7 +35,7 @@ public:
 	AnimatedMesh(D3DXVECTOR3 pos);
 	virtual ~AnimatedMesh();
 
-	void GetCurrentKeyFrames(KeyFrame* one, KeyFrame* two, float* t, float time);
+	void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float time);
 
 	virtual void LoadFromFile(string file);
 

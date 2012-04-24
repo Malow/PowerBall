@@ -16,10 +16,15 @@ AnimatedMesh::~AnimatedMesh()
 	}
 }
 
-void AnimatedMesh::GetCurrentKeyFrames(KeyFrame* one, KeyFrame* two, float* t, float time)
+void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float time)
 {
 	this->timer = time;
 
+	// Just test
+	*one = this->keyframes->get(0);
+	*two = this->keyframes->get(1);
+	t = ((int)this->timer % 5000) / 1000.0f;
+	//
 }
 
 void AnimatedMesh::LoadFromFile(string file)
@@ -43,6 +48,7 @@ void AnimatedMesh::LoadFromFile(string file)
 
 	ifstream anifile;
 	anifile.open(file);
+	if(anifile)
 	{
 		string line = "";
 		getline(anifile, line);
@@ -101,6 +107,7 @@ void AnimatedMesh::LoadFromFile(string file)
 					}
 
 					strip->setNrOfVerts(nrOfVerts);
+
 					Vertex* verts = new Vertex[nrOfVerts];
 					for(int z = 0; z < nrOfVerts; z++)
 					{
@@ -133,8 +140,11 @@ void AnimatedMesh::LoadFromFile(string file)
 
 			}
 			this->keyframes->add(frame);
+			
 		}
 	}
+	else
+		MaloW::Debug("Failed to open AnimatedMesh: " + file);
 }
 
 MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()

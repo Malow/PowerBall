@@ -177,7 +177,7 @@ StaticMesh* GraphicsEngine::CreateStaticMesh(string filename, D3DXVECTOR3 pos)
 {
 	StaticMesh* mesh = new StaticMesh(pos);
 
-	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, NULL);
+	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, NULL, NULL);
 	this->PutEvent(re);
 
 	return mesh;
@@ -193,7 +193,17 @@ StaticMesh* GraphicsEngine::CreateStaticMesh(string filename, D3DXVECTOR3 pos, M
 {
 	StaticMesh* mesh = new StaticMesh(pos);
 
-	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, material);
+	LoadMeshEvent* re = new LoadMeshEvent(filename, mesh, NULL, material);
+	this->PutEvent(re);
+
+	return mesh;
+}
+
+AnimatedMesh* GraphicsEngine::CreateAnimatedMesh(string filename, D3DXVECTOR3 pos)
+{
+	AnimatedMesh* mesh = new AnimatedMesh(pos);
+
+	LoadMeshEvent* re = new LoadMeshEvent(filename, NULL, mesh, NULL);
 	this->PutEvent(re);
 
 	return mesh;
@@ -291,20 +301,26 @@ void GraphicsEngine::Life()
 			if(dynamic_cast<LoadMeshEvent*>(ev) != NULL)
 			{
 				string filename = ((LoadMeshEvent*)ev)->GetFileName();
-				StaticMesh* mesh = ((LoadMeshEvent*)ev)->GetMesh();
-
-				mesh->LoadFromFile(filename);
-				this->dx->CreateStaticMesh(mesh);
-
-				if(Material* material = ((LoadMeshEvent*)ev)->GetMaterial())
+				if(StaticMesh* mesh = ((LoadMeshEvent*)ev)->GetStaticMesh())
 				{
-					MaloW::Array<MeshStrip*>* strips = mesh->GetStrips();
-					for(int i = 0; i < strips->size(); i++)
+					mesh->LoadFromFile(filename);
+					this->dx->CreateStaticMesh(mesh);
+
+					if(Material* material = ((LoadMeshEvent*)ev)->GetMaterial())
 					{
-						strips->get(i)->SetMaterial(material);
-						if(i+1 < strips->size())
-							material = new Material(material);
+						MaloW::Array<MeshStrip*>* strips = mesh->GetStrips();
+						for(int i = 0; i < strips->size(); i++)
+						{
+							strips->get(i)->SetMaterial(material);
+							if(i+1 < strips->size())
+								material = new Material(material);
+						}
 					}
+				}
+				else if(AnimatedMesh* mesh = ((LoadMeshEvent*)ev)->GetAnimatedMesh())
+				{
+					mesh->LoadFromFile(filename);
+					this->dx->CreateAnimatedMesh(mesh);
 				}
 			}
 

@@ -26,15 +26,17 @@ class RendererEvent : public MaloW::ProcessEvent
 private:
 	string message;
 	StaticMesh* mesh;
+	AnimatedMesh* ani;
 	Light* light;
 	Image* image;
 	bool deleteSelf;
 
 public:
-	RendererEvent(string message = "", StaticMesh* mesh = NULL, Light* light = NULL, Image* image = NULL) 
+	RendererEvent(string message = "", StaticMesh* mesh = NULL, Light* light = NULL, Image* image = NULL, AnimatedMesh* ani = NULL) 
 	{ 
 		this->message = message; 
 		this->mesh = mesh; 
+		this->ani = ani;
 		this->light = light;
 		this->image = image;
 		this->deleteSelf = true;
@@ -49,10 +51,13 @@ public:
 				delete this->light;
 			if(this->image)
 				delete this->image;
+			if(this->ani)
+				delete this->ani;
 		}
 	}
 	string getMessage() { return this->message; }
-	StaticMesh* GetMesh() { this->deleteSelf = false; return this->mesh; }
+	StaticMesh* GetStaticMesh() { this->deleteSelf = false; return this->mesh; }
+	AnimatedMesh* GetAnimatedMesh() { this->deleteSelf = false; return this->ani; }
 	Light* GetLight() { this->deleteSelf = false; return this->light; }
 	Image* GetImage() { this->deleteSelf = false; return this->image; }
 };
