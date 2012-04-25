@@ -18,6 +18,7 @@ enum GAMEMODE{
 class GameNetwork
 {
 private:
+	ServerInfo			mServer;
 	ServerConnection*	mConn;
 	D3DXVECTOR3*		mPos;
 	D3DXVECTOR3*		mVel;
@@ -26,7 +27,6 @@ private:
 	int					mNumPlayers;
 	bool				mKeyInputs[PLAYER_CAP][256];
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
-	GAMEMODE			mGameMode;
 
 	/*! Updates the client side, (updates LAN - variables). */
 	bool				ClientUpdate();
@@ -84,9 +84,6 @@ public:
 
 	/*! Sets the position of the flag with specified index. */
 	void		SetFlagPos(const D3DXVECTOR3 pos, const int index);
-	
-	/*! Sets the IP that the client will connect to. */
-	void		SetIP(char ip[]);
 
 	/*! For client: Sets the key to down/up which will be sent to server. */
 	void		AddKeyInput(const char key, const bool down);
@@ -98,12 +95,15 @@ public:
 	bool		Update(Ball** balls, int &numBalls, float dt);
 
 	/*! Starts the game network. */
-	void		Start(bool host, GAMEMODE gameMode);
+	void		Start(ServerInfo server);
 
 	/*! Returns true if you is the host. */
 	bool		IsServer() const {return this->mConn->IsServer();}
 
 	/*! Closes the game LAN. */
 	void		Close();
+	
+	/*! Returns servers active on the LAN. */
+	vector<ServerInfo>		FindServers();
 
 };

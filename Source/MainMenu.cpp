@@ -121,7 +121,19 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 						
-						this->mGm->PlayLAN("", CTF); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
+						//add button called find servers or something and copy the row below to retrieve a list of all servers currently open on the LAN
+						vector<ServerInfo> servers = this->mGm->GetLanPointer()->FindServers();
+						int chosenServer = 0; //index of the server selected from the list
+
+						if(servers.size() > 0)
+						{
+							this->mGm->PlayLAN(servers[chosenServer]);
+						}
+						else //atm, will host if no servers running on LAN
+						{
+							ServerInfo host("Kalles Kalas Server", 0, 5, CTF, "");
+							this->mGm->PlayLAN(host);
+						} 
 						
 						SAFE_DELETE(this->mGm);
 						this->mCurrentSet = MAINMENU;
