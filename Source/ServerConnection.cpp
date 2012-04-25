@@ -337,9 +337,9 @@ DWORD WINAPI ServerConnection::TalkToClient(void* param)
 				conn->numCharsInBuf = recvBytes;
 		}
 
-		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
+		if(conn->numCharsInBufW > 0)
 		{
-			int sentBytes = sendto( conn->sock, (char*)conn->bufW, sizeof(conn->bufW), 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
+			int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
 			
 			if(sentBytes > 0)
 				conn->numCharsInBufW = 0;

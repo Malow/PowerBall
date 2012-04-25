@@ -9,12 +9,6 @@ GameNetwork::GameNetwork()
 	this->mFlagPos = new D3DXVECTOR3[2];
 	this->mIndex = 0;
 	this->mNumPlayers = 1;
-
-	//replace with MAP->GETSTARTPOSITIONS() ?
-	this->mStartPositions[0] = D3DXVECTOR3(0,24.7f,-20);
-	this->mStartPositions[1] = D3DXVECTOR3(0,24.7f,20);
-	this->mStartPositions[2] = D3DXVECTOR3(-5,14.7f,-5);
-	this->mStartPositions[3] = D3DXVECTOR3(-5,14.7f,5);
 }
 GameNetwork::~GameNetwork()
 {
@@ -25,6 +19,17 @@ GameNetwork::~GameNetwork()
 void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
 {
 	this->mPos[index] = pos;
+}
+void GameNetwork::SetStartPos(const D3DXVECTOR3 pos, const int index)
+{
+	this->mStartPositions[index] = pos;
+}
+void GameNetwork::SetStartPosistions(const D3DXVECTOR3 pos[], const int size)
+{
+	for(int i = 0; i < size; i++)
+	{
+		this->mStartPositions[i] = pos[i];
+	}
 }
 void GameNetwork::SetVel(const D3DXVECTOR3 vel, const int index)
 {
@@ -55,7 +60,9 @@ bool GameNetwork::ClientUpdate()
 			this->AddToBuffer(bufW, offset, (char)i);
 		}
 	}
-	this->mConn->SetWriteBuffer(bufW, 256, 0);
+	//if(offset > 0)
+		this->AddToBuffer(bufW, offset, ';');
+	this->mConn->SetWriteBuffer(bufW, offset, 0);
 
 	//ret = this->mConn->Update();
 
@@ -104,20 +111,20 @@ void GameNetwork::ServerUpdate()
 {
 	if(this->mServer.GetGameMode() == CTF)
 		this->SendCTFParams();
-
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
 	{
+
 		char buf[256];
 		if(this->mConn->GetReadBuffer(buf, 256, i - 1))
 		{
 			for(int a = 0; a < 256; a++)
 				this->mKeyInputs[i][a] = false;
-
 			int offset = 0;
-			for(int a = 0; a < 5; a++)
+			while(buf[offset] != ';')
 			{
 				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = true;
 			}
+			offset += sizeof(char);
 		}
 	}
 	
@@ -137,10 +144,13 @@ void GameNetwork::ServerUpdate()
 			this->AddToBuffer(bufW, offset, this->mVel[i]);
 		}
 
-		this->mConn->SetWriteBuffer(bufW, 256, a-1);
+		this->mConn->SetWriteBuffer(bufW, offset, a-1);
 	}
 
 }
+int test = 0;
+
+Ball* shadow;
 bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 {
 	bool ret = true;
@@ -185,7 +195,7 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 			}
 			else
 			{
-				balls[i]->SetVelocity(Vector3(this->mVel[i])*INTERPOS_MOD  + balls[i]->GetVelocity() * (1.0f-INTERPOS_MOD));
+				balls[i]->SetVelocity(Vector3(this->mVel[i])*INTERVEL_MOD  + balls[i]->GetVelocity() * (1.0f-INTERVEL_MOD));
 
 
 				//balls[i]->SetVelocity(balls[i]->GetVelocity() + direction * 0.25);
@@ -198,7 +208,15 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 			}
 		//}
 	}
-
+	if(!this->IsServer())
+	{
+		if(test == 0)
+		{
+			shadow = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+			test++;
+		}
+		shadow->SetPosition(this->mPos[1]);
+	}
 	return ret;
 }
 void GameNetwork::Start(ServerInfo server)
