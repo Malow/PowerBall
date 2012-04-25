@@ -7,14 +7,8 @@ using namespace std;
 #define INTERPOS_MIN 0.025f //if the position difference (vector length) is lesser than this -> sets local position to network position
 #define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
 #define INTERPOS_MOD 0.85f // 1 = setting local position to latest network position, 0 = ignore network position.
+#define INTERVEL_MOD 0.3f // 1 = setting local vel to latest network vel, 0 = ignore network position.
 
-enum GAMEMODE{
-	NONE,
-	CTF,
-	DM,
-	KOTH,
-	KOTH2
-};
 
 class GameNetwork
 {
@@ -79,6 +73,12 @@ public:
 
 	/*! Sets the position of the player with specified index. */
 	void		SetPos(const D3DXVECTOR3 pos, const int index);
+
+	/*! Sets the startposition of the player with specified index. */
+	void		SetStartPos(const D3DXVECTOR3 pos, const int index);
+	
+	/*! Sets the startpositions of the players (player index follows array order). */
+	void		SetStartPosistions(const D3DXVECTOR3 pos[], const int size);
 
 	/*! Sets the velocity of the player with specified index. */
 	void		SetVel(const D3DXVECTOR3 vel, const int index);

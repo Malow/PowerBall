@@ -159,6 +159,8 @@ bool GameManager::PlayLAN(ServerInfo server)
 
 		if(this->mNet->IsServer())
 		{
+			for(int i = 0; i < this->mNumPlayers; i++)
+				this->mBalls[i]->Update(diff, this->mPlatform);
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
@@ -211,11 +213,13 @@ bool GameManager::PlayLAN(ServerInfo server)
 				
 
 
-				this->mBalls[i]->Update(diff, this->mPlatform);
 				
 				//if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
 					//this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
 
+			}
+			for(int i = 0; i < this->mNumPlayers; i++)
+			{
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 				Vector3 vel = this->mBalls[i]->GetVelocity();
 				this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
@@ -223,17 +227,11 @@ bool GameManager::PlayLAN(ServerInfo server)
 		}
 		else 
 		{
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				this->mNet->AddKeyInput('A', true);
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				this->mNet->AddKeyInput('D', true);
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				this->mNet->AddKeyInput('W', true);
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				this->mNet->AddKeyInput('S', true);
-
-			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
-				this->mNet->AddKeyInput(VK_SPACE, true);
+			this->mNet->AddKeyInput('A', mGe->GetKeyListener()->IsPressed('A'));
+			this->mNet->AddKeyInput('D', mGe->GetKeyListener()->IsPressed('D'));
+			this->mNet->AddKeyInput('W', mGe->GetKeyListener()->IsPressed('W'));
+			this->mNet->AddKeyInput('S', mGe->GetKeyListener()->IsPressed('S'));
+			this->mNet->AddKeyInput(VK_SPACE, mGe->GetKeyListener()->IsPressed(VK_SPACE));
 
 			if(this->mNet->GetIndex() < this->mNumPlayers)
 			{
@@ -300,23 +298,8 @@ bool GameManager::PlayLAN(ServerInfo server)
 
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
-			int old = this->mNumPlayers;
-			this->mNumPlayers = this->mNet->GetNumPlayers();
-			Ball** temp = new Ball*[this->mNumPlayers];
-			for(int i = 0; i < old; i++)
-			{
-				temp[i] = this->mBalls[i];
-			}
-			for(int i = old; i < this->mNumPlayers; i++)
-			{
-				temp[i] = new Ball("Media/Ball.obj", this->mNet->GetStartPos(i));
-				numAlivePlayers++;
-			}
-			delete[] this->mBalls;
-			this->mBalls = temp;
-
-			mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
-			mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+			this->AddBall();
+			numAlivePlayers++;
 		}
 
 		if(this->mNet->IsServer())
@@ -326,9 +309,6 @@ bool GameManager::PlayLAN(ServerInfo server)
 		}
 		if(this->mGameMode == CTF)
 			if(!this->CaptureTheFlag())
-				running = false;
-		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
-			if(!this->KingOfTheHill(diff))
 				running = false;
 			
 	}
@@ -352,6 +332,22 @@ void GameManager::Initialize()
 		this->mLights[i]->SetIntensity(30.0f);
 
 	this->mIGM			= new InGameMenu(this->mGe);
+
+	//replace with MAP->GETSTARTPOSITIONS() ?
+	//
+	/*this->mNet->SetStartPos(D3DXVECTOR3(0,24.7f,-20), 0);
+	this->mNet->SetStartPos(D3DXVECTOR3(0,24.7f,20), 1);
+	this->mNet->SetStartPos(D3DXVECTOR3(-5,24.7f,-20), 2);
+	this->mNet->SetStartPos(D3DXVECTOR3(-5,24.7f,20), 3);*/
+
+	D3DXVECTOR3 startPositions[4];
+	startPositions[0] = D3DXVECTOR3(0,24.7f,-20);
+	startPositions[1] = D3DXVECTOR3(0,24.7f,20);
+	startPositions[2] = D3DXVECTOR3(-5,24.7f,-20);
+	startPositions[3] = D3DXVECTOR3(-5,24.7f,20);
+	
+	this->mNet->SetStartPosistions(startPositions, 4);
+
 	/**
 	* King of the hill
 	**/
@@ -425,6 +421,26 @@ void GameManager::Initialize()
 	while(diff < 1000)
 		diff += mGe->Update();
 	*/
+}
+void GameManager::AddBall()
+{
+	
+	int old = this->mNumPlayers;
+	this->mNumPlayers = this->mNet->GetNumPlayers();
+	Ball** temp = new Ball*[this->mNumPlayers];
+	for(int i = 0; i < old; i++)
+	{
+		temp[i] = this->mBalls[i];
+	}
+	for(int i = old; i < this->mNumPlayers; i++)
+	{
+		temp[i] = new Ball("Media/Ball.obj", this->mNet->GetStartPos(i));
+	}
+	delete[] this->mBalls;
+	this->mBalls = temp;
+
+	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+	mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 }
 bool GameManager::CaptureTheFlag()
 {

@@ -54,4 +54,6 @@ private:
 	bool		CaptureTheFlag();
 
 	bool		KingOfTheHill(float dt);
+
+	void		AddBall();
 };
