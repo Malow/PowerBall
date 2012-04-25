@@ -169,7 +169,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 					if(i != this->mNet->GetIndex())
 					{
 						int flip = 1;
-						if(this->mNet->GetStartPos(i) > 0)
+						if(this->mNet->GetStartPos(i).z > 0)
 							flip = -1;
 						if(this->mNet->IsKeyPressed('A', i))
 							mBalls[i]->AddForce(Vector3(-diff * flip,0,0));	
@@ -237,7 +237,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 			{
 				
 				int flip = 1;
-				if(this->mNet->GetStartPos(this->mNet->GetIndex()) > 0)
+				if(this->mNet->GetStartPos(this->mNet->GetIndex()).z > 0)
 					flip = -1;
 				if(mGe->GetKeyListener()->IsPressed('A'))
 					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-diff*flip,0,0));	
@@ -309,6 +309,9 @@ bool GameManager::PlayLAN(ServerInfo server)
 		}
 		if(this->mGameMode == CTF)
 			if(!this->CaptureTheFlag())
+				running = false;
+		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
+			if(!this->KingOfTheHill(diff))
 				running = false;
 			
 	}

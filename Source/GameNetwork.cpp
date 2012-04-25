@@ -64,7 +64,6 @@ bool GameNetwork::ClientUpdate()
 		this->AddToBuffer(bufW, offset, ';');
 	this->mConn->SetWriteBuffer(bufW, offset, 0);
 
-	//ret = this->mConn->Update();
 
 	char buf[256] = {0};
 	if(this->mConn->GetReadBuffer(buf, 256, 0))
