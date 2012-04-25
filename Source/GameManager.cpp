@@ -332,6 +332,9 @@ bool GameManager::PlayLAN(char ip[], int GameMode)
 		if(this->mGameMode == CTF)
 			if(!this->CaptureTheFlag())
 				running = false;
+		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
+			if(!this->KingOfTheHill(diff))
+				running = false;
 			
 	}
 	this->mNet->Close();
@@ -357,19 +360,32 @@ void GameManager::Initialize()
 	/**
 	* King of the hill
 	**/
-	if(this->mGameMode == KOTH)
+	if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 	{
+		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
+		Vector3 hotZone = Vector3(0.0f,20.2f,0.0f);
+		this->mPlatform->SetHotZonePosition(hotZone);
+		float radius = 5.4f;
+		this->mPlatform->SetHotZoneRadius(radius);
+		float maxTime;
+		if(this->mGameMode == KOTH)
+			maxTime = 10.0f;
+		else
+			maxTime = 30.0f;
+		this->mPlatform->SetMaxTimeInHotZone(maxTime);
+
 		this->mBalls		= new Ball*[this->mNumPlayers];
 
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if( i == 0)
-				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-14));
 			else
-				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,15));
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,14));
 		}
+		
 	}
 	/**
 	* Capture The Flag
@@ -465,5 +481,46 @@ bool GameManager::CaptureTheFlag()
 	}
 	this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
 	this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
+	return true;
+}
+bool GameManager::KingOfTheHill(float dt)
+{
+	float newdt = dt/1000.0f;
+	float numberOfPlayers = this->mNumPlayers;
+	int numberInHotZone = 0;
+	int ballIndex = 0;
+	for(int i = 0; i<numberOfPlayers; i++)
+	{
+		if(this->mPlatform->IsInHotZone(this->mBalls[i]->GetPositionVector3(), this->mBalls[i]->GetRadius()))
+		{
+			numberInHotZone++;
+			ballIndex = i;
+		}
+	}
+	if(numberInHotZone == 1)
+	{
+		this->mBalls[ballIndex]->AddTimeInHotZone(newdt);
+		if( this->mBalls[ballIndex]->GetTimeInHotZone() >= this->mPlatform->GetMaxTimeInHotZone())
+		{
+			this->mRounds--;
+			for(int i = 0; i<numberOfPlayers; i++)
+			{
+				this->mBalls[i]->ResetTime();
+				this->mBalls[i]->SetPositionToStartPosition();
+				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+				Vector3 vel = Vector3(0,0,0);
+				this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
+			}										
+			if(this->mRounds <= 0)
+					return false;
+
+		}
+	}
+	else
+	{
+		if( this->mGameMode == KOTH)
+			for(int i = 0; i<numberOfPlayers; i++)
+				this->mBalls[i]->ResetTime();
+	}
 	return true;
 }

@@ -34,6 +34,7 @@ private:
 	D3DXVECTOR3	mStartPos;
 	float		mRespawnTime;
 	float		mRespawnTimeLeft;
+	float		mTimeInHotZone;
 	//vector3	mForward;
 
 public:
@@ -79,6 +80,9 @@ public:
 	/*! Returns the number of lives left for the ball. */
 	int GetNumLivesLeft() const { return this->mLivesLeft; }
 
+	/*! Returns the time the ball has been alone in hot zone. */
+	float GetTimeInHotZone() const { return this->mTimeInHotZone; }
+
 	/*! Returns the balls forward vector (the direction the ball is moving). */
 	//vector3	GetForwardVector() const { return this->mForward; }
 
@@ -88,6 +92,10 @@ public:
 	/*! Reset inventory*/
 	void ResetInventory(){ this->mInventory = NULL; }
 
+	/*! Reset time in hot zone. */
+	void ResetTime() { this->mTimeInHotZone = 0; }
+	
+
 	//Set-Functions
 	
 	/*! Returns the balls radius. */
@@ -95,6 +103,9 @@ public:
 
 	/*! Sets the position of the ball in world space. */
 	void SetPosition(D3DXVECTOR3 position) { this->mMesh->SetPosition(position); }
+
+	/*! Set position to StartPosition- */
+	void SetPositionToStartPosition() { this->SetPosition(this->mStartPos); }
 
 	/*! Sets the position of the ball in world space. */
 	void SetPosition(const float x, const float y, const float z) { this->mMesh->SetPosition(D3DXVECTOR3(x,y,z)); }
@@ -120,6 +131,9 @@ public:
 	/*! Sets the number of lives for the ball. */
 	void SetNumLives(const int numLives) { this->mLivesLeft = numLives; }
 
+	/*! Sets the time the ball has been in hot zone. */
+	void SetTimeInHotZone(float timeInHotZone) {this->mTimeInHotZone = timeInHotZone; }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -132,6 +146,9 @@ public:
 
 	/*! Adds a force to this ball. */
 	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * 10.0f * this->mForcePress; }
+
+	/*! Adds time to the hot zone time. */
+	void AddTimeInHotZone(float dt) { this->mTimeInHotZone += dt; }
 
 	/*! Simple Collision Detection between Sphere and Sphere. */
 	bool collisionWithSphereSimple(Ball* b1);

@@ -121,8 +121,8 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 						
-						this->mGm->PlayLAN("", CTF); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
-						
+						//this->mGm->PlayLAN("", CTF); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
+						this->mGm->PlayLAN("", KOTH); //Change "" to "the servers ip" if you want to connect to a server.  (if you want to be host leave it blank)
 						SAFE_DELETE(this->mGm);
 						this->mCurrentSet = MAINMENU;
 						this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);

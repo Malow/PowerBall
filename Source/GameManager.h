@@ -21,6 +21,7 @@ class GameManager
 private:
 	int				mNumPlayers;
 	int				mRounds;
+	float           mMaxTime;
 	Platform*		mPlatform;
 	Ball**			mBalls; 
 	GameNetwork*	mNet; 
@@ -49,4 +50,5 @@ private:
 
 	bool		CaptureTheFlag();
 
+	bool		KingOfTheHill(float dt);
 };
