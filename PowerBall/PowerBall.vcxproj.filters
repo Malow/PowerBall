@@ -191,6 +191,9 @@
     <ClCompile Include="..\Source\MainMenuII.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\ServerInfo.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -360,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ServerInfo.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
