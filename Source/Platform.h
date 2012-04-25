@@ -12,11 +12,14 @@ class Platform
 {
 private:
 	StaticMesh*	mMesh;
-	float	mShrink;
-	float	mRadius;
-	float   mScaledRadius;
-	float	mMass;
-	float   mRestitution;
+	float		mShrink;
+	float		mRadius;
+	float		mScaledRadius;
+	float		mMass;
+	float		mRestitution;
+	Vector3		mHotZonePosition;
+	float		mHotZoneRadius;
+	float		mMaxTimeInHotZone;
 
 public:
 	//constructors and destructors
@@ -50,17 +53,37 @@ public:
 
 	/*! Returns the Restitution- */
 	float GetRestitution() const { return this->mRestitution; }
+
+	/*! Returns the Hot Zone Position for the platform. */
+	Vector3 GetHotZonePosition() const { return this->mHotZonePosition; }
+
+	/*! Returns the Hot Zone Radius for the platform. */
+	float GetHotZoneRadius() const { return this->mHotZoneRadius; }
+
+	/*! Returns the Maximum time the ball needs to be in hot zone. */
+	float GetMaxTimeInHotZone() const { return this->mMaxTimeInHotZone; }
 	//Set-Functions
 	
 	/*! Sets the shrinking value, the platform will shrink by x units per second. */
 	void SetShrinkValue(const float shrinkVal) { this->mShrink = shrinkVal; }
 
+	/*! Sets the Hot Zone Position */
+	void SetHotZonePosition(const Vector3 hotZonePos) { this->mHotZonePosition = hotZonePos; }
+
+	/*! Sets the Hot Zone Radius. */
+	void SetHotZoneRadius(float radius) { this->mHotZoneRadius = radius; }
+
+	/*! Sets the Maximum time for hot zone. */
+	void SetMaxTimeInHotZone(float maxTime) { this->mMaxTimeInHotZone = maxTime; }
 
 	/*! Updates the platform. For example: shrink/rotate/wobble. */
 	void Update(const float dt);
 	
 	/*! Returns true if the XZ position is on the platform. */
 	bool IsOnPlatform(const float x, const float z) const;
+
+	/*! Returns true if ball is in Hot Zone. */
+	bool IsInHotZone(Vector3 positionOfBall, float radiusBall);
 
 
 };

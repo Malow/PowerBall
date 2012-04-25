@@ -18,6 +18,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mLivesLeft	 = 2;
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
+	this->mTimeInHotZone = 0.0f;
 	file.open ("Verts.txt", ios::out );
 	/*
 	this->mMaxNrOfItems = 6;

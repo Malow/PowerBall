@@ -12,7 +12,8 @@ enum GAMEMODE{
 	NONE,
 	CTF,
 	DM,
-	KOTH
+	KOTH,
+	KOTH2
 };
 
 class GameNetwork
