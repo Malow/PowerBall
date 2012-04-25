@@ -102,7 +102,7 @@ bool GameNetwork::ClientUpdate()
 
 void GameNetwork::ServerUpdate()
 {
-	if(this->mGameMode == CTF)
+	if(this->mServer.GetGameMode() == CTF)
 		this->SendCTFParams();
 
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
@@ -201,9 +201,9 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 
 	return ret;
 }
-void GameNetwork::Start(bool host, GAMEMODE gameMode)
+void GameNetwork::Start(ServerInfo server)
 {
-	this->mGameMode = gameMode;
+	this->mServer = server;
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
 		for(int a = 0; a < 256; a++)
@@ -212,15 +212,16 @@ void GameNetwork::Start(bool host, GAMEMODE gameMode)
 		this->mPos[i] = this->mStartPositions[i];
 		this->mVel[i] = D3DXVECTOR3(0,0,0);
 	}
-	mConn->InitializeConnection();
 	
-	if(host)
-		mConn->Host();
-	else mConn->Connect();
-}
-void GameNetwork::SetIP(char ip[])
-{
-	this->mConn->SetIP(ip);
+	if(this->mServer.GetIP() == "")
+	{
+		mConn->Host(server);
+	}
+	else 
+	{
+		mConn->Connect(server);
+	}
+	
 }
 void GameNetwork::Close()
 {
@@ -236,6 +237,10 @@ void GameNetwork::Close()
 		Sleep(500);
 	}
 	this->mConn->Close();
+}
+vector<ServerInfo> GameNetwork::FindServers()
+{
+	return this->mConn->FindServers();
 }
 void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, float in)
 {

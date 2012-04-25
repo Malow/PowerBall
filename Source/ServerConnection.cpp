@@ -6,7 +6,6 @@ ServerConnection::ServerConnection()
 	WSADATA wsaData = {0};
 	WSAStartup(MAKEWORD(2,2), &wsaData);
 	this->mPort = 10000;
-	this->mIp = "123";
 	this->mServerSocket = new Connection(socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ));
 	running = true;
     u_long noBlocking = 1;
@@ -38,19 +37,71 @@ ServerConnection::~ServerConnection()
 	WSACleanup();
 	SAFE_DELETE(this->mServerSocket);
 }
-void ServerConnection::SetIP(char ip[])
-{
-	this->mIp = ip;
-}
 void ServerConnection::SetPort(const int port)
 {
 	this->mPort = port;
 }
-void ServerConnection::InitializeConnection()
+vector<ServerInfo> ServerConnection::FindServers()
 {
+	this->mServerInfos.clear();
+	sockaddr_in adress = {0};
+	adress.sin_family = AF_INET;
+	adress.sin_port = htons((u_short)this->mPort);
+
+	bind(this->mServerSocket->sock, (const sockaddr*)&adress, sizeof(sockaddr_in));
+
+	DWORD nonBlocking = 1;
+	ioctlsocket(this->mServerSocket->sock, FIONBIO, &nonBlocking);
+
+	u_long hostAddr = inet_addr("79.138.27.63");   // local IP address
+    u_long netMask = inet_addr("255.255.255.0");   // LAN netmask
+    u_long netAddr = hostAddr & netMask;
+    u_long broadcastAddr = netAddr | (~netMask); //directional broadcast address (only broadcasting on the LAN subnet)
+
+	BOOL broadcast = TRUE;
+
+	setsockopt(this->mServerSocket->sock, SOL_SOCKET, SO_BROADCAST, (char *)&broadcast, sizeof(broadcast));
+	
+	char buffer[10] = "HI";
+	
+	sockaddr_in address;
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = broadcastAddr;
+	address.sin_port = htons(this->mPort);
+
+	sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&address, sizeof(sockaddr_in) );
+
+	
+	broadcast = FALSE;
+
+	setsockopt(this->mServerSocket->sock, SOL_SOCKET, SO_BROADCAST, (char *)&broadcast, sizeof(broadcast));
+
+	
+	sockaddr_in from;
+	int fromLength = sizeof( from );
+	for(int i = 0; i < 10; i++)
+	{
+		char buf[BUFFER_SIZE];
+		int recvBytes = 0;
+		recvBytes = recvfrom(this->mServerSocket->sock, buf, sizeof(buf), 0, (sockaddr*)&from, &fromLength );
+
+		if(recvBytes > 0)
+		if(buf[0] == 'H' && buf[1] == 'E' && buf[2] == 'Y')
+		{
+			int offset = 3;
+			ServerInfo temp(buf, offset);
+			temp.SetIP(inet_ntoa(from.sin_addr));
+			this->mServerInfos.push_back( temp );
+			//this->mIp = inet_ntoa(from.sin_addr);
+		}
+
+		Sleep(100);
+	}
+	return this->mServerInfos;
 }
-void ServerConnection::Host()
+void ServerConnection::Host(ServerInfo server)
 {		
+	this->mCurrentServer = server;
 	this->mServer = true;
 	sockaddr_in adress = {0};
 	adress.sin_family = AF_INET;
@@ -75,20 +126,14 @@ void ServerConnection::Host()
 
 	this->mServerSocket->handle = CreateThread(0, 0, &ListenForClient, (void*) this, 0, 0);
 }
-void ServerConnection::Connect()
+void ServerConnection::Connect(ServerInfo server)
 {
-
+	this->mCurrentServer = server;
 	char buffer[10] = "START";
 	sockaddr_in adress = {0};
 	adress.sin_family = AF_INET;
 	adress.sin_port = htons((u_short)this->mPort);
-
-	bind(this->mServerSocket->sock, (const sockaddr*)&adress, sizeof(sockaddr_in));
-
-	DWORD nonBlocking = 1;
-	ioctlsocket(this->mServerSocket->sock, FIONBIO, &nonBlocking);
-
-	adress.sin_addr.s_addr = inet_addr(this->mIp); //om sätts innan bind så skickas det till en själv :P
+	adress.sin_addr.s_addr = inet_addr(server.GetIP().c_str()); //om sätts innan bind så skickas det till en själv :P
 
 	sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&adress, sizeof(sockaddr_in) );
 	
@@ -123,27 +168,37 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 		
 		if(recvBytes > 0)
 		{
-			SOCKET sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
-			sc->mPort++;
-			sockaddr_in newSockAdress = from;
-			newSockAdress.sin_family = AF_INET;
-			newSockAdress.sin_port = htons((u_short) sc->mPort);
+			if(buf[0] == 'H' && buf[1] == 'I') //incoming broadcast => client wants to find you
+			{
+				sc->mCurrentServer.SetNumPlayers(sc->GetNumConnections());
+				int offset = 3;
+				char buffer[BUFFER_SIZE] = "HEY";
+				sc->mCurrentServer.GetBuffer(buffer, offset);
+				sendto(sc->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+			}
+			else if(buf[0] == 'S')
+			{
+				SOCKET sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
+				sc->mPort++;
+				sockaddr_in newSockAdress = from;
+				newSockAdress.sin_family = AF_INET;
+				newSockAdress.sin_port = htons((u_short) sc->mPort);
 
-			bind(sock, (const sockaddr*)&newSockAdress, sizeof(sockaddr_in));
+				bind(sock, (const sockaddr*)&newSockAdress, sizeof(sockaddr_in));
 
-			DWORD nonBlocking = 1;
-			ioctlsocket(sock, FIONBIO, &nonBlocking);
+				DWORD nonBlocking = 1;
+				ioctlsocket(sock, FIONBIO, &nonBlocking);
 
-			Connection* client = new Connection(sock);
-			sc->mClientSocket.push_back(client);
-			sc->mNumClients++;
+				Connection* client = new Connection(sock);
+				sc->mClientSocket.push_back(client);
+				sc->mNumClients++;
 			
-			char buffer[10] = "START";
-			sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+				char buffer[10] = "START";
+				sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
 
-			client->adress = from;
-			client->handle = CreateThread(0, 0, &TalkToClient, (void*) client, 0, 0);
-
+				client->adress = from;
+				client->handle = CreateThread(0, 0, &TalkToClient, (void*) client, 0, 0);
+			}
 		
 		}
 	}

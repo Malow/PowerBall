@@ -13,6 +13,7 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mEnemyFlag	= NULL;
 	this->mFriendlyFlag	= NULL;
 	counter = 0.0f;
+	this->mNet = new GameNetwork();
 }
 GameManager::~GameManager()
 {
@@ -43,7 +44,6 @@ GameManager::~GameManager()
 bool GameManager::Play(const int numPlayers)
 {
 	this->mGameMode = DM;
-	this->~GameManager();
 	this->mNumPlayers = numPlayers;
 	this->Initialize();
 	bool running = true;
@@ -134,19 +134,14 @@ bool GameManager::Play(const int numPlayers)
 	//returns to menu after some win/draw screen.
 	return true;
 }
-bool GameManager::PlayLAN(char ip[], int GameMode)
+bool GameManager::PlayLAN(ServerInfo server)
 {
-	this->~GameManager();
-	this->mGameMode = GameMode;
+	this->mGameMode = server.GetGameMode();
 	this->mNumPlayers = 0;
 	this->Initialize();
 	bool running = true;
 
-	this->mNet = new GameNetwork();
-	this->mNet->SetIP(ip);
-	if(ip != "")
-		this->mNet->Start(false, GAMEMODE(GameMode));
-	else this->mNet->Start(true, GAMEMODE(GameMode));
+	this->mNet->Start(server);
 	this->mGe->Update();
 	
 	

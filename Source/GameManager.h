@@ -41,7 +41,10 @@ public:
 	bool		Play(const int numPlayers);
 
 	/*! Starts LAN game with the assigned amount of players. */
-	bool		PlayLAN(char ip[], int GameMode);
+	bool		PlayLAN(ServerInfo server);
+
+	/*! Retrieves pointer to the game network class. */
+	GameNetwork* GetLanPointer() { return this->mNet; }
 
 private:
 
