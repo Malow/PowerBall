@@ -164,9 +164,6 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\CamRecording.cpp">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GraphicsEngine\MorphAnimation.cpp">
-      <Filter>Graphics Engine Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
       <Filter>Sound Engine Files</Filter>
     </ClCompile>
@@ -347,9 +344,6 @@
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\CursorControl.h">
-      <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\GraphicsEngine\MorphAnimation.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">

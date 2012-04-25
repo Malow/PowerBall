@@ -1,8 +1,10 @@
-/*
-	Class for doing (linear) morph animation with keyframes.
-	todo**: Requirements: (number of verts must be the same, 
-	same with faces and attributes, material must be equal,
-	textures must be the same, shaders, etc must be the same**
+/*!
+	Class for doing morphanimation. Morphing is done for positions, 
+	texture coordinates, normals and colors of the two keyframes.
+	Requirements: 
+		Atleast two keyframes to morph/interpolate.
+		The number of vertices must match between all keyframes.
+		Same goes with the number of faces, attributes, materials, textures and shaders.
 */
 
 #pragma once
@@ -12,55 +14,53 @@
 
 class KeyFrame
 {
-public:
-	int time;
-	MaloW::Array<MeshStrip*>* strips;
+	public:
+		int time;
+		MaloW::Array<MeshStrip*>* strips;
 
-	KeyFrame() { this->time = 0; this->strips = new MaloW::Array<MeshStrip*>(); }
-	virtual ~KeyFrame()
-	{
-		if(this->strips)
+		KeyFrame() { this->time = 0; this->strips = new MaloW::Array<MeshStrip*>(); }
+		virtual ~KeyFrame()
 		{
-			while(this->strips->size() > 0)
-				delete this->strips->getAndRemove(0);
+			if(this->strips)
+			{
+				while(this->strips->size() > 0)
+					delete this->strips->getAndRemove(0);
 
-			delete this->strips;
+				delete this->strips;
+			}
 		}
-	}
-	KeyFrame(const KeyFrame* origObj)
-	{
-		this->time = origObj->time;
-		this->strips = new MaloW::Array<MeshStrip*>();
-		for(int i = 0; i < origObj->strips->size(); i++)
+		KeyFrame(const KeyFrame* origObj)
 		{
-			this->strips->add(new MeshStrip(origObj->strips->get(i)));
+			this->time = origObj->time;
+			this->strips = new MaloW::Array<MeshStrip*>();
+			for(int i = 0; i < origObj->strips->size(); i++)
+			{
+				this->strips->add(new MeshStrip(origObj->strips->get(i)));
+			}
 		}
-	}
 };
 
 
 class AnimatedMesh : public Mesh
 {
 	private:
-		UINT						mNrOfTimesLooped;
+		unsigned int				mNrOfTimesLooped;
 		bool						mLoopNormal;
 		bool						mLoopSeamless;
-		//loopa växelström**
-		float						mTimer;
+		float						mTimer; //not currently used**
 		MaloW::Array<KeyFrame*>*	mKeyFrames;
-		
-		//Loop/noloop
-		//loop Seamless (använda keyframe första som sista keyframe)
-		
-		//spela fram & tillbaka - alternating**
 
 	public:
 		AnimatedMesh(D3DXVECTOR3 pos);
 		virtual ~AnimatedMesh();
 
-		UINT GetNrOfTimesLooped() const;
-		bool IsLooping() const;
-		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time. Note that currentTime is expected to be in milliseconds. */
+		unsigned int				GetNrOfTimesLooped()	const { return this->mNrOfTimesLooped; }
+		bool						IsLooping()				const { return this->mLoopNormal || this->mLoopSeamless; }
+		bool						IsLoopingNormal()		const { return this->mLoopNormal; }
+		bool						IsLoopingSeamless()		const { return this->mLoopSeamless; }
+		MaloW::Array<KeyFrame*>*	GetKeyFrames()			const { return this->mKeyFrames; }
+		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time.
+			Note that currentTime is expected to be in milliseconds. Returns NULL if there's no keyframes loaded. */
 		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime);
 
 		/*! Prevents looping. Default. */
@@ -70,10 +70,10 @@ class AnimatedMesh : public Mesh
 		/*! Loops by adding the first keyframe as the last keyframe to prevent seamed(normal) looping */
 		void LoopSeamless(); 
 
+		/*! Load the keyframes from file. Input is exptected to be "'filename'.ani". */
 		virtual void LoadFromFile(string file);
 
 		/* ! Doesnt work atm, let us know if u need it work. Allways returns NULL atm. */
 		virtual MaloW::Array<MeshStrip*>* GetStrips();
 
-		MaloW::Array<KeyFrame*>* GetKeyFrames() { return this->mKeyFrames; }
 };
