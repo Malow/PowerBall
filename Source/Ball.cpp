@@ -7,7 +7,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mVelocity		 = Vector3(0,0,0);
 	this->mMaxVelocity	 = 6.0f;
 	this->mAcceleration	 = Vector3(0,-9.81f,0);
-	this->mDamping		 = 0.70;//0.9995f; //0.995
+	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
 	this->mRestitution   = 0.30f; //0.95f
@@ -65,7 +65,7 @@ Vector3 Ball::GetPositionXZ() const
 	D3DXVECTOR3 temp = this->mMesh->GetPosition();
 	return Vector3(temp.x, 0, temp.z);
 }
-void Ball::Update(const float dt, Platform* platform)
+void Ball::Update(const float dt)
 {
 
 	/*
@@ -222,7 +222,7 @@ bool Ball::collisionWithSphereSimple(Ball* b1)
 	return true;
 }
 
-void Ball::collisionSphereResponse(Ball* b1, float dt)
+void Ball::collisionSphereResponse(Ball* b1)
 {
 	// normal of the "collision plane"
 	Vector3 nColl = this->GetPositionVector3() - b1->GetPositionVector3();
@@ -253,26 +253,24 @@ void Ball::collisionSphereResponse(Ball* b1, float dt)
 bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 {
 	MaloW::Array<MeshStrip*>* temp = p->GetMesh()->GetStrips();
-	int sizeMstrip = temp->size();
+	//int sizeMstrip = temp->size();
 	int sizeVertexS0 = temp->get(0)->getNrOfVerts();
-	int sizeIndS0 = temp->get(0)->getNrOfIndicies();
 	Vertex* verts;
 	Vector3 origin = this->GetPositionVector3();
 	Vector3 dir = this->mVelocity;
 	Vector3 dirN = dir/dir.GetLength();
+	verts = temp->get(0)->getVerts();
+	/*
 	for(int i = 0;i<sizeMstrip;i++)
 	{
-		verts = temp->get(0)->getVerts();
+		
 	}
+	*/
 	Vector3 p0,p1,p2, normal, v1,v2;
-	float dInPlane, distance;
-	float dP0, dP1,dP2, avr;
 	float smalestTime = -1;
 	bool firstHit = false;
-	int s;
-	bool hit = false;
 	float u, v,t;
-	float lengthProjN;
+	float lengthProjN = 0;
 	Vector3 p0Store, p1Store,p2Store, normalStore;
 	Vector3 pos = Vector3(p->GetMesh()->GetPosition());
 	Vector3 posS = this->GetPositionVector3();
@@ -305,14 +303,12 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 				p1Store = p1;
 				p2Store = p2;
 				normalStore = normal;
-				s = i;
 			}
 			else
 			{
 				if( tempLength < lengthProjN )
 				{
 					smalestTime = t;
-					s = i;
 					lengthProjN = tempLength;
 					p0Store = p0;
 					p1Store = p1;
@@ -428,7 +424,7 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 	if(firstHit)
 	{
 		// for checking if the ball are in the air not turned on at the moment, 
-		int eps = 0.0001f;
+		float eps = 0.0001f;
 		if( (lengthProjN > (this->mRadius - eps)) && (lengthProjN < (this->mRadius + eps)) )
 			this->mInTheAir = true;
 		else 

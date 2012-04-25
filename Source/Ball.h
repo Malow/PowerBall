@@ -139,7 +139,7 @@ public:
 
 
 	/*! Updates the ball. */
-	void Update(const float dt, Platform* platform);
+	void Update(const float dt);
 	
 	/*! Returns false if the number of ball lives reaches 0. */
 	bool IsAlive() const;
@@ -154,7 +154,7 @@ public:
 	bool collisionWithSphereSimple(Ball* b1);
 
 	/*! Sphere To Sphere Collision Response. */
-	void collisionSphereResponse(Ball* b1, float dt);
+	void collisionSphereResponse(Ball* b1);
 
 	/*! Simple Collision Detection between Sphere and Platform. */
 	bool collisionWithPlatformSimple(Platform* p, Vector3 &normal);
