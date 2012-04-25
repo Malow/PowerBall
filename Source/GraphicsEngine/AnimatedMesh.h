@@ -30,6 +30,7 @@ public:
 	KeyFrame(const KeyFrame* origObj)
 	{
 		this->time = origObj->time;
+		this->strips = new MaloW::Array<MeshStrip*>();
 		for(int i = 0; i < origObj->strips->size(); i++)
 		{
 			this->strips->add(new MeshStrip(origObj->strips->get(i)));
@@ -51,7 +52,7 @@ class AnimatedMesh : public Mesh
 		//Loop/noloop
 		//loop Seamless (använda keyframe första som sista keyframe)
 		
-		//spela fram & tillbaka**
+		//spela fram & tillbaka - alternating**
 
 	public:
 		AnimatedMesh(D3DXVECTOR3 pos);
