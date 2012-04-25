@@ -203,7 +203,6 @@ HRESULT DxManager::Init()
 	}
 
 
-	MaloW::Debug("LOLLOL");
 	// Deferred Rendering Geo pass for animated
 	D3D11_INPUT_ELEMENT_DESC DeferredGeometryDescAni[] = 
 	{
@@ -222,8 +221,6 @@ HRESULT DxManager::Init()
 		MaloW::Debug("Failed to open DeferredAnimatedGeometry.fx");
 		return E_FAIL;
 	}
-
-	MaloW::Debug("QIJHWTIQUWTRIHOQWTRLOLLOL");
 
 
 	// Lightning pass

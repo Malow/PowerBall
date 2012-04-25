@@ -75,16 +75,16 @@ void DxManager::RenderDeferredGeometry()
 
 
 	// Animated meshes
+	this->Shader_DeferredAnimatedGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	for(int i = 0; i < this->animations.size(); i++)
 	{
-		KeyFrame one;
-		KeyFrame two;
-		float t;
-		this->animations[i]->GetCurrentKeyFrames(&one, &two, &t, this->TimerAnimation);
+		KeyFrame* one;
+		KeyFrame* two;
+		float t = 0.0f;
+		this->animations[i]->GetCurrentKeyFrames(&one, &two, t, this->TimerAnimation);
 
-
-		MaloW::Array<MeshStrip*>* stripsOne = one.strips;
-		MaloW::Array<MeshStrip*>* stripsTwo = two.strips;
+		MaloW::Array<MeshStrip*>* stripsOne = one->strips;
+		MaloW::Array<MeshStrip*>* stripsTwo = two->strips;
 		
 		// Set matrixes
 		world = this->animations[i]->GetWorldMatrix();
@@ -202,7 +202,7 @@ void DxManager::RenderDeferredPerPixel()
 	D3DXMATRIX vp = this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
-	this->Shader_DeferredLightning->SetFloat("timer", this->TimerAnimation);
+	this->Shader_DeferredLightning->SetFloat("timerMillis", this->TimerAnimation);
 	
 	// Set SSAO settings
 	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);

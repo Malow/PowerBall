@@ -23,6 +23,21 @@ MeshStrip::~MeshStrip()
 		delete this->material;
 }
 
+MeshStrip::MeshStrip(const MeshStrip* origObj)
+{
+	this->RenderObject = origObj->RenderObject;
+	this->mesh = new Vertex(origObj->mesh);
+	this->nrOfVerts = origObj->nrOfVerts;
+	this->nrOfIndicies = origObj->nrOfIndicies;
+	this->indicies = new int[origObj->nrOfIndicies];
+	for(int i = 0; i < origObj->nrOfIndicies; i++)
+	{
+		this->indicies[i] = origObj->indicies[i];
+	}
+	this->texture = origObj->texture;
+	this->material = new Material(origObj->material);
+}
+
 void MeshStrip::SetMaterial(Material* mat)
 {
 	if(this->material)

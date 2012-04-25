@@ -13,12 +13,7 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "InGameMenu.h"
 #include "Flag.h"
 
-enum GAMEMODE{
-	NONE,
-	CTF,
-	DM,
-	KOTH
-};
+
 
 
 class GameManager
@@ -26,6 +21,7 @@ class GameManager
 private:
 	int				mNumPlayers;
 	int				mRounds;
+	float           mMaxTime;
 	Platform*		mPlatform;
 	Ball**			mBalls; 
 	GameNetwork*	mNet; 
@@ -45,7 +41,10 @@ public:
 	bool		Play(const int numPlayers);
 
 	/*! Starts LAN game with the assigned amount of players. */
-	bool		PlayLAN(char ip[], int GameMode);
+	bool		PlayLAN(ServerInfo server);
+
+	/*! Retrieves pointer to the game network class. */
+	GameNetwork* GetLanPointer() { return this->mNet; }
 
 private:
 
@@ -54,4 +53,7 @@ private:
 
 	bool		CaptureTheFlag();
 
+	bool		KingOfTheHill(float dt);
+
+	void		AddBall();
 };

@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
+#include "ServerInfo.h"
 //#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
@@ -12,6 +13,7 @@ private:
 	
 	struct Connection 
 	{
+		sockaddr_in adress;
 		HANDLE handle;
 		SOCKET sock;
 		char buf[BUFFER_SIZE];
@@ -26,8 +28,8 @@ private:
 			this->numCharsInBufW = 0;
 		}
 	};
-
-	char				*mIp;
+	vector<ServerInfo>	mServerInfos;
+	ServerInfo			mCurrentServer;
 	int					mPort;
 	Connection*			mServerSocket;
 	vector<Connection*>	mClientSocket;
@@ -56,12 +58,9 @@ private:
 	void		SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& ExceptFDs);
 
 public:
-	bool				mRunning;
 				ServerConnection();
 	virtual		~ServerConnection();
 
-	/*! Sets the IP that the client will connect to. */
-	void		SetIP(char ip[]);
 
 	/*! Sets the network port. */
 	void		SetPort(const int port);
@@ -75,10 +74,12 @@ public:
 	/*! Returns the buffer with data thats been received from other connections. */
 	bool		GetReadBuffer(char* bufOut, const int size, const int clientIndex);
 
-	/*! Initializes the connection, if connection fails you will become LAN host. */
-	void		InitializeConnection();
-	void		Host();
-	void		Connect();
+	/*! Initializes the connection. */
+	void		Host(ServerInfo server);
+	void		Connect(ServerInfo server);
+
+	/*! Broadcasts a msgs that servers will pick up on the lan and reply to it. */
+	vector<ServerInfo>	FindServers();
 
 	/*! Sends and receives data over socket, only called by clients at the moment. */
 	bool		Update();

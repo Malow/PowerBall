@@ -21,19 +21,12 @@ void DxManager::Life()
 			{
 				string msg = ((RendererEvent*)ev)->getMessage();
 				if(msg == "Add Mesh")
-					this->objects.add(((RendererEvent*)ev)->GetMesh());
-				else if(msg == "Add Light with shadows")
 				{
-					((RendererEvent*)ev)->GetLight()->InitShadowMap(this->Dx_Device, this->params.ShadowMapSettings);
-					this->lights.add(((RendererEvent*)ev)->GetLight());
-				}
-				else if(msg == "Add Light")
-				{
-					this->lights.add(((RendererEvent*)ev)->GetLight());
+					this->objects.add(((RendererEvent*)ev)->GetStaticMesh());
 				}
 				else if(msg == "Delete Mesh")
 				{
-					StaticMesh* mesh = ((RendererEvent*)ev)->GetMesh();
+					StaticMesh* mesh = ((RendererEvent*)ev)->GetStaticMesh();
 					for(int i = 0; i < this->objects.size(); i++)
 					{
 						if(this->objects[i] == mesh)
@@ -42,6 +35,32 @@ void DxManager::Life()
 							mesh = NULL;
 						}
 					}
+				}
+				if(msg == "Add AniMesh")
+				{
+					this->animations.add(((RendererEvent*)ev)->GetAnimatedMesh());
+				}
+				else if(msg == "Delete AniMesh")
+				{
+					AnimatedMesh* mesh = ((RendererEvent*)ev)->GetAnimatedMesh();
+					for(int i = 0; i < this->animations.size(); i++)
+					{
+						if(this->animations[i] == mesh)
+						{
+							delete this->animations.getAndRemove(i);
+							mesh = NULL;
+						}
+					}
+				}
+
+				else if(msg == "Add Light with shadows")
+				{
+					((RendererEvent*)ev)->GetLight()->InitShadowMap(this->Dx_Device, this->params.ShadowMapSettings);
+					this->lights.add(((RendererEvent*)ev)->GetLight());
+				}
+				else if(msg == "Add Light")
+				{
+					this->lights.add(((RendererEvent*)ev)->GetLight());
 				}
 				else if(msg == "Delete Light")
 				{
@@ -55,6 +74,7 @@ void DxManager::Life()
 						}
 					}
 				}
+
 				else if(msg == "Add Image")
 					this->images.add(((RendererEvent*)ev)->GetImage());
 				else if(msg == "Delete Image")
@@ -272,7 +292,7 @@ HRESULT DxManager::Render()
 	float diff = (li.QuadPart - prevTimeStamp) / this->PCFreq;
 	this->prevTimeStamp = li.QuadPart;
 
-	this->TimerAnimation += diff / 1000.0f;
+	this->TimerAnimation += diff;// / 1000.0f;
 
 	this->RenderShadowMap();
 

@@ -66,3 +66,11 @@ bool Platform::IsOnPlatform(const float x, const float z) const
 
 	return isOn;
 }
+
+bool Platform::IsInHotZone(Vector3 positionOfBall, float radiusBall)
+{
+	float distance = (this->mHotZonePosition - positionOfBall).GetLength();
+	if(distance <= (this->mHotZoneRadius - radiusBall))
+		return true;
+	return false;
+}

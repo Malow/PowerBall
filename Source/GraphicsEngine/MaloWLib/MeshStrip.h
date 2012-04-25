@@ -19,6 +19,7 @@ private:
 public:
 	MeshStrip();
 	virtual ~MeshStrip();
+	MeshStrip(const MeshStrip* origObj);
 
 	Vertex* getVerts() const { return this->mesh; }
 	void SetVerts(Vertex* verts) { this->mesh = verts; }

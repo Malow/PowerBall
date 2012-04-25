@@ -5,6 +5,14 @@
 #ifndef _STDAFX__H
 #define _STDAFX__H
 
+enum GAMEMODE{
+	NONE,
+	CTF,
+	DM,
+	KOTH,
+	KOTH2
+};
+
 #include <windows.h>
 #include <D3D11.h>
 #include <D3DX11.h>

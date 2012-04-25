@@ -89,8 +89,8 @@ public:
 	ObjLoader() { }
 	virtual ~ObjLoader() { }
 
-	ObjData* LoadObjFile(string filename);
-	void ReadFromBinaryFile(string filename, ObjData* returndata, ifstream& binfile);
+	ObjData* LoadObjFile(string filepath);
+	void ReadFromBinaryFile(ObjData* returndata, ifstream& binfile);
 	void CreateBinaryFile(string filename, ObjData* returndata);
 
 };

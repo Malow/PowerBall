@@ -135,6 +135,9 @@ DxManager::~DxManager()
 	while(0 < this->objects.size())
 		delete this->objects.getAndRemove(0);
 
+	while(0 < this->animations.size())
+		delete this->animations.getAndRemove(0);
+
 	while(0 < this->lights.size())
 		delete this->lights.getAndRemove(0);
 }
@@ -259,10 +262,9 @@ void DxManager::CreateAnimatedMesh(AnimatedMesh* mesh)
 
 	mesh->RecreateWorldMatrix(); 
 	
-	/*
-	RendererEvent* re = new RendererEvent("Add Mesh", mesh, NULL);
+	
+	RendererEvent* re = new RendererEvent("Add AniMesh", NULL, NULL, NULL, mesh);
 	this->PutEvent(re);
-	*/
 }
 
 
@@ -320,10 +322,8 @@ void DxManager::DeleteStaticMesh(StaticMesh* mesh)
 
 void DxManager::DeleteAnimatedMesh(AnimatedMesh* mesh)
 {
-	/*
-	RendererEvent* re = new RendererEvent("Delete Mesh", mesh, NULL);
+	RendererEvent* re = new RendererEvent("Delete AniMesh", NULL, NULL, NULL, mesh);
 	this->PutEvent(re);
-	*/
 }
 
 void DxManager::DeleteLight(Light* light)

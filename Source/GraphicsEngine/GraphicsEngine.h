@@ -11,6 +11,7 @@ Singleton.
 #include "FPSCamera.h"
 #include "RTSCamera.h"
 #include "Image.h"
+#include "CamRecording.h"
 
 
 // Class for communication between processes for loading meshes
@@ -19,15 +20,17 @@ class LoadMeshEvent : public MaloW::ProcessEvent
 private:
 	string fileName;
 	StaticMesh* mesh;
+	AnimatedMesh* ani;
 	Material* mat;
 	bool selfdelete;
 
 public:
-	LoadMeshEvent(string fileName, StaticMesh* mesh, Material* mat) 
+	LoadMeshEvent(string fileName, StaticMesh* mesh, AnimatedMesh* ani, Material* mat) 
 	{ 
 		this->fileName = fileName; 
 		this->mesh = mesh; 
 		this->mat = mat;
+		this->ani = ani;
 		this->selfdelete = true;
 	}
 	virtual ~LoadMeshEvent() 
@@ -38,10 +41,13 @@ public:
 				delete this->mesh;
 			if(this->mat)
 				delete this->mat;
+			if(this->ani)
+				delete this->ani;
 		}
 	}
 	string GetFileName() { return this->fileName; }
-	StaticMesh* GetMesh() { this->selfdelete = false; return this->mesh; }
+	StaticMesh* GetStaticMesh() { this->selfdelete = false; return this->mesh; }
+	AnimatedMesh* GetAnimatedMesh() { this->selfdelete = false; return this->ani; }
 	Material* GetMaterial() { this->selfdelete = false; return this->mat; }
 };
 
@@ -82,6 +88,9 @@ public:
 	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos, MaterialType material);
 	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos, Material* material);
 	StaticMesh* CreateStaticMesh(string filename, D3DXVECTOR3 pos);
+
+	AnimatedMesh* CreateAnimatedMesh(string filename, D3DXVECTOR3 pos);
+	void DeleteAnimatedMesh(AnimatedMesh* mesh) { this->dx->DeleteAnimatedMesh(mesh); }
 
 
 	Light* CreateLight(D3DXVECTOR3 pos, bool UseShadowMap = true);

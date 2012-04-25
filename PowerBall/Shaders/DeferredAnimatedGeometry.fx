@@ -106,11 +106,11 @@ PSSceneIn VSScene(VSIn input)
 	input.Pos.w = 1.0;
 
 	PSSceneIn output = (PSSceneIn)0;
-	output.Pos = mul(input.Pos, WVP);
-	output.WorldPos = mul(input.Pos, worldMatrix);
-	output.tex = input.tex;
-	output.norm = normalize(mul(input.norm, (float3x3)worldMatrixInverseTranspose));
-	output.Color = input.Color;
+	output.Pos = mul(lerp(input.Pos, input.Pos_Morph, t), WVP);
+	output.WorldPos = mul(lerp(input.Pos, input.Pos_Morph, t), worldMatrix);
+	output.tex = lerp(input.tex, input.tex_Morph, t);
+	output.norm = normalize(mul(lerp(input.norm, input.norm_Morph, t), (float3x3)worldMatrixInverseTranspose));
+	output.Color = lerp(input.Color, input.Color_Morph, t);
 
 	return output;
 }

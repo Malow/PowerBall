@@ -203,20 +203,29 @@ void ObjLoader::trianglulate(string& filename)
 	}
 }
 
-ObjData* ObjLoader::LoadObjFile(string filename)
+ObjData* ObjLoader::LoadObjFile(string filepath)
 {
 	string mtlfile = "";
 	ObjData* returndata = new ObjData();
 	//this->trianglulate(filename);								////////// Not quite working
 
+	string folders = "";
+	string filename = filepath;
+	size_t slashpos = filename.find("/");
+	while(slashpos != string::npos)
+	{
+		slashpos = filename.find("/");
+		folders += filename.substr(0, slashpos + 1);
+		filename = filename.substr(slashpos + 1);
+	}
+
 	
 	// Binary file
-	string binfilename = filename.substr(0, filename.length()-4);
 	ifstream binfile;
-	binfile.open(binfilename + ".MalEng", ios::binary);
+	binfile.open(folders + "Cache/" + filename.substr(0, filename.size() - 4) + ".MalEng", ios::binary);
 	if(binfile)
 	{
-		this->ReadFromBinaryFile(filename, returndata, binfile);
+		this->ReadFromBinaryFile(returndata, binfile);
 		binfile.close();
 		return returndata;			// Return and skip the Obj-file.
 	}
@@ -225,10 +234,10 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 
 	// Obj file
 	ifstream file;
-	file.open(filename);
+	file.open(filepath);
 	if(!file)
 	{
-		MaloW::Debug("Couldnt open file in ObjLoader: " + filename);
+		MaloW::Debug("Couldnt open file in ObjLoader: " + filepath);
 	}
 
 	string currentMaterial = "";
@@ -273,19 +282,7 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 	if(mtlfile == "")
 		return returndata;
 	
-	
-	// Get the directory correct
-	string tempFilename = filename;
-	string orgMtl = mtlfile;
-	string newmtl = "";
-	size_t slashpos = tempFilename.find("/");
-	while(slashpos != string::npos)
-	{
-		slashpos = tempFilename.find("/");
-		newmtl += tempFilename.substr(0, slashpos+1);
-		tempFilename = tempFilename.substr(slashpos + 1);
-	}
-	mtlfile = newmtl + mtlfile;
+	mtlfile = folders + mtlfile;
 	
 
 	file.open(mtlfile);
@@ -332,7 +329,7 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 		}
 		else if(line.size() > 0 && line.substr(0, 6) == "map_Kd")
 		{
-			md.texture = mtlfile.substr(0, mtlfile.length() - orgMtl.length());
+			md.texture = folders;
 			md.texture += line.substr(7);
 		}
 		else if(line.size() > 0 && line.substr(0, 2) == "Ks")
@@ -352,13 +349,13 @@ ObjData* ObjLoader::LoadObjFile(string filename)
 	
 	file.close();
 
-	this->CreateBinaryFile(filename, returndata);
+	this->CreateBinaryFile(folders + "Cache/" + filename, returndata);
 
 	return returndata;
 }
 
 
-void ObjLoader::ReadFromBinaryFile(string filename, ObjData* returndata, ifstream& binfile)
+void ObjLoader::ReadFromBinaryFile(ObjData* returndata, ifstream& binfile)
 {
 	int nrOfVerts = 0;
 	binfile.read((char*)(&nrOfVerts), sizeof(int));
@@ -475,6 +472,7 @@ void ObjLoader::ReadFromBinaryFile(string filename, ObjData* returndata, ifstrea
 
 void ObjLoader::CreateBinaryFile(string filename, ObjData* returndata)
 {
+	CreateDirectory("Media\\Cache\\", NULL);
 	string binfilename = filename.substr(0, filename.length()-4);
 	ofstream binfile;
 	binfile.open(binfilename + ".MalEng", ios::binary);
