@@ -26,7 +26,7 @@ UINT FXAA::GetPreset() const
 
 void FXAA::SetPreset(UINT preset)
 {
-	if(0 <= preset && preset <= 6)
+	if(0 <= preset && preset <= 4)
 	{
 		this->mPreset = preset;
 	}

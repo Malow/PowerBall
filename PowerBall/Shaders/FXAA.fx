@@ -148,32 +148,6 @@ void SetSettings(uint preset)
 			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
 		}
 		break;
-		case 5:
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-			#define FXAA_SEARCH_STEPS        24
-			#define FXAA_SEARCH_ACCELERATION 1
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-			#define FXAA_SUBPIX              1
-			#define FXAA_SUBPIX_FASTER       0
-			#define FXAA_SUBPIX_CAP          (3.0/4.0)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
-		}
-		break;
-		case 6: 
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/16.0) //overkill
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/32.0) //visible limit
-			#define FXAA_SEARCH_STEPS        32			//maximum number of search steps
-			#define FXAA_SEARCH_ACCELERATION 1			//no acceleration (using anisotropic filtering)
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)	//seems to be best quality
-			#define FXAA_SUBPIX              2			//full force (ignore FXAA_SUBPIX_TRIM and CAP)
-			#define FXAA_SUBPIX_FASTER       0			//do not use 
-			#define FXAA_SUBPIX_CAP          (3.0/4.0)	//overriden (ignored)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)	//overriden (ignored)
-		}
-		break;
 	};
 
 	#define FXAA_SUBPIX_TRIM_SCALE (1.0/(1.0 - FXAA_SUBPIX_TRIM))
