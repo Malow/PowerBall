@@ -41,7 +41,8 @@ void GUIArchButton::ChangePicture(GraphicsEngine* ge)
 		float width, height;
 		this->GetWidth(width);
 		this->GetHeight(height);
-		this->mPressedImage = ge->CreateImage(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(width, height), this->mTextureNamePressed);
+		if(this->mTextureNamePressed != "")
+			this->mPressedImage = ge->CreateImage(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(width, height), this->mTextureNamePressed);
 	}
 	else if(this->mHovered == true && this->mHoveredImage == NULL)
 	{
@@ -50,7 +51,8 @@ void GUIArchButton::ChangePicture(GraphicsEngine* ge)
 		float width, height;
 		this->GetWidth(width);
 		this->GetHeight(height);
-		this->mHoveredImage = ge->CreateImage(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(width, height), this->mTextureNameHovered);
+		if(this->mTextureNameHovered != "")
+			this->mHoveredImage = ge->CreateImage(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(width, height), this->mTextureNameHovered);
 	}
 	if(this->mHovered == false && this->mHoveredImage != NULL)
 	{
