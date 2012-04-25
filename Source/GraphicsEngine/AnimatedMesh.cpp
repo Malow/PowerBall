@@ -1,14 +1,12 @@
 #include "AnimatedMesh.h"
 
 
-
-
 AnimatedMesh::AnimatedMesh(D3DXVECTOR3 pos) : Mesh(pos)
 {
 	this->mNrOfTimesLooped = 0;
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
-	this->mTimer = 0.0f; //**
+	this->mTimer = 0.0f; //not currently used**
 	this->mKeyFrames = new MaloW::Array<KeyFrame*>();
 }
 
@@ -24,132 +22,106 @@ AnimatedMesh::~AnimatedMesh()
 }
 
 
-UINT AnimatedMesh::GetNrOfTimesLooped() const
-{
-	return this->mNrOfTimesLooped;
-}
-bool AnimatedMesh::IsLooping() const
-{
-	return this->mLoopNormal || this->mLoopSeamless;
-}
 void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime)
 {
-	//this->mTimer = currentTime; //**används ej**
+	//this->mTimer = currentTime; //not currently used**
 
-	//**test**
-	static bool once = false;
-	if(!once)
+	if(this->mKeyFrames->size() > 1)
 	{
-		//this->LoopSeamless();
-		once = !once;
-	}
-	//**test**
-
-	/*if(this->mLoopSeamless)
-	{	
-		//add first keyframe as last key frame
-		KeyFrame* seamless = new KeyFrame(this->mKeyFrames->get(0));
-		//change time by adding the time-difference between the last and second last keyframes to the time of the last keyframe.
-		int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
-		seamless->time = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
-		this->mKeyFrames->add(seamless);
-	}
-	*/
-
-
-
-
-
-
-
-	if(this->IsLooping() || !this->mNrOfTimesLooped)
-	{
-		if(this->mLoopSeamless)
+		if(this->IsLooping() || !this->mNrOfTimesLooped)
 		{
-			int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
-			int newEndTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
-			this->mNrOfTimesLooped = (int)currentTime / newEndTime;
-			
-			//compute the indices for the keyframes to interpolate
-			int currentPlayTimeMillis = (int)currentTime % newEndTime;
-			int firstIndex = 0;
-			int lastIndex = 1;
-			bool foundIndex = false;
-			while(!foundIndex)
+			if(this->mLoopSeamless)
 			{
-				if(firstIndex == this->mKeyFrames->size() - 1)
+				int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
+				int newEndTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
+
+				this->mNrOfTimesLooped = (unsigned int)((int)currentTime / newEndTime);
+			
+				//compute the indices for the keyframes to interpolate
+				int currentPlayTimeMillis = (int)currentTime % newEndTime;
+				int firstIndex = 0;
+				int lastIndex = 1;
+				bool foundIndex = false;
+				while(!foundIndex)
 				{
-					lastIndex = 0;
-					foundIndex = true;
+					if(firstIndex == this->mKeyFrames->size() - 1)
+					{
+						lastIndex = 0;
+						foundIndex = true;
+					}
+					else if(this->mKeyFrames->get(firstIndex + 1)->time > currentPlayTimeMillis)
+					{
+						foundIndex = true;
+					}
+					else
+					{
+						firstIndex++;
+					}
 				}
-				else if(this->mKeyFrames->get(firstIndex + 1)->time > currentPlayTimeMillis)
+
+				//get previous and next keyframes
+				*one = this->mKeyFrames->get(firstIndex);
+				if(!lastIndex)
 				{
-					foundIndex = true;
+					*two = this->mKeyFrames->get(lastIndex);
 				}
 				else
 				{
-					firstIndex++;
+					*two = this->mKeyFrames->get(firstIndex + 1);
 				}
-			}
-			if(!lastIndex)
-			{
-				//get previous and next keyframes
-				*one = this->mKeyFrames->get(firstIndex);
-				*two = this->mKeyFrames->get(lastIndex);
+
+				//compute interpolation value t
+				int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe one & two. (new time for keyframe one is 0.)
+				if(newTimeTwo < 0)
+				{
+					newTimeTwo *= -1;
+				}
+				int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
+				//convert to range [0,1]
+				t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
 			}
 			else
 			{
+				int endTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
+				this->mNrOfTimesLooped = (unsigned int)((int)currentTime / endTime);
+
+				//compute the indices for the keyframes to interpolate
+				int currentPlayTimeMillis = (int)currentTime % endTime;
+				int firstIndex = 0; 
+				bool foundIndex = false;
+				while(!foundIndex)
+				{
+					if(this->mKeyFrames->get(firstIndex + 1)->time > currentPlayTimeMillis)
+					{
+						foundIndex = true;
+					}
+					else
+					{
+						firstIndex++;
+					}
+				}
+
 				//get previous and next keyframes
 				*one = this->mKeyFrames->get(firstIndex);
 				*two = this->mKeyFrames->get(firstIndex + 1);
+
+				//compute interpolation value t
+				int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe one & two. (new time for keyframe one is 0.)
+				int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
+				//convert to range [0,1]
+				t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
 			}
-
-			//compute interpolation value t
-			int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe one & two. (new time for keyframe one is 0.)
-			if(newTimeTwo < 0)
-			{
-				newTimeTwo *= -1;
-			}
-			int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
-			//convert to range [0,1]
-			t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
-		}
-		else
-		{
-			int endTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
-			this->mNrOfTimesLooped = (int)currentTime / endTime;
-
-			//compute the indices for the keyframes to interpolate
-			int currentPlayTimeMillis = (int)currentTime % endTime;
-			int firstIndex = 0; 
-			bool foundIndex = false;
-			while(!foundIndex)
-			{
-				if(this->mKeyFrames->get(firstIndex + 1)->time > currentPlayTimeMillis)
-				{
-					foundIndex = true;
-				}
-				else
-				{
-					firstIndex++;
-				}
-			}
-
-			//get previous and next keyframes
-			*one = this->mKeyFrames->get(firstIndex);
-			*two = this->mKeyFrames->get(firstIndex + 1);
-
-			//compute interpolation value t
-			int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe one & two. (new time for keyframe one is 0.)
-			int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
-			//convert to range [0,1]
-			t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
 		}
 	}
-	else
+	else if(this->mKeyFrames->size() == 1)
 	{
 		*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
 		*two = *one;
+		t = 0.0f;
+	}
+	else
+	{
+		*one = *two = NULL;
 		t = 0.0f;
 	}
 }
@@ -158,21 +130,11 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 
 void AnimatedMesh::NoLooping()
 {
-	//remove last keyframe if seamless looping has been used
-	if(this->mLoopSeamless)
-	{
-		this->mKeyFrames->getAndRemove(this->mKeyFrames->size() - 1);
-	}
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
 }
 void AnimatedMesh::LoopNormal()
 {
-	//remove last keyframe if seamless looping has been used
-	if(this->mLoopSeamless)
-	{
-		this->mKeyFrames->getAndRemove(this->mKeyFrames->size() - 1);
-	}
 	this->mLoopNormal = true;
 	this->mLoopSeamless = false;
 }
@@ -301,7 +263,7 @@ void AnimatedMesh::LoadFromFile(string file)
 
 MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
 {
-	/*
+	/* **
 	if(this->strips)
 	{
 		while(this->strips->size() > 0)
