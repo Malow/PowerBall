@@ -15,6 +15,7 @@ void SoundEngine::ERRCHECK(FMOD_RESULT result)
 //public
 SoundEngine::SoundEngine()
 {
+	//system
 	this->mSystem = NULL;
 	this->mResult = FMOD_ERR_NOTREADY;
 	this->mVersion = 0;
@@ -22,11 +23,60 @@ SoundEngine::SoundEngine()
 	this->mSpeakerMode = FMOD_SPEAKERMODE_STEREO;
 	this->mCaps = FMOD_CAPS_NONE;
 	this->mName = new char[256];
+
+	//sound effects
+	this->mNrOfSoundFX = 0;
+	this->mSoundFXCap = 10;
+	this->mSoundFX = new FMOD::Sound*[this->mSoundFXCap];
+	for(unsigned int i = 0; i < this->mSoundFXCap; i++)
+	{
+		this->mSoundFX[i] = NULL;
+	}
+	this->mSoundFXChannel2D = NULL;
+
+	//songs
+	this->mNrOfSongs = 0;
+	this->mSongsCap = 10;
+	this->mSongs = new FMOD::Sound*[this->mSongsCap];
+	for(unsigned int i = 0; i < this->mSongsCap; i++)
+	{
+		this->mSongs[i] = NULL;
+	}
+	this->mSongChannel = NULL;
 }
 SoundEngine::~SoundEngine()
 {
-	//SAFE_DELETE(this->mSystem);  //**
+	//sound effects
+	for(int i = 0; i < this->mNrOfSoundFX; i++)
+	{
+		 if(this->mSoundFX[i])
+		 {
+			 ERRCHECK(this->mResult = this->mSoundFX[i]->release());
+		 }
+		 this->mSoundFX[i] = NULL;
+	}
+	SAFE_DELETE_ARRAY(this->mSoundFX);
+	//do nothing with channel
+
+	//songs
+	for(int i = 0; i < this->mNrOfSongs; i++)
+	{
+		 if(this->mSongs[i])
+		 {
+			 ERRCHECK(this->mResult = this->mSongs[i]->release());
+		 }
+		 this->mSongs[i] = NULL;
+	}
+	SAFE_DELETE_ARRAY(this->mSongs);
+	//do nothing with channel
+
+	//system
 	SAFE_DELETE(this->mName);
+	if(this->mSystem)
+	{
+		ERRCHECK(this->mResult = this->mSystem->close());
+		ERRCHECK(this->mResult = this->mSystem->release());
+	}
 }
 int SoundEngine::Init()
 {
@@ -96,4 +146,80 @@ int SoundEngine::Init()
 	ERRCHECK(this->mResult);
 
 	return 1;
+}
+
+
+void SoundEngine::LoadSoundEffect(string filename)
+{
+	ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_HARDWARE | FMOD_2D | FMOD_LOOP_OFF, NULL, &this->mSoundFX[this->mNrOfSoundFX++]));
+}
+void SoundEngine::LoadSong(string filename)
+{
+	ERRCHECK(this->mResult = this->mSystem->createStream(filename.c_str(), FMOD_HARDWARE | FMOD_2D, NULL, &this->mSongs[this->mNrOfSongs++]));
+}
+
+
+void SoundEngine::PlaySoundEffect(unsigned int index)
+{
+	if(index < this->mNrOfSoundFX)
+	{
+		ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_FREE, this->mSoundFX[index], false, &this->mSoundFXChannel2D));
+	}
+	else
+	{
+		MaloW::Debug("SoundEngine: Warning: PlaySoundEffect(): Index out of bounds");
+	}
+}
+void SoundEngine::PlaySong(unsigned int index)
+{
+	if(index < this->mNrOfSongs)
+	{
+		FMOD::Sound* currentSound;
+		this->mSongChannel->getCurrentSound(&currentSound); 
+
+		if(currentSound != this->mSongs[index])
+		{
+			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
+		}
+	}
+	else
+	{
+		MaloW::Debug("SoundEngine: Warning: PlaySong(): Index out of bounds");
+	}
+}
+
+
+void SoundEngine::PauseSong(unsigned int index)
+{
+	if(index < this->mNrOfSongs)
+	{
+		FMOD::Sound *currentSound;
+		this->mSongChannel->getCurrentSound(&currentSound);
+
+		if(currentSound == this->mSongs[index])
+		{
+			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], true, &this->mSongChannel));
+		}
+	}
+	else
+	{
+		MaloW::Debug("SoundEngine: Warning: PauseSong(): Index out of bounds");
+	}
+}
+void SoundEngine::ResumeSong(unsigned int index)
+{
+	if(index < this->mNrOfSongs)
+	{
+		FMOD::Sound* currentSound;
+		this->mSongChannel->getCurrentSound(&currentSound);
+
+		if(currentSound == this->mSongs[index])
+		{
+			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
+		}
+	}
+	else
+	{
+		MaloW::Debug("SoundEngine: Warning: ResumtSong(): Index out of bounds");
+	}
 }

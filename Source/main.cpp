@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MainMenu.h"
 #include "GraphicsEngine.h"
+#include "SoundEngine\SoundEngine.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
@@ -22,6 +23,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 	
+	// Create the sound engine
+	SoundEngine* se = new SoundEngine();
+	se->Init();
+	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
+	se->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3");
+	se->PlaySong(0);
+
 	//#define LOLTEST
 	#ifdef LOLTEST
 	
@@ -36,6 +45,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
 	//ani->LoopNormal();
 	ani->LoopSeamless();
+
+	SoundEngine* seng = new SoundEngine();
+	seng->Init();
+	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
+	seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3");
 
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
@@ -80,9 +95,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		if(eng->GetKeyListener()->IsPressed('G'))	
 			camRec->Play();						// Play to start moving the camera along the path
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
+
+		// Testing sound engine
+		if(eng->GetKeyListener()->IsPressed('V'))	
+			seng->PlaySoundEffect(0); 
+		if(eng->GetKeyListener()->IsPressed('B'))	
+			seng->PlaySoundEffect(1); 
+		if(eng->GetKeyListener()->IsPressed('Z'))	
+			seng->PlaySong(0);
+		if(eng->GetKeyListener()->IsPressed('X'))	
+			seng->PauseSong(0); 
+		if(eng->GetKeyListener()->IsPressed('C'))	
+			seng->ResumeSong(0);
 	}
 	// Delete camera recording
 	delete camRec;
+	// Delete sound engine
+	delete seng;
 
 	#endif
 	// Create the MainMenu and send the graphics engine, and then run Run();
@@ -92,5 +121,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	delete mm;
 	// Delete graphics engine
 	delete ge;
+	// Delete sound engine
+	delete se;
+
 	return 0;
 }
