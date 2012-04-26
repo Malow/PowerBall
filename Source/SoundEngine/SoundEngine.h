@@ -16,6 +16,7 @@
 class SoundEngine
 {
 	private:
+		//system
 		FMOD::System*		mSystem;
 		FMOD_RESULT			mResult;		//default value: FMOD_ERR_NOTREADY.
 		unsigned int		mVersion;
@@ -24,11 +25,29 @@ class SoundEngine
 		FMOD_CAPS			mCaps;			//default value: FMOD_CAPS_NONE.
 		char*				mName;
 
-		unsigned int		mNrOfSoundFX;
-		unsigned int		mSoundFXCap;
-		FMOD::Sound**		mSoundFX;
-		FMOD::Channel*		mSoundFXChannel2D;
+		//all sound
+		float				mMasterVolume;	//default value: 1.0f
 
+		//sound effects 
+		float				mSoundFXVolume;	//default value: 1.0f
+		//sound effects 2D
+		unsigned int		mNrOfSoundFX2D;
+		unsigned int		mSoundFXCap2D;
+		FMOD::Sound**		mSoundFX2D;
+		FMOD::Channel*		mSoundFXChannel2D;
+		//sound effects 3D todo**
+		unsigned int		mNrOfSoundFX3D;
+		unsigned int		mSoundFXCap3D;
+		FMOD::Sound**		mSoundFX3D;
+		unsigned int		mSoundFXChannelsCap3D;
+		FMOD::Channel**		mSoundFXChannels3D;
+		float				mDistanceFactor;//default value: 100.0f. Units per meter (100 cm).
+
+		//songs (2D)
+		float				mSongTimer;
+		float				mSongStartTime;
+		int					mCurrentSong;
+		float				mSongVolume;	//default value: 1.0f
 		unsigned int		mNrOfSongs;
 		unsigned int		mSongsCap;
 		FMOD::Sound**		mSongs;
@@ -40,16 +59,41 @@ class SoundEngine
 	public:
 		SoundEngine();
 		virtual ~SoundEngine();
+
 		int Init();
 
-		void LoadSoundEffect(string filename);
-		void LoadSong(string filename);
+		//Set functions
+		/*! Set the master volume. Range is [0,1]. */
+		void SetMasterVolume(float volume);
+		/*! Set the sound effect volume. Range is [0,1]. */
+		void SetSoundEffectVolume(float volume);
+		/*! Set the song volume. Range is [0,1]. */
+		void SetSongVolume(float volume);
 
+		//Sound effects
+		/*! Load sound effect from soundfile. **3D currently unavailable** */
+		void LoadSoundEffect(string filename, bool as3D);
+		/*! Play sound effect at index. */
 		void PlaySoundEffect(unsigned int index);
-		void PlaySong(unsigned int index);
+		
+		//Song
+		/*! Load song from soundfile. */
+		void LoadSong(string filename, bool loop);
+		/*! Play song at index. */
+		void PlaySong(unsigned int songIndex);
+		/*! Restarts song at index. */
+		void RestartSong(unsigned int songIndex);
+		/*! Mute song channel. */
+		void MuteSongChannel();
+		/*! Unmute song channel. */
+		void UnmuteSongChannel();
+		/*! Pause song channel. */
+		void PauseSongChannel();
+		/*! Unpause song channel. */
+		void UnpauseSongChannel();
 
-		void PauseSong(unsigned int index);
-		void ResumeSong(unsigned int index); //**börjar om från början**
 
+		//**todo**
+		//void Play3DSoundEffect(unsigned int soundEffectIndex, D3DXVECTOR3 position);
 		
 };

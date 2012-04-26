@@ -26,11 +26,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create the sound engine
 	SoundEngine* se = new SoundEngine();
 	se->Init();
-	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
-	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
-	se->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3");
+	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
+	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
+	se->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	se->SetMasterVolume(0.1f);
 	se->PlaySong(0);
-
+	
 	//#define LOLTEST
 	#ifdef LOLTEST
 	
@@ -48,9 +49,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 	SoundEngine* seng = new SoundEngine();
 	seng->Init();
-	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
-	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
-	seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3");
+	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
+	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
+	seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	seng->SetMasterVolume(0.1f);
 
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
@@ -98,15 +100,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		// Testing sound engine
 		if(eng->GetKeyListener()->IsPressed('V'))	
-			seng->PlaySoundEffect(0); 
+			//seng->PlaySoundEffect(0);
+			seng->MuteSongChannel();
 		if(eng->GetKeyListener()->IsPressed('B'))	
-			seng->PlaySoundEffect(1); 
+			//seng->PlaySoundEffect(1); 
+			seng->UnmuteSongChannel();
 		if(eng->GetKeyListener()->IsPressed('Z'))	
 			seng->PlaySong(0);
 		if(eng->GetKeyListener()->IsPressed('X'))	
-			seng->PauseSong(0); 
+			seng->PauseSongChannel(); 
 		if(eng->GetKeyListener()->IsPressed('C'))	
-			seng->ResumeSong(0);
+			seng->UnpauseSongChannel();
 	}
 	// Delete camera recording
 	delete camRec;
@@ -122,7 +126,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Delete graphics engine
 	delete ge;
 	// Delete sound engine
-	delete se;
+	//delete se;
 
 	return 0;
 }
