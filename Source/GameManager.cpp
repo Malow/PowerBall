@@ -98,7 +98,7 @@ bool GameManager::Play(const int numPlayers)
 
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
-			this->mBalls[i]->Update(diff, this->mPlatform);
+			this->mBalls[i]->Update(diff);
 
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
@@ -113,7 +113,7 @@ bool GameManager::Play(const int numPlayers)
 			{
 				Ball* b2 = this->mBalls[j];
 				if(b1->collisionWithSphereSimple(b2))
-					b1->collisionSphereResponse(b2, diff);
+					b1->collisionSphereResponse(b2);
 
 			}
 			// check ball[i] against platform
@@ -160,7 +160,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 		if(this->mNet->IsServer())
 		{
 			for(int i = 0; i < this->mNumPlayers; i++)
-				this->mBalls[i]->Update(diff, this->mPlatform);
+				this->mBalls[i]->Update(diff);
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
@@ -169,7 +169,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 					if(i != this->mNet->GetIndex())
 					{
 						int flip = 1;
-						if(this->mNet->GetStartPos(i) > 0)
+						if(this->mNet->GetStartPos(i).z > 0)
 							flip = -1;
 						if(this->mNet->IsKeyPressed('A', i))
 							mBalls[i]->AddForce(Vector3(-diff * flip,0,0));	
@@ -201,7 +201,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 					{
 						Ball* b2 = this->mBalls[j];
 						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2, diff);
+							b1->collisionSphereResponse(b2);
 
 					}
 					Vector3 normalPlane;
@@ -237,7 +237,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 			{
 				
 				int flip = 1;
-				if(this->mNet->GetStartPos(this->mNet->GetIndex()) > 0)
+				if(this->mNet->GetStartPos(this->mNet->GetIndex()).z > 0)
 					flip = -1;
 				if(mGe->GetKeyListener()->IsPressed('A'))
 					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-diff*flip,0,0));	
@@ -267,7 +267,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);*/
 				for(int i = 0; i < this->mNumPlayers; i++)
-					this->mBalls[i]->Update(diff, this->mPlatform);
+					this->mBalls[i]->Update(diff);
 
 				for(int i = 0; i < this->mNumPlayers; i++)
 				{
@@ -276,7 +276,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 					{
 						Ball* b2 = this->mBalls[j];
 						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2, diff);
+							b1->collisionSphereResponse(b2);
 
 					}
 					Vector3 normalPlane;
@@ -498,7 +498,7 @@ bool GameManager::CaptureTheFlag()
 bool GameManager::KingOfTheHill(float dt)
 {
 	float newdt = dt/1000.0f;
-	float numberOfPlayers = this->mNumPlayers;
+	int numberOfPlayers = this->mNumPlayers;
 	int numberInHotZone = 0;
 	int ballIndex = 0;
 	for(int i = 0; i<numberOfPlayers; i++)

@@ -6,7 +6,7 @@ using namespace std;
 #define PLAYER_CAP 10
 #define INTERPOS_MIN 0.025f //if the position difference (vector length) is lesser than this -> sets local position to network position
 #define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
-#define INTERPOS_MOD 0.85f // 1 = setting local position to latest network position, 0 = ignore network position.
+#define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
 #define INTERVEL_MOD 0.3f // 1 = setting local vel to latest network vel, 0 = ignore network position.
 
 
