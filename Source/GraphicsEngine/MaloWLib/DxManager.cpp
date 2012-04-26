@@ -14,6 +14,7 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 	this->Dx_Device = NULL;
 
 	this->Shader_ShadowMap = NULL;
+	this->Shader_Text = NULL;
 
 	this->Shader_BillBoard = NULL;
 
@@ -102,6 +103,9 @@ DxManager::~DxManager()
 	if(this->Shader_Skybox)
 		delete this->Shader_Skybox;
 
+	if(this->Shader_Text)
+		delete this->Shader_Text;
+
 	SAFE_DELETE(this->ssao);
 	SAFE_DELETE(this->fxaa);
 	SAFE_DELETE(this->Shader_Fxaa);
@@ -140,6 +144,9 @@ DxManager::~DxManager()
 
 	while(0 < this->lights.size())
 		delete this->lights.getAndRemove(0);
+
+	while(0 < this->texts.size())
+		delete this->texts.getAndRemove(0);
 }
 
 void DxManager::CreateStaticMesh(StaticMesh* mesh)
@@ -197,7 +204,7 @@ void DxManager::CreateStaticMesh(StaticMesh* mesh)
 
 	mesh->RecreateWorldMatrix(); 
 	
-	RendererEvent* re = new RendererEvent("Add Mesh", mesh, NULL);
+	MeshEvent* re = new MeshEvent("Add Mesh", mesh, NULL);
 	this->PutEvent(re);
 }
 
@@ -263,7 +270,7 @@ void DxManager::CreateAnimatedMesh(AnimatedMesh* mesh)
 	mesh->RecreateWorldMatrix(); 
 	
 	
-	RendererEvent* re = new RendererEvent("Add AniMesh", NULL, NULL, NULL, mesh);
+	MeshEvent* re = new MeshEvent("Add AniMesh", NULL, mesh);
 	this->PutEvent(re);
 }
 
@@ -310,25 +317,25 @@ Object3D* DxManager::createParticleObject(ParticleMesh* mesh)
 
 void DxManager::CreateSmokeEffect()
 {
-	RendererEvent* re = new RendererEvent("Create SmokeEffect", NULL, NULL);
+	RendererEvent* re = new RendererEvent("Create SmokeEffect");
 	this->PutEvent(re);
 }
 
 void DxManager::DeleteStaticMesh(StaticMesh* mesh)
 {
-	RendererEvent* re = new RendererEvent("Delete Mesh", mesh, NULL);
+	MeshEvent* re = new MeshEvent("Delete Mesh", mesh, NULL);
 	this->PutEvent(re);
 }
 
 void DxManager::DeleteAnimatedMesh(AnimatedMesh* mesh)
 {
-	RendererEvent* re = new RendererEvent("Delete AniMesh", NULL, NULL, NULL, mesh);
+	MeshEvent* re = new MeshEvent("Delete AniMesh", NULL, mesh);
 	this->PutEvent(re);
 }
 
 void DxManager::DeleteLight(Light* light)
 {
-	RendererEvent* re = new RendererEvent("Delete Light", NULL, light);
+	LightEvent* re = new LightEvent("Delete Light", light);
 	this->PutEvent(re);
 }
 
@@ -338,12 +345,12 @@ Light* DxManager::CreateLight(D3DXVECTOR3 pos, bool UseShadowMap)
 
 	if(UseShadowMap)
 	{
-		RendererEvent* re = new RendererEvent("Add Light with shadows", NULL, light);
+		LightEvent* re = new LightEvent("Add Light with shadows", light);
 		this->PutEvent(re);
 	}
 	else
 	{
-		RendererEvent* re = new RendererEvent("Add Light", NULL, light);
+		LightEvent* re = new LightEvent("Add Light", light);
 		this->PutEvent(re);
 	}
 
@@ -363,19 +370,20 @@ void DxManager::CreateImage(Image* image, string texture)
 	
 	image->SetTexture(text);
 	
-	RendererEvent* re = new RendererEvent("Add Image", NULL, NULL, image);
+	ImageEvent* re = new ImageEvent("Add Image", image);
 	this->PutEvent(re);
 }
 
 void DxManager::DeleteImage(Image* image)
 {
-	RendererEvent* re = new RendererEvent("Delete Image", NULL, NULL, image);
+	ImageEvent* re = new ImageEvent("Delete Image", image);
 	this->PutEvent(re);
 }
 
 void DxManager::DeleteText(Text* text)
 {
-	
+	TextEvent* te = new TextEvent("Delete Text", text);
+	this->PutEvent(te);
 }
 
 void DxManager::CreateText(Text* text, string font)
@@ -386,16 +394,58 @@ void DxManager::CreateText(Text* text, string font)
 	ZeroMemory(&loadInfo, sizeof(D3DX11_IMAGE_LOAD_INFO));
 	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, font.c_str(), &loadInfo, NULL, &texture, NULL)))
+	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, (font + ".png").c_str(), &loadInfo, NULL, &texture, NULL)))
 		MaloW::Debug("Failed to load texture " + font);
 	
-	Font newFont;
-	newFont.texture = texture;
-	font.replace(font.size() - 3, font.size(), "txt");
-	
-	// load char texture coords from .txt file to newFont.whatever, create shader for it and a renderer function. ->draw(text.size()); and expand every vertex to a quad. Use 2 int-arrays in shader to represent the string and the coords for every char.
-	
-	text->SetFont(newFont);
+	Font* newFont = text->GetFont();
+	newFont->texture = texture;
+
+	/* Font .txt structure:
+	char in int
+	chartex
+	charwidth
+
+	char in int
+	chartex
+	charwidth
+
+	example:
+	91
+	55
+	10
+
+	92
+	65
+	8
+
+	*/
+
+
+	font += ".txt";
+	ifstream file;
+	file.open(font);
+	while(!file.eof())
+	{
+		string line = "";
+
+		getline(file, line);
+		int character = atoi(line.c_str());
+
+		getline(file, line);
+		int texpos = atoi(line.c_str());
+
+		getline(file, line);
+		int width = atoi(line.c_str());
+		width = width - texpos;
+
+		newFont->charTexCoords[character] = texpos;
+		newFont->charWidth[character] = width;
+		getline(file, line);
+	}
+	file.close();
+
+	TextEvent* te = new TextEvent("Add Text", text);
+	this->PutEvent(te);
 }
 
 void DxManager::CreateSkyBox(string texture)

@@ -11,6 +11,107 @@ HRESULT DxManager::Update(float deltaTime)
 	return S_OK;
 }
 
+void DxManager::HandleMeshEvent(MeshEvent* me)
+{
+	string msg = me->getMessage();
+	if(msg == "Add Mesh")
+	{
+		this->objects.add(me->GetStaticMesh());
+	}
+	else if(msg == "Delete Mesh")
+	{
+		StaticMesh* mesh = me->GetStaticMesh();
+		for(int i = 0; i < this->objects.size(); i++)
+		{
+			if(this->objects[i] == mesh)
+			{
+				delete this->objects.getAndRemove(i);
+				mesh = NULL;
+			}
+		}
+	}
+	if(msg == "Add AniMesh")
+	{
+		this->animations.add(me->GetAnimatedMesh());
+	}
+	else if(msg == "Delete AniMesh")
+	{
+		AnimatedMesh* mesh = me->GetAnimatedMesh();
+		for(int i = 0; i < this->animations.size(); i++)
+		{
+			if(this->animations[i] == mesh)
+			{
+				delete this->animations.getAndRemove(i);
+				mesh = NULL;
+			}
+		}
+	}
+}
+
+void DxManager::HandleLightEvent(LightEvent* le)
+{
+	string msg = le->getMessage();
+	if(msg == "Add Light with shadows")
+	{
+		le->GetLight()->InitShadowMap(this->Dx_Device, this->params.ShadowMapSettings);
+		this->lights.add(le->GetLight());
+	}
+	else if(msg == "Add Light")
+	{
+		this->lights.add(le->GetLight());
+	}
+	else if(msg == "Delete Light")
+	{
+		Light* light = le->GetLight();
+		for(int i = 0; i < this->lights.size(); i++)
+		{
+			if(this->lights[i] == light)
+			{
+				delete this->lights.getAndRemove(i);
+				light = NULL;
+			}
+		}
+	}
+}
+
+void DxManager::HandleImageEvent(ImageEvent* ie)
+{
+	string msg = ie->getMessage();
+	if(msg == "Add Image")
+		this->images.add(ie->GetImage());
+	else if(msg == "Delete Image")
+	{
+		Image* img = ie->GetImage();
+		for(int i = 0; i < this->images.size(); i++)
+		{
+			if(this->images[i] == img)
+			{
+				delete this->images.getAndRemove(i);
+				img = NULL;
+			}
+		}
+	}
+}
+
+void DxManager::HandleTextEvent(TextEvent* te)
+{
+	string msg = te->getMessage();
+	if(msg == "Add Text")
+		this->texts.add(te->GetText());
+	else if(msg == "Delete Text")
+	{
+		Text* txt = te->GetText();
+		for(int i = 0; i < this->texts.size(); i++)
+		{
+			if(this->texts[i] == txt)
+			{
+				delete this->texts.getAndRemove(i);
+				txt = NULL;
+			}
+		}
+	}
+}
+
 void DxManager::Life()
 {
 	while(this->stayAlive)
@@ -20,75 +121,31 @@ void DxManager::Life()
 			if(dynamic_cast<RendererEvent*>(ev) != NULL)
 			{
 				string msg = ((RendererEvent*)ev)->getMessage();
-				if(msg == "Add Mesh")
+
+				// MeshEvent
+				if(dynamic_cast<MeshEvent*>(ev) != NULL)
 				{
-					this->objects.add(((RendererEvent*)ev)->GetStaticMesh());
-				}
-				else if(msg == "Delete Mesh")
-				{
-					StaticMesh* mesh = ((RendererEvent*)ev)->GetStaticMesh();
-					for(int i = 0; i < this->objects.size(); i++)
-					{
-						if(this->objects[i] == mesh)
-						{
-							delete this->objects.getAndRemove(i);
-							mesh = NULL;
-						}
-					}
-				}
-				if(msg == "Add AniMesh")
-				{
-					this->animations.add(((RendererEvent*)ev)->GetAnimatedMesh());
-				}
-				else if(msg == "Delete AniMesh")
-				{
-					AnimatedMesh* mesh = ((RendererEvent*)ev)->GetAnimatedMesh();
-					for(int i = 0; i < this->animations.size(); i++)
-					{
-						if(this->animations[i] == mesh)
-						{
-							delete this->animations.getAndRemove(i);
-							mesh = NULL;
-						}
-					}
+					this->HandleMeshEvent((MeshEvent*)ev);
 				}
 
-				else if(msg == "Add Light with shadows")
+				// LightEvent
+				if(dynamic_cast<LightEvent*>(ev) != NULL)
 				{
-					((RendererEvent*)ev)->GetLight()->InitShadowMap(this->Dx_Device, this->params.ShadowMapSettings);
-					this->lights.add(((RendererEvent*)ev)->GetLight());
-				}
-				else if(msg == "Add Light")
-				{
-					this->lights.add(((RendererEvent*)ev)->GetLight());
-				}
-				else if(msg == "Delete Light")
-				{
-					Light* light = ((RendererEvent*)ev)->GetLight();
-					for(int i = 0; i < this->lights.size(); i++)
-					{
-						if(this->lights[i] == light)
-						{
-							delete this->lights.getAndRemove(i);
-							light = NULL;
-						}
-					}
+					this->HandleLightEvent((LightEvent*)ev);
 				}
 
-				else if(msg == "Add Image")
-					this->images.add(((RendererEvent*)ev)->GetImage());
-				else if(msg == "Delete Image")
+				// ImageEvent
+				if(dynamic_cast<ImageEvent*>(ev) != NULL)
 				{
-					Image* img = ((RendererEvent*)ev)->GetImage();
-					for(int i = 0; i < this->images.size(); i++)
-					{
-						if(this->images[i] == img)
-						{
-							delete this->images.getAndRemove(i);
-							img = NULL;
-						}
-					}
+					this->HandleImageEvent((ImageEvent*)ev);
 				}
+
+				// TextEvent
+				if(dynamic_cast<TextEvent*>(ev) != NULL)
+				{
+					this->HandleTextEvent((TextEvent*)ev);
+				}
+
 			}
 
 			delete ev;
@@ -284,6 +341,95 @@ void DxManager::RenderImages()
 	this->Shader_BillBoard->Apply(0);
 }
 
+void DxManager::RenderText()
+{
+	/*
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+	this->Dx_DeviceContext->ClearDepthStencilView(this->Dx_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	*/
+	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	for(int i = 0; i < this->texts.size(); i++)
+	{
+		Text* txt = this->texts[i];
+		// if Convert from screenspace is needed, which it is
+		this->Shader_Text->SetFloat("posx", (txt->GetPosition().x / this->params.windowWidth) * 2 - 1);
+		this->Shader_Text->SetFloat("posy", 2 - (txt->GetPosition().y / this->params.windowHeight) * 2 - 1);
+
+		this->Shader_Text->SetFloat("size", txt->GetSize());
+		this->Shader_Text->SetFloat("windowWidth", this->params.windowWidth);
+		this->Shader_Text->SetFloat("windowHeight", this->params.windowHeight);
+		
+		// Im only using ASCI 30 - 100, to reduce data sent I only send those 70 as 0-70. Therefor the t = 30 and t - 30
+		for(int t = 30; t < 100; t++)
+		{
+			this->Shader_Text->SetFloatAtIndex(t - 30, "charTex", (float)(int)txt->GetFont()->charTexCoords[t]);
+			this->Shader_Text->SetFloatAtIndex(t - 30, "charWidth", (float)(int)txt->GetFont()->charWidth[t]);
+		}
+		this->Shader_Text->SetResource("tex2D", txt->GetFont()->texture);
+
+
+		string drawText = txt->GetText();
+
+		//
+		if(drawText.size() > 40)
+			drawText = drawText.substr(0, 40);
+
+		this->Shader_Text->SetFloat("NrOfChars", (float)drawText.size());
+		for(int t = 0; t < drawText.size(); t++)
+		{
+			// Im only using ASCI 30 - 100, to reduce data sent I only send those 70 as 0-70. Therefor the -30
+			this->Shader_Text->SetFloatAtIndex(t, "text", (float)(int)drawText[t] - 30);
+		}
+
+		//
+
+		/*
+		bool go = true;
+		do
+		{
+			int chars = 40;
+			if(drawText.size() <= chars)
+			{
+				go = false;
+				this->Shader_Text->SetFloat("NrOfChars", (float)drawText.size());
+
+				for(int t = 0; t < drawText.size(); t++)
+				{
+					this->Shader_Text->SetFloatAtIndex(t, "text", (float)(int)drawText[t]);
+				}
+			}
+			else
+			{
+				string temp = drawText.substr(0, 40);
+				drawText = drawText.substr(41);
+
+
+				this->Shader_Text->SetFloat("NrOfChars", (float)temp.size());
+
+				for(int t = 0; t < temp.size(); t++)
+				{
+					this->Shader_Text->SetFloatAtIndex(t, "text", (float)(int)temp[t]);
+				}
+			}
+		}
+		while(go);
+
+		*/
+
+
+		
+		this->Shader_Text->Apply(0);
+
+
+
+		this->Dx_DeviceContext->Draw(1, 0);
+	}
+	this->Shader_Text->SetResource("tex2D", NULL);
+	this->Shader_Text->Apply(0);
+}
+
 HRESULT DxManager::Render()
 {
 	// Timer
@@ -318,6 +464,8 @@ HRESULT DxManager::Render()
 	
 	this->RenderImages();
 
+	this->RenderText();
+
 
 	// Debugging:
 	
@@ -335,7 +483,7 @@ HRESULT DxManager::Render()
 	*/
 
 	this->RenderAntiAliasing();
-
+	
 	if(FAILED(Dx_SwapChain->Present( 0, 0 )))
 		return E_FAIL;
 

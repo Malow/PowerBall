@@ -35,6 +35,7 @@ public:
 
 
 	// Written by MaloW
+	void SetFloatAtIndex(int index, char* variable, float value);
 	void SetStructMemberAsFloat4(char* structVariable, char* memberVariable, D3DXVECTOR4 value);
 	void SetStructMemberAtIndexAsFloat4(int index, char* structVariable, char* memberVariable, D3DXVECTOR4 value);
 	void SetStructMemberAtIndexAsFloat(int index, char* structVariable, char* memberVariable, float value);

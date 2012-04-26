@@ -19,47 +19,115 @@
 #include "StaticMesh.h"
 #include "AnimatedMesh.h"
 
-
+/* Process events for adding to rendering */
 
 class RendererEvent : public MaloW::ProcessEvent
 {
-private:
+protected:
 	string message;
-	StaticMesh* mesh;
-	AnimatedMesh* ani;
-	Light* light;
-	Image* image;
 	bool deleteSelf;
 
 public:
-	RendererEvent(string message = "", StaticMesh* mesh = NULL, Light* light = NULL, Image* image = NULL, AnimatedMesh* ani = NULL) 
+	RendererEvent(string message = "") 
 	{ 
 		this->message = message; 
-		this->mesh = mesh; 
-		this->ani = ani;
-		this->light = light;
-		this->image = image;
 		this->deleteSelf = true;
 	}
 	virtual ~RendererEvent() 
 	{ 
+	}
+	string getMessage() { return this->message; }
+};
+
+
+class MeshEvent : public RendererEvent
+{
+private:
+	StaticMesh* mesh;
+	AnimatedMesh* ani;
+
+public:
+	MeshEvent(string message, StaticMesh* mesh, AnimatedMesh* ani) : RendererEvent(message)
+	{
+		this->mesh = mesh; 
+		this->ani = ani;
+	}
+	virtual ~MeshEvent() 
+	{
 		if(this->deleteSelf && this->message.substr(0, 6) != "Delete")
 		{
 			if(this->mesh)
 				delete this->mesh;
-			if(this->light)
-				delete this->light;
-			if(this->image)
-				delete this->image;
 			if(this->ani)
 				delete this->ani;
 		}
 	}
-	string getMessage() { return this->message; }
+
 	StaticMesh* GetStaticMesh() { this->deleteSelf = false; return this->mesh; }
 	AnimatedMesh* GetAnimatedMesh() { this->deleteSelf = false; return this->ani; }
+};
+
+class LightEvent : public RendererEvent
+{
+private:
+	Light* light;
+
+public:
+	LightEvent(string msg, Light* light) : RendererEvent(msg)
+	{
+		this->light = light;
+	}
+	virtual ~LightEvent() 
+	{
+		if(this->deleteSelf && this->message.substr(0, 6) != "Delete")
+		{
+			if(this->light)
+				delete this->light;
+		}
+	}
 	Light* GetLight() { this->deleteSelf = false; return this->light; }
-	Image* GetImage() { this->deleteSelf = false; return this->image; }
+};
+
+class ImageEvent : public RendererEvent
+{
+private:
+	Image* img;
+
+public:
+	ImageEvent(string msg, Image* img) : RendererEvent(msg)
+	{
+		this->img = img;
+	}
+	virtual ~ImageEvent() 
+	{
+		if(this->deleteSelf && this->message.substr(0, 6) != "Delete")
+		{
+			if(this->img)
+				delete this->img;
+		}
+	}
+	Image* GetImage() { this->deleteSelf = false; return this->img; }
+};
+
+class TextEvent : public RendererEvent
+{
+private:
+	Text* txt;
+
+public:
+	TextEvent(string msg, Text* txt) : RendererEvent(msg)
+	{
+		this->txt = txt;
+	}
+	virtual ~TextEvent() 
+	{
+		if(this->deleteSelf && this->message.substr(0, 6) != "Delete")
+		{
+			if(this->txt)
+				delete this->txt;
+		}
+	}
+	Text* GetText() { this->deleteSelf = false; return this->txt; }
 };
 
 class DxManager : public MaloW::Process
@@ -96,6 +164,7 @@ private:
 	// Shadow map:
 	Shader* Shader_ShadowMap;
 	Shader* Shader_BillBoard;
+	Shader* Shader_Text;
 	
 	// Deferred Rendering
 	// Gbuffer:
@@ -135,6 +204,7 @@ private:
 	void RenderDeferredTexture();
 	void RenderDeferredSkybox();
 	void RenderAntiAliasing();
+	void RenderText();
 	
 	HRESULT Init();
 
@@ -145,6 +215,12 @@ public:
 	DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam);
 	virtual ~DxManager();
 
+
+
+	void HandleMeshEvent(MeshEvent* me);
+	void HandleLightEvent(LightEvent* le);
+	void HandleImageEvent(ImageEvent* ie);
+	void HandleTextEvent(TextEvent* te);
 	virtual void Life();
 	HRESULT Render();
 	HRESULT Update(float deltaTime);

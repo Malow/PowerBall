@@ -408,5 +408,8 @@
     <None Include="Shaders\DeferredAnimatedGeometry.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\TextRenderer.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

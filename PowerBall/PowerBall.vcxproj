@@ -153,6 +153,7 @@
     <None Include="Shaders\SkyBox.fx" />
     <None Include="Shaders\SSAO.fx" />
     <None Include="Shaders\stdafx.fx" />
+    <None Include="Shaders\TextRenderer.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB7EE0D5-90C1-4BBD-8828-F5A39BE7D296}</ProjectGuid>

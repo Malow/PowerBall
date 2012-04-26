@@ -173,7 +173,7 @@ HRESULT DxManager::Init()
 	}
 
 
-	// For billboard of shadowmap
+	// For billboards
 	D3D11_INPUT_ELEMENT_DESC inputDescBillboard[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "DIMENSIONS", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -186,6 +186,19 @@ HRESULT DxManager::Init()
 		return E_FAIL;
 	}
 
+
+	// For billboards
+	D3D11_INPUT_ELEMENT_DESC inputDescText[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "DIMENSIONS", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "OPACITY", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	this->Shader_Text = new Shader();
+	if(FAILED(this->Shader_Text->Init(Dx_Device, Dx_DeviceContext, "Shaders/TextRenderer.fx", inputDescText, 3)))	// + on last if added above
+	{
+		MaloW::Debug("Failed to open TextRenderer.fx");
+		return E_FAIL;
+	}
 
 	
 	// Deferred Rendering Geo pass

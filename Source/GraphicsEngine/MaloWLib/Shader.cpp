@@ -154,6 +154,11 @@ void Shader::SetRawData(char* variable, void* data, size_t size)
 
 
 // Written by MaloW
+void Shader::SetFloatAtIndex(int index, char* variable, float value)
+{
+	m_pEffect->GetVariableByName(variable)->GetElement(index)->AsScalar()->SetFloat(value);
+}
+
 void Shader::SetStructMemberAsFloat4(char* structVariable, char* memberVariable, D3DXVECTOR4 value)
 {
 	m_pEffect->GetVariableByName(structVariable)->GetMemberByName(memberVariable)->AsVector()->SetFloatVector((float*)&value);
