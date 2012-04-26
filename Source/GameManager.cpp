@@ -12,8 +12,8 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mGameMode		= NULL;
 	this->mEnemyFlag	= NULL;
 	this->mFriendlyFlag	= NULL;
-	counter = 0.0f;
-	this->mNet = new GameNetwork();
+	counter				= 0.0f;
+	this->mNet			= new GameNetwork();
 }
 GameManager::~GameManager()
 {

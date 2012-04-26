@@ -3,18 +3,19 @@
 
 GameNetwork::GameNetwork()
 {
-	this->mConn = new ServerConnection();
-	this->mPos = new D3DXVECTOR3[PLAYER_CAP];
-	this->mVel = new D3DXVECTOR3[PLAYER_CAP];
-	this->mFlagPos = new D3DXVECTOR3[2];
-	this->mIndex = 0;
-	this->mNumPlayers = 1;
+	this->mConn			= new ServerConnection();
+	this->mPos			= new D3DXVECTOR3[PLAYER_CAP];
+	this->mVel			= new D3DXVECTOR3[PLAYER_CAP];
+	this->mFlagPos		= new D3DXVECTOR3[2];
+	this->mIndex		= 0;
+	this->mNumPlayers	= 1;
 }
 GameNetwork::~GameNetwork()
 {
 	SAFE_DELETE(this->mConn);
 	SAFE_DELETE_ARRAY(this->mPos);
 	SAFE_DELETE_ARRAY(this->mVel);
+	SAFE_DELETE_ARRAY(this->mFlagPos);
 }
 void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
 {
