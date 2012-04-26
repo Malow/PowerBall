@@ -53,6 +53,17 @@ bool InGameMenu::Initialize()
 	
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
+
+	//Ugly drop down list to start with
+	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/DropDownMenu.png", 300.0f, 60.0f);
+	DropDownList* dropdownlist = (DropDownList*)tempElement;
+
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Options1920x1080.png", 200.0f, 30.0f, new NoEvent(), "Media/PressedOptions1920x1080.png", "Media/MouseOverOptions1920x1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Options1680x1050.png", 200.0f, 30.0f, new NoEvent(), "Media/PressedOptions1680x1050.png", "Media/MouseOverOptions1680x1050.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+
+	this->mSets[IGNOPTIONS].AddElement(tempElement);
+
 	/*
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
