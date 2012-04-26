@@ -308,8 +308,18 @@ bool GameManager::PlayLAN(ServerInfo server)
 			running = false;
 		}
 		if(this->mGameMode == CTF)
-			if(!this->CaptureTheFlag())
-				running = false;
+		{
+			if(this->mNet->IsServer())
+			{
+				if(!this->CaptureTheFlag())
+					running = false;
+			}
+			else
+			{
+				this->mEnemyFlag->GetMesh()->SetPosition(this->mNet->GetFlagPos(0));
+				this->mFriendlyFlag->GetMesh()->SetPosition(this->mNet->GetFlagPos(1));
+			}
+		}
 		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 			if(!this->KingOfTheHill(diff))
 				running = false;

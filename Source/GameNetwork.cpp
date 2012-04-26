@@ -41,6 +41,10 @@ void GameNetwork::SetFlagPos(const D3DXVECTOR3 pos, const int index)
 }
 void GameNetwork::AddKeyInput(const char key, const bool down)
 {
+	if(this->mKeyInputs[this->mIndex][key] && down == false)
+	{
+		this->mKeyUps.push_back(key);
+	}
 	this->mKeyInputs[this->mIndex][key] = down;
 }
 bool GameNetwork::IsKeyPressed(const char key, const int index) const
@@ -52,7 +56,9 @@ bool GameNetwork::ClientUpdate()
 	bool ret = true;
 	char bufW[256] = {0};
 	int offset = 0;
-
+	/*
+		Valve limits client sends to 30 packets per second.
+	*/
 	for(int i = 0; i < 256; i++)
 	{
 		if(this->mKeyInputs[this->mIndex][i])
@@ -60,9 +66,20 @@ bool GameNetwork::ClientUpdate()
 			this->AddToBuffer(bufW, offset, (char)i);
 		}
 	}
-	//if(offset > 0)
+	if(offset > 0 || (this->mKeyUps.size() > 0 && offset == 0))
 		this->AddToBuffer(bufW, offset, ';');
-	this->mConn->SetWriteBuffer(bufW, offset, 0);
+
+	for(int i = 0; i < this->mKeyUps.size(); i++)
+	{
+		this->AddToBuffer(bufW, offset, this->mKeyUps[i]);
+	}
+	this->mKeyUps.clear();
+
+	if(offset > 0)
+	{
+		this->AddToBuffer(bufW, offset, ';');
+		this->mConn->SetWriteBuffer(bufW, offset, 0);
+	}
 
 
 	char buf[256] = {0};
@@ -83,6 +100,8 @@ bool GameNetwork::ClientUpdate()
 					this->mPos[index] = this->GetFromBufferD(buf, offset);
 					this->mVel[index] = this->GetFromBufferD(buf, offset);
 				}
+				this->mFlagPos[0] = this->GetFromBufferD(buf, offset);
+				this->mFlagPos[1] = this->GetFromBufferD(buf, offset);
 				break;
 			}
 		case 'F':
@@ -100,16 +119,16 @@ bool GameNetwork::ClientUpdate()
 		}
 	}
 	
-	for(int a = 0; a < 256; a++)
-		this->mKeyInputs[this->mIndex][a] = false;
+	//for(int a = 0; a < 256; a++)
+		//this->mKeyInputs[this->mIndex][a] = false;
 
 	return ret;
 }
 
 void GameNetwork::ServerUpdate()
 {
-	if(this->mServer.GetGameMode() == CTF)
-		this->SendCTFParams();
+	//if(this->mServer.GetGameMode() == CTF)
+		//this->SendCTFParams();
 	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
 	{
 
@@ -124,9 +143,46 @@ void GameNetwork::ServerUpdate()
 				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = true;
 			}
 			offset += sizeof(char);
+			
+			while(buf[offset] != ';')
+			{
+				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = false;
+			}
+			offset += sizeof(char);
 		}
 	}
-	
+	/*
+		Clients usually have only a limited amount of available bandwidth. 
+		In the worst case, players with a modem connection can't receive more than 5 to 7 KB/sec. If the server tried to send them updates with a higher data rate, 
+		packet loss would be unavoidable. Therefore, the client has to tell the server its incoming bandwidth capacity by setting the console variable rate (in bytes/second). 
+		This is the most important network variable for clients and it has to be set correctly for an optimal gameplay experience. 
+		The client can request a certain snapshot rate by changing cl_updaterate (default 20), but the server will never send more updates than simulated ticks or exceed the requested client rate limit. 
+		Server admins can limit data rate values requested by clients with sv_minrate and sv_maxrate (both in bytes/second). 
+		Also the snapshot rate can be restricted with sv_minupdaterate and sv_maxupdaterate (both in snapshots/second).
+
+
+		Game data is compressed using delta compression to reduce network load. 
+		That means the server doesn't send a full world snapshot each time, 
+		but rather only changes (a delta snapshot) that happened since the last acknowledged update. With each packet sent between the client and server, 
+		acknowledge numbers are attached to keep track of their data flow. 
+		Usually full (non-delta) snapshots are only sent when a game starts or a client suffers from heavy packet loss for a couple of seconds. 
+		Clients can request a full snapshot manually with the cl_fullupdate command.
+
+
+		Responsiveness, or the time between user input and its visible feedback in the game world, are determined by lots of factors, 
+		including the server/client CPU load, simulation tickrate, data rate and snapshot update settings, but mostly by the network packet traveling time. 
+		The time between the client sending a user command, the server responding to it, and the client receiving the server's response is called the latency or ping (or round trip time). 
+		Low latency is a significant advantage when playing a multiplayer online game. 
+		Techniques like prediction and lag compensation try to minimize that advantage and allow a fair game for players with slower connections
+
+
+		The lag compensation system keeps a history of all recent player positions for one second. 
+		If a user command is executed, the server estimates at what time the command was created as follows:
+			Command Execution Time = Current Server Time - Packet Latency - Client View Interpolation
+	*/
+
+
+	//Perhaps add some rules here, so doesnt send stuff that isnt necessary to update (like a player standing still)
 	for(int a = 1; a < this->mNumPlayers; a++)
 	{
 		char bufW[256] = {0};
@@ -142,6 +198,8 @@ void GameNetwork::ServerUpdate()
 			this->AddToBuffer(bufW, offset, this->mPos[i]);
 			this->AddToBuffer(bufW, offset, this->mVel[i]);
 		}
+		this->AddToBuffer(bufW, offset, this->mFlagPos[0]);
+		this->AddToBuffer(bufW, offset, this->mFlagPos[1]);
 
 		this->mConn->SetWriteBuffer(bufW, offset, a-1);
 	}
@@ -299,7 +357,7 @@ D3DXVECTOR3	GameNetwork::GetFromBufferD(char* buf, int &offsetOut)
 }
 void GameNetwork::SendCTFParams()
 {
-	char bufW[256] = {0};
+	/*char bufW[256] = {0};
 	int offset = 0;
 	this->AddToBuffer(bufW, offset, 'F');
 	this->AddToBuffer(bufW, offset, this->mFlagPos[0]);
@@ -308,5 +366,5 @@ void GameNetwork::SendCTFParams()
 	for(int a = 1; a < this->mNumPlayers; a++)
 	{
 		this->mConn->SetWriteBuffer(bufW, 256, a-1);
-	}
+	}*/
 }

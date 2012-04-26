@@ -6,7 +6,6 @@ void SoundEngine::ERRCHECK(FMOD_RESULT result)
 #ifdef _DEBUG
 	if (result != FMOD_OK)
 	{
-		//std::cout << "FMOD error! (" << result << ") " << FMOD_ErrorString(result) << std::endl;
 		OutputDebugString(FMOD_ErrorString(result));
 	}
 #endif
@@ -24,17 +23,38 @@ SoundEngine::SoundEngine()
 	this->mCaps = FMOD_CAPS_NONE;
 	this->mName = new char[256];
 
+	//all sound
+	this->mMasterVolume = 1.0f;
+
 	//sound effects
-	this->mNrOfSoundFX = 0;
-	this->mSoundFXCap = 10;
-	this->mSoundFX = new FMOD::Sound*[this->mSoundFXCap];
-	for(unsigned int i = 0; i < this->mSoundFXCap; i++)
+	this->mSoundFXVolume = 1.0f;
+	//sound effects 2D
+	this->mNrOfSoundFX2D = 0;
+	this->mSoundFXCap2D = 10;
+	this->mSoundFX2D = new FMOD::Sound*[this->mSoundFXCap2D];
+	for(unsigned int i = 0; i < this->mSoundFXCap2D; i++)
 	{
-		this->mSoundFX[i] = NULL;
+		this->mSoundFX2D[i] = NULL;
 	}
 	this->mSoundFXChannel2D = NULL;
+	//sound effects 3D
+	this->mNrOfSoundFX3D = 0;
+	this->mSoundFXCap3D = 10;
+	this->mSoundFX3D = new FMOD::Sound*[this->mSoundFXCap3D];
+	for(unsigned int i = 0; i < this->mSoundFXCap3D; i++)
+	{
+		this->mSoundFX3D[i] = NULL;
+	}
+	this->mSoundFXChannelsCap3D = 10;
+	this->mSoundFXChannels3D = new FMOD::Channel*[this->mSoundFXChannelsCap3D];
+	for(unsigned int i = 0; i < this->mSoundFXChannelsCap3D; i++)
+	{
+		this->mSoundFXChannels3D[i] = NULL;
+	}
+	this->mDistanceFactor = 100.0f;
 
 	//songs
+	this->mSongVolume = 1.0f;
 	this->mNrOfSongs = 0;
 	this->mSongsCap = 10;
 	this->mSongs = new FMOD::Sound*[this->mSongsCap];
@@ -47,19 +67,19 @@ SoundEngine::SoundEngine()
 SoundEngine::~SoundEngine()
 {
 	//sound effects
-	for(int i = 0; i < this->mNrOfSoundFX; i++)
+	for(unsigned int i = 0; i < this->mNrOfSoundFX2D; i++)
 	{
-		 if(this->mSoundFX[i])
+		 if(this->mSoundFX2D[i])
 		 {
-			 ERRCHECK(this->mResult = this->mSoundFX[i]->release());
+			 ERRCHECK(this->mResult = this->mSoundFX2D[i]->release());
 		 }
-		 this->mSoundFX[i] = NULL;
+		 this->mSoundFX2D[i] = NULL;
 	}
-	SAFE_DELETE_ARRAY(this->mSoundFX);
+	SAFE_DELETE_ARRAY(this->mSoundFX2D);
 	//do nothing with channel
 
 	//songs
-	for(int i = 0; i < this->mNrOfSongs; i++)
+	for(unsigned int i = 0; i < this->mNrOfSongs; i++)
 	{
 		 if(this->mSongs[i])
 		 {
@@ -80,6 +100,7 @@ SoundEngine::~SoundEngine()
 }
 int SoundEngine::Init()
 {
+	//system
 	/*
 		Create a System object and initialize.
 	*/
@@ -145,25 +166,78 @@ int SoundEngine::Init()
 	}
 	ERRCHECK(this->mResult);
 
+
+
+	//sound effects 3D
+	ERRCHECK(this->mResult = this->mSystem->set3DSettings(1.0, this->mDistanceFactor, 1.0f));
+
 	return 1;
 }
 
-
-void SoundEngine::LoadSoundEffect(string filename)
+//set
+void SoundEngine::SetMasterVolume(float volume)
 {
-	ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_HARDWARE | FMOD_2D | FMOD_LOOP_OFF, NULL, &this->mSoundFX[this->mNrOfSoundFX++]));
+	this->mMasterVolume = volume;
 }
-void SoundEngine::LoadSong(string filename)
+void SoundEngine::SetSoundEffectVolume(float volume)
 {
-	ERRCHECK(this->mResult = this->mSystem->createStream(filename.c_str(), FMOD_HARDWARE | FMOD_2D, NULL, &this->mSongs[this->mNrOfSongs++]));
+	this->mSoundFXVolume = volume;
+}
+void SoundEngine::SetSongVolume(float volume)
+{
+	this->mSongVolume = volume;
+}
+
+
+//other
+void SoundEngine::LoadSoundEffect(string filename, bool as3D)
+{
+	if(as3D)
+	{
+		//**
+		// we should probably take the position, velocity, and orientation from the camera's vectors and matrix
+		//ERRCHECK(this->mResult = this->mSystem->set3DListenerAttributes(0, &m_listenerpos, &m_velocity, &m_forward, &m_up) );
+		FMOD_VECTOR pos, vel, forward, up;
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+		vel.x = 0;
+		vel.y = 0;
+		vel.z = 0;
+		forward.x = 0;
+		forward.y = 0;
+		forward.z = 1;
+		up.x = 0;
+		up.y = 1;
+		up.z = 0;
+		ERRCHECK(this->mResult = this->mSystem->set3DListenerAttributes(0, &pos, &vel, &forward, &up));
+
+		ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_3D, NULL, &this->mSoundFX3D[this->mNrOfSoundFX3D++]));
+		ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->set3DMinMaxDistance(0.5f * this->mDistanceFactor, 5000.0f * this->mDistanceFactor));
+		ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->setMode(FMOD_LOOP_OFF));
+	}
+	else
+	{
+		ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_HARDWARE | FMOD_2D | FMOD_LOOP_OFF, NULL, &this->mSoundFX2D[this->mNrOfSoundFX2D++]));
+	}
+}
+void SoundEngine::LoadSong(string filename, bool loop)
+{
+	FMOD_MODE mode = FMOD_HARDWARE | FMOD_2D;
+	if(loop)
+	{
+		mode |= FMOD_LOOP_NORMAL;
+	}
+	ERRCHECK(this->mResult = this->mSystem->createStream(filename.c_str(), mode, NULL, &this->mSongs[this->mNrOfSongs++]));
 }
 
 
 void SoundEngine::PlaySoundEffect(unsigned int index)
 {
-	if(index < this->mNrOfSoundFX)
+	if(index < this->mNrOfSoundFX2D)
 	{
-		ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_FREE, this->mSoundFX[index], false, &this->mSoundFXChannel2D));
+		ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_FREE, this->mSoundFX2D[index], false, &this->mSoundFXChannel2D));
+		this->mSoundFXChannel2D->setVolume(this->mSoundFXVolume * this->mMasterVolume); //set volume of channel
 	}
 	else
 	{
@@ -175,11 +249,11 @@ void SoundEngine::PlaySong(unsigned int index)
 	if(index < this->mNrOfSongs)
 	{
 		FMOD::Sound* currentSound;
-		this->mSongChannel->getCurrentSound(&currentSound); 
-
+		this->mSongChannel->getCurrentSound(&currentSound);
 		if(currentSound != this->mSongs[index])
 		{
 			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
+			this->mSongChannel->setVolume(this->mSongVolume* this->mMasterVolume); //set volume of channel
 		}
 	}
 	else
@@ -187,18 +261,48 @@ void SoundEngine::PlaySong(unsigned int index)
 		MaloW::Debug("SoundEngine: Warning: PlaySong(): Index out of bounds");
 	}
 }
+void SoundEngine::MuteSongChannel()
+{
+	this->mSongChannel->setMute(true);
+}
+void SoundEngine::UnmuteSongChannel()
+{
+	this->mSongChannel->setMute(false);
+}
 
+void SoundEngine::PauseSongChannel()
+{
+	ERRCHECK(this->mResult = this->mSongChannel->setPaused(true));
+}
+void SoundEngine::UnpauseSongChannel()
+{
+	ERRCHECK(this->mResult = this->mSongChannel->setPaused(false));
+}
 
+//**todo 3D sound:**
+/*
+void SoundEngine::Play3DSoundEffect(unsigned int soundEffectIndex, D3DXVECTOR3 position)
+{
+	FMOD_VECTOR pos = {position.x, position.y, position.z};
+	FMOD_VECTOR vel = {0.0f, 0.0f, 0.0f};
+
+	//**todo**
+	//ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_FREE, sound3D[number], true, &sfx3D[number]));
+	//ERRCHECK(this->mResult = sfx3D[number]->set3DAttributes( &pos, &vel ) );
+	//ERRCHECK(this->mResult = sfx3D[number]->setPaused(false) );
+}
+
+/*
 void SoundEngine::PauseSong(unsigned int index)
 {
 	if(index < this->mNrOfSongs)
 	{
 		FMOD::Sound *currentSound;
 		this->mSongChannel->getCurrentSound(&currentSound);
-
 		if(currentSound == this->mSongs[index])
 		{
 			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], true, &this->mSongChannel));
+			
 		}
 	}
 	else
@@ -206,20 +310,5 @@ void SoundEngine::PauseSong(unsigned int index)
 		MaloW::Debug("SoundEngine: Warning: PauseSong(): Index out of bounds");
 	}
 }
-void SoundEngine::ResumeSong(unsigned int index)
-{
-	if(index < this->mNrOfSongs)
-	{
-		FMOD::Sound* currentSound;
-		this->mSongChannel->getCurrentSound(&currentSound);
 
-		if(currentSound == this->mSongs[index])
-		{
-			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
-		}
-	}
-	else
-	{
-		MaloW::Debug("SoundEngine: Warning: ResumtSong(): Index out of bounds");
-	}
-}
+*/
