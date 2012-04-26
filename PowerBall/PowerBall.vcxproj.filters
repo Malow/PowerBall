@@ -185,11 +185,11 @@
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\ServerInfo.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\MainMenuCreate.cpp">
       <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ServerInfo.cpp">
+      <Filter>Game Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -359,7 +359,7 @@
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\ServerInfo.h">
-      <Filter>Graphics Engine Files</Filter>
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -52,24 +52,36 @@ vector<ServerInfo> ServerConnection::FindServers()
 
 	DWORD nonBlocking = 1;
 	ioctlsocket(this->mServerSocket->sock, FIONBIO, &nonBlocking);
-
-	u_long hostAddr = inet_addr("79.138.27.63");   // local IP address
-    u_long netMask = inet_addr("255.255.255.0");   // LAN netmask
-    u_long netAddr = hostAddr & netMask;
-    u_long broadcastAddr = netAddr | (~netMask); //directional broadcast address (only broadcasting on the LAN subnet)
-
+	
+    char ac[80];
+    gethostname(ac, sizeof(ac));
+    hostent *local = gethostbyname(ac);
+    string ip = "";
 	BOOL broadcast = TRUE;
+    for (int i = 0; local->h_addr_list[i] != 0; ++i) 
+	{
+        struct in_addr addr;
+        memcpy(&addr, local->h_addr_list[i], sizeof(struct in_addr));
+        string ip = inet_ntoa(addr);
 
-	setsockopt(this->mServerSocket->sock, SOL_SOCKET, SO_BROADCAST, (char *)&broadcast, sizeof(broadcast));
-	
-	char buffer[10] = "HI";
-	
-	sockaddr_in address;
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = broadcastAddr;
-	address.sin_port = htons(this->mPort);
+		u_long hostAddr = inet_addr(ip.c_str());   // local IP address
+		u_long netMask = inet_addr("255.255.255.0");   // netmask
+		u_long netAddr = hostAddr & netMask;
+		u_long broadcastAddr = netAddr | (~netMask); //directional broadcast address (only broadcasting on the LAN subnet)
 
-	sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&address, sizeof(sockaddr_in) );
+		setsockopt(this->mServerSocket->sock, SOL_SOCKET, SO_BROADCAST, (char *)&broadcast, sizeof(broadcast));
+	
+		char buffer[10] = "HI";
+	
+		sockaddr_in address;
+		address.sin_family = AF_INET;
+		address.sin_addr.s_addr = broadcastAddr;
+		address.sin_port = htons(this->mPort);
+
+		sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&address, sizeof(sockaddr_in) );
+    }
+
+
 
 	
 	broadcast = FALSE;
@@ -351,26 +363,45 @@ DWORD WINAPI ServerConnection::TalkToClient(void* param)
 }
 DWORD WINAPI ServerConnection::TalkToServer(void* param)
 {
+	
 	Connection* conn = (Connection*)param;
+	fd_set readFDs, writeFDs, exceptFDs;
+	FD_ZERO(&readFDs); FD_ZERO(&writeFDs); FD_ZERO(&exceptFDs);
+
+	
+
 	while(running)
 	{
-		int numBytes = recv(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0);
-		conn->numCharsInBuf += numBytes;
-
-		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
+		TIMEVAL timeOut;
+		FD_ZERO(&readFDs); FD_ZERO(&writeFDs); FD_ZERO(&exceptFDs);
+		FD_SET(conn->sock, &readFDs);
+		FD_SET(conn->sock, &writeFDs);
+		timeOut.tv_sec = 20;
+		if (select(0, &readFDs, &writeFDs, NULL, &timeOut) > 0) 
 		{
-			numBytes = 0;
-		
-			numBytes = send(conn->sock, conn->bufW, conn->numCharsInBufW, 0 );
-			if(numBytes != conn->numCharsInBufW  && conn->sock != INVALID_SOCKET) 
-			{        
-				conn->numCharsInBufW -= numBytes;
-				memmove(conn->bufW, conn->bufW + numBytes, conn->numCharsInBufW);
+			if (FD_ISSET(conn->sock, &readFDs)) 
+			{
+
+				int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
+				if(recvBytes > 0)
+					conn->numCharsInBuf = recvBytes;
+
 			}
-			else conn->numCharsInBufW = 0;
+			if (FD_ISSET(conn->sock, &writeFDs)) 
+			{
+				if(conn->numCharsInBufW > 0)
+				{
+					int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
+			
+					if(sentBytes > 0)
+						conn->numCharsInBufW = 0;
+				}
+			}
 		}
-		
 	}
+		FD_CLR(conn->sock, &readFDs);
+		FD_CLR(conn->sock, &writeFDs);
+
 	return 0;
 }
 DWORD WINAPI ServerConnection::ReadFromServer(void* param)
