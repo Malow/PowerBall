@@ -142,6 +142,8 @@ bool InGameMenu::Run()
 		{
 			mousePressed = false;
 		}
+		if(!this->mGe->isRunning())
+			this->mIsRunning = false;
 	}
 	return true;
 }

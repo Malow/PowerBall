@@ -12,10 +12,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowHeight = 900;
-	params.windowWidth = 1600;
-	params.FXAAQuality = 3;			// 0 - 4
-	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
+	params.windowHeight = 500;
+	params.windowWidth = 900;
+	params.FXAAQuality = 0;			// 0 - 4
+	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = RTS;
 	
 	// Create the graphics engine
@@ -30,7 +30,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	se->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	se->SetMasterVolume(0.1f);
-	se->PlaySong(0);
+	//se->PlaySong(0);
 	
 	//#define LOLTEST
 	#ifdef LOLTEST

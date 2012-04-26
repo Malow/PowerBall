@@ -127,6 +127,9 @@ bool GameManager::Play(const int numPlayers)
 		
 		mPlatform->Update(diff);
 
+		if(!this->mGe->isRunning())
+			running = false;
+
 		if(numAlivePlayers <= 1)
 			running = false;
 	}
@@ -285,8 +288,6 @@ bool GameManager::PlayLAN(ServerInfo server)
 				}
 			}
 		}
-
-
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if(this->mBalls[i]->IsAlive())
@@ -307,6 +308,8 @@ bool GameManager::PlayLAN(ServerInfo server)
 		{
 			running = false;
 		}
+		if(!this->mGe->isRunning())
+			running = false;
 		if(this->mGameMode == CTF)
 		{
 			if(this->mNet->IsServer())
@@ -351,19 +354,19 @@ void GameManager::Initialize()
 	this->mNet->SetStartPos(D3DXVECTOR3(-5,24.7f,-20), 2);
 	this->mNet->SetStartPos(D3DXVECTOR3(-5,24.7f,20), 3);*/
 
-	D3DXVECTOR3 startPositions[4];
-	startPositions[0] = D3DXVECTOR3(0,24.7f,-20);
-	startPositions[1] = D3DXVECTOR3(0,24.7f,20);
-	startPositions[2] = D3DXVECTOR3(-5,24.7f,-20);
-	startPositions[3] = D3DXVECTOR3(-5,24.7f,20);
-	
-	this->mNet->SetStartPosistions(startPositions, 4);
-
 	/**
 	* King of the hill
 	**/
 	if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 	{
+		D3DXVECTOR3 startPositions[4];
+		startPositions[0] = D3DXVECTOR3(0,24.7f,-14);
+		startPositions[1] = D3DXVECTOR3(0,24.7f,14);
+		startPositions[2] = D3DXVECTOR3(0,24.7f,-12);
+		startPositions[3] = D3DXVECTOR3(0,24.7f,12);
+	
+		this->mNet->SetStartPosistions(startPositions, 4);
+
 		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
@@ -394,6 +397,14 @@ void GameManager::Initialize()
 	**/
 	else if(this->mGameMode == CTF)
 	{
+		D3DXVECTOR3 startPositions[4];
+		startPositions[0] = D3DXVECTOR3(0,24.7f,-20);
+		startPositions[1] = D3DXVECTOR3(0,24.7f,20);
+		startPositions[2] = D3DXVECTOR3(-5,24.7f,-20);
+		startPositions[3] = D3DXVECTOR3(-5,24.7f,20);
+	
+		this->mNet->SetStartPosistions(startPositions, 4);
+
 		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);

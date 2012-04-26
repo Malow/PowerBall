@@ -240,6 +240,8 @@ bool MainMenu::Run()
 		{
 			mousePressed = false;
 		}
+		if(!this->mGe->isRunning())
+			isRunning = false;
 		else
 		{
 			menuChangeTime = menuChangeTime - dt;

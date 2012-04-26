@@ -207,7 +207,7 @@ void GameNetwork::ServerUpdate()
 }
 int test = 0;
 
-Ball* shadow;
+//Ball* shadow;
 bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 {
 	bool ret = true;
@@ -265,7 +265,7 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 			}
 		//}
 	}
-	if(!this->IsServer())
+	/*if(!this->IsServer())
 	{
 		if(test == 0)
 		{
@@ -273,7 +273,7 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 			test++;
 		}
 		shadow->SetPosition(this->mPos[1]);
-	}
+	}*/
 	return ret;
 }
 void GameNetwork::Start(ServerInfo server)
