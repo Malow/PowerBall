@@ -6,7 +6,6 @@ void SoundEngine::ERRCHECK(FMOD_RESULT result)
 #ifdef _DEBUG
 	if (result != FMOD_OK)
 	{
-		//std::cout << "FMOD error! (" << result << ") " << FMOD_ErrorString(result) << std::endl;
 		OutputDebugString(FMOD_ErrorString(result));
 	}
 #endif
@@ -55,9 +54,6 @@ SoundEngine::SoundEngine()
 	this->mDistanceFactor = 100.0f;
 
 	//songs
-	this->mSongTimer = 0.0f;
-	this->mSongStartTime = 0.0f;
-	this->mCurrentSong = -1;
 	this->mSongVolume = 1.0f;
 	this->mNrOfSongs = 0;
 	this->mSongsCap = 10;
@@ -182,21 +178,14 @@ int SoundEngine::Init()
 void SoundEngine::SetMasterVolume(float volume)
 {
 	this->mMasterVolume = volume;
-	//update volume of channels
-	this->mSoundFXChannel2D->setVolume(this->mSoundFXVolume * this->mMasterVolume);
-	this->mSongChannel->setVolume(this->mSongVolume* this->mMasterVolume);
 }
 void SoundEngine::SetSoundEffectVolume(float volume)
 {
 	this->mSoundFXVolume = volume;
-	//update channel
-	this->mSoundFXChannel2D->setVolume(this->mSoundFXVolume * this->mMasterVolume);
 }
 void SoundEngine::SetSongVolume(float volume)
 {
 	this->mSongVolume = volume;
-	//update channel
-	this->mSongChannel->setVolume(this->mSongVolume * this->mMasterVolume);
 }
 
 
@@ -248,6 +237,7 @@ void SoundEngine::PlaySoundEffect(unsigned int index)
 	if(index < this->mNrOfSoundFX2D)
 	{
 		ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_FREE, this->mSoundFX2D[index], false, &this->mSoundFXChannel2D));
+		this->mSoundFXChannel2D->setVolume(this->mSoundFXVolume * this->mMasterVolume); //set volume of channel
 	}
 	else
 	{
@@ -263,31 +253,12 @@ void SoundEngine::PlaySong(unsigned int index)
 		if(currentSound != this->mSongs[index])
 		{
 			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
-			this->mSongStartTime = this->mSongTimer;
-			this->mCurrentSong = index;
+			this->mSongChannel->setVolume(this->mSongVolume* this->mMasterVolume); //set volume of channel
 		}
 	}
 	else
 	{
 		MaloW::Debug("SoundEngine: Warning: PlaySong(): Index out of bounds");
-	}
-}
-void SoundEngine::RestartSong(unsigned int index)
-{
-	if(index < this->mNrOfSongs)
-	{
-		FMOD::Sound* currentSound;
-		this->mSongChannel->getCurrentSound(&currentSound);
-		if(currentSound == this->mSongs[index])
-		{
-			ERRCHECK(this->mResult = this->mSystem->playSound(FMOD_CHANNEL_REUSE, this->mSongs[index], false, &this->mSongChannel));
-			this->mSongStartTime = this->mSongTimer;
-			this->mCurrentSong = index;
-		}
-	}
-	else
-	{
-		MaloW::Debug("SoundEngine: Warning: ResumeSong(): Index out of bounds");
 	}
 }
 void SoundEngine::MuteSongChannel()
@@ -308,7 +279,7 @@ void SoundEngine::UnpauseSongChannel()
 	ERRCHECK(this->mResult = this->mSongChannel->setPaused(false));
 }
 
-//**todo**
+//**todo 3D sound:**
 /*
 void SoundEngine::Play3DSoundEffect(unsigned int soundEffectIndex, D3DXVECTOR3 position)
 {

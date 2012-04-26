@@ -44,9 +44,6 @@ class SoundEngine
 		float				mDistanceFactor;//default value: 100.0f. Units per meter (100 cm).
 
 		//songs (2D)
-		float				mSongTimer;
-		float				mSongStartTime;
-		int					mCurrentSong;
 		float				mSongVolume;	//default value: 1.0f
 		unsigned int		mNrOfSongs;
 		unsigned int		mSongsCap;
@@ -81,8 +78,6 @@ class SoundEngine
 		void LoadSong(string filename, bool loop);
 		/*! Play song at index. */
 		void PlaySong(unsigned int songIndex);
-		/*! Restarts song at index. */
-		void RestartSong(unsigned int songIndex);
 		/*! Mute song channel. */
 		void MuteSongChannel();
 		/*! Unmute song channel. */
