@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include "GraphicsEngine.h"
 #include "Platform.h"
+#include "Flag.h"
 using namespace MaloW;
 using namespace std;
 
@@ -25,7 +26,7 @@ private:
 	float		mInTheAir;
 	float	    mFriction;
 	ofstream file;
-	Mesh*		mInventory;
+	Flag*		mFlag;
 	/*
 	float		mMaxNrOfItems;
 	float		mNrOfItems;
@@ -87,10 +88,10 @@ public:
 	//vector3	GetForwardVector() const { return this->mForward; }
 
 	/*! Adds a item to the ball*/
-	void AddItem(Mesh* item){ this->mInventory = item; }
+	void AddFlag(Flag* item){ this->mFlag = item; }
 
 	/*! Reset inventory*/
-	void ResetInventory(){ this->mInventory = NULL; }
+	void ResetFlag(){ this->mFlag = NULL; }
 
 	/*! Reset time in hot zone. */
 	void ResetTime() { this->mTimeInHotZone = 0; }

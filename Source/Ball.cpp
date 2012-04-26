@@ -24,7 +24,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMaxNrOfItems = 6;
 	this->mNrOfItems = 0;
 	*/
-	this->mInventory = NULL;
+	this->mFlag = NULL;
 	
 
 	/*
@@ -58,7 +58,7 @@ Ball::~Ball()
 {
 	file.close();
 	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
-	this->mInventory = NULL;
+	this->mFlag = NULL;
 }
 Vector3 Ball::GetPositionXZ() const
 {
@@ -99,8 +99,8 @@ void Ball::Update(const float dt)
 	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
 	this->GetMesh()->SetPosition(temp);
-	if(this->mInventory != NULL)
-		this->mInventory->SetPosition(this->mMesh->GetPosition());
+	if(this->mFlag != NULL)
+		this->mFlag->SetPosition(this->mMesh->GetPosition());
 	temp = D3DXVECTOR3(direction.x, direction.y, direction.z);
 
 	this->Rotate(direction);
@@ -142,6 +142,11 @@ void Ball::Update(const float dt)
 	
 	if(this->mMesh->GetPosition().y < -6)
 	{
+		if(this->mFlag != NULL)
+		{
+			this->mFlag->Reset();
+			this->ResetFlag();
+		}
 		if(this->mLivesLeft == 1) //Dont respawn if you lost your last life
 			this->mLivesLeft = 0;
 

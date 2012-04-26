@@ -22,6 +22,9 @@ public:
 	void SetAtBase(bool atBase){ this->mAtBase = atBase; }
 	bool GetAtBase(){ return this->mAtBase; }
 
+	void SetPosition(D3DXVECTOR3 pos){ this->mMesh->SetPosition(pos); }
+	D3DXVECTOR3 GetPosition(){ return this->mMesh->GetPosition(); }
+
 	void SetStartPosition(D3DXVECTOR3 startPosition){ this->mStartPosition = startPosition; }
 	D3DXVECTOR3 GetStartPosition(){ return this->mStartPosition; }
 

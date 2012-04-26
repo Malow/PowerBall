@@ -19,4 +19,5 @@ Flag::~Flag()
 void Flag::Reset()
 {
 	this->mMesh->SetPosition(this->mStartPosition);
+	this->mAtBase = true;
 }

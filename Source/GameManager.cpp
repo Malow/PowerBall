@@ -449,7 +449,7 @@ bool GameManager::CaptureTheFlag()
 
 	if(D3DXVec3Length(&BallToFlag) < (this->mBalls[0]->GetRadius()))
 	{
-		this->mBalls[0]->AddItem(this->mEnemyFlag->GetMesh());
+		this->mBalls[0]->AddFlag(this->mEnemyFlag);
 		this->mEnemyFlag->SetAtBase(false);
 	}
 	if(!this->mEnemyFlag->GetAtBase())
@@ -457,9 +457,8 @@ bool GameManager::CaptureTheFlag()
 		D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mEnemyFlag->GetMesh()->GetPosition() - this->mFriendlyFlag->GetMesh()->GetPosition());
 		if(D3DXVec3Length(&distBetweenFlags) < (this->mBalls[0]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
 		{
-			this->mBalls[0]->ResetInventory();
+			this->mBalls[0]->ResetFlag();
 			this->mEnemyFlag->Reset();
-			this->mEnemyFlag->SetAtBase(true);
 			this->mRounds--;
 			if(this->mRounds <= 0)
 				return false;
@@ -474,7 +473,7 @@ bool GameManager::CaptureTheFlag()
 
 		if(D3DXVec3Length(&BallToFlag) < (this->mBalls[1]->GetRadius()))
 		{
-			this->mBalls[1]->AddItem(this->mFriendlyFlag->GetMesh());
+			this->mBalls[1]->AddFlag(this->mFriendlyFlag);
 			this->mFriendlyFlag->SetAtBase(false);
 		}
 		if(!this->mFriendlyFlag->GetAtBase())
@@ -482,9 +481,8 @@ bool GameManager::CaptureTheFlag()
 			D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mFriendlyFlag->GetMesh()->GetPosition() - this->mEnemyFlag->GetMesh()->GetPosition());
 			if(D3DXVec3Length(&distBetweenFlags) < (this->mBalls[1]->GetRadius()) && this->mEnemyFlag->GetAtBase())
 			{
-				this->mBalls[1]->ResetInventory();
+				this->mBalls[1]->ResetFlag();
 				this->mFriendlyFlag->Reset();
-				this->mFriendlyFlag->SetAtBase(true);
 				this->mRounds--;
 				if(this->mRounds <= 0)
 					return false;
