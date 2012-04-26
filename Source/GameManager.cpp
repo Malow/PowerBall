@@ -313,7 +313,6 @@ bool GameManager::PlayLAN(ServerInfo server)
 		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 			if(!this->KingOfTheHill(diff))
 				running = false;
-			
 	}
 	this->mNet->Close();
 	//returns to menu after some win/draw screen.
@@ -321,7 +320,6 @@ bool GameManager::PlayLAN(ServerInfo server)
 }
 void GameManager::Initialize()
 {
-	
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, -15));
 	mGe->GetCamera()->LookAt(centerPlatform);

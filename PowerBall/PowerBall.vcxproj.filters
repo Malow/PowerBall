@@ -182,13 +182,13 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\DxManagerPostProcess.cpp">
       <Filter>Graphics Engine Files\MaloWLib\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\MainMenuII.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\ServerInfo.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MainMenuCreate.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
   </ItemGroup>
