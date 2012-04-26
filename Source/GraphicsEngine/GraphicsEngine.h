@@ -12,6 +12,7 @@ Singleton.
 #include "RTSCamera.h"
 #include "Image.h"
 #include "CamRecording.h"
+#include "SoundEngine/SoundEngine.h"
 
 
 // Class for communication between processes for loading meshes
@@ -59,6 +60,7 @@ private:
 	static HINSTANCE hInstance;
 	static HWND hWnd;
 	static MaloW::KeyListener* kl;
+	static SoundEngine* sound;
 	Camera* cam;
 
 	int fpsLast;
@@ -129,6 +131,7 @@ public:
 	// Get's
 	Camera* GetCamera() const { return this->dx->GetCamera(); }
 	MaloW::KeyListener* GetKeyListener() const { return this->kl; }
+	SoundEngine* GetSoundEngine() const { return this->sound; }
 	HWND GetWindowHandle() const { return this->hWnd; }
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }

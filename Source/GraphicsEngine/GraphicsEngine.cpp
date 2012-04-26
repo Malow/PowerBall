@@ -7,6 +7,7 @@ HWND GraphicsEngine::hWnd = NULL;
 MaloW::KeyListener* GraphicsEngine::kl = NULL;
 
 GraphicsEngine* gfxeng::eng = NULL;
+SoundEngine* GraphicsEngine::sound = NULL;
 
 bool CursorControl::visable = true;
 
@@ -14,6 +15,7 @@ GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance,
 {
 	if(!this->initDone)
 	{
+		this->sound = new SoundEngine();
 		this->parameters = params;
 		this->cam = NULL;
 		this->dx = NULL;
@@ -52,10 +54,9 @@ GraphicsEngine::~GraphicsEngine()
 	this->dx->Close();
 	this->dx->WaitUntillDone();
 	
-	if(this->dx)
-		delete this->dx;
-	if(this->kl)
-		delete this->kl;
+	SAFE_DELETE(this->dx);
+	SAFE_DELETE(this->kl);
+	SAFE_DELETE(this->sound);
 }
 
 LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -71,7 +72,7 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 			switch(wParam)
 			{
 				case VK_ESCAPE:
-					PostQuitMessage(0);
+					//PostQuitMessage(0);
 					break;
 			}
 			break;
@@ -159,6 +160,9 @@ void GraphicsEngine::InitObjects()
 {
 	this->dx = new DxManager(this->hWnd, this->parameters, this->cam);
 	this->kl = new MaloW::KeyListener(this->hWnd);
+
+	if(this->sound)
+		this->sound->Init();
 
 	if(this->parameters.CamType == FPS)
 	{

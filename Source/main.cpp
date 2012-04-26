@@ -12,25 +12,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowHeight = 500;
-	params.windowWidth = 900;
-	params.FXAAQuality = 0;			// 0 - 4
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
+	params.windowHeight = 900;
+	params.windowWidth = 1600;
+	params.FXAAQuality = 3;			// 0 - 4
+	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = RTS;
 	
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
-	
-	// Create the sound engine
-	SoundEngine* se = new SoundEngine();
-	se->Init();
-	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
-	se->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
-	se->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	se->SetMasterVolume(0.1f);
-	//se->PlaySong(0);
 	
 	//#define LOLTEST
 	#ifdef LOLTEST
@@ -47,12 +38,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//ani->LoopNormal();
 	ani->LoopSeamless();
 
-	SoundEngine* seng = new SoundEngine();
-	seng->Init();
+	SoundEngine* seng = eng->GetSoundEngine();
 	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
 	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	seng->SetMasterVolume(0.1f);
+	seng->PlaySong(0);
+	
 
 	eng->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
@@ -114,9 +106,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	}
 	// Delete camera recording
 	delete camRec;
-	// Delete sound engine
-	delete seng;
-
 	#endif
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	
