@@ -225,6 +225,7 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 		}
 		if(this->mConn->GetNumConnections() > 1)
 			this->ServerUpdate();
+		//update ball (diff = RTT)
 	}
 	else ret = this->ClientUpdate();
 
