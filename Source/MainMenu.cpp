@@ -26,7 +26,7 @@ bool MainMenu::Initialize()
 	
 	CreateOnlineAndLanMenu();
 
-	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 	
 	return true;
 }
@@ -131,7 +131,7 @@ bool MainMenu::Run()
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host("Kalles Kalas Server", 0, 5, CTF, "");
+							ServerInfo host("PowerBall Server", 0, 5, CTF, "");
 							this->mGm->PlayLAN(host);
 						} 
 						

@@ -437,7 +437,7 @@ void GameManager::Initialize()
 		}
 	}
 	// wait until everything is loaded and then drop the balls from hight above
-	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	/*
 	float diff = mGe->Update();
 	while(diff < 1000)
