@@ -102,7 +102,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		if(eng->GetKeyListener()->IsClicked(2))
 		{
-
+			ge->DeleteText(text);
 		}
 
 
