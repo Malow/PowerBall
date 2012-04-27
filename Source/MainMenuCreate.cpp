@@ -67,6 +67,8 @@ void MainMenu::CreateOptionsMenu()
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickadvanced.png", "Media/OptionsMenu/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	*/
+	tempElement = new TextBox(dx * (380.0f / 1200.0f)+offSet, windowHeight*(200.0f / 900.f) ,50 , "Media/Menus/TextBoxBG.png", 600, 100, "Write Text Here", "Sample Test", 1.0f);
+	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
 	//Ugly drop down list to start with
 	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);

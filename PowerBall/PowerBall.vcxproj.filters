@@ -191,6 +191,9 @@
     <ClCompile Include="..\Source\ServerInfo.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\TextBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -360,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\ServerInfo.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\TextBox.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

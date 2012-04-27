@@ -13,6 +13,7 @@
 #include "GUIArchButton.h"
 #include "SimpleButton.h"
 #include "DropDownList.h"
+#include "TextBox.h"
 
 class GUISet
 {
