@@ -37,5 +37,9 @@ public:
 
 	bool GetFocused(){ return this->mFocused; }
 
+	string GetName(){ return this->mName; }
+
+	string GetText(){ return this->mPointText->GetText(); }
+
 	void CheckString(GraphicsEngine* ge);
 };

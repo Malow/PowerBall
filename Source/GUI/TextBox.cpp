@@ -12,20 +12,24 @@ TextBox::TextBox() : Element()
 	this->mName = "";
 
 	this->mFocused = false;
+	this->mPressed = false;
+	this->mPressedOutside = false;
 	this->mTextSize = 0;
 }
 TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize) : Element(x, y, z, textureName, width, height)
 {
-	this->mActiveX = x+20;
-	this->mActiveY = y+20;
+	this->mActiveX = x+25;
+	this->mActiveY = y+25;
 
-	this->mActiveWidth = width-40;
+	this->mActiveWidth = width-50;
 	this->mActiveHeight = height-50;
 
 	this->mText = text;
 	this->mName = name;
 
 	this->mFocused = false;
+	this->mPressed = false;
+	this->mPressedOutside = false;
 	this->mTextSize = textSize;
 }
 TextBox::~TextBox()
@@ -35,7 +39,7 @@ TextBox::~TextBox()
 bool TextBox::AddToRenderer(GraphicsEngine* ge)
 {
 	Element::AddToRenderer(ge);
-	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x, this->GetPositionD3D().y+this->GetDimension().y), mTextSize, "Media/Fonts/1");
+	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x+25, this->GetPositionD3D().y+25), mTextSize, "Media/Fonts/1");
 
 	return true;
 }
@@ -86,6 +90,7 @@ bool TextBox::AddToRenderer(GraphicsEngine* ge)
 		{
 			if(this->mPressed)
 			{
+				this->mPointText->DeleteFromEnd(this->mPointText->GetText().size());
 				this->mPressed = false;
 				this->mFocused = true;
 				return;

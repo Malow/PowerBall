@@ -41,4 +41,7 @@ public:
 	/*! Updates the hover and pressed images*/
 	GUIEvent* UpdateAndCheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge);
 
+	/*! Returns the text that is stored in specific text field*/
+	string GetTextFromField(string textBox);
+
 };

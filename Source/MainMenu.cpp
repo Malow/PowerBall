@@ -222,6 +222,12 @@ bool MainMenu::Run()
 						menuChange = true;
 						menuChangeTime = 50;
 					}
+					else if(tempEventSet > 100)
+					{
+						string stringToSave = "";
+						stringToSave = this->mSets[this->mCurrentSet].GetTextFromField("SampleTest");
+						//MaloW::Debug(stringToSave);
+					}
 				}
 				else if(returnEvent->GetEventMessage() == "ChangeResEvent")
 				{
