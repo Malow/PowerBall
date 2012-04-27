@@ -23,7 +23,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 	
-	#define LOLTEST
+	//#define LOLTEST
 	#ifdef LOLTEST
 	
 	// Example of GE useage
@@ -102,7 +102,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		if(eng->GetKeyListener()->IsClicked(2))
 		{
-
+			ge->DeleteText(text);
 		}
 
 
