@@ -8,8 +8,7 @@
 #include "GUI\GUISet.h"
 #include "GUI\GUIEvent.h"
 #include "GUI\NoEvent.h"
-#include "GUI\ChangeSetEvent.h"
-//#include "GameManager.h"
+#include "GUI\ChangeResEvent.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 

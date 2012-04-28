@@ -29,38 +29,38 @@ bool InGameMenu::Initialize()
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
-	/*Element* tempElement =  new GUIArchButton(0, 0, 1, "Media/MainMenu_Wallpaper_1920x1080.png", windowWidth, windowHeight, new NoEvent(), "", "");
+	/*Element* tempElement =  new GUIArchButton(0, 0, 1, "Media/MainMenu_Circle/MainMenu_Wallpaper_1920_1080.png", windowWidth, windowHeight, new NoEvent(), "", "");
 	this->mSets[IGNBACKGROUND].AddElement(tempElement);*/
 
-	Element* tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.19f, 0, "Media/ResumeGame.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNRESUME), "", "", windowWidth * 0.35f, windowHeight * 0.19f, windowWidth * 0.30f, windowHeight * 0.15f);
+	Element* tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.19f, 0, "Media/Menus/ResumeGame.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNRESUME), "", "", windowWidth * 0.35f, windowHeight * 0.19f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.37f, 0, "Media/Options.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNOPTIONS), "", "", windowWidth * 0.35f, windowHeight * 0.37f, windowWidth * 0.30f, windowHeight * 0.15f);
+	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.37f, 0, "Media/Menus/Options.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNOPTIONS), "", "", windowWidth * 0.35f, windowHeight * 0.37f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.55f, 0, "Media/Quit.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNQUIT), "", "", windowWidth * 0.35f, windowHeight * 0.55f, windowWidth * 0.30f, windowHeight * 0.15f);
+	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.55f, 0, "Media/Menus/Quit.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNQUIT), "", "", windowWidth * 0.35f, windowHeight * 0.55f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
 	/* Adding the buttons for the options menu*/
-	tempElement = new GUIArchButton(offSet, 0, 1, "Media/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
+	tempElement = new GUIArchButton(offSet, 0, 1, "Media/OptionsMenu/optionsmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbacktomenu.png", dx, windowHeight, new ChangeSetEvent(INGAMEMENU), "Media/clickbacktomenu.png" , "Media/mouseoverbacktomenu.png", dx * (18.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (325.0f / 1200), windowHeight * (30.0f / 900));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonbacktomenu.png", dx, windowHeight, new ChangeSetEvent(INGAMEMENU), "Media/OptionsMenu/clickbacktomenu.png" , "Media/OptionsMenu/mouseoverbacktomenu.png", dx * (18.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (325.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/clickgraphics.png", "Media/mouseovergraphics.png", dx * (42.0f / 1200) + offSet, windowHeight * (198.0f / 900), dx * (197.0f / 1200), windowHeight * (30.0f / 900));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttongraphics.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickgraphics.png", "Media/OptionsMenu/mouseovergraphics.png", dx * (42.0f / 1200) + offSet, windowHeight * (198.0f / 900), dx * (197.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 	
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/clickbasic.png", "Media/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickbasic.png", "Media/OptionsMenu/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 
 	//Ugly drop down list to start with
 	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/DropDownMenu.png", 300.0f, 60.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f);
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Options1920x1080.png", 200.0f, 30.0f, new NoEvent(), "Media/PressedOptions1920x1080.png", "Media/MouseOverOptions1920x1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Options1680x1050.png", 200.0f, 30.0f, new NoEvent(), "Media/PressedOptions1680x1050.png", "Media/MouseOverOptions1680x1050.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
 
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 

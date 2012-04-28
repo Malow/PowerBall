@@ -253,7 +253,7 @@ Text* GraphicsEngine::CreateText(string text, D3DXVECTOR2 position, float size, 
 
 bool GraphicsEngine::DeleteText(Text* delText)
 {
-
+	this->dx->DeleteText(delText);
 	return true;
 }
 

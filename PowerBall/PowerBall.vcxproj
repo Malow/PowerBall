@@ -60,6 +60,7 @@
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
+    <ClCompile Include="..\Source\GUI\TextBox.cpp" />
     <ClCompile Include="..\Source\InGameMenu.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
+    <ClInclude Include="..\Source\GUI\TextBox.h" />
     <ClInclude Include="..\Source\InGameMenu.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
     <ClInclude Include="..\Source\MaloWLib\Array.h" />

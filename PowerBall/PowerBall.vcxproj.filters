@@ -194,6 +194,9 @@
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.cpp">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\TextBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -366,6 +369,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.h">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\TextBox.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

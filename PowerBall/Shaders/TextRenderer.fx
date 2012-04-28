@@ -105,23 +105,23 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 		float texx = charTex[text[i]] / imgWidth;
 
 		//bottom left
-		output.Pos = basepos + float4(width, height, 0, 0);
-		output.tex = float2(texx, 0);
+		output.Pos = basepos + float4(width, -height, 0, 0);
+		output.tex = float2(texx, 1);
 		triStream.Append(output);
 	
 		//bottom right
-		output.Pos = basepos + float4(width + thiswidth, height, 0, 0);
-		output.tex = float2(texx + texxwidth, 0);
+		output.Pos = basepos + float4(width + thiswidth, -height, 0, 0);
+		output.tex = float2(texx + texxwidth, 1);
 		triStream.Append(output);
 
 		//top left
 		output.Pos = basepos + float4(width, 0, 0, 0);
-		output.tex = float2(texx, 1);
+		output.tex = float2(texx, 0);
 		triStream.Append(output);
 
 		//top right
 		output.Pos = basepos + float4(width + thiswidth, 0, 0, 0);
-		output.tex = float2(texx + texxwidth, 1);
+		output.tex = float2(texx + texxwidth, 0);
 		triStream.Append(output);
 		triStream.RestartStrip();
 

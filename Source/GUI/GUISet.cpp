@@ -224,6 +224,13 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY, bool mousePressed, 
 	GUIEvent* tempReturnEvent;
 	for(int i = 0; i < this->mNrOfElements; i++)
 	{
+		if(typeid(*this->mElements[i]) == typeid(TextBox))
+		{
+			TextBox* temp = (TextBox*)this->mElements[i];
+			temp->GoingToBeFocused(mouseX, mouseY, mousePressed, ge);
+			if(temp->GetFocused())
+				temp->CheckString(ge);
+		}
 		if(typeid(*this->mElements[i]) == typeid(SimpleButton))
 		{
 			SimpleButton* temp = (SimpleButton*)this->mElements[i];
@@ -263,6 +270,20 @@ GUIEvent* GUISet::UpdateAndCheckCollision(float mouseX, float mouseY, bool mouse
 	returnEvent = this->UpdateButtons(mouseX, mouseY, mousePressed, ge);
 	if(returnEvent != NULL)
 		return returnEvent;
-
 	return NULL;
+}
+string GUISet::GetTextFromField(string textBox)
+{
+	for(int i = 0; i < this->mNrOfElements; i++)
+	{
+		if(typeid(*this->mElements[i]) == typeid(TextBox))
+		{
+			TextBox* temp = (TextBox*)this->mElements[i];
+			if(temp->GetName() == textBox)
+			{
+				return temp->GetText();
+			}
+		}
+	}
+	return "";
 }
