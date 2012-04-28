@@ -5,6 +5,8 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
+	this->mForward		 = Vector3(0,0,1);
+	this->mDistanceCam    = 5;
 	this->mMaxVelocity	 = 6.0f;
 	this->mAcceleration	 = Vector3(0,-9.81f,0);
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
@@ -25,6 +27,8 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mNrOfItems = 0;
 	*/
 	this->mFlag = NULL;
+	//this->mPos = new D3DXVECTOR3(position);
+	//this->mFor = new D3DXVECTOR3(this->mForward.GetD3DVec());
 	
 
 	/*
@@ -59,6 +63,9 @@ Ball::~Ball()
 	file.close();
 	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
 	this->mFlag = NULL;
+	if(GetGraphicsEngine()->GetEngineParameters().CamType ==  TRD)
+		if(this == ((TRDCamera*)GetGraphicsEngine()->GetCamera())->getBallToFollow())
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->removeFollowBall();
 }
 Vector3 Ball::GetPositionXZ() const
 {
@@ -139,7 +146,8 @@ void Ball::Update(const float dt)
 
 	// remove the forces that did push against this ball
 	this->mSumAddedForce = Vector3(0,0,0);
-	
+	//*this->mPos = this->mMesh->GetPosition();
+	//*this->mFor = this->mForward.GetD3DVec();
 	if(this->mMesh->GetPosition().y < -6)
 	{
 		if(this->mFlag != NULL)
@@ -173,6 +181,18 @@ Vector3 Ball::GetPositionVector3() const
 	D3DXVECTOR3 pos = this->mMesh->GetPosition();
 	Vector3 position = Vector3(pos.x, pos.y, pos.z);
 	return position;
+}
+
+void Ball::ZoomOut()
+{
+	if(this->mDistanceCam < 9)
+		this->mDistanceCam += 1.0f;
+}
+
+void Ball::ZoomIn()
+{
+	if(this->mDistanceCam > 2)
+		this->mDistanceCam -= 1.0f;
 }
 bool Ball::collisionWithSphereSimple(Ball* b1)
 {

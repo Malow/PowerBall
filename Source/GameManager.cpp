@@ -1,4 +1,5 @@
 #include "GameManager.h"
+//#include "GraphicsEngine\MaloWLib\TRDCamera.h"
 
 GameManager::GameManager(GraphicsEngine* ge)
 {
@@ -47,7 +48,8 @@ bool GameManager::Play(const int numPlayers)
 	this->mNumPlayers = numPlayers;
 	this->Initialize();
 	bool running = true;
-	
+	bool zoomOutPressed = false;
+	bool zoomInPressed = false;
 	counter = 0;
 	while(running)
 	{
@@ -66,17 +68,50 @@ bool GameManager::Play(const int numPlayers)
 		*  Use the settings in ball to change sensitivity on moving the ball
 		*/
 		// move ball 1
-		if(mGe->GetKeyListener()->IsPressed('A'))
-			mBalls[0]->AddForce(Vector3(- diff,0,0));	
-		if(mGe->GetKeyListener()->IsPressed('D'))
-			mBalls[0]->AddForce(Vector3(diff,0,0));
-		if(mGe->GetKeyListener()->IsPressed('W'))
-			mBalls[0]->AddForce(Vector3(0,0,diff));	
-		if(mGe->GetKeyListener()->IsPressed('S'))
-			mBalls[0]->AddForce(Vector3(0,0,-diff));
-		if(mGe->GetKeyListener()->IsClicked(2))
-			mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-
+		if(mGe->GetEngineParameters().CamType == RTS)
+		{
+			if(mGe->GetKeyListener()->IsPressed('A'))
+				mBalls[0]->AddForce(Vector3(- diff,0,0));	
+			if(mGe->GetKeyListener()->IsPressed('D'))
+				mBalls[0]->AddForce(Vector3(diff,0,0));
+			if(mGe->GetKeyListener()->IsPressed('W'))
+				mBalls[0]->AddForce(Vector3(0,0,diff));	
+			if(mGe->GetKeyListener()->IsPressed('S'))
+				mBalls[0]->AddForce(Vector3(0,0,-diff));
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+		}
+		else if(mGe->GetEngineParameters().CamType == TRD)
+		{
+			if(mGe->GetKeyListener()->IsPressed('W'))
+				mBalls[0]->AddForceForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('S'))
+				mBalls[0]->AddForceOppositeForwardDirection(diff);
+			if(mGe->GetKeyListener()->IsPressed('Q'))
+				mBalls[0]->RotateLeft(diff);
+			if(mGe->GetKeyListener()->IsPressed('E'))
+				mBalls[0]->RotateRight(diff);
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+			if(mGe->GetKeyListener()->IsPressed('A'))
+				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('D'))
+				mBalls[0]->AddForceRightOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
+			{
+				mBalls[0]->ZoomOut();
+				zoomOutPressed = true;
+			}
+			else if(!mGe->GetKeyListener()->IsPressed('Z'))
+				zoomOutPressed = false;
+			if(mGe->GetKeyListener()->IsPressed('C') && !zoomInPressed)
+			{
+				mBalls[0]->ZoomIn();
+				zoomInPressed = true;
+			}
+			else if(!mGe->GetKeyListener()->IsPressed('C'))
+				zoomInPressed = false;
+		}
 		if(mGe->GetKeyListener()->IsPressed('P'))
 			mGe->GetCamera()->moveForward(diff);
 		if(mGe->GetKeyListener()->IsClicked(1))
@@ -425,9 +460,11 @@ void GameManager::Initialize()
 	**/
 	else if(this->mGameMode == DM)
 	{
+		
+		mGe->GetCamera()->LookAt(centerPlatform);
 		this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 		this->mBalls		= new Ball*[this->mNumPlayers];
-	
+		this->mPlatform->SetShrinkValue(0.0f);
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if( i == 0)
@@ -435,6 +472,11 @@ void GameManager::Initialize()
 			else
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 		}
+		//mGe->GetCamera()->LookAt(this->mBalls[0]->GetPosition());
+		//((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]->mPos, this->mBalls[0]->mFor);
+		if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
+		
 	}
 	// wait until everything is loaded and then drop the balls from hight above
 	mGe->LoadingScreen("Media/LoadingScreenBG.png", "Media/LoadingScreenPB.png");	// Changed by MaloW

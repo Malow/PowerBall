@@ -191,6 +191,9 @@
     <ClCompile Include="..\Source\ServerInfo.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.cpp">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -360,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\ServerInfo.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.h">
+      <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

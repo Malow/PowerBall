@@ -19,6 +19,8 @@ private:
 	float		mDamping;
 	Vector3		mSumAddedForce;
 	Vector3		mVelocity;
+	Vector3		mForward;
+	float		mDistanceCam;
 	float		mMaxVelocity;
 	Vector3		mAcceleration;
 	float		mRestitution;
@@ -37,8 +39,11 @@ private:
 	float		mRespawnTimeLeft;
 	float		mTimeInHotZone;
 	//vector3	mForward;
+	
 
 public:
+	D3DXVECTOR3* mPos;
+	D3DXVECTOR3* mFor;
 	//constructors and destructors
 
 	/*! Initializes the Ball and loads assigned mesh.*/
@@ -85,7 +90,10 @@ public:
 	float GetTimeInHotZone() const { return this->mTimeInHotZone; }
 
 	/*! Returns the balls forward vector (the direction the ball is moving). */
-	//vector3	GetForwardVector() const { return this->mForward; }
+	Vector3	GetForwardVector() const { return this->mForward; }
+
+	/*! Returns the balls distance from cam. */
+	float GetDistanceToCam() const { return this->mDistanceCam; }
 
 	/*! Adds a item to the ball*/
 	void AddFlag(Flag* item){ this->mFlag = item; }
@@ -135,6 +143,9 @@ public:
 	/*! Sets the time the ball has been in hot zone. */
 	void SetTimeInHotZone(float timeInHotZone) {this->mTimeInHotZone = timeInHotZone; }
 
+	/*! Sets the balls distance from cam. */
+	void SetDistanceToCam(float dist) { this->mDistanceCam = dist; }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -147,6 +158,25 @@ public:
 
 	/*! Adds a force to this ball. */
 	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * 10.0f * this->mForcePress; }
+
+	/*! Adds a force to this ball in forward direction. */
+	void AddForceForwardDirection(float dt) { this->mSumAddedForce += this->mForward * dt * this->mForcePress; }
+
+	/*! Adds a force to this ball in opposite to the forward vector. */
+	void AddForceOppositeForwardDirection(float dt) { this->mSumAddedForce -= this->mForward * dt * this->mForcePress; }
+
+	/*! Adds a force to this ball in left direction of forward vector. */
+	void AddForceLeftOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(-PI/2.0f) * dt * this->mForcePress; }
+	
+	/*! Adds a force to this ball in right direction of forward vector. */
+	void AddForceRightOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(PI/2.0f) * dt * this->mForcePress; }
+	
+	/*! Zoom out one click from ball. */
+	void ZoomOut();
+
+	/*! Zoom in one click from ball. */
+	void ZoomIn();
+
 
 	/*! Adds time to the hot zone time. */
 	void AddTimeInHotZone(float dt) { this->mTimeInHotZone += dt; }
@@ -166,6 +196,12 @@ public:
 	/*! Rotates the ball-mesh. */
 	void Rotate(Vector3 direction);
 
+	/*! Rotets the forward vector counterclockwise when you looking down the y+ axis. */
+	void RotateLeft(float dt) { this->mForward.RotateY(-(PI/2) * dt * 0.001f); }
+
+	/*! Rotets the forward vector clockwise when you looking down the y+ axis. */
+	void RotateRight(float dt) { this->mForward.RotateY((PI/2) * dt * 0.001f); }
+	
 	/*! Returns true if ray intersect triangle and u, v and time is saved. */
 	bool RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector3 p1, Vector3 p2, float &u, float &v, float &t);
 };

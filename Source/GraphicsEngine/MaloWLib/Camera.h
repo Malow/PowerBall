@@ -5,7 +5,10 @@
 #include "Terrain.h"
 #include "GraphicsEngineParameters.h"
 #include "Mesh.h"
+//#include "..\..\Platform.h"
+//#include "..\..\Ball.h"
 #include "CursorControl.h"
+
 
 class Camera
 {
@@ -18,6 +21,7 @@ protected:
 	D3DXVECTOR3 up;
 	Terrain* terrain;
 	Mesh* followTarget;
+	
 	HWND g_hWnd;
 
 	float angleX;
@@ -90,6 +94,7 @@ public:
 	void StopFollowingMesh() { this->followTarget = NULL; }
 	void SetDistanceFromTarget(float distance) { this->DistanceFromTarget = distance; }
 	float GetDistanceFromTarget() const { return this->DistanceFromTarget; }
+
 };
 
 #endif

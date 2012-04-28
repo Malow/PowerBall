@@ -10,6 +10,7 @@ Singleton.
 #include "GraphicsEngineParameters.h"
 #include "FPSCamera.h"
 #include "RTSCamera.h"
+#include "TRDCamera.h"
 #include "Image.h"
 #include "CamRecording.h"
 #include "SoundEngine/SoundEngine.h"

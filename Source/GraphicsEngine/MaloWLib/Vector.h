@@ -174,6 +174,19 @@ namespace MaloW
 		{
 			return Vector3(this->x*compVec.x, this->y*compVec.y, this->z*compVec.z);
 		}
+		void RotateY(float angle)
+		{
+			Vector3 vec = *this;
+			vec.x = cos(angle) * this->x + sin(angle) * this->z;
+			vec.z = -sin(angle) * this->x + cos(angle) * this->z;
+			*this = vec;
+		}
+		Vector3 GetRoteted(float angle)
+		{
+			Vector3 vec = *this;
+			vec.RotateY(angle);
+			return vec;
+		}
 	};
 };
 

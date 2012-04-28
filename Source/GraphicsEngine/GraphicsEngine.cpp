@@ -173,6 +173,10 @@ void GraphicsEngine::InitObjects()
 	{
 		this->cam = new RTSCamera(this->hWnd, this->parameters);
 	}
+	else if(this->parameters.CamType == TRD)
+	{
+		this->cam = new TRDCamera(this->hWnd, this->parameters);
+	}
 	this->dx->SetCamera(this->cam);
 
 	this->dx->Start();
