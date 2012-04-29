@@ -88,9 +88,9 @@ bool GameManager::Play(const int numPlayers)
 			if(mGe->GetKeyListener()->IsPressed('S'))
 				mBalls[0]->AddForceOppositeForwardDirection(diff);
 			if(mGe->GetKeyListener()->IsPressed('Q'))
-				mBalls[0]->RotateLeft(diff);
+				mBalls[0]->RotateForwardLeft(diff);
 			if(mGe->GetKeyListener()->IsPressed('E'))
-				mBalls[0]->RotateRight(diff);
+				mBalls[0]->RotateForwardRight(diff);
 			if(mGe->GetKeyListener()->IsClicked(2))
 				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
 			if(mGe->GetKeyListener()->IsPressed('A'))

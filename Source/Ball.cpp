@@ -13,7 +13,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
 	this->mRestitution   = 0.30f; //0.95f
-	this->mForcePress	 = 18.0f;
+	this->mForcePress	 = 180.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
 	this->mStartPos		 = position;

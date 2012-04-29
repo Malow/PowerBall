@@ -4,18 +4,12 @@ using namespace MaloW;
 #include "..\..\Ball.h"
 TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, params)
 {
-	this->up = D3DXVECTOR3(0, 1, 0);
-	this->DistanceFromTarget = 75.0f;
-	this->forward = D3DXVECTOR3(0, -2, 1);
+	this->up = D3DXVECTOR3(0, 1, 0);	// dummy vector, will calculate a new up with gram-schmidt orthogonalization process
+	this->forward = D3DXVECTOR3(0, 0, 1);	// dummy vector, will be set when a ball is assigned 
 	this->forward = this->NormalizeVector(this->forward);
-	//this->mFollowThisMeshPosition = NULL;
-	//this->mBallForwardVector = NULL;
 	this->mTargetVector = D3DXVECTOR3(0, 0, 0);
 	this->mBallToFollow = NULL;
-	//this->pos = D3DXVECTOR3(0, 0, 0);
 	this->mIsClicked = false;
-	CursorControl cc;
-	cc.SetVisibility(false);
 }
 
 TRDCamera::~TRDCamera()
@@ -31,13 +25,6 @@ void TRDCamera::updateSpecific(float delta)
 		this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mBallToFollow->GetDistanceToCam();
 		this->pos = this->mBallToFollow->GetPosition() - this->mTargetVector;
 		this->forward = this->NormalizeVector(this->mTargetVector);
-		
-		/*
-		D3DXVECTOR3 temp = *this->mBallForwardVector;
-		this->mTargetVector = D3DXVECTOR3(0,-5,0) + temp*5;
-		this->pos = *this->mFollowThisMeshPosition - this->mTargetVector;
-		this->forward = this->NormalizeVector(this->mTargetVector);
-		*/
 		POINT p;
 		GetCursorPos(&p);
 		ScreenToClient(this->g_hWnd, &p);
@@ -54,22 +41,28 @@ void TRDCamera::updateSpecific(float delta)
 			{
 				dx = p.x - this->mOldPos.x;
 				dy = p.y - this->mOldPos.y;
-				this->mOldPos = p;
-				this->mBallToFollow->RotateRight(dx);
+				
+				/* add this line if you not want to keep the mouse position after click */
+				// this->mOldPos = p;
+				
+				this->mBallToFollow->RotateForwardRight(dx);
+				/* remove the 3 lines below if you not want to keep the mouse position after click */
+				POINT newP = this->mOldPos;
+				ClientToScreen(this->g_hWnd, &newP);
+				SetCursorPos(newP.x, newP.y);
+				
 			}
 			
 		}
 		else
 		{
 			if(this->mIsClicked)
-			{
 				this->mIsClicked = false;
-				POINT newPos = p;
-				dx = newPos.x - this->mOldPos.x;
-				dy = newPos.y - this->mOldPos.y;
-			}
-		
 		}
+		/* remove 2 lines below if you want to show the mouse pointer after a click */
+		CursorControl cc;
+		cc.SetVisibility(!this->mIsClicked);
+		
 	}
 	
 }
@@ -102,4 +95,24 @@ void TRDCamera::setBallToFollow(Ball* ball)
 Ball* TRDCamera::getBallToFollow()
 {
 	 return this->mBallToFollow;
+}
+
+void TRDCamera::calculateNewUp()
+{
+	/* Gram-Schmidt process */
+	
+	/* Start vectors */
+	D3DXVECTOR3 v1 = this->NormalizeVector(this->forward);
+	D3DXVECTOR3 v2 = this->NormalizeVector(this->up);
+	
+	/* Process */
+	D3DXVECTOR3 w1 = v1;
+	D3DXVECTOR3 w2 = v2 - D3DXVec3Dot(&v1,&v2)*v2;
+	
+	/* Some of the above we don't really need to calc, but to be clear how the process work its shown. */
+	this->forward = w1;
+	this->up = this->NormalizeVector(w2);
+	D3DXVECTOR3 left;
+	D3DXVec3Cross(&left, &this->up,&this->forward);
+	
 }

@@ -197,10 +197,10 @@ public:
 	void Rotate(Vector3 direction);
 
 	/*! Rotets the forward vector counterclockwise when you looking down the y+ axis. */
-	void RotateLeft(float dt) { this->mForward.RotateY(-(PI/2) * dt * 0.001f); }
+	void RotateForwardLeft(float dt) { this->mForward.RotateY(-(PI/2) * dt * 0.001f); }
 
 	/*! Rotets the forward vector clockwise when you looking down the y+ axis. */
-	void RotateRight(float dt) { this->mForward.RotateY((PI/2) * dt * 0.001f); }
+	void RotateForwardRight(float dt) { this->mForward.RotateY((PI/2) * dt * 0.001f); }
 	
 	/*! Returns true if ray intersect triangle and u, v and time is saved. */
 	bool RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector3 p1, Vector3 p2, float &u, float &v, float &t);
