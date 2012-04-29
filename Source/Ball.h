@@ -157,7 +157,7 @@ public:
 	bool IsAlive() const;
 
 	/*! Adds a force to this ball. */
-	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * 10.0f * this->mForcePress; }
+	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * this->mForcePress; }
 
 	/*! Adds a force to this ball in forward direction. */
 	void AddForceForwardDirection(float dt) { this->mSumAddedForce += this->mForward * dt * this->mForcePress; }
