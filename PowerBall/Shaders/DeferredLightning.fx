@@ -233,6 +233,9 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	*/
 
 	//**temp:**
+	//if player is on red team, reduce redness and increase blueness**
+
+	//**fixa skybox**
 	if((uint)DiffuseColor.w != 0)
 	{
 		switch((uint)DiffuseColor.w)
@@ -247,7 +250,8 @@ float4 PSScene(PSSceneIn input) : SV_Target
 			case 8: finalColor = MAGENTA; break;
 		}
 	}
-
+	
+	
 	//finalColor = SSAO(input.Pos.xy, NormalAndDepth);
 
 	finalColor = Lava(finalColor, WorldPos, NormsAndDepth.w);

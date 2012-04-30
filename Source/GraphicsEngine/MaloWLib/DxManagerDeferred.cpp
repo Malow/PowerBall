@@ -32,10 +32,10 @@ void DxManager::RenderDeferredGeometry()
 		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
 		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
 
-		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
 		this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
 
 		for(int u = 0; u < strips->size(); u++)
 		{
@@ -92,11 +92,12 @@ void DxManager::RenderDeferredGeometry()
 		wvp = world * view * proj;
 		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
 		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
-
+		
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("WVP", wvp);
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
 		this->Shader_DeferredAnimatedGeometry->SetFloat("t", t);
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
 
 		for(int u = 0; u < stripsOne->size(); u++)
 		{

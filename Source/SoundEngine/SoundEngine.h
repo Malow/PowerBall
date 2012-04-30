@@ -66,6 +66,8 @@ class SoundEngine
 		void SetSoundEffectVolume(float volume);
 		/*! Set the song volume. Range is [0,1]. */
 		void SetSongVolume(float volume);
+		/*! Set debug level. */
+		void SetDebugLevel(unsigned int level);
 
 		//Sound effects
 		/*! Load sound effect from soundfile. **3D currently unavailable** */

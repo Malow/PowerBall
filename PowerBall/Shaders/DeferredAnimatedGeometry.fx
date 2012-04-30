@@ -20,7 +20,7 @@ SamplerState linearSampler
 //-----------------------------------------------------------------------------------------
 
 
-cbuffer EveryObject
+cbuffer EveryStrip
 {
 	matrix WVP;
 	matrix worldMatrix;
@@ -33,7 +33,10 @@ cbuffer EveryObject
 	float4 DiffuseColor;
 	float t;
 };
-
+cbuffer EveryMesh
+{
+	uint specialColor;
+}
 cbuffer EveryFrame
 {
 	float4 CameraPosition;
@@ -73,7 +76,7 @@ struct PSout
 
 /*
 RTs:
-1: Texture XYZ, W unused
+1: Texture XYZ, W Special Color
 2: Normal XYZ, W Depth
 3: Position XYZ, W unused
 4: Specular XYZ, W Specular Power
@@ -126,6 +129,7 @@ PSout PSScene(PSSceneIn input) : SV_Target
 		textureColor = tex2D.Sample(linearSampler, input.tex);
 	}
 	float4 finalColor = (textureColor + input.Color) * DiffuseColor;
+	finalColor.w = (float)specialColor;
 
 	PSout output;
 	output.Texture = finalColor;

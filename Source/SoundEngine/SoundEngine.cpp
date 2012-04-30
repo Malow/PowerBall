@@ -63,6 +63,8 @@ SoundEngine::SoundEngine()
 		this->mSongs[i] = NULL;
 	}
 	this->mSongChannel = NULL;
+
+	ERRCHECK(this->mResult = FMOD::Debug_SetLevel(0));
 }
 SoundEngine::~SoundEngine()
 {
@@ -187,7 +189,10 @@ void SoundEngine::SetSongVolume(float volume)
 {
 	this->mSongVolume = volume;
 }
-
+void SoundEngine::SetDebugLevel(unsigned int level)
+{
+	ERRCHECK(this->mResult = FMOD::Debug_SetLevel(level));
+}
 
 //other
 void SoundEngine::LoadSoundEffect(string filename, bool as3D)
