@@ -32,6 +32,7 @@ void DxManager::RenderDeferredGeometry()
 		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
 		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
 
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
 		this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);

@@ -124,7 +124,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	
 	float4 WorldPos = Position.Sample(linearSampler, input.tex);
 
-	DiffuseColor.w = 1.0f;
+	//DiffuseColor.w = 1.0f; **
 
 	float4 AmbientLight = float4(DiffuseColor.xyz * 0.5f, 1.0f);
 	float SpecularPower = Specular.Sample(linearSampler, input.tex).w;
@@ -203,7 +203,8 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	diffuseLighting = saturate(diffuseLighting / NrOfLights);
 	specLighting = saturate(specLighting / NrOfLights);
 
-	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), DiffuseColor.w);
+	//float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), DiffuseColor.w);
+	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), 1.0f);
 
 	
 
@@ -231,7 +232,22 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		finalColor = float4(0.5, 0.5, 0.5, 1.0f);
 	*/
 
-	
+	//**temp:**
+	if((uint)DiffuseColor.w != 0)
+	{
+		switch((uint)DiffuseColor.w)
+		{
+			case 1: finalColor = WHITE; break;
+			case 2: finalColor = BLACK; break;
+			case 3: finalColor = RED; break;
+			case 4: finalColor = GREEN; break;
+			case 5: finalColor = BLUE; break;
+			case 6: finalColor = YELLOW; break;
+			case 7: finalColor = CYAN; break;
+			case 8: finalColor = MAGENTA; break;
+		}
+	}
+
 	//finalColor = SSAO(input.Pos.xy, NormalAndDepth);
 
 	finalColor = Lava(finalColor, WorldPos, NormsAndDepth.w);
