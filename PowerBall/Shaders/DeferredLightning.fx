@@ -233,21 +233,25 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	*/
 
 	//**temp:**
-	//if player is on red team, reduce redness and increase blueness**
+	//todo: if player is on red team, reduce redness and increase blueness**
 
-	//**fixa skybox**
-	if((uint)DiffuseColor.w != 0)
+	//Exlude skybox
+	if(NormsAndDepth.w < 1.00001f)
 	{
-		switch((uint)DiffuseColor.w)
+		//Exclude nullColor
+		if((uint)DiffuseColor.w != 0)
 		{
-			case 1: finalColor = WHITE; break;
-			case 2: finalColor = BLACK; break;
-			case 3: finalColor = RED; break;
-			case 4: finalColor = GREEN; break;
-			case 5: finalColor = BLUE; break;
-			case 6: finalColor = YELLOW; break;
-			case 7: finalColor = CYAN; break;
-			case 8: finalColor = MAGENTA; break;
+			switch((uint)DiffuseColor.w)
+			{
+				case 1: (finalColor += WHITE) * 0.5f; break;
+				case 2: (finalColor += BLACK) * 0.5f; break;
+				case 3: (finalColor += RED) * 0.5f; break;
+				case 4: (finalColor += GREEN) * 0.5f; break;
+				case 5: (finalColor += BLUE) * 0.5f; break;
+				case 6: (finalColor += YELLOW) * 0.5f; break;
+				case 7: (finalColor += CYAN) * 0.5f; break;
+				case 8: (finalColor += MAGENTA) * 0.5f; break;
+			}
 		}
 	}
 	
