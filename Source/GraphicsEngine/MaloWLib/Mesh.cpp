@@ -2,6 +2,8 @@
 
 Mesh::Mesh(D3DXVECTOR3 pos)
 {
+	this->specialColor = NULL_COLOR;
+
 	this->strips = new MaloW::Array<MeshStrip*>();
 
 	this->topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -98,6 +100,11 @@ void Mesh::LoadFromFile(string file)
 	}
 	this->topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	delete od;
+}
+
+void Mesh::SetSpecialColor(COLOR specialColor)
+{
+	this->specialColor = specialColor;
 }
 
 void Mesh::SetPosition(D3DXVECTOR3 pos)

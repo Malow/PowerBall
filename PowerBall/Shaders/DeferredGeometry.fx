@@ -20,7 +20,7 @@ SamplerState linearSampler
 //-----------------------------------------------------------------------------------------
 
 
-cbuffer EveryObject
+cbuffer EveryStrip
 {
 	matrix WVP;
 	matrix worldMatrix;
@@ -32,6 +32,10 @@ cbuffer EveryObject
 	float4 SpecularColor;
 	float4 DiffuseColor;
 };
+cbuffer EveryMesh
+{
+	uint specialColor;
+}
 
 cbuffer EveryFrame
 {

@@ -41,6 +41,19 @@ const D3DXCOLOR CYAN(0.0f, 1.0f, 1.0f, 1.0f);
 const D3DXCOLOR MAGENTA(1.0f, 0.0f, 1.0f, 1.0f);
 #define PI (3.14159265358979323846f)
 
+enum COLOR
+{
+	NULL_COLOR = 0,
+	WHITE_COLOR = 1,
+	BLACK_COLOR = 2,
+	RED_COLOR = 3,
+	GREEN_COLOR = 4,
+	BLUE_COLOR = 5,
+	YELLOW_COLOR = 6,
+	CYAN_COLOR = 7,
+	MAGENTA_COLOR = 8
+};
+
 /*! functions */
 #define SAFE_RELEASE(x) { if(x) { (x)->Release(); (x) = NULL; } }
 #define SAFE_DELETE(x) { if(x) { delete(x); (x) = NULL; } }

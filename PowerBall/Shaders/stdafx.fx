@@ -7,6 +7,19 @@ Include file for all samplers, rasterizer states, and blend states and constant 
 #ifndef STDAFX_FX
 #define STDAFX_FX
 
+//------------------------------------------------------------------------------------------------------
+//	Constans
+//------------------------------------------------------------------------------------------------------
+#define PI float(3.14159265358979323846f)
+#define WHITE	float4(1.0f, 1.0f, 1.0f, 1.0f)
+#define BLACK	float4(0.0f, 0.0f, 0.0f, 1.0f)
+#define RED		float4(1.0f, 0.0f, 0.0f, 1.0f)
+#define GREEN	float4(0.0f, 1.0f, 0.0f, 1.0f)
+#define BLUE	float4(0.0f, 0.0f, 1.0f, 1.0f)
+#define YELLOW	float4(1.0f, 1.0f, 0.0f, 1.0f)
+#define CYAN	float4(0.0f, 1.0f, 1.0f, 1.0f)
+#define MAGENTA float4(1.0f, 0.0f, 1.0f, 1.0f)
+
 
 //------------------------------------------------------------------------------------------------------
 //	Own structures

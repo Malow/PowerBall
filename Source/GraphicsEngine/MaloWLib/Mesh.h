@@ -17,6 +17,8 @@ Mesh class that represents a 3d-object on the screen
 class Mesh
 {
 protected:
+	COLOR specialColor;
+
 	MaloW::Array<MeshStrip*>* strips;
 
 	D3D_PRIMITIVE_TOPOLOGY topology;
@@ -30,6 +32,7 @@ public:
 	Mesh(D3DXVECTOR3 pos);
 	virtual ~Mesh();
 
+	void SetSpecialColor(COLOR specialColor);
 	void SetPosition(D3DXVECTOR3 pos);
 	void MoveBy(D3DXVECTOR3 moveby);
 	void Rotate(D3DXVECTOR3 radians);
@@ -38,6 +41,7 @@ public:
 	void Scale(D3DXVECTOR3 scale);
 	void Scale(float scale);
 
+	COLOR GetSpecialColor() const { return this->specialColor; }
 	D3DXVECTOR3 GetPosition() const { return this->pos; }
 	D3DXQUATERNION GetRotation() const { return this->rotQuat; }
 	D3DXVECTOR3 GetScaling() const { return this->scale; }
