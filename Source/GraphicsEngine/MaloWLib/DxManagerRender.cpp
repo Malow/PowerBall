@@ -293,8 +293,8 @@ void DxManager::RenderShadowMap()
 	// Deferred:
 	this->Shader_DeferredLightning->SetFloat("PCF_SIZE", PCF_SIZE);
 	this->Shader_DeferredLightning->SetFloat("PCF_SIZE_SQUARED", PCF_SQUARED);
-	//this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->params.ShadowMapSettings/2)));
-	this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / 256.0f);
+	this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / (256 * pow(2.0f, this->params.ShadowMapSettings/2)));
+	//this->Shader_DeferredLightning->SetFloat("SMAP_DX", 1.0f / 256.0f);
 	this->Shader_DeferredLightning->SetFloat("NrOfLights", (float)this->lights.size());
 	
 	
