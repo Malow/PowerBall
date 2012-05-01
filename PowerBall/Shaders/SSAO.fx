@@ -30,11 +30,6 @@ cbuffer PerFrame
 //------------------------------------------------------------------------------------------------------
 float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 {
-	//optimera:**
-	uint width = 0;
-	uint height = 0;
-	normalAndDepthMap.GetDimensions(width, height);
-
 	float2 texCoord = float2(pixel.x / width, pixel.y / height); //input pixel is in screen space, convert to texture space
 	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord); //sample normal (view space) and depth of the pixel (normalized device coordinates [0,1])
 	

@@ -28,7 +28,7 @@ class FXAA
 		void SetPreset(UINT preset);
 
 		/*! Sets all FXAA settings to the shader. */
-		void PreRender(Shader* shader, GraphicsEngineParams engParams);
+		void PreRender(Shader* shader);
 
 		/*! Cleans up the scene texture. */
 		void PostRender(Shader* shader);

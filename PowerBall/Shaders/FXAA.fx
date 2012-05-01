@@ -4,6 +4,7 @@
 //	Requirements: Scene buffer as input texture.
 //	Notes: This is a stripped and slightly modified version of the one provided by NVIDIA. **
 //-----------------------------------------------------------------------------------------
+#include "stdafx.fx"
 
 //-----------------------------------------------------------------------------------------
 // Global variables
@@ -16,7 +17,6 @@ Texture2D sceneTex;
 cbuffer PerFrame
 {
 	uint FXAAPreset;
-	float4 rcpFrame;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -342,14 +342,26 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
 //-----------------------------------------------------------------------------------------
 float4 PSScene(float4 pos : SV_Position) : SV_Target
 {	
-	SetSettings(FXAAPreset);
-	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	//optimera:**
+	SetSettings(FXAAPreset); 
 	uint width, height;
 	sceneTex.GetDimensions(width, height);
+
 	float2 texCoord = float2(pos.x / width, pos.y / height);
-	float4 color = float4(FxaaPixelShader(texCoord, tex, rcpFrame.xy), 1.0f);
+	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	float2 rcpFrame = float2(1.0f / width, 1.0f / height);
+	float4 color = float4(FxaaPixelShader(texCoord, tex, rcpFrame), 1.0f);
 	
 	return color; 
+
+	/**
+	SetSettings(FXAAPreset); //optimera**
+
+	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	float2 texCoord = float2(pos.x / width, pos.y / height);
+	float2 dxdy = float2(1.0f / width, 1.0f / height);
+	float4 color = float4(FxaaPixelShader(texCoord, tex, dxdy), 1.0f);
+	*/
 }
 
 //-----------------------------------------------------------------------------------------

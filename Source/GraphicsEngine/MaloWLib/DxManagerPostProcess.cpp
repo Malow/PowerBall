@@ -13,7 +13,7 @@ void DxManager::RenderAntiAliasing()
 	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//set shader variables & apply
-	this->fxaa->PreRender(this->Shader_Fxaa, this->params);
+	this->fxaa->PreRender(this->Shader_Fxaa);
 
 	//draw quad (triangle strip)
 	this->Dx_DeviceContext->Draw(4, 0);

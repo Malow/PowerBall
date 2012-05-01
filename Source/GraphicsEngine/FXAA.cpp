@@ -36,7 +36,7 @@ void FXAA::SetPreset(UINT preset)
 	}
 }
 
-void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
+void FXAA::PreRender(Shader* shader)
 {
 	HRESULT hr = S_OK;
 
@@ -79,7 +79,8 @@ void FXAA::PreRender(Shader* shader, GraphicsEngineParams engParams)
 	//set shader variables
 	shader->SetResource("sceneTex", sceneSRV);
 	shader->SetInt("FXAAPreset", this->mPreset);
-	shader->SetFloat4("rcpFrame", D3DXVECTOR4(1.0f / engParams.windowWidth, 1.0f / engParams.windowHeight, 0.0f, 0.0f));
+	//optimera:**
+	//shader->SetFloat4("rcpFrame", D3DXVECTOR4(1.0f / engParams.windowWidth, 1.0f / engParams.windowHeight, 0.0f, 0.0f));
 	
 	//apply pass
 	shader->Apply(0);
