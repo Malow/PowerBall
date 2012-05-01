@@ -16,6 +16,7 @@ CamRecording::CamRecording(int interval)
 	this->gDeviceContext = NULL;
 	this->gShader = NULL;
 
+	this->mIsLooping = false;
 	this->mIsRecording = false;
 	this->mHasRecorded = false;
 	this->mIsPlaying = false;
@@ -56,9 +57,9 @@ void CamRecording::Init(Camera* camera, ID3D11Device* device, ID3D11DeviceContex
 }
 
 //get
-int CamRecording::GetInterval() const
+bool CamRecording::IsLooping() const
 {
-	return this->mInterval;
+	return this->mIsLooping;
 }
 bool CamRecording::IsRecording() const
 {
@@ -71,6 +72,10 @@ bool CamRecording::HasRecorded() const
 bool CamRecording::IsPlaying() const
 {
 	return this->mIsPlaying;
+}
+int CamRecording::GetInterval() const
+{
+	return this->mInterval;
 }
 float CamRecording::GetPlayTime() const
 {
@@ -90,6 +95,10 @@ D3DXVECTOR3 CamRecording::GetPathOffset() const
 }
 
 //set
+void CamRecording::StartOrStopLooping()
+{
+	this->mIsLooping = !this->mIsLooping;
+}
 void CamRecording::SetInterval(int interval)
 {
 	this->mInterval = interval;
@@ -192,6 +201,76 @@ void CamRecording::Open(string fileName)
 		//CamRecording::InitDrawing(this->gDevice); todo**
 	}
 }
+void CamRecording::Load(CAMERA_PATH camPath)
+{
+	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 at = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vecIn = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vecOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXMATRIX mat;
+	unsigned int nrOfPoints = -1;
+	unsigned int nrOfRotations = -1;
+
+	//remove previous recording, if any
+	if(this->mHasRecorded)
+	{
+		CamRecording::DeletePreviousRecording();
+	}
+
+	if(camPath == SPIRAL_DOWN) 
+	{
+		this->mInterval = 1000;
+		nrOfPoints = 10;
+		nrOfRotations = 1;
+		float startX = 30.0f;
+		float startY = 70.0f;
+		float startZ = 30.0f;
+		float endY = 20.0f;
+		float dY = (startY - endY) / nrOfPoints;
+		float dAngle = ((2 * PI) / nrOfPoints) * nrOfRotations;
+		float angle = dAngle;
+		pos = D3DXVECTOR3(startX, startY, startZ);
+		vecIn = pos - at;
+		
+		for(unsigned int i = 0; i < nrOfPoints; i++)
+		{
+			pos.y = startY - i * dY;
+
+			this->AddCameraWaypoint(pos, at);
+
+			D3DXMatrixRotationY(&mat, angle);
+			D3DXVec3TransformNormal(&vecOut, &vecIn, &mat);
+			pos = vecOut;
+			angle += dAngle;
+		}
+	}
+	else if(camPath = CIRCLE_AROUND)
+	{
+		this->mIsLooping = true;
+		this->mInterval = 1000;
+		nrOfPoints = 10;
+		nrOfRotations = 1;
+		float startX = 30.0f;
+		float startY = 30.0f;
+		float startZ = 30.0f;
+		float dAngle = ((2 * PI) / nrOfPoints) * nrOfRotations;
+		float angle = dAngle;
+		pos = D3DXVECTOR3(startX, startY, startZ);
+		vecIn = pos - at;
+		
+		for(unsigned int i = 0; i < (nrOfPoints - 1); i++)
+		{
+			this->AddCameraWaypoint(pos, at);
+
+			D3DXMatrixRotationY(&mat, angle);
+			D3DXVec3TransformNormal(&vecOut, &vecIn, &mat);
+			pos = vecOut;
+			angle += dAngle;
+		}
+		//add last point (first point) for seamless looping
+		this->AddCameraWaypoint(D3DXVECTOR3(startX, startY, startZ), at);
+	}
+}
 
 void CamRecording::Update(float deltaTime)
 {
@@ -229,8 +308,15 @@ void CamRecording::Update(float deltaTime)
 		}
 		else
 		{
-			this->mIsPlaying = false;
-			this->mCurrentPlayTime = 0;
+			if(!this->mIsLooping)
+			{
+				this->mIsPlaying = false;
+				this->mCurrentPlayTime = 0;
+			}
+			else
+			{
+				this->mCurrentPlayTime = 0;
+			}
 		}
 	}
 }

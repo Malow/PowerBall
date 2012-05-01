@@ -256,7 +256,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	}
 	
 	
-	//finalColor = SSAO(input.Pos.xy, NormalAndDepth);
+	//finalColor = SSAO(input.tex, NormalAndDepth);
 
 	finalColor = Lava(finalColor, WorldPos, NormsAndDepth.w);
 

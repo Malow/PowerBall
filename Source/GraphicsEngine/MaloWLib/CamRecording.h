@@ -11,6 +11,11 @@
 #include "Shader.h"
 #include "..\..\MaloWLib\TCBSpline.h"
 
+enum CAMERA_PATH
+{
+	SPIRAL_DOWN = 0,
+	CIRCLE_AROUND = 1
+};
 
 class CamRecording
 {
@@ -25,6 +30,7 @@ class CamRecording
 
 		//Local variables:
 		//For recording/playing:
+		bool						mIsLooping;
 		bool						mIsRecording;
 		bool						mHasRecorded;
 		bool						mIsPlaying;
@@ -53,10 +59,11 @@ class CamRecording
 		*/
 		void Init(Camera* camera, ID3D11Device* device = NULL, ID3D11DeviceContext* deviceContext = NULL, Shader* shader = NULL);
 	
-		int GetInterval() const;
+		bool IsLooping() const;
 		bool IsRecording() const;
 		bool HasRecorded() const;
 		bool IsPlaying() const;
+		int GetInterval() const;
 		/*! Returns play time in seconds. */
 		float GetPlayTime() const;
 		/*! Returns current play time in seconds. */
@@ -64,6 +71,7 @@ class CamRecording
 		float GetPlaySpeed() const;
 		D3DXVECTOR3 GetPathOffset() const;
 
+		void StartOrStopLooping();
 		/*! Set the interval in milliseconds in which to save camera position and look-at position. */
 		void SetInterval(int interval);
 		/*! Set the play speed. Normal is 1. */
@@ -79,8 +87,10 @@ class CamRecording
 		void Play();
 		/*! Save camera path (points) to file. */
 		void Save(string fileName);
-		/*! Open camera path (points from file. */
+		/*! Open camera path (points) from file. */
 		void Open(string fileName);
+		/*! Load predefined camera path. */
+		void Load(CAMERA_PATH camPath);
 
 		/*! Used to update recording and playing. */
 		void Update(float deltaTime);
