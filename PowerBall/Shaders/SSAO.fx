@@ -35,9 +35,8 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 	uint height = 0;
 	normalAndDepthMap.GetDimensions(width, height);
 
-	//get normal (view space) and depth of the pixel (normalized device coordinates [0,1])
-	float2 texCoord = float2(pixel.x / width, pixel.y / height); 
-	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord);
+	float2 texCoord = float2(pixel.x / width, pixel.y / height); //input pixel is in screen space, convert to texture space
+	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord); //sample normal (view space) and depth of the pixel (normalized device coordinates [0,1])
 	
 	float4 debugColor;
 	if(normAndDepth.w > -DEPTH_EPSILON) //exclude pixels with no depth data (-1.0f)
@@ -67,7 +66,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		for(uint i = 0; i < nrOfSamples; i++) 
 		{
 			//2. add 3D-vectors to this the view position of the pixel
-			offsetVector = rndTex.Sample(LinearSampler, (float)i);  //sample offset vector
+			offsetVector = rndTex.Sample(LinearSampler, i);  //sample offset vector
 			//check if offset vector is above surface of the pixel and within angle bias, if not, flip and hope for the best
 			if(dot(offsetVector, normAndDepth.xyz) > angleBias)
 			{
