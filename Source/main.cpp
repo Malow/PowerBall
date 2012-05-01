@@ -14,10 +14,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
 	params.windowWidth = 1500;
-	params.FXAAQuality = 0;			// 0 - 4
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = TRD;
-	
+	params.FXAAQuality = 3;			// 0 - 4
+	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
+	params.CamType = RTS;
+
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
@@ -40,14 +40,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//ani->LoopNormal();
 	ani->LoopSeamless();
 
-	/*
+	
 	SoundEngine* seng = eng->GetSoundEngine();
-	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
-	seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
-	seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
+	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
+	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	seng->SetMasterVolume(0.1f);
-	seng->PlaySong(0);
-	*/
+	ss1->Play();
+	
 
 	
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
@@ -61,6 +61,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 	CamRecording* camRec = new CamRecording(2000);	// How many milliseconds between each way point
 	camRec->Init(eng->GetCamera());
+
+	
+	camRec->AddCameraWaypointPath(SPIRAL_DOWN);
 	/*camRec->AddCameraWaypoint(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 30, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(30, 30, 30), D3DXVECTOR3(8, 16, 8));
@@ -93,7 +96,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		if(eng->GetKeyListener()->IsPressed(VK_BACK))
 		{
 			if(sw)
+			{
+				se1->Play();
 				text->DeleteFromEnd(1);
+			}
 			sw = false;
 		}
 		else
@@ -101,6 +107,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		
 		if(eng->GetKeyListener()->IsClicked(1))
 		{
+			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
 		}
 
