@@ -71,7 +71,9 @@
     <ClCompile Include="..\Source\Platform.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
     <ClCompile Include="..\Source\ServerInfo.cpp" />
+    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp" />
+    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Ball.h" />
@@ -130,7 +132,9 @@
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />
     <ClInclude Include="..\Source\ServerInfo.h" />
+    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h" />
+    <ClInclude Include="..\Source\SoundEngine\SoundSong.h" />
     <ClInclude Include="..\Source\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
