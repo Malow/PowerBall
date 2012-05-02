@@ -197,6 +197,9 @@
     <ClCompile Include="..\Source\GUI\TextBox.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\SliderBar.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -371,6 +374,9 @@
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GUI\TextBox.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\SliderBar.h">
       <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>

@@ -40,7 +40,8 @@ public:
 	/*! Saves the position of the element in the parameters*/
 	void GetPosition(float& x, float& y, float& z){ x = this->mX; y = this->mY; z = this->mZ; }
 	/*! Returns the pos as a D3DXVECTOR2*/
-	D3DXVECTOR2 GetPositionD3D(){ return D3DXVECTOR2(this->mX, this->mY); }
+	D3DXVECTOR2 GetPositionD3D(){ return this->mImage->GetPosition(); }
+	void SetPositionD3D(D3DXVECTOR2 pos){ this->mImage->SetPosition(pos); this->mX = pos.x; this->mY = pos.y; }
 
 	/*! Sets the width of the element*/
 	void SetWidth(float width){ this->mWidth = width; }
@@ -63,7 +64,7 @@ public:
 	/*! Sets the image*/
 	void SetImage(Image* image){ this->mImage = image; }
 	/*! Saves the image in the parameter*/
-	void GetImage(Image* image){ image = this->mImage; }
+	Image* GetImage(){ return this->mImage; }
 
 	/*! Adds the element to the renderer*/
 	virtual bool AddToRenderer(GraphicsEngine* ge);

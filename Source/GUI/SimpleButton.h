@@ -29,9 +29,9 @@ public:
 
 
 	/*! Sets the position of active position*/
-	void SetActivePos(float x, float y){ this->mActiveX = x; this->mActiveY = y; }
+	void SetActivePos(D3DXVECTOR2 pos){ this->mActiveX = pos.x; this->mActiveY = pos.y; }
 	/*! Saves the pos of active pos in parameters*/
-	void GetActivePos(float& x, float& y){ x = this->mActiveX; y = this->mActiveY; }
+	D3DXVECTOR2 GetActivePos(){ return D3DXVECTOR2(this->mActiveX, this->mActiveY); }
 
 	/*! Saves the actviation width of the button*/
 	void SetActiveWidth(float activeWidth){ this->mActiveWidth = activeWidth; }

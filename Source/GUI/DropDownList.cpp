@@ -86,7 +86,13 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 					returnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
 					if(returnEvent != NULL)
 					{
-						/*Change positions here*/
+						D3DXVECTOR2 firstElementPos = this->mElements[0]->GetImage()->GetPosition();
+						D3DXVECTOR2 newElementPos = this->mElements[i]->GetImage()->GetPosition();
+						this->mElements[0]->SetPositionD3D(newElementPos);
+						this->mElements[i]->SetPositionD3D(firstElementPos);
+						Element* temp = this->mElements[0];
+						this->mElements[0] = this->mElements[i];
+						this->mElements[i] = temp;
 						return returnEvent;
 					}
 				}
@@ -103,7 +109,24 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 				returnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
 				if(returnEvent != NULL)
 				{
-					/*Change positions here*/
+					if(i != 0)
+					{
+						D3DXVECTOR2 firstElementPos = this->mElements[0]->GetImage()->GetPosition();
+						D3DXVECTOR2 newElementPos = this->mElements[i]->GetImage()->GetPosition();
+						this->mElements[0]->SetPositionD3D(newElementPos);
+						this->mElements[i]->SetPositionD3D(firstElementPos);
+						SimpleButton* tempFirst = (SimpleButton*)this->mElements[0];
+						D3DXVECTOR2 firstElementActivePos = tempFirst->GetActivePos();
+						D3DXVECTOR2 newElementActivePos = temp->GetActivePos();
+						tempFirst->SetActivePos(newElementActivePos);
+						temp->SetActivePos(firstElementActivePos);
+						Element* temp1 = this->mElements[0];
+						this->mElements[0] = this->mElements[i];
+						this->mElements[i] = temp1;
+					}
+					this->mDropActive = false;
+					this->RemoveFromRenderer(ge);
+					this->AddToRenderer(ge);
 					return returnEvent;
 				}
 
