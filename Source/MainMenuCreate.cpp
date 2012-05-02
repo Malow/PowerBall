@@ -76,7 +76,7 @@ void MainMenu::CreateOptionsMenu()
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 
 	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/Options1680_1050.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1680_1050.png", "Media/Menus/MouseOverOptions1680_1050.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
 
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
@@ -135,5 +135,15 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonsendonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_LAN), "Media/OnlineAndLanMenu/clicksendonline.png" , "Media/OnlineAndLanMenu/mouseoversendonline.png", dx * (1006.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
+	this->mSets[OPTIONS_LAN].AddElement(tempElement);
+
+	//Ugly drop down list to start with
+	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f);
+	DropDownList* dropdownlist = (DropDownList*)tempElement;
+
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/KingOfTheHill_DropDown.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "", "", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
+	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/CaptureTheFlag_DropDown.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "", "", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 }

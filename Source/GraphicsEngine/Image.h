@@ -20,6 +20,7 @@ public:
 	virtual ~Image();
 
 	D3DXVECTOR2 GetPosition() const { return this->position; }
+	void SetPosition(D3DXVECTOR2 pos){ this->position = pos; }
 	ID3D11ShaderResourceView* GetTexture() const { return this->texture; }
 	void SetTexture(ID3D11ShaderResourceView* text) { this->texture = text; }
 	D3DXVECTOR2 GetDimensions() const { return this->dimensions; }

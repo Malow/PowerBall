@@ -197,11 +197,8 @@
     <ClCompile Include="..\Source\GUI\TextBox.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
-      <Filter>Sound Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
-      <Filter>Sound Engine Files</Filter>
+    <ClCompile Include="..\Source\GUI\SliderBar.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -379,11 +376,8 @@
     <ClInclude Include="..\Source\GUI\TextBox.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
-      <Filter>Sound Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
-      <Filter>Sound Engine Files</Filter>
+    <ClInclude Include="..\Source\GUI\SliderBar.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
