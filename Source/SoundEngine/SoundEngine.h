@@ -12,6 +12,9 @@
 #include <fmod_codec.h>
 #include <fmod_output.h>
 #include <fmod_dsp.h>
+#include "SoundEffect.h"
+#include "SoundSong.h"
+
 
 class SoundEngine
 {
@@ -26,14 +29,16 @@ class SoundEngine
 		char*				mName;
 
 		//all sound
-		float				mMasterVolume;	//default value: 1.0f
+		float*				mMasterVolume;	//default value: 1.0f
 
-		//sound effects 
-		float				mSoundFXVolume;	//default value: 1.0f
+		
 		//sound effects 2D
+		/*
 		unsigned int		mNrOfSoundFX2D;
 		unsigned int		mSoundFXCap2D;
-		FMOD::Sound**		mSoundFX2D;
+		FMOD::Sound**		mSoundFX2D;*/
+		MaloW::Array<SoundEffect*> mEffects;
+
 		FMOD::Channel*		mSoundFXChannel2D;
 		//sound effects 3D todo**
 		unsigned int		mNrOfSoundFX3D;
@@ -44,11 +49,14 @@ class SoundEngine
 		float				mDistanceFactor;//default value: 100.0f. Units per meter (100 cm).
 
 		//songs (2D)
-		float				mSongVolume;	//default value: 1.0f
+		
+
+		MaloW::Array<SoundSong*> mSongs;
+		/*
 		unsigned int		mNrOfSongs;
 		unsigned int		mSongsCap;
 		FMOD::Sound**		mSongs;
-		FMOD::Channel*		mSongChannel;
+		*/
 
 	private:
 		void ERRCHECK(FMOD_RESULT result);
@@ -71,23 +79,12 @@ class SoundEngine
 
 		//Sound effects
 		/*! Load sound effect from soundfile. **3D currently unavailable** */
-		void LoadSoundEffect(string filename, bool as3D);
-		/*! Play sound effect at index. */
-		void PlaySoundEffect(unsigned int index);
+		SoundEffect* LoadSoundEffect(string filename, bool as3D = false);
+
 		
 		//Song
 		/*! Load song from soundfile. */
-		void LoadSong(string filename, bool loop);
-		/*! Play song at index. */
-		void PlaySong(unsigned int songIndex);
-		/*! Mute song channel. */
-		void MuteSongChannel();
-		/*! Unmute song channel. */
-		void UnmuteSongChannel();
-		/*! Pause song channel. */
-		void PauseSongChannel();
-		/*! Unpause song channel. */
-		void UnpauseSongChannel();
+		SoundSong* LoadSong(string filename, bool loop);
 
 
 		//**todo**

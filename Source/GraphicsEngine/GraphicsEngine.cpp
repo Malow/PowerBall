@@ -15,8 +15,8 @@ GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance,
 {
 	if(!this->initDone)
 	{
-		//this->sound = new SoundEngine();
 		this->sound = NULL;
+		this->sound = new SoundEngine();
 		this->parameters = params;
 		this->cam = NULL;
 		this->dx = NULL;

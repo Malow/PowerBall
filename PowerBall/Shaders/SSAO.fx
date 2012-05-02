@@ -28,9 +28,9 @@ cbuffer PerFrame
 //------------------------------------------------------------------------------------------------------
 //	SSAO Shader
 //------------------------------------------------------------------------------------------------------
-float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
+float4 SSAO(float2 texCoord, Texture2D normalAndDepthMap)
 {
-	float2 texCoord = float2(pixel.x / width, pixel.y / height); //input pixel is in screen space, convert to texture space
+	//float2 texCoord = float2(pixel.x / width, pixel.y / height); //input pixel is in screen space, convert to texture space
 	float4 normAndDepth = normalAndDepthMap.Sample(LinearSampler, texCoord); //sample normal (view space) and depth of the pixel (normalized device coordinates [0,1])
 	
 	float4 debugColor;
@@ -39,11 +39,7 @@ float4 SSAO(float2 pixel, Texture2D normalAndDepthMap)
 		debugColor = float4(1,1,1,1);
 
 		//1. get view position of the pixel
-		//x[0,width], y[0,height], z[0,1]
-		float4 pixelPosV = float4(pixel.x, pixel.y, normAndDepth.w, 1.0f);
-		//convert to texture space [0,1]
-		pixelPosV.x /= width;
-		pixelPosV.y /= height;
+		float4 pixelPosV = float4(texCoord.x, texCoord.y, normAndDepth.w, 1.0f); //x[0,1], y[0,1], z[0,1]
 		//convert to normalized device coordinates [-1,1]
 		pixelPosV.y = 1.0f - pixelPosV.y; //first invert direction of y-axis
 		pixelPosV.xy = pixelPosV.xy * 2.0f - 1.0f;
