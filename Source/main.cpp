@@ -59,11 +59,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
 	Text* text = eng->CreateText("Lol ", D3DXVECTOR2(500, 500), 1.0f, "Media/Fonts/1");
 
-	CamRecording* camRec = new CamRecording(2000);	// How many milliseconds between each way point
+	CamRecording* camRec = new CamRecording(2000, true);	// How many milliseconds between each way point
 	camRec->Init(eng->GetCamera());
 
 	
-	camRec->AddCameraWaypointPath(SPIRAL_DOWN);
 	/*camRec->AddCameraWaypoint(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 30, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(30, 30, 30), D3DXVECTOR3(8, 16, 8));
@@ -118,7 +117,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 
 		if(eng->GetKeyListener()->IsPressed('G'))	
-			camRec->Play();						// Play to start moving the camera along the path
+		{
+			static bool once = false;
+			if(!once)
+			{
+				once = true;
+				camRec->Play();						// Play to start moving the camera along the path
+			}
+		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
 
 		/*

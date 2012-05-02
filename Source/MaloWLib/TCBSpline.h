@@ -1,3 +1,5 @@
+//Written by Markus Tillman.
+
 /*
 	Class for making smooth, adjustable splines (curves) along a set of controlpoints.
 	Todo: use src-tangent (continuity parameter) (GetPoint()) & if necessary delete src and and dest tangents in Clear()**
@@ -23,6 +25,7 @@ class TCBSpline
 		float mContinuity;	//Controls how sharp the corners are going to be at the joints by using a source and destination tangents.
 							//Lower values produces sharper corners while higher values have the opposite effect.
 	
+		bool			mEndsAreConnected;
 		int				mNrOfControlPoints;
 		int				mControlCap;
 		D3DXVECTOR3**	mControlPoints;
@@ -34,12 +37,12 @@ class TCBSpline
 		void CalculateTangents(int ctrlPointIndex);
 
 	public:
-		TCBSpline(float tension = 0.0f, float bias = 0.0f, float continuity = 0.0f);
+		TCBSpline(bool connectEnds, float tension = 0.0f, float bias = 0.0f, float continuity = 0.0f);
 		~TCBSpline();
 		HRESULT Init();
 
+		bool AreEndsConnected() const;
 		int GetNrOfControlPoints() const;
-		int GetNrOfPoints() const;
 		float GetTension() const;
 		float GetBias() const;
 		float GetContinuity() const;

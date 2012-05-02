@@ -1,3 +1,5 @@
+//Written by Markus Tillman.
+
 /*!
 	Class for recording and playing recorded camera movement.
 	Note that time is handled in milliseconds.
@@ -30,7 +32,7 @@ class CamRecording
 
 		//Local variables:
 		//For recording/playing:
-		bool						mIsLooping;
+		bool						mIsLoopingSeamless;
 		bool						mIsRecording;
 		bool						mHasRecorded;
 		bool						mIsPlaying;
@@ -51,7 +53,7 @@ class CamRecording
 		//InitRendering()**
 
 	public:
-		CamRecording(int interval = 1000);
+		CamRecording(int interval = 1000, bool seamLessPath = false);
 		~CamRecording();
 		/*! 
 			camera - pointer to a Camera object. (Cannot be NULL).
@@ -71,7 +73,8 @@ class CamRecording
 		float GetPlaySpeed() const;
 		D3DXVECTOR3 GetPathOffset() const;
 
-		void StartOrStopLooping();
+		void LoopSeamLess();
+		void StopLooping();
 		/*! Set the interval in milliseconds in which to save camera position and look-at position. */
 		void SetInterval(int interval);
 		/*! Set the play speed. Normal is 1. */

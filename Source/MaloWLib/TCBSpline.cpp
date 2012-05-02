@@ -1,3 +1,5 @@
+//Written by Markus Tillman.
+
 #include "TCBSpline.h"
 
 //private
@@ -17,70 +19,85 @@ void TCBSpline::Expand()
 
 void TCBSpline::CalculateTangents(int i)
 {
-	D3DXVECTOR3 v1, v2, src, dst;
-	float s0, s1;
-	float d0, d1;
+	D3DXVECTOR3 sv1, sv2, dv1, dv2, src, dst;
+	float s1, s2;
+	float d1, d2;
 	
-	s0 = ((1 - this->mTension) * (1 + this->mBias) * (1 - this->mContinuity)) * 0.5f;
-	s1 = ((1 - this->mTension) * (1 - this->mBias) * (1 + this->mContinuity)) * 0.5f;
-	d0 = ((1 - this->mTension) * (1 + this->mBias) * (1 + this->mContinuity)) * 0.5f;
-	d1 = ((1 - this->mTension) * (1 - this->mBias) * (1 - this->mContinuity)) * 0.5f;
+	s1 = ((1 - this->mTension) * (1 + this->mBias) * (1 - this->mContinuity)) * 0.5f;
+	s2 = ((1 - this->mTension) * (1 - this->mBias) * (1 + this->mContinuity)) * 0.5f;
+	d1 = ((1 - this->mTension) * (1 + this->mBias) * (1 + this->mContinuity)) * 0.5f;
+	d2 = ((1 - this->mTension) * (1 - this->mBias) * (1 - this->mContinuity)) * 0.5f;
 
-	if(i == 0) //first
+	if(i == 0) //first control point
 	{
+		if(this->mEndsAreConnected)
+		{
+			sv1 = s1 * (*this->mControlPoints[0] - *this->mControlPoints[this->mNrOfControlPoints - 1]); 
+			dv1 = d1 * (*this->mControlPoints[0] - *this->mControlPoints[this->mNrOfControlPoints - 1]);
+		}
+		else
+		{
+			sv1 = s1 * (*this->mControlPoints[0] - D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			dv1 = d1 * (*this->mControlPoints[0] - D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
 		//source-tangent
-		v1 = s0 * (*this->mControlPoints[0] - D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		v2 = s1 * (*this->mControlPoints[1] - *this->mControlPoints[0]);
-		src = v1 + v2; 
+		sv2 = s2 * (*this->mControlPoints[1] - *this->mControlPoints[0]);
+		src = sv1 + sv2; 
 		this->mSource[0] = new D3DXVECTOR3(src);
 		//destination tangent
-		v1 = d0 * (*this->mControlPoints[0] - D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		v2 = d1 * (*this->mControlPoints[1] - *this->mControlPoints[0]);
-		src = v1 + v2;
+		dv2 = d2 * (*this->mControlPoints[1] - *this->mControlPoints[0]);
+		src = dv1 + dv2;
 		this->mDestination[0] = new D3DXVECTOR3(src);
 	}
-	else if(i == (this->mNrOfControlPoints - 1)) //last
+	else if(i == (this->mNrOfControlPoints - 1)) //last control point
 	{
+		if(this->mEndsAreConnected)
+		{
+			sv2 = s2 * (*this->mControlPoints[0] - *this->mControlPoints[this->mNrOfControlPoints - 1]);
+			dv2 = d2 * (*this->mControlPoints[0] - *this->mControlPoints[this->mNrOfControlPoints - 1]);
+		}
+		else
+		{
+			sv2 = s2 * (D3DXVECTOR3(0.0f, 0.0f, 0.0f) - *this->mControlPoints[this->mNrOfControlPoints - 1]);
+			dv2 = d2 * (D3DXVECTOR3(0.0f, 0.0f, 0.0f) - *this->mControlPoints[this->mNrOfControlPoints - 1]);
+		}
 		//source-tangent
-		v1 = s0 * (*this->mControlPoints[this->mNrOfControlPoints - 1] - *this->mControlPoints[this->mNrOfControlPoints - 2]);
-		v2 = s1 * (D3DXVECTOR3(0.0f, 0.0f, 0.0f) - *this->mControlPoints[this->mNrOfControlPoints - 1]);
-		src = v1 + v2;
+		sv1 = s1 * (*this->mControlPoints[this->mNrOfControlPoints - 1] - *this->mControlPoints[this->mNrOfControlPoints - 2]);
+		src = sv1 + sv2;
 		this->mSource[this->mNrOfControlPoints - 1] = new D3DXVECTOR3(src);
 		//destination-tangent
-		v1 = d0 * (*this->mControlPoints[this->mNrOfControlPoints - 1] - *this->mControlPoints[this->mNrOfControlPoints - 2]);
-		v2 = d1 * (D3DXVECTOR3(0.0f, 0.0f, 0.0f) - *this->mControlPoints[this->mNrOfControlPoints - 1]);
-		src = v1 + v2;
+		dv1 = d1 * (*this->mControlPoints[this->mNrOfControlPoints - 1] - *this->mControlPoints[this->mNrOfControlPoints - 2]);
+		src = dv1 + dv2;
 		this->mDestination[this->mNrOfControlPoints - 1] = new D3DXVECTOR3(src);
 	}
 	else //rest
 	{
 		//source(incoming) tangents
-		v1 = s0 * (*this->mControlPoints[i] - *this->mControlPoints[i - 1]);
-		v2 = s1 * (*this->mControlPoints[i + 1] - *this->mControlPoints[i]);
-		src = v1 + v2;
+		sv1 = s1 * (*this->mControlPoints[i] - *this->mControlPoints[i - 1]);
+		sv2 = s2 * (*this->mControlPoints[i + 1] - *this->mControlPoints[i]);
+		src = sv1 + sv2;
 		this->mSource[i] = new D3DXVECTOR3(src);
 		//destination(outgoing) tangents
-		v1 = d0 * (*this->mControlPoints[i] - *this->mControlPoints[i - 1]);
-		v2 = d1 * (*this->mControlPoints[i + 1] - *this->mControlPoints[i]);
-		dst = v1 + v2;
+		dv1 = d1 * (*this->mControlPoints[i] - *this->mControlPoints[i - 1]);
+		dv2 = d2 * (*this->mControlPoints[i + 1] - *this->mControlPoints[i]);
+		dst = dv1 + dv2;
 		this->mDestination[i] = new D3DXVECTOR3(dst);
 	}
 }
 
 //de/con-structors, init, other
-TCBSpline::TCBSpline(float tension, float bias, float continuity)
+TCBSpline::TCBSpline(bool connectEnds, float tension, float bias, float continuity)
 {
 	this->mTension = tension;
 	this->mBias = bias;
 	this->mContinuity = continuity;
 
+	this->mEndsAreConnected = connectEnds;
 	this->mNrOfControlPoints = 0;
-	//this->mNrOfPoints = 0;
 	this->mControlCap = 10;
 	this->mControlPoints = new D3DXVECTOR3*[this->mControlCap];
 	this->mSource = NULL;
 	this->mDestination = NULL;
-	//this->mPoints = NULL;
 }
 TCBSpline::~TCBSpline()
 {
@@ -136,6 +153,10 @@ HRESULT TCBSpline::Init()
 }
 
 //get
+bool TCBSpline::AreEndsConnected() const
+{
+	return this->mEndsAreConnected;
+}
 int TCBSpline::GetNrOfControlPoints() const
 {
 	return this->mNrOfControlPoints;

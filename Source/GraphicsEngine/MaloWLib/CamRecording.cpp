@@ -1,3 +1,5 @@
+//Written by Markus Tillman.
+
 #include "CamRecording.h"
 
 //private
@@ -8,7 +10,7 @@ void CamRecording::DeletePreviousRecording()
 }
 
 //de/con-structors, init, other
-CamRecording::CamRecording(int interval)
+CamRecording::CamRecording(int interval, bool seamLessPath)
 {
 	this->gCamera = NULL;
 
@@ -16,7 +18,7 @@ CamRecording::CamRecording(int interval)
 	this->gDeviceContext = NULL;
 	this->gShader = NULL;
 
-	this->mIsLooping = false;
+	this->mIsLoopingSeamless = false;
 	this->mIsRecording = false;
 	this->mHasRecorded = false;
 	this->mIsPlaying = false;
@@ -25,8 +27,8 @@ CamRecording::CamRecording(int interval)
 	this->mCurrentPlayTime = 0.0f;
 	this->mPlaySpeed = 1.0f;
 	this->mPathOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	this->mCamPosSpline = new TCBSpline();
-	this->mCamAtSpline = new TCBSpline();
+	this->mCamPosSpline = new TCBSpline(seamLessPath);
+	this->mCamAtSpline = new TCBSpline(seamLessPath);
 	
 	this->mNrOfVertices = 0;
 	this->mVertices = NULL;
@@ -59,7 +61,7 @@ void CamRecording::Init(Camera* camera, ID3D11Device* device, ID3D11DeviceContex
 //get
 bool CamRecording::IsLooping() const
 {
-	return this->mIsLooping;
+	return this->mIsLoopingSeamless; 
 }
 bool CamRecording::IsRecording() const
 {
@@ -95,9 +97,13 @@ D3DXVECTOR3 CamRecording::GetPathOffset() const
 }
 
 //set
-void CamRecording::StartOrStopLooping()
+void CamRecording::LoopSeamLess()
 {
-	this->mIsLooping = !this->mIsLooping;
+	this->mIsLoopingSeamless = true;
+}
+void CamRecording::StopLooping()
+{
+	this->mIsLoopingSeamless = false;
 }
 void CamRecording::SetInterval(int interval)
 {
@@ -246,9 +252,9 @@ void CamRecording::Load(CAMERA_PATH camPath)
 	}
 	else if(camPath = CIRCLE_AROUND)
 	{
-		this->mIsLooping = true;
-		this->mInterval = 1000;
-		nrOfPoints = 10;
+		this->mIsLoopingSeamless = true;
+		this->mInterval = 50;
+		nrOfPoints = 1000;
 		nrOfRotations = 1;
 		float startX = 30.0f;
 		float startY = 30.0f;
@@ -258,7 +264,7 @@ void CamRecording::Load(CAMERA_PATH camPath)
 		pos = D3DXVECTOR3(startX, startY, startZ);
 		vecIn = pos - at;
 		
-		for(unsigned int i = 0; i < (nrOfPoints - 1); i++)
+		for(unsigned int i = 0; i < nrOfPoints; i++)
 		{
 			this->AddCameraWaypoint(pos, at);
 
@@ -267,8 +273,6 @@ void CamRecording::Load(CAMERA_PATH camPath)
 			pos = vecOut;
 			angle += dAngle;
 		}
-		//add last point (first point) for seamless looping
-		this->AddCameraWaypoint(D3DXVECTOR3(startX, startY, startZ), at);
 	}
 }
 
@@ -308,7 +312,7 @@ void CamRecording::Update(float deltaTime)
 		}
 		else
 		{
-			if(!this->mIsLooping)
+			if(!this->IsLooping())
 			{
 				this->mIsPlaying = false;
 				this->mCurrentPlayTime = 0;
