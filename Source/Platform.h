@@ -79,6 +79,9 @@ public:
 	/*! Updates the platform. For example: shrink/rotate/wobble. */
 	void Update(const float dt);
 	
+	/*! Sets the scaling of the platform. */
+	void SetScale(Vector3 scale) { this->mMesh->Scale(scale.GetD3DVec()); }
+
 	/*! Returns true if the XZ position is on the platform. */
 	bool IsOnPlatform(const float x, const float z) const;
 

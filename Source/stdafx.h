@@ -10,7 +10,9 @@ enum GAMEMODE{
 	CTF,
 	DM,
 	KOTH,
-	KOTH2
+	KOTH2,
+	WARLOCK,
+	TESTW
 };
 
 #include <windows.h>

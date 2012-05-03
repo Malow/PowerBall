@@ -36,6 +36,9 @@
     <Filter Include="Sound Engine Files">
       <UniqueIdentifier>{a4843cc2-979d-4f6c-9809-013d07a66b92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Spells">
+      <UniqueIdentifier>{ffdb4581-bc73-4ac7-aae0-708c766074c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -199,6 +202,27 @@
     </ClCompile>
     <ClCompile Include="..\Source\GUI\SliderBar.cpp">
       <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Spells\ChargeSpell.cpp">
+      <Filter>Game Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Spells\HardenSpell.cpp">
+      <Filter>Game Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Spells\InvisibilitySpell.cpp">
+      <Filter>Game Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Spells\Spell.cpp">
+      <Filter>Game Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Spells\SprintSpell.cpp">
+      <Filter>Game Files\Spells</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -378,6 +402,27 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\SliderBar.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Spells\ChargeSpell.h">
+      <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Spells\HardenSpell.h">
+      <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Spells\InvisibilitySpell.h">
+      <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Spells\Spell.h">
+      <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Spells\SprintSpell.h">
+      <Filter>Game Files\Spells</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

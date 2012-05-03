@@ -3,7 +3,7 @@
 Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh		     = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
-	this->mShrink	     = 0.01f;
+	this->mShrink	     = 0.05f;
 	this->mRadius	     = 100000.0f;
 	this->mScaledRadius  = this->mRadius;
 	this->mMass			 = 10000;

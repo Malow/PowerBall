@@ -12,7 +12,11 @@ Takes care of playing a single game and upon the end of the game returns the thr
 #include "GameNetwork.h"
 #include "InGameMenu.h"
 #include "Flag.h"
-
+#include "Spells\Spell.h"
+#include "Spells\ChargeSpell.h"
+#include "Spells\SprintSpell.h"
+#include "Spells\HardenSpell.h"
+#include "Spells\InvisibilitySpell.h"
 
 
 
@@ -54,6 +58,8 @@ private:
 	bool		CaptureTheFlag();
 
 	bool		KingOfTheHill(float dt);
+
+	bool		WarLock(float dt);
 
 	void		AddBall();
 };

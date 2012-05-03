@@ -5,6 +5,10 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
+	this->mSteering      = true;
+	this->mNrOfSpells	 = 0;
+	this->mMaxNrOfSpells = 4;
+	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam    = 5;
 	this->mMaxVelocity	 = 6.0f;
@@ -12,7 +16,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
-	this->mRestitution   = 0.30f; //0.95f
+	this->mRestitution   = 1.0f; //0.95f
 	this->mForcePress	 = 180.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
@@ -27,8 +31,6 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mNrOfItems = 0;
 	*/
 	this->mFlag = NULL;
-	//this->mPos = new D3DXVECTOR3(position);
-	//this->mFor = new D3DXVECTOR3(this->mForward.GetD3DVec());
 	
 
 	/*
@@ -95,6 +97,8 @@ void Ball::Update(const float dt)
 	*/
 	
 	float newdt = dt * 0.001f;
+	for(int i = 0;i<this->mNrOfSpells;i++)
+		this->mSpells[i]->UpdateSpecial(newdt);
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
@@ -181,6 +185,17 @@ Vector3 Ball::GetPositionVector3() const
 	D3DXVECTOR3 pos = this->mMesh->GetPosition();
 	Vector3 position = Vector3(pos.x, pos.y, pos.z);
 	return position;
+}
+
+bool Ball::AddSpell(Spell* spell)
+{
+	if(this->mNrOfSpells < this->mMaxNrOfSpells)
+	{
+		spell->SetBall(this);
+		this->mSpells[this->mNrOfSpells++] = spell;
+		return true;
+	}
+	return false;
 }
 
 void Ball::ZoomOut()
@@ -271,8 +286,23 @@ void Ball::collisionSphereResponse(Ball* b1)
 	float x2 = nColl.GetDotProduct(v2);		// factor in nColl dir
 	Vector3 v2x = nColl*x2;					// projetion done
 	Vector3 v2y = v2 - v2x;					// perpendicular vector 
+
+	float e1 = this->mRestitution;
+	float e2 = b1->mRestitution;
+	float e = (e1 + e2)/2.0f;
+	/*
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
 	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
+	*/
+	this->mVelocity = Vector3( v1x*(m1-m2*e)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y );
+	b1->mVelocity = Vector3( v1x*((1+e)*m1)/(mSum) + v2x*(m2-m1*e)/(mSum) + v2y );
+
+	/* informing the spells to the balls that it has been a collision */
+	for(int i = 0;i<this->mNrOfSpells;i++)
+		this->mSpells[i]->InformCollision();
+	for(int i = 0;i<b1->mNrOfSpells;i++)
+		b1->mSpells[i]->InformCollision();
+
 }
 
 bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)

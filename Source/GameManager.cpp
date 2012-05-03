@@ -97,6 +97,12 @@ bool GameManager::Play(const int numPlayers)
 				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
 			if(mGe->GetKeyListener()->IsPressed('D'))
 				mBalls[0]->AddForceRightOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('1'))
+				mBalls[0]->UseSpell(1);
+			if(mGe->GetKeyListener()->IsPressed('2'))
+				mBalls[0]->UseSpell(2);
+			if(mGe->GetKeyListener()->IsPressed('3'))
+				mBalls[0]->UseSpell(3);
 			if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
 			{
 				mBalls[0]->ZoomOut();
@@ -460,11 +466,8 @@ void GameManager::Initialize()
 	**/
 	else if(this->mGameMode == DM)
 	{
-		
-		mGe->GetCamera()->LookAt(centerPlatform);
 		this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 		this->mBalls		= new Ball*[this->mNumPlayers];
-		this->mPlatform->SetShrinkValue(0.0f);
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if( i == 0)
@@ -472,8 +475,38 @@ void GameManager::Initialize()
 			else
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 		}
-		//mGe->GetCamera()->LookAt(this->mBalls[0]->GetPosition());
-		//((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]->mPos, this->mBalls[0]->mFor);
+	}
+	/* WarLock
+	**/
+	else if(this->mGameMode == TESTW)
+	{
+		
+		D3DXVECTOR3 startPositions[4];
+		startPositions[0] = D3DXVECTOR3(0,30.0f,-10);
+		startPositions[1] = D3DXVECTOR3(0,30.0f,10);
+		startPositions[2] = D3DXVECTOR3(-10,30.0f,0);
+		startPositions[3] = D3DXVECTOR3(10,30.0f,0); 
+		
+		this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+		this->mPlatform->SetScale(Vector3(3,3,3));
+		this->mBalls		= new Ball*[this->mNumPlayers];
+		this->mPlatform->SetShrinkValue(0.0f);
+		
+		for(int i = 0; i < this->mNumPlayers; i++)
+		{
+			if(i == 0)
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-10.0f));
+			else if(i == 1)
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10.0f));
+			else if(i == 2)
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(10.0f,30.0f,0.0f));
+			else if(i == 3)
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(-10.0f,30.0f,0.0f));
+		}
+		this->mBalls[0]->AddSpell(new ChargeSpell());
+		this->mBalls[0]->AddSpell(new SprintSpell());
+		this->mBalls[0]->AddSpell(new HardenSpell());
+		this->mBalls[0]->AddSpell(new InvisibilitySpell());
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 		
@@ -595,5 +628,11 @@ bool GameManager::KingOfTheHill(float dt)
 			for(int i = 0; i<numberOfPlayers; i++)
 				this->mBalls[i]->ResetTime();
 	}
+	return true;
+}
+
+bool GameManager::WarLock(float dt)
+{
+	float newdt = dt/1000.0f;
 	return true;
 }

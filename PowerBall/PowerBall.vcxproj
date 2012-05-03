@@ -75,6 +75,11 @@
     <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp" />
+    <ClCompile Include="..\Source\Spells\ChargeSpell.cpp" />
+    <ClCompile Include="..\Source\Spells\HardenSpell.cpp" />
+    <ClCompile Include="..\Source\Spells\InvisibilitySpell.cpp" />
+    <ClCompile Include="..\Source\Spells\Spell.cpp" />
+    <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Ball.h" />
@@ -137,6 +142,11 @@
     <ClInclude Include="..\Source\SoundEngine\SoundEffect.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundSong.h" />
+    <ClInclude Include="..\Source\Spells\ChargeSpell.h" />
+    <ClInclude Include="..\Source\Spells\HardenSpell.h" />
+    <ClInclude Include="..\Source\Spells\InvisibilitySpell.h" />
+    <ClInclude Include="..\Source\Spells\Spell.h" />
+    <ClInclude Include="..\Source\Spells\SprintSpell.h" />
     <ClInclude Include="..\Source\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

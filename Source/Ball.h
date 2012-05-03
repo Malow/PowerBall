@@ -5,6 +5,7 @@
 #include "GraphicsEngine.h"
 #include "Platform.h"
 #include "Flag.h"
+#include "Spells\Spell.h"
 using namespace MaloW;
 using namespace std;
 
@@ -19,6 +20,10 @@ private:
 	float		mDamping;
 	Vector3		mSumAddedForce;
 	Vector3		mVelocity;
+	bool		mSteering;
+	Spell**		mSpells;
+	int			mNrOfSpells;
+	int			mMaxNrOfSpells;
 	Vector3		mForward;
 	float		mDistanceCam;
 	float		mMaxVelocity;
@@ -42,8 +47,6 @@ private:
 	
 
 public:
-	D3DXVECTOR3* mPos;
-	D3DXVECTOR3* mFor;
 	//constructors and destructors
 
 	/*! Initializes the Ball and loads assigned mesh.*/
@@ -94,6 +97,27 @@ public:
 
 	/*! Returns the balls distance from cam. */
 	float GetDistanceToCam() const { return this->mDistanceCam; }
+
+	/*! Returns true if steering is on. */
+	bool GetSteering() const { return this->mSteering; }
+
+	/*! Returns the nr of spell currently on the ball. */
+	int GetNrOfSpells() const { return this->mNrOfSpells; }
+
+	/*! Returns the max nr of spells for the ball. */
+	int GetMaxNrOfSpells() const { return this->mMaxNrOfSpells; }
+
+	/*! Returns forcepress value. */
+	float GetForcePressed() const { return this->mForcePress; }
+
+	/*! Returns the balls mass. */
+	float GetMass() const { return this->mMass; }
+
+	/*! Returns the Restitution value a.k.a. 'e' value. */
+	float GetRestitution() const { return this->mRestitution; }
+
+	/*! Returns the spells for this ball. */
+	Spell** GetSpells() const { return this->mSpells; }
 
 	/*! Adds a item to the ball*/
 	void AddFlag(Flag* item){ this->mFlag = item; }
@@ -146,6 +170,21 @@ public:
 	/*! Sets the balls distance from cam. */
 	void SetDistanceToCam(float dist) { this->mDistanceCam = dist; }
 
+	/*! Sets the steering behav. for the ball, true if steering is on. */
+	void SetSteering(bool steering) { this->mSteering = steering; }
+
+	/*! Sets max nr of spells for ball. */
+	void SetMaxNrOfSpells(int maxSpells) { this->mMaxNrOfSpells = maxSpells; }
+
+	/*! Sets the forcePressed value. */
+	void SetForcePressed(float force) { this->mForcePress = force; }
+
+	/*! Sets the balls mass. */
+	void SetMass(float mass) { this->mMass = mass; }
+
+	/*! Sets the Restitution value a.k.a. 'e' value. */
+	void SetRestitution(float restitution) { this->mRestitution = restitution; }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -160,16 +199,36 @@ public:
 	void AddForce(const Vector3 &force) { this->mSumAddedForce += force * this->mForcePress; }
 
 	/*! Adds a force to this ball in forward direction. */
-	void AddForceForwardDirection(float dt) { this->mSumAddedForce += this->mForward * dt * this->mForcePress; }
+	void AddForceForwardDirection(float dt) { this->AddForce(this->mForward * dt); }
 
 	/*! Adds a force to this ball in opposite to the forward vector. */
-	void AddForceOppositeForwardDirection(float dt) { this->mSumAddedForce -= this->mForward * dt * this->mForcePress; }
+	void AddForceOppositeForwardDirection(float dt) { this->AddForce(this->mForward * (-dt)); }
 
 	/*! Adds a force to this ball in left direction of forward vector. */
-	void AddForceLeftOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(-PI/2.0f) * dt * this->mForcePress; }
+	void AddForceLeftOfForwardDirection(float dt) { this->AddForce(this->mForward.GetRoteted(-PI/2.0f) * dt); }
 	
 	/*! Adds a force to this ball in right direction of forward vector. */
-	void AddForceRightOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(PI/2.0f) * dt * this->mForcePress; }
+	void AddForceRightOfForwardDirection(float dt) { this->AddForce(this->mForward.GetRoteted(PI/2.0f) * dt); }
+
+	/*! Adds a spell to this ball. Returns true if successful (not full spell array) */
+	bool AddSpell(Spell* spell);
+
+	void UseSpell(int spellNr) { 
+									if(spellNr <= this->mNrOfSpells) 
+										this->mSpells[spellNr-1]->Use();
+							   }
+
+	/*! Adds a force to this ball in forward direction. */
+	//void AddForceForwardDirection(float dt) { this->mSumAddedForce += this->mForward * dt * this->mForcePress; }
+
+	/*! Adds a force to this ball in opposite to the forward vector. */
+	//void AddForceOppositeForwardDirection(float dt) { this->mSumAddedForce -= this->mForward * dt * this->mForcePress; }
+
+	/*! Adds a force to this ball in left direction of forward vector. */
+	//void AddForceLeftOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(-PI/2.0f) * dt * this->mForcePress; }
+	
+	/*! Adds a force to this ball in right direction of forward vector. */
+	//void AddForceRightOfForwardDirection(float dt) { this->mSumAddedForce += this->mForward.GetRoteted(PI/2.0f) * dt * this->mForcePress; }
 	
 	/*! Zoom out one click from ball. */
 	void ZoomOut();
