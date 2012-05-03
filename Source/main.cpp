@@ -13,9 +13,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowHeight = 900;
-	params.windowWidth = 1500;
-	params.FXAAQuality = 3;			// 0 - 4
-	params.ShadowMapSettings = 6;	// 0 - 10 (works with higher but VERY consuming)
+	params.windowWidth = 1440;
+	params.FXAAQuality = 0;			// 0 - 4
+	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = RTS;
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);

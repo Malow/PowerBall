@@ -10,8 +10,8 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMaxNrOfSpells = 4;
 	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
 	this->mForward		 = Vector3(0,0,1);
-	this->mDistanceCam    = 5;
-	this->mMaxVelocity	 = 6.0f;
+	this->mDistanceCam	= 5;
+	this->mMaxVelocity	 = 10.0f;
 	this->mAcceleration	 = Vector3(0,-9.81f,0);
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
@@ -25,6 +25,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
+	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
 	file.open ("Verts.txt", ios::out );
 	/*
 	this->mMaxNrOfItems = 6;
@@ -524,6 +525,9 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 
 void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 {
+	/* HÄR ÄR LJUDET!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if(this->mVelocity.GetLength() > this->mMaxVelocity/5)
+		this->mCollisionWithWall->Play();*/
 	/* simple response
 	Vector3 normal = Vector3(0,1,0);
 	Vector3 vn = normal*(this->mVelocity.GetDotProduct(normal));
@@ -559,7 +563,8 @@ void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 	//float e = this->mRestitution;
 	float e = p->GetRestitution();
 	float newdt = dt*0.001f;
-	v1y -= v1y*this->mFriction*newdt;
+	v1y -= v1y*pow(this->mFriction, 2)*newdt;
+
 	this->mVelocity = Vector3( v1x*(m1-e*m2)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y);
 	//this->mAcceleration = Vector3(0,0,0);
 	//this->mSumAddedForce += this->mAcceleration*(-1);

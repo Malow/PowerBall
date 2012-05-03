@@ -480,8 +480,11 @@ void GameManager::Initialize()
 			else
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
 		}
+		if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 	}
-	/* WarLock
+	/**
+	* WarLock
 	**/
 	else if(this->mGameMode == TESTW)
 	{
