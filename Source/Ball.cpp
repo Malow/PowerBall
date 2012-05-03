@@ -68,6 +68,11 @@ Ball::~Ball()
 	if(GetGraphicsEngine()->GetEngineParameters().CamType ==  TRD)
 		if(this == ((TRDCamera*)GetGraphicsEngine()->GetCamera())->getBallToFollow())
 			((TRDCamera*)GetGraphicsEngine()->GetCamera())->removeFollowBall();
+	for (int i = 0; i < this->mNrOfSpells; i++) 
+	{
+		SAFE_DELETE(this->mSpells[i]);
+    }
+	SAFE_DELETE_ARRAY(this->mSpells);
 }
 Vector3 Ball::GetPositionXZ() const
 {

@@ -35,6 +35,7 @@ private:
 	int				mGameMode;
 	Flag*			mEnemyFlag;
 	Flag*			mFriendlyFlag;
+	Text*			mStats;
 	float counter;
 public:
 	//constructors and destructors

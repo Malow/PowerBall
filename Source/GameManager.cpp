@@ -15,6 +15,7 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mFriendlyFlag	= NULL;
 	counter				= 0.0f;
 	this->mNet			= new GameNetwork();
+	//this->mStats = ge->CreateText("Stats: ", D3DXVECTOR2(20, 30), 1.0f, "Media/Fonts/1");
 }
 GameManager::~GameManager()
 {
@@ -40,6 +41,10 @@ GameManager::~GameManager()
 		SAFE_DELETE(this->mEnemyFlag);
 	if(this->mFriendlyFlag)
 		SAFE_DELETE(this->mFriendlyFlag);
+	/*
+	if(this->mStats)
+		mGe->DeleteText(this->mStats);
+	*/
 }
 
 bool GameManager::Play(const int numPlayers)
