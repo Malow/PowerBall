@@ -17,7 +17,8 @@ private:
 	bool mPressed;
 	bool mPressedOutside;
 
-	int mTextSize;
+	float mTextSize;
+	int mMaxNrOfChars;
 
 	string mText;
 	string mName;
@@ -25,7 +26,7 @@ private:
 	Text* mPointText;
 public:
 	TextBox();
-	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize);
+	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars);
 	virtual ~TextBox();
 
 	/*! Adds the element to the renderer*/

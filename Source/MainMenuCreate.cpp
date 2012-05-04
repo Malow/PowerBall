@@ -67,7 +67,7 @@ void MainMenu::CreateOptionsMenu()
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickadvanced.png", "Media/OptionsMenu/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 	*/
-	tempElement = new TextBox(dx * (380.0f / 1200.0f)+offSet, windowHeight*(200.0f / 900.f) ,50 , "Media/Menus/TextBoxBG.png", 600, 100, "Write Text Here", "SampleTest", 1.0f);
+	tempElement = new TextBox(dx * (380.0f / 1200.0f)+offSet, windowHeight*(200.0f / 900.f) ,50 , "Media/Menus/TextBoxBG.png", 600, 100, "Write Text Here", "SampleTest", 1.0f, 25);
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
 	//Ugly drop down list to start with
@@ -80,7 +80,7 @@ void MainMenu::CreateOptionsMenu()
 
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
-	tempElement = new SimpleButton(dx * (380.0f / 1200.0f)+offSet, windowHeight*(350.0f / 900.f), 1, "Media/Menus/Square_OK.png", 100, 100, new ChangeSetEvent(100000), "", "", dx * (380.0f / 1200.0f)+offSet, windowHeight*(350.0f / 900.f), 100, 100);
+	tempElement = new SimpleButton(dx * (380.0f / 1200.0f)+offSet, windowHeight * (350.0f / 900.f), 1, "Media/Menus/Square_OK.png", 100, 100, new ChangeSetEvent(100000), "", "", dx * (380.0f / 1200.0f)+offSet, windowHeight*(350.0f / 900.f), 100, 100);
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
 	tempElement = NULL;
@@ -93,6 +93,12 @@ void MainMenu::CreateHotseatMenu()
 	float offSet = (windowWidth - dx) / 2.0f;
 
 	Element* tempElement = new GUIArchButton(offSet, 0, 1, "Media/HotseatMenu/gamesetupmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
+	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
+
+	tempElement = new TextBox(offSet + dx * (202.0f / 1200.0f), windowHeight * (27.0f / 900.0f), 1, "", 100, 100, "3", "Lifes", 1.15, 2);
+	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
+
+	tempElement = new TextBox(offSet + dx * (275.0f / 1200.0f), windowHeight * (114.0f / 900.0f), 1, "", 100, 100, "5", "Rounds", 1.15, 2);
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/HotseatMenu/buttonbacktomenuhotseat.png", dx, windowHeight, new ChangeSetEvent(MAINMENU), "Media/HotseatMenu/clickbacktomenuhotseat.png" , "Media/HotseatMenu/mouseoverbacktomenuhotseat.png", dx * (605.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (330.0f / 1200), windowHeight * (30.0f / 900));

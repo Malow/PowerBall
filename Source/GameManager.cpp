@@ -47,11 +47,16 @@ GameManager::~GameManager()
 	*/
 }
 
-bool GameManager::Play(const int numPlayers)
+bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 {
 	this->mGameMode = DM;
 	this->mNumPlayers = numPlayers;
 	this->Initialize();
+	for(int i = 0; i < numPlayers; i++)
+	{
+		this->mBalls[i]->SetNumLives(lifes);
+	}
+	this->mRounds = rounds;
 	bool running = true;
 	bool zoomOutPressed = false;
 	bool zoomInPressed = false;
@@ -127,7 +132,7 @@ bool GameManager::Play(const int numPlayers)
 			mGe->GetCamera()->moveForward(diff);
 		if(mGe->GetKeyListener()->IsClicked(1))
 			mGe->GetCamera()->moveBackward(diff);
-
+		
 		// move ball 2
 		if(mGe->GetKeyListener()->IsPressed('H'))
 			mBalls[1]->AddForce(Vector3(-diff,0,0));	
@@ -141,7 +146,7 @@ bool GameManager::Play(const int numPlayers)
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
 		
-
+		
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			this->mBalls[i]->Update(diff);
@@ -175,7 +180,7 @@ bool GameManager::Play(const int numPlayers)
 
 		if(!this->mGe->isRunning())
 			running = false;
-
+		
 		if(numAlivePlayers <= 1)
 			running = false;
 	}

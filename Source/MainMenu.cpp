@@ -166,11 +166,13 @@ bool MainMenu::Run()
 					{
 						CursorControl cc;
 						cc.SetVisibility(true);
-
+						string lifes = this->mSets[this->mCurrentSet].GetTextFromField("Lifes");
+						string rounds = this->mSets[this->mCurrentSet].GetTextFromField("Rounds");
+						
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
-
-						this->mGm->Play(2);
+						
+						this->mGm->Play(2, atoi(lifes.c_str()), atoi(rounds.c_str()));
 						
 						SAFE_DELETE(this->mGm);
 						this->mCurrentSet = MAINMENU;
