@@ -16,7 +16,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.windowWidth = 1440;
 	params.FXAAQuality = 0;			// 0 - 4
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = RTS;
+	params.CamType = TRD;
+
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
@@ -71,6 +72,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	camRec->Load(CIRCLE_AROUND);
 	
 	bool sw = true;
+	float size = 1.0f;
 		
 	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
@@ -105,6 +107,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		
 		if(eng->GetKeyListener()->IsClicked(1))
 		{
+			size += diff * 0.001f;
+			text->SetSize(size);
 			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
 		}
