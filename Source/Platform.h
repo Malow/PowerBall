@@ -62,6 +62,9 @@ public:
 
 	/*! Returns the Maximum time the ball needs to be in hot zone. */
 	float GetMaxTimeInHotZone() const { return this->mMaxTimeInHotZone; }
+
+	/*! Returns the scale of the platform. */
+	Vector3 GetScale() const { return Vector3(this->mMesh->GetScaling()); }
 	//Set-Functions
 	
 	/*! Sets the shrinking value, the platform will shrink by x units per second. */
@@ -81,6 +84,9 @@ public:
 	
 	/*! Sets the scaling of the platform. */
 	void SetScale(Vector3 scale) { this->mMesh->Scale(scale.GetD3DVec()); }
+
+	/*! Reset the platforms scale. */
+	void Reset();
 
 	/*! Returns true if the XZ position is on the platform. */
 	bool IsOnPlatform(const float x, const float z) const;

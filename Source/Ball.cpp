@@ -1,5 +1,29 @@
 #include "Ball.h"
-
+/*
+string convertInt(int number)
+{
+		if (number == 0)
+			return "0";
+		string temp="";
+		string returnvalue="";
+		while (number>0)
+		{
+			temp+=number%10+48;
+			number/=10;
+		}
+    for (int i=0;i<temp.length();i++)
+        returnvalue+=temp[temp.length()-i-1];
+    return returnvalue;
+}
+*/
+/*
+std::string OurItoa(int n)
+{
+	std::stringstream stream;
+	stream <<n;
+	return stream.str();
+}
+*/
 Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
@@ -9,6 +33,9 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mNrOfSpells	 = 0;
 	this->mMaxNrOfSpells = 4;
 	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
+	this->mRoundsWon	 = 0;
+	this->mWinTimerActivated = false;
+	this->mWinTimer = 0.0f;
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam    = 5;
 	this->mMaxVelocity	 = 6.0f;
@@ -20,6 +47,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mForcePress	 = 180.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
+	this->mKnockoutMode = false;
 	this->mStartPos		 = position;
 	this->mLivesLeft	 = 2;
 	this->mRespawnTime	 = 5.0f;
@@ -104,6 +132,8 @@ void Ball::Update(const float dt)
 	float newdt = dt * 0.001f;
 	for(int i = 0;i<this->mNrOfSpells;i++)
 		this->mSpells[i]->UpdateSpecial(newdt);
+	if(this->mWinTimerActivated)
+		this->mWinTimer += newdt;
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
@@ -157,7 +187,8 @@ void Ball::Update(const float dt)
 	this->mSumAddedForce = Vector3(0,0,0);
 	//*this->mPos = this->mMesh->GetPosition();
 	//*this->mFor = this->mForward.GetD3DVec();
-	if(this->mMesh->GetPosition().y < -6)
+	
+	if((this->mMesh->GetPosition().y < -6) && !this->mKnockoutMode)
 	{
 		if(this->mFlag != NULL)
 		{
@@ -179,11 +210,21 @@ void Ball::Update(const float dt)
 }
 bool Ball::IsAlive() const
 {
-	bool alive = false;
-	if(this->mLivesLeft > 0)
-		alive = true;
-
-	return alive;
+	
+	if(!this->mKnockoutMode)
+	{
+		bool alive = false;
+		if(this->mLivesLeft > 0 )
+			alive = true;
+		return alive;
+	}
+	else
+	{
+		bool alive = true;
+		if(this->mMesh->GetPosition().y < -6)
+			alive = false;
+		return alive;
+	}
 }
 Vector3 Ball::GetPositionVector3() const
 {
