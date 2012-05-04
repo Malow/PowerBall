@@ -509,8 +509,11 @@ void GameManager::Initialize()
 				this->mBalls[i]->SetKnockoutMode();
 			}
 		}
+		if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 	}
-	/* WarLock
+	/**
+	* WarLock
 	**/
 	else if(this->mGameMode == TESTW)
 	{

@@ -47,7 +47,8 @@ private:
 	float		mRespawnTimeLeft;
 	float		mTimeInHotZone;
 	//vector3	mForward;
-	
+	//Sound effects
+	SoundEffect*	mCollisionWithWall;
 
 public:
 	//constructors and destructors
