@@ -1,6 +1,7 @@
 #include "GameManager.h"
 //#include "GraphicsEngine\MaloWLib\TRDCamera.h"
 
+
 GameManager::GameManager(GraphicsEngine* ge)
 {
 	this->mNumPlayers	= 0;
@@ -15,7 +16,6 @@ GameManager::GameManager(GraphicsEngine* ge)
 	this->mFriendlyFlag	= NULL;
 	counter				= 0.0f;
 	this->mNet			= new GameNetwork();
-	//this->mStats = ge->CreateText("Stats: ", D3DXVECTOR2(20, 30), 1.0f, "Media/Fonts/1");
 }
 GameManager::~GameManager()
 {
@@ -41,150 +41,175 @@ GameManager::~GameManager()
 		SAFE_DELETE(this->mEnemyFlag);
 	if(this->mFriendlyFlag)
 		SAFE_DELETE(this->mFriendlyFlag);
-	/*
-	if(this->mStats)
-		mGe->DeleteText(this->mStats);
-	*/
 }
 
 bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 {
 	this->mGameMode = DM;
 	this->mNumPlayers = numPlayers;
-	this->Initialize();
-	for(int i = 0; i < numPlayers; i++)
-	{
-		this->mBalls[i]->SetNumLives(lifes);
-	}
 	this->mRounds = rounds;
+	int roundsPlayed = 0;
+	this->Initialize();
 	bool running = true;
 	bool zoomOutPressed = false;
 	bool zoomInPressed = false;
 	counter = 0;
-	while(running)
+	
+	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
+	Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,60),1.0f,"Media/Fonts/1");
+	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,100),1.0f,"Media/Fonts/1");
+	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(300,150),4.0f,"Media/Fonts/1");
+	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(250,150),4.0f,"Media/Fonts/1");
+	Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
+	string s;
+	int indexBallLeft = -1;
+	bool roundsLeft = true;
+	float diff;
+	bool quitByMenu = false;
+	bool winnerActivated = false;
+	while(roundsLeft)
 	{
-		int numAlivePlayers = 0;
-				
-		float diff = mGe->Update();	
-		counter += diff;
-
-		
-
-		/* the move of ball 1 and ball 2 should be done using a 
-		*  timer that perhaps is set to only add force every 
-		*  intervall. so we don't get a jumpy motion of the 
-		*  balls :)
-		*
-		*  Use the settings in ball to change sensitivity on moving the ball
-		*/
-		// move ball 1
-		if(mGe->GetEngineParameters().CamType == RTS)
+		int numberAlivePlayersThisRound;
+		roundsPlayed++;
+		while(running)
 		{
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForce(Vector3(- diff,0,0));	
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				mBalls[0]->AddForce(Vector3(diff,0,0));
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForce(Vector3(0,0,diff));	
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForce(Vector3(0,0,-diff));
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-		}
-		else if(mGe->GetEngineParameters().CamType == TRD)
-		{
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForceForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForceOppositeForwardDirection(diff);
-			if(mGe->GetKeyListener()->IsPressed('Q'))
-				mBalls[0]->RotateForwardLeft(diff);
-			if(mGe->GetKeyListener()->IsPressed('E'))
-				mBalls[0]->RotateForwardRight(diff);
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				mBalls[0]->AddForceRightOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('1'))
-				mBalls[0]->UseSpell(1);
-			if(mGe->GetKeyListener()->IsPressed('2'))
-				mBalls[0]->UseSpell(2);
-			if(mGe->GetKeyListener()->IsPressed('3'))
-				mBalls[0]->UseSpell(3);
-			if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
+			numberAlivePlayersThisRound = 0;
+			diff = mGe->Update();	
+			s = "Player1: Rounds won: " + this->mBalls[0]->GetRoundsWonStr();
+			hudR1->SetText(s);
+			s = "Player2: Rounds won: " + this->mBalls[1]->GetRoundsWonStr();
+			hudR2->SetText(s);
+			s = "Round: " + MaloW::convertNrToString(roundsPlayed) + " of " + MaloW::convertNrToString(this->mRounds);
+			hudR3->SetText(s);
+			this->InputKnockout(diff,zoomOutPressed,zoomInPressed, running, roundsLeft, quitByMenu);
+			
+			for(int i = 0; i < this->mNumPlayers; i++)
 			{
-				mBalls[0]->ZoomOut();
-				zoomOutPressed = true;
+				this->mBalls[i]->Update(diff);
+				if(this->mBalls[i]->IsAlive())
+				{
+					indexBallLeft = i;
+					numberAlivePlayersThisRound += 1;
+				}
 			}
-			else if(!mGe->GetKeyListener()->IsPressed('Z'))
-				zoomOutPressed = false;
-			if(mGe->GetKeyListener()->IsPressed('C') && !zoomInPressed)
+		
+			for(int i = 0; i < this->mNumPlayers; i++)
 			{
-				mBalls[0]->ZoomIn();
-				zoomInPressed = true;
+				Ball* b1 = this->mBalls[i];
+				for(int j = i+1; j < this->mNumPlayers; j++)
+				{
+					Ball* b2 = this->mBalls[j];
+					if(b1->collisionWithSphereSimple(b2))
+						b1->collisionSphereResponse(b2);
+				}
+				
+				Vector3 normalPlane;
+				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				
+			}
+			mPlatform->Update(diff);
+			if(!this->mGe->isRunning())
+			{
+				roundsLeft = running = false;
+				quitByMenu = !running;
+			}
+			if(numberAlivePlayersThisRound == 1)
+			{
+				if(!winnerActivated)
+				{
+					winnerActivated = true;
+					this->mBalls[indexBallLeft]->ActivateWinTimer();
+				}
+				if(this->mBalls[indexBallLeft]->GetWinTimer() > 1.0f)
+				{
+					this->mBalls[indexBallLeft]->AddWonRound();
+					this->mBalls[indexBallLeft]->RestetWinTimer();
+					running = false;
+					// winner, show winner text for 2 seconds
+					s = "Winner: Player " + MaloW::convertNrToString(indexBallLeft+1);
+					hudR5->SetText(s);
+					while(diff < 2000)
+						diff += mGe->Update();
+					hudR5->SetText("");
+					winnerActivated = false;
+				}
+			}
+			else if(winnerActivated)
+			{
+				// draw, show draw text for 2 seconds
+				s = "Draw";
+				hudR4->SetText(s);
+				while(diff < 2000)
+						diff += mGe->Update();
+				hudR4->SetText("");
+				this->mBalls[indexBallLeft]->RestetWinTimer();
+				running = false;
+				winnerActivated = false;
+			}
+			else if(numberAlivePlayersThisRound == 0 )
+			{
+				// is if both the balls are below y = -6 in the same update
+				// draw, show draw text for 2 seconds
+				s = "Draw in the same update!";
+				hudR6->SetText(s);
+				while(diff < 2000)
+						diff += mGe->Update();
+				hudR6->SetText("");
+				running = false;
 			}
 			else if(!mGe->GetKeyListener()->IsPressed('C'))
 				zoomInPressed = false;
 		}
-		if(mGe->GetKeyListener()->IsPressed('P'))
-			mGe->GetCamera()->moveForward(diff);
-		if(mGe->GetKeyListener()->IsClicked(1))
-			mGe->GetCamera()->moveBackward(diff);
-		
-		// move ball 2
-		if(mGe->GetKeyListener()->IsPressed('H'))
-			mBalls[1]->AddForce(Vector3(-diff,0,0));	
-		if(mGe->GetKeyListener()->IsPressed('K'))
-			mBalls[1]->AddForce(Vector3(diff,0,0));
-		if(mGe->GetKeyListener()->IsPressed('U'))
-			mBalls[1]->AddForce(Vector3(0,0,diff));	
-		if(mGe->GetKeyListener()->IsPressed('J'))
-			mBalls[1]->AddForce(Vector3(0,0,-diff));
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
-		
-		
-		for(int i = 0; i < this->mNumPlayers; i++)
+		if(roundsPlayed == this->mRounds)
+			roundsLeft = false;
+		else
 		{
-			this->mBalls[i]->Update(diff);
-
-			if(this->mBalls[i]->IsAlive())
-				numAlivePlayers += 1;
-			
+			this->mPlatform->Reset();
+			for(int i = 0; i<this->mNumPlayers;i++)
+				this->mBalls[i]->SetToStartPosition();
+			running = true;
 		}
-		
-		// will be moved to phisics simulation class
-		for(int i = 0; i < this->mNumPlayers; i++)
+	}
+	mGe->DeleteText(hudR1);
+	mGe->DeleteText(hudR2);
+	mGe->DeleteText(hudR3);
+	mGe->DeleteText(hudR4);
+	mGe->DeleteText(hudR5);
+	mGe->DeleteText(hudR6);
+	if(!quitByMenu)
+	{
+		int indexWinner = -1;
+		int bestResault = 0;
+		if(this->mNumPlayers >0)
 		{
-			Ball* b1 = this->mBalls[i];
-			for(int j = i+1; j < this->mNumPlayers; j++)
+			bestResault = this->mBalls[0]->GetRoundsWon();
+			indexWinner = 0;
+		}
+		for(int i = 1; i<this->mNumPlayers;i++)
+		{
+			if(this->mBalls[i]->GetRoundsWon() > bestResault)
 			{
-				Ball* b2 = this->mBalls[j];
-				if(b1->collisionWithSphereSimple(b2))
-					b1->collisionSphereResponse(b2);
-
-			}
-			// check ball[i] against platform
-			Vector3 normalPlane;
-			if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-			{
-				
-				b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+					bestResault = this->mBalls[i]->GetRoundsWon();
+					indexWinner = i;
 			}
 		}
-		
 		mPlatform->Update(diff);
 
 		if(!this->mGe->isRunning())
 			running = false;
-		
-		if(numAlivePlayers <= 1)
-			running = false;
-	}
+
+		string win = "Winner: Player " + MaloW::convertNrToString(indexWinner+1) + " with " + MaloW::convertNrToString(bestResault) + " won";
+		Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
+		diff = mGe->Update();
+		while(diff < 2000)
+			diff += mGe->Update();
 	
+		mGe->DeleteText(winner);
+	}
 	//returns to menu after some win/draw screen.
 	return true;
 }
@@ -197,11 +222,10 @@ bool GameManager::PlayLAN(ServerInfo server)
 
 	this->mNet->Start(server);
 	this->mGe->Update();
-	
+	int numAlivePlayers = 0;
 	
 	while(running)
 	{
-		int numAlivePlayers = 0;
 		float diff = mGe->Update();	
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
@@ -481,9 +505,15 @@ void GameManager::Initialize()
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if( i == 0)
-				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-5));
+			{
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5));
+				this->mBalls[i]->SetKnockoutMode();
+			}
 			else
-				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,5));
+			{
+				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5));
+				this->mBalls[i]->SetKnockoutMode();
+			}
 		}
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
@@ -648,4 +678,76 @@ bool GameManager::WarLock(float dt)
 {
 	float newdt = dt/1000.0f;
 	return true;
+}
+
+void GameManager::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu )
+{
+	if(mGe->GetEngineParameters().CamType == RTS)
+		{
+			if(mGe->GetKeyListener()->IsPressed('A'))
+				mBalls[0]->AddForce(Vector3(- diff,0,0));	
+			if(mGe->GetKeyListener()->IsPressed('D'))
+				mBalls[0]->AddForce(Vector3(diff,0,0));
+			if(mGe->GetKeyListener()->IsPressed('W'))
+				mBalls[0]->AddForce(Vector3(0,0,diff));	
+			if(mGe->GetKeyListener()->IsPressed('S'))
+				mBalls[0]->AddForce(Vector3(0,0,-diff));
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+		}
+		else if(mGe->GetEngineParameters().CamType == TRD)
+		{
+			if(mGe->GetKeyListener()->IsPressed('W'))
+				mBalls[0]->AddForceForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('S'))
+				mBalls[0]->AddForceOppositeForwardDirection(diff);
+			if(mGe->GetKeyListener()->IsPressed('Q'))
+				mBalls[0]->RotateForwardLeft(diff);
+			if(mGe->GetKeyListener()->IsPressed('E'))
+				mBalls[0]->RotateForwardRight(diff);
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+			if(mGe->GetKeyListener()->IsPressed('A'))
+				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('D'))
+				mBalls[0]->AddForceRightOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed('1'))
+				mBalls[0]->UseSpell(1);
+			if(mGe->GetKeyListener()->IsPressed('2'))
+				mBalls[0]->UseSpell(2);
+			if(mGe->GetKeyListener()->IsPressed('3'))
+				mBalls[0]->UseSpell(3);
+			if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
+			{
+				mBalls[0]->ZoomOut();
+				zoomOutPressed = true;
+			}
+			else if(!mGe->GetKeyListener()->IsPressed('Z'))
+				zoomOutPressed = false;
+			if(mGe->GetKeyListener()->IsPressed('C') && !zoomInPressed)
+			{
+				mBalls[0]->ZoomIn();
+				zoomInPressed = true;
+			}
+			else if(!mGe->GetKeyListener()->IsPressed('C'))
+				zoomInPressed = false;
+		}
+		
+
+		// move ball 2
+		if(mGe->GetKeyListener()->IsPressed('H'))
+			mBalls[1]->AddForce(Vector3(-diff,0,0));	
+		if(mGe->GetKeyListener()->IsPressed('K'))
+			mBalls[1]->AddForce(Vector3(diff,0,0));
+		if(mGe->GetKeyListener()->IsPressed('U'))
+			mBalls[1]->AddForce(Vector3(0,0,diff));	
+		if(mGe->GetKeyListener()->IsPressed('J'))
+			mBalls[1]->AddForce(Vector3(0,0,-diff));
+
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+		{
+			roundsLeft = running = this->mIGM->Run();
+			quitByMenu = !running;
+		}
+
 }

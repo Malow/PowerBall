@@ -187,6 +187,10 @@ namespace MaloW
 			vec.RotateY(angle);
 			return vec;
 		}
+		Vector3 GetInverseComponents()
+		{
+			return Vector3(1.0f/this->x, 1.0f/this->y, 1.0f/this->z);
+		}
 	};
 };
 

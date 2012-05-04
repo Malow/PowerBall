@@ -9,7 +9,6 @@
 using namespace MaloW;
 using namespace std;
 
-
 class Ball
 {
 private:
@@ -24,6 +23,7 @@ private:
 	Spell**		mSpells;
 	int			mNrOfSpells;
 	int			mMaxNrOfSpells;
+	int			mRoundsWon;
 	Vector3		mForward;
 	float		mDistanceCam;
 	float		mMaxVelocity;
@@ -32,6 +32,9 @@ private:
 	float		mForcePress;
 	float		mInTheAir;
 	float	    mFriction;
+	bool		mKnockoutMode;
+	bool		mWinTimerActivated;
+	float		mWinTimer;
 	ofstream file;
 	Flag*		mFlag;
 	/*
@@ -90,6 +93,11 @@ public:
 	/*! Returns the number of lives left for the ball. */
 	int GetNumLivesLeft() const { return this->mLivesLeft; }
 
+	/*! Returns the number of lives left for the ball as string. */
+	string GetNumLivesLeftStr() const { return MaloW::convertNrToString(this->mLivesLeft); }
+
+	/*! Returns the number of rounds this ball has won. */
+
 	/*! Returns the time the ball has been alone in hot zone. */
 	float GetTimeInHotZone() const { return this->mTimeInHotZone; }
 
@@ -120,6 +128,15 @@ public:
 	/*! Returns the spells for this ball. */
 	Spell** GetSpells() const { return this->mSpells; }
 
+	/*! Returns the nr of rounds this ball has won. */
+	int GetRoundsWon() const { return this->mRoundsWon; }
+
+	/*! Returns the nr of rounds this ball has won. */
+	string GetRoundsWonStr() const { return MaloW::convertNrToString(this->mRoundsWon); }
+
+	/*! Returns the time that has pased after your win timer was activated. */
+	float GetWinTimer() const { return this->mWinTimer; }
+
 	/*! Adds a item to the ball*/
 	void AddFlag(Flag* item){ this->mFlag = item; }
 
@@ -128,8 +145,11 @@ public:
 
 	/*! Reset time in hot zone. */
 	void ResetTime() { this->mTimeInHotZone = 0; }
-	
 
+	/*! Restet time for win timer. */
+	void RestetWinTimer() { this->mWinTimer = 0.0f; this->mWinTimerActivated = false;};
+	
+	
 	//Set-Functions
 	
 	/*! Returns the balls radius. */
@@ -186,6 +206,15 @@ public:
 	/*! Sets the Restitution value a.k.a. 'e' value. */
 	void SetRestitution(float restitution) { this->mRestitution = restitution; }
 
+	/*! Sets the knockout flag. True if knockoutmode */
+	void SetKnockoutMode() { this->mKnockoutMode = true; }
+
+	/*! Sets the ball to its startposition. */
+	void SetToStartPosition() { 
+								this->SetPosition(this->mStartPos);
+								this->mVelocity = Vector3(0,0,0);
+							  }
+
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
@@ -213,6 +242,12 @@ public:
 
 	/*! Adds a spell to this ball. Returns true if successful (not full spell array) */
 	bool AddSpell(Spell* spell);
+
+	/*! Adds a won round to this ball. */
+	void AddWonRound() { this->mRoundsWon += 1; }
+
+	/*! Activates the win timer. Will be updated in update for ball. */
+	void ActivateWinTimer() { this->mWinTimerActivated = true; }
 
 	void UseSpell(int spellNr) { 
 									if(spellNr <= this->mNrOfSpells) 

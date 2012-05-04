@@ -3,10 +3,10 @@
 Platform::Platform(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh		     = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); //D3DXVECTOR3(10, 10, 10)
-	this->mShrink	     = 0.05f;
+	this->mShrink	     = 0.03f;
 	this->mRadius	     = 100000.0f;
 	this->mScaledRadius  = this->mRadius;
-	this->mMass			 = 10000;
+	this->mMass			 = 100000.0f;
 	this->mRestitution   = 0.60f;
 	
 }
@@ -73,4 +73,11 @@ bool Platform::IsInHotZone(Vector3 positionOfBall, float radiusBall)
 	if(distance <= (this->mHotZoneRadius - radiusBall))
 		return true;
 	return false;
+}
+
+void Platform::Reset()
+{
+	Vector3 theScale = Vector3(this->mMesh->GetScaling());
+	Vector3 inverseScale = theScale.GetInverseComponents();
+	this->SetScale(inverseScale);
 }

@@ -42,6 +42,9 @@ public:
 	void SetResourceAtIndex(int index, char* variable, ID3D11ShaderResourceView* value);
 	void SetMatrixAtIndex(int index, char* variable, D3DXMATRIX& mat);
 	void SetStructMemberAtIndexAsMatrix(int index, char* structVariable, char* memberVariable, D3DXMATRIX& mat);
+
+	
+	void SetFloatVectorArray(char* variable, D3DXVECTOR3* values, unsigned int nrOfElements);
 };
 
 #endif

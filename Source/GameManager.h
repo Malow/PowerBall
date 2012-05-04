@@ -35,7 +35,6 @@ private:
 	int				mGameMode;
 	Flag*			mEnemyFlag;
 	Flag*			mFriendlyFlag;
-	Text*			mStats;
 	float counter;
 public:
 	//constructors and destructors
@@ -63,4 +62,6 @@ private:
 	bool		WarLock(float dt);
 
 	void		AddBall();
+
+	void		InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu);
 };
