@@ -20,6 +20,8 @@ private:
 
 	bool mPressed;
 
+	string mName;
+
 	bool mDropActive;
 	int mNrOfElements;
 	int mMaxNrOfElements;
@@ -29,7 +31,7 @@ private:
 	void RemoveListFromRenderer(GraphicsEngine* ge);
 public:
 	DropDownList();
-	DropDownList(float x, float y, float z, string textureName, float width, float height);
+	DropDownList(float x, float y, float z, string textureName, float width, float height, string name);
 	virtual ~DropDownList();
 
 	/*! Sets the position of active position*/
@@ -52,11 +54,19 @@ public:
 	/*! Returns the active state of mDropActive*/
 	bool GetDropActive(){ return this->mDropActive; }
 
-	bool AddButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent,
-		string mTextureNamePressed, string mTextureNameHovered, float activeX, float activeY, float activeWidth, float activeHeight);
+	/*! Sets the name of the drop down list*/
+	void SetName(string name){ this->mName = name; }
+	/*! Gets the name of the drop down list*/
+	string GetName(){ return this->mName; }
+
+	/*! Add a button to the drop down menu*/
+	bool AddButton(string textureName, GUIEvent* tempEvent,
+		string mTextureNamePressed, string mTextureNameHovered);
 
 	/*! Checks the collision*/
 	GUIEvent* CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge);
+
+	GUIEvent* GetEventFromTop();
 
 	/*! Adds all normal stuff to the renderer*/
 	virtual bool AddToRenderer(GraphicsEngine* ge);

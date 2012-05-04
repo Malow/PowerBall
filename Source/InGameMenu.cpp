@@ -56,11 +56,12 @@ bool InGameMenu::Initialize()
 
 	//Ugly drop down list to start with
 	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f, "UglyExample");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+	dropdownlist->AddButton("Media/Menus/Options1920_1080.png", new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png");
+	dropdownlist->AddButton("Media/Menus/Options1920_1080.png", new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png");
+
 
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
 

@@ -118,6 +118,9 @@ bool MainMenu::Run()
 						CursorControl cc;
 						cc.SetVisibility(true);
 
+						GUIEvent* tempEvent = this->mSets[this->mCurrentSet].GetEventFromDropDown("GameMode");
+						GameModeEvent* GameMode = (GameModeEvent*) tempEvent;
+
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 						
@@ -131,7 +134,7 @@ bool MainMenu::Run()
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host("PowerBall Server", 0, 5, CTF, "");
+							ServerInfo host("PowerBall Server", 0, 5, GameMode->GetGameMode(), "");
 							this->mGm->PlayLAN(host);
 						} 
 						

@@ -12,6 +12,7 @@
 #include "Event.h"
 #include "NoEvent.h"
 #include "ChangeSetEvent.h"
+#include "GameModeEvent.h"
 
 using namespace std;
 

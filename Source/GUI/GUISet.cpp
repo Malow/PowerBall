@@ -287,3 +287,18 @@ string GUISet::GetTextFromField(string textBox)
 	}
 	return "";
 }
+GUIEvent* GUISet::GetEventFromDropDown(string dropDownMenu)
+{
+	for(int i = 0; i < this->mNrOfElements; i++)
+	{
+		if(typeid(*this->mElements[i]) == typeid(DropDownList))
+		{
+			DropDownList* temp = (DropDownList*)this->mElements[i];
+			if(temp->GetName() == dropDownMenu)
+			{
+				return temp->GetEventFromTop();
+			}
+		}
+	}
+	return NULL;
+}

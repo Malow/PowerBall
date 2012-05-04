@@ -6,18 +6,18 @@ DropDownList::DropDownList() : Element()
 	this->mMaxNrOfElements = 10;
 	this->mElements = new Element*[mMaxNrOfElements];
 }
-DropDownList::DropDownList(float x, float y, float z, string textureName, float width, float height) 
+DropDownList::DropDownList(float x, float y, float z, string textureName, float width, float height, string name) 
 	: Element(x, y, z, textureName, width, height)
 {
-	// temp for testing
-	this->mActiveX = x+50;
-	this->mActiveY = y+30;
+	this->mActiveX = x;
+	this->mActiveY = y;
 	this->mActiveHeight = 24;
 	this->mActiveWidth = 24;
-	//////
+	
 	this->mPressed = false;
 	this->mDropActive = false;
 
+	this->mName = name;
 	this->mMaxNrOfElements = 10;
 	this->mNrOfElements = 0;
 	this->mElements = new Element*[mMaxNrOfElements];
@@ -150,13 +150,18 @@ void DropDownList::RemoveListFromRenderer(GraphicsEngine* ge)
 	}
 }
 
-bool DropDownList::AddButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent,
-		string mTextureNamePressed, string mTextureNameHovered, float activeX, float activeY, float activeWidth, float activeHeight)
+bool DropDownList::AddButton(string textureName, GUIEvent* tempEvent,
+		string mTextureNamePressed, string mTextureNameHovered)
 {
 	if(this->mNrOfElements+1 < this->mMaxNrOfElements)
 	{
-		this->mElements[this->mNrOfElements] = new SimpleButton(x, y, z, textureName, width, height, tempEvent,
-			mTextureNamePressed, mTextureNameHovered, activeX, activeY, activeWidth, activeHeight);
+		float x, y, z;
+		float width, height;
+		this->GetWidth(width);
+		this->GetHeight(height);
+		this->GetPosition(x, y, z);
+		this->mElements[this->mNrOfElements] = new SimpleButton(x + this->mActiveWidth, y + (height * this->mNrOfElements), 1, textureName, width-this->mActiveWidth, height, tempEvent,
+			mTextureNamePressed, mTextureNameHovered, x + this->mActiveWidth, y + (height * this->mNrOfElements), width-this->mActiveWidth, height);
 	
 		this->mNrOfElements++;
 
@@ -164,4 +169,14 @@ bool DropDownList::AddButton(float x, float y, float z, string textureName, floa
 	}
 	else
 		return false;
+}
+
+GUIEvent* DropDownList::GetEventFromTop()
+{
+	if(this->mNrOfElements > 0)
+	{
+		SimpleButton* temp = (SimpleButton*) this->mElements[0];
+		return temp->GetEvent();
+	}
+	return NULL;
 }

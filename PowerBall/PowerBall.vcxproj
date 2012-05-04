@@ -55,6 +55,7 @@
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
+    <ClCompile Include="..\Source\GUI\GameModeEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUIArchButton.cpp" />
     <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
+    <ClInclude Include="..\Source\GUI\GameModeEvent.h" />
     <ClInclude Include="..\Source\GUI\GUIArchButton.h" />
     <ClInclude Include="..\Source\GUI\GUIEvent.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />

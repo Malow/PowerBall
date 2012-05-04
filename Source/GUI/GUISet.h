@@ -44,4 +44,7 @@ public:
 	/*! Returns the text that is stored in specific text field*/
 	string GetTextFromField(string textBox);
 
+	/*! Returs the event that is on the top of the Drop down menu*/
+	GUIEvent* GetEventFromDropDown(string dropDownMenu);
+
 };

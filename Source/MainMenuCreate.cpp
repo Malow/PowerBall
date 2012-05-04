@@ -72,11 +72,11 @@ void MainMenu::CreateOptionsMenu()
 
 	//Ugly drop down list to start with
 	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f, "UglyExample");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/Options1920_1080.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/Options1680_1050.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1680_1050.png", "Media/Menus/MouseOverOptions1680_1050.png", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+	dropdownlist->AddButton("Media/Menus/Options1920_1080.png", new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png");
+	dropdownlist->AddButton("Media/Menus/Options1680_1050.png", new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1680_1050.png", "Media/Menus/MouseOverOptions1680_1050.png");
 
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
 
@@ -95,10 +95,10 @@ void MainMenu::CreateHotseatMenu()
 	Element* tempElement = new GUIArchButton(offSet, 0, 1, "Media/HotseatMenu/gamesetupmenu.png", dx, windowHeight, new NoEvent(), " ", " ");
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
-	tempElement = new TextBox(offSet + dx * (202.0f / 1200.0f), windowHeight * (27.0f / 900.0f), 1, "", 100, 100, "3", "Lifes", 1.15, 2);
+	tempElement = new TextBox(offSet + dx * (227.0f / 1200.0f), windowHeight * (52.0f / 900.0f), 1, "", 100, 100, "3", "Lifes", 1.15, 2);
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
-	tempElement = new TextBox(offSet + dx * (275.0f / 1200.0f), windowHeight * (114.0f / 900.0f), 1, "", 100, 100, "5", "Rounds", 1.15, 2);
+	tempElement = new TextBox(offSet + dx * (300.0f / 1200.0f), windowHeight * (139.0f / 900.0f), 1, "", 100, 100, "5", "Rounds", 1.15, 2);
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/HotseatMenu/buttonbacktomenuhotseat.png", dx, windowHeight, new ChangeSetEvent(MAINMENU), "Media/HotseatMenu/clickbacktomenuhotseat.png" , "Media/HotseatMenu/mouseoverbacktomenuhotseat.png", dx * (605.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (330.0f / 1200), windowHeight * (30.0f / 900));
@@ -143,13 +143,13 @@ void MainMenu::CreateOnlineAndLanMenu()
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonsendonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_LAN), "Media/OnlineAndLanMenu/clicksendonline.png" , "Media/OnlineAndLanMenu/mouseoversendonline.png", dx * (1006.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
-	//Ugly drop down list to start with
 	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f), 1.0f, "Media/Menus/KingOfTheHill_DropDown.png", 200.0f, 30.0f, new ChangeResEvent(1920, 1080), "", "", (dropX+73.0f), (dropY+27.0f), 200.0f, 30.0f);
-	dropdownlist->AddButton((dropX+73.0f), (dropY+27.0f)+31.0f, 1.0f, "Media/Menus/CaptureTheFlag_DropDown.png", 200.0f, 30.0f, new ChangeResEvent(1680, 1050), "", "", (dropX+73.0f), (dropY+27.0f)+31.0f, 200.0f, 30.0f);
+	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new GameModeEvent(KOTH), "", "");
+	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new GameModeEvent(CTF), "", "");
+	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new GameModeEvent(TESTW), "", "");
 
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 }

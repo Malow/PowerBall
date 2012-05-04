@@ -18,11 +18,11 @@ TextBox::TextBox() : Element()
 }
 TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars) : Element(x, y, z, textureName, width, height)
 {
-	this->mActiveX = x+25;
-	this->mActiveY = y+25;
+	this->mActiveX = x;
+	this->mActiveY = y;
 
-	this->mActiveWidth = width-50;
-	this->mActiveHeight = height-50;
+	this->mActiveWidth = width;
+	this->mActiveHeight = height;
 
 	this->mText = text;
 	this->mName = name;
@@ -41,7 +41,7 @@ TextBox::~TextBox()
 bool TextBox::AddToRenderer(GraphicsEngine* ge)
 {
 	Element::AddToRenderer(ge);
-	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x+25, this->GetPositionD3D().y+25), mTextSize, "Media/Fonts/1");
+	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x, this->GetPositionD3D().y), mTextSize, "Media/Fonts/1");
 
 	return true;
 }

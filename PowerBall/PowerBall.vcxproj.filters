@@ -224,6 +224,9 @@
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp">
       <Filter>Game Files\Spells</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\GameModeEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -423,6 +426,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Spells\SprintSpell.h">
       <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GameModeEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
