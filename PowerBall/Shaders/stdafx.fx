@@ -56,11 +56,29 @@ cbuffer EveryFrame
 //------------------------------------------------------------------------------------------------------
 //	State structures
 //------------------------------------------------------------------------------------------------------
-SamplerState LinearSampler
+SamplerState LinearWrapSampler
 {
 	Filter = MIN_MAG_MIP_LINEAR; 
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
-
+SamplerState PointWrapSampler
+{
+	Filter = MIN_MAG_MIP_POINT; 
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
+SamplerState PointBorderSampler
+{
+	Filter = MIN_MAG_MIP_POINT; 
+	AddressU = Border;
+	AddressV = Border;
+	BorderColor = float4(0.0f, 0.0f, 0.0f, 1e5f);
+};
+SamplerState PointClampSampler
+{
+	Filter = MIN_MAG_MIP_POINT; 
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
 #endif

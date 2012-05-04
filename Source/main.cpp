@@ -29,11 +29,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngine* eng = GetGraphicsEngine();
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
-	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 16, 8));
+	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
-	testBall->SetSpecialColor(RED_COLOR);
-	testCylinder->SetSpecialColor(GREEN_COLOR);
+	//testBall->SetSpecialColor(RED_COLOR);
+	//testCylinder->SetSpecialColor(GREEN_COLOR);
 		
 	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
 	//ani->LoopNormal();
@@ -44,10 +44,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
 	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	seng->SetMasterVolume(0.1f);
-	ss1->Play();
+	seng->SetMasterVolume(1.0f);
+	//ss1->Play();
 	
-
 	
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
@@ -95,7 +94,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		{
 			if(sw)
 			{
-				se1->Play();
+				//se1->Play();
 				text->DeleteFromEnd(1);
 			}
 			sw = false;
@@ -125,22 +124,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			}
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
-
-		/*
-		// Testing sound engine
-		if(eng->GetKeyListener()->IsPressed('V'))	
-			//seng->PlaySoundEffect(0);
-			seng->MuteSongChannel();
+	
+		//Testing sound engine
 		if(eng->GetKeyListener()->IsPressed('B'))	
-			//seng->PlaySoundEffect(1); 
-			seng->UnmuteSongChannel();
-		if(eng->GetKeyListener()->IsPressed('Z'))	
-			seng->PlaySong(0);
-		if(eng->GetKeyListener()->IsPressed('X'))	
-			seng->PauseSongChannel(); 
-		if(eng->GetKeyListener()->IsPressed('C'))	
-			seng->UnpauseSongChannel();
-			*/
+		{
+			for(int i = 0; i < 2; i++)
+			{
+				se1->Play();
+			}
+		}
+		
 	}
 	// Delete camera recording
 	delete camRec;
