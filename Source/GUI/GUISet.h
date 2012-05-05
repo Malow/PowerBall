@@ -14,6 +14,7 @@
 #include "SimpleButton.h"
 #include "DropDownList.h"
 #include "TextBox.h"
+#include "GUIPicture.h"
 
 class GUISet
 {

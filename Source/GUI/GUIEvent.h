@@ -9,6 +9,7 @@
 * Event Message is the message about whats going to happen.
 **/
 #include <string>
+#include "..\stdafx.h"
 
 using namespace std;
 
