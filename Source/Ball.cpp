@@ -138,6 +138,11 @@ void Ball::Update(const float dt)
 	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
+
+	if(newPosition.y < 6)
+	{
+		newPosition.y = 6;
+	}
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
 		newPosition.y = 14.7f;	//oldPosition.y;
@@ -189,7 +194,7 @@ void Ball::Update(const float dt)
 	//*this->mPos = this->mMesh->GetPosition();
 	//*this->mFor = this->mForward.GetD3DVec();
 	
-	if((this->mMesh->GetPosition().y < -6) && !this->mKnockoutMode)
+	if((this->mMesh->GetPosition().y < 7) && !this->mKnockoutMode)
 	{
 		if(this->mFlag != NULL)
 		{
@@ -222,7 +227,7 @@ bool Ball::IsAlive() const
 	else
 	{
 		bool alive = true;
-		if(this->mMesh->GetPosition().y < -6)
+		if(this->mMesh->GetPosition().y < 7)
 			alive = false;
 		return alive;
 	}

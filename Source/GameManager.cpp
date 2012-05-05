@@ -45,6 +45,8 @@ GameManager::~GameManager()
 
 bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 {
+	if(rounds < 1)
+		return true;
 	this->mGameMode = DM;
 	this->mNumPlayers = numPlayers;
 	this->mRounds = rounds;
@@ -63,7 +65,11 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 	Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
 	string s;
 	int indexBallLeft = -1;
-	bool roundsLeft = true;
+	bool roundsLeft;
+	if(this->mRounds >0)
+		roundsLeft = true;
+	else
+		roundsLeft = false;
 	float diff;
 	bool quitByMenu = false;
 	bool winnerActivated = false;
@@ -158,12 +164,7 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 				hudR6->SetText("");
 				running = false;
 			}
-			else if(!mGe->GetKeyListener()->IsPressed('C'))
-				zoomInPressed = false;
 		}
-
-		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-			running = this->mIGM->Run();
 		if(roundsPlayed == this->mRounds)
 			roundsLeft = false;
 		else
@@ -180,7 +181,7 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 	mGe->DeleteText(hudR4);
 	mGe->DeleteText(hudR5);
 	mGe->DeleteText(hudR6);
-	if(!quitByMenu)
+	if(!quitByMenu && this->mRounds > 0)
 	{
 		int indexWinner = -1;
 		int bestResault = 0;
@@ -189,26 +190,35 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 			bestResault = this->mBalls[0]->GetRoundsWon();
 			indexWinner = 0;
 		}
+		bool draw = false;
 		for(int i = 1; i<this->mNumPlayers;i++)
 		{
-			if(this->mBalls[i]->GetRoundsWon() > bestResault)
+			if(this->mBalls[i]->GetRoundsWon() >= bestResault)
 			{
-					bestResault = this->mBalls[i]->GetRoundsWon();
-					indexWinner = i;
+				if(this->mBalls[i]->GetRoundsWon() == bestResault)
+					draw = true;
+				bestResault = this->mBalls[i]->GetRoundsWon();
+				indexWinner = i;
 			}
 		}
-		mPlatform->Update(diff);
-
-		if(!this->mGe->isRunning())
-			running = false;
-
-		string win = "Winner: Player " + MaloW::convertNrToString(indexWinner+1) + " with " + MaloW::convertNrToString(bestResault) + " won";
-		Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
-		diff = mGe->Update();
-		while(diff < 2000)
-			diff += mGe->Update();
-	
-		mGe->DeleteText(winner);
+		if(!draw)
+		{
+			string win = "Winner: Player " + MaloW::convertNrToString(indexWinner+1) + " with " + MaloW::convertNrToString(bestResault) + " won";
+			Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
+			diff = mGe->Update();
+			while(diff < 2000)
+				diff += mGe->Update();
+			mGe->DeleteText(winner);
+		}
+		else
+		{
+			string win = "No winner in this Game";
+			Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.0f,"Media/Fonts/1");
+			diff = mGe->Update();
+			while(diff < 2000)
+				diff += mGe->Update();
+			mGe->DeleteText(winner);
+		}
 	}
 	//returns to menu after some win/draw screen.
 	return true;
@@ -219,11 +229,15 @@ bool GameManager::PlayLAN(ServerInfo server)
 	this->mNumPlayers = 0;
 	this->Initialize();
 	bool running = true;
-
+	bool zoomOutPressed = false;
+	bool zoomInPressed = false;
+	bool quitByMenu = false;
 	this->mNet->Start(server);
 	this->mGe->Update();
 	int numAlivePlayers = 0;
-	
+	float warlockTimer = 0;
+	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
+	string s;
 	while(running)
 	{
 		float diff = mGe->Update();	
@@ -242,10 +256,24 @@ bool GameManager::PlayLAN(ServerInfo server)
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
-				if(this->mPlatform->IsOnPlatform(mBalls[i]->GetPosition().x, mBalls[i]->GetPosition().z))
+				if(i != this->mNet->GetIndex())
 				{
-					if(i != this->mNet->GetIndex())
-					{
+					/*
+					if(this->mNet->IsKeyPressed('W', i));
+						mBalls[i]->AddForceForwardDirection(diff);
+						*/
+					/*
+					if(this->mNet->IsKeyPressed('W', i))
+						mBalls[i]->AddForce(Vector3(0,0,diff));	
+						*/
+					/*
+					if(this->mNet->IsKeyPressed('W', i))
+						mBalls[i]->AddForceForwardDirection(diff);
+						*/
+					this->InputKeysPressedFromServer(diff, i);
+					// does not work in the funktion above
+					
+					/*
 						int flip = 1;
 						if(this->mNet->GetStartPos(i).z > 0)
 							flip = -1;
@@ -259,9 +287,12 @@ bool GameManager::PlayLAN(ServerInfo server)
 							mBalls[i]->AddForce(Vector3(0,0,-diff * flip));
 						if(this->mNet->IsKeyPressed(VK_SPACE, i))
 							mBalls[i]->AddForce(Vector3(0, diff,0));
-					}
-					else
-					{
+					*/
+						
+				}
+				else
+				{
+					/*
 						if(mGe->GetKeyListener()->IsPressed('A'))
 							mBalls[i]->AddForce(Vector3(-diff,0,0));	
 						if(mGe->GetKeyListener()->IsPressed('D'))
@@ -270,32 +301,28 @@ bool GameManager::PlayLAN(ServerInfo server)
 							mBalls[i]->AddForce(Vector3(0,0,diff));	
 						if(mGe->GetKeyListener()->IsPressed('S'))
 							mBalls[i]->AddForce(Vector3(0,0,-diff));
-
 						if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
 							mBalls[i]->AddForce(Vector3(0,diff,0));
-					}	
-					Ball* b1 = this->mBalls[i];
-					for(int j = i+1; j < this->mNumPlayers; j++)
-					{
-						Ball* b2 = this->mBalls[j];
-						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2);
-
-					}
-					Vector3 normalPlane;
-					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-				}
-
+					*/
+					this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
+				}	
 				
-				
-
-
-				
-				//if(this->mBalls[i]->GetPosition().y < 14.7f && this->mPlatform->IsOnPlatform(this->mBalls[i]->GetPosition().x, this->mBalls[i]->GetPosition().z))
-					//this->mBalls[i]->SetPosition(this->mBalls[i]->GetPosition().x, 14.7f, this->mBalls[i]->GetPosition().z);
-
 			}
+			for(int i = 0;i<this->mNumPlayers;i++)
+			{
+				Ball* b1 = this->mBalls[i];
+				for(int j = i+1; j < this->mNumPlayers; j++)
+				{
+					Ball* b2 = this->mBalls[j];
+					if(b1->collisionWithSphereSimple(b2))
+						b1->collisionSphereResponse(b2);
+				}
+				Vector3 normalPlane;
+				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+			}
+			
+		
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
@@ -305,15 +332,18 @@ bool GameManager::PlayLAN(ServerInfo server)
 		}
 		else 
 		{
+			/*
 			this->mNet->AddKeyInput('A', mGe->GetKeyListener()->IsPressed('A'));
 			this->mNet->AddKeyInput('D', mGe->GetKeyListener()->IsPressed('D'));
 			this->mNet->AddKeyInput('W', mGe->GetKeyListener()->IsPressed('W'));
 			this->mNet->AddKeyInput('S', mGe->GetKeyListener()->IsPressed('S'));
 			this->mNet->AddKeyInput(VK_SPACE, mGe->GetKeyListener()->IsPressed(VK_SPACE));
-
+			*/
+			this->SendKeysPressedToServer();
 			if(this->mNet->GetIndex() < this->mNumPlayers)
 			{
 				
+				/*
 				int flip = 1;
 				if(this->mNet->GetStartPos(this->mNet->GetIndex()).z > 0)
 					flip = -1;
@@ -325,28 +355,10 @@ bool GameManager::PlayLAN(ServerInfo server)
 					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,diff*flip));	
 				if(mGe->GetKeyListener()->IsPressed('S'))
 					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,-diff*flip));
-
-				/*this->mBalls[this->mNet->GetIndex()]->Update(diff, this->mPlatform);
-
-				Ball* b1 = this->mBalls[this->mNet->GetIndex()];
-
-				for(int i = 0; i < this->mNumPlayers; i++)
-				{
-					if(i != this->mNet->GetIndex())
-					{
-						Ball* b2 = this->mBalls[i];
-						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2, diff);
-					}
-
-				}
-
-				Vector3 normalPlane;
-				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);*/
+				*/
+				this->InputKeysPressedSelf(diff, this->mNet->GetIndex(), zoomOutPressed, zoomInPressed, running, quitByMenu);
 				for(int i = 0; i < this->mNumPlayers; i++)
 					this->mBalls[i]->Update(diff);
-
 				for(int i = 0; i < this->mNumPlayers; i++)
 				{
 					Ball* b1 = this->mBalls[i];
@@ -369,12 +381,12 @@ bool GameManager::PlayLAN(ServerInfo server)
 				numAlivePlayers += 1;
 		}
 		mPlatform->Update(diff);
-
-
-
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
-			this->AddBall();
+			if(this->mGameMode == TESTW)
+				this->AddBallWarlock();
+			else
+				this->AddBall();
 			numAlivePlayers++;
 		}
 
@@ -401,7 +413,18 @@ bool GameManager::PlayLAN(ServerInfo server)
 		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 			if(!this->KingOfTheHill(diff))
 				running = false;
+		if(this->mGameMode == TESTW)
+		{
+			float tmp = (60.0f - warlockTimer);
+			tmp = floor(tmp * 10.0f) / 10.0f;
+			s = "Timer: " + MaloW::convertNrToString(tmp);
+			hudR1->SetText(s);
+			if(!this->WarLock(diff, warlockTimer))
+				running = false;
+			
+		}
 	}
+	mGe->DeleteText(hudR1);
 	this->mNet->Close();
 	//returns to menu after some win/draw screen.
 	return true;
@@ -409,7 +432,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 void GameManager::Initialize()
 {
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 30, -15));
+	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 	mGe->GetCamera()->LookAt(centerPlatform);
 	//Image* testImg = mGe->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
 	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
@@ -441,6 +464,26 @@ void GameManager::Initialize()
 		startPositions[3] = D3DXVECTOR3(0,24.7f,12);
 	
 		this->mNet->SetStartPosistions(startPositions, 4);
+		D3DXVECTOR3 forwardVectors[4];
+		for(int i = 0; i<4;i++)
+		{
+			if(i%2 == 0)
+				forwardVectors[i] = D3DXVECTOR3(0,0,1);
+			else
+				forwardVectors[i] = D3DXVECTOR3(0,0,-1);
+		}
+		/* this if we want all to use TRD-Camera and forward vector at center
+		D3DXVECTOR3 center = D3DXVECTOR3(0,0,0);
+		for(int i = 0; i<4;i++)
+		{
+			D3DXVECTOR3 startPosXZ = D3DXVECTOR3(startPositions[i].x, 0, startPositions[i].z);
+			D3DXVECTOR3 temp = center - startPosXZ;
+			D3DXVECTOR3 tempN;
+			D3DXVec3Normalize(&tempN, &temp);
+			forwardVectors[i] = tempN;
+		}
+		*/
+		this->mNet->SetForwardVectors(forwardVectors, 4);
 
 		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/KOTHMap1.obj", centerPlatform);
@@ -480,9 +523,31 @@ void GameManager::Initialize()
 	
 		this->mNet->SetStartPosistions(startPositions, 4);
 
+		D3DXVECTOR3 forwardVectors[4];
+		for(int i = 0; i<4;i++)
+		{
+			if(i%2 == 0)
+				forwardVectors[i] = D3DXVECTOR3(0,0,1);
+			else
+				forwardVectors[i] = D3DXVECTOR3(0,0,-1);
+		}
+		/* this if we want all to use TRD-Camera and forward vector at center
+		D3DXVECTOR3 center = D3DXVECTOR3(0,0,0);
+		for(int i = 0; i<4;i++)
+		{
+			D3DXVECTOR3 startPosXZ = D3DXVECTOR3(startPositions[i].x, 0, startPositions[i].z);
+			D3DXVECTOR3 temp = center - startPosXZ;
+			D3DXVECTOR3 tempN;
+			D3DXVec3Normalize(&tempN, &temp);
+			forwardVectors[i] = tempN;
+		}
+		*/
+		this->mNet->SetForwardVectors(forwardVectors, 4);
+
 		this->mRounds = 3;
 		this->mPlatform		= new Platform("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
+		/*
 		this->mBalls		= new Ball*[this->mNumPlayers];
 
 		for(int i = 0; i < this->mNumPlayers; i++)
@@ -492,6 +557,7 @@ void GameManager::Initialize()
 			else
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,10));
 		}
+		*/
 		this->mEnemyFlag = new Flag(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
 		this->mFriendlyFlag = new Flag(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
 	}
@@ -515,8 +581,10 @@ void GameManager::Initialize()
 				this->mBalls[i]->SetKnockoutMode();
 			}
 		}
+		/*
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
+		*/
 	}
 	/**
 	* WarLock
@@ -529,12 +597,24 @@ void GameManager::Initialize()
 		startPositions[1] = D3DXVECTOR3(0,30.0f,10);
 		startPositions[2] = D3DXVECTOR3(-10,30.0f,0);
 		startPositions[3] = D3DXVECTOR3(10,30.0f,0); 
-		
+		this->mNet->SetStartPosistions(startPositions, 4);
+
+		D3DXVECTOR3 forwardVectors[4];
+		D3DXVECTOR3 center = D3DXVECTOR3(0,0,0);
+		for(int i = 0; i<4;i++)
+		{
+			D3DXVECTOR3 startPosXZ = D3DXVECTOR3(startPositions[i].x, 0, startPositions[i].z);
+			D3DXVECTOR3 temp = center - startPosXZ;
+			D3DXVECTOR3 tempN;
+			D3DXVec3Normalize(&tempN, &temp);
+			forwardVectors[i] = tempN;
+		}
+		this->mNet->SetForwardVectors(forwardVectors, 4);
 		this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 		this->mPlatform->SetScale(Vector3(3,3,3));
 		this->mBalls		= new Ball*[this->mNumPlayers];
 		this->mPlatform->SetShrinkValue(0.0f);
-		
+		/*
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if(i == 0)
@@ -550,8 +630,10 @@ void GameManager::Initialize()
 		this->mBalls[0]->AddSpell(new SprintSpell());
 		this->mBalls[0]->AddSpell(new HardenSpell());
 		this->mBalls[0]->AddSpell(new InvisibilitySpell());
+		
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
+		*/
 		
 	}
 	// wait until everything is loaded and then drop the balls from hight above
@@ -575,6 +657,7 @@ void GameManager::AddBall()
 	for(int i = old; i < this->mNumPlayers; i++)
 	{
 		temp[i] = new Ball("Media/Ball.obj", this->mNet->GetStartPos(i));
+		temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
 	}
 	delete[] this->mBalls;
 	this->mBalls = temp;
@@ -582,6 +665,39 @@ void GameManager::AddBall()
 	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
 	mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 }
+
+void GameManager::AddBallWarlock()
+{
+	
+	int old = this->mNumPlayers;
+	this->mNumPlayers = this->mNet->GetNumPlayers();
+	Ball** temp = new Ball*[this->mNumPlayers];
+	for(int i = 0; i < old; i++)
+	{
+		temp[i] = this->mBalls[i];
+	}
+	for(int i = old; i < this->mNumPlayers; i++)
+	{
+		temp[i] = new Ball("Media/Ball.obj", this->mNet->GetStartPos(i));
+		temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
+		temp[i]->AddSpell(new ChargeSpell());
+		temp[i]->AddSpell(new SprintSpell());
+		temp[i]->AddSpell(new HardenSpell());
+		temp[i]->AddSpell(new InvisibilitySpell());
+	}
+	delete[] this->mBalls;
+	this->mBalls = temp;
+	
+	if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[this->mNet->GetIndex()]);
+	else
+	{
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	}
+	
+}
+
 bool GameManager::CaptureTheFlag()
 {
 	D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[0]->GetRadius(), 0))- this->mBalls[0]->GetPosition());
@@ -674,9 +790,13 @@ bool GameManager::KingOfTheHill(float dt)
 	return true;
 }
 
-bool GameManager::WarLock(float dt)
+bool GameManager::WarLock(float dt, float& warlockTimer)
 {
 	float newdt = dt/1000.0f;
+	/* will be implemented when we have the rules, for now just play around in 1 minutes then gameover */
+	warlockTimer += newdt;
+	if(warlockTimer > 60.0f)
+		return false;
 	return true;
 }
 
@@ -750,4 +870,103 @@ void GameManager::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPr
 			quitByMenu = !running;
 		}
 
+}
+
+void GameManager::InputKeysPressedFromServer(float diff, int index)
+{
+
+	if(this->mNet->IsKeyPressed('A', index))
+		mBalls[index]->AddForceLeftOfForwardDirection(diff);
+	if(this->mNet->IsKeyPressed('D', index))
+		mBalls[index]->AddForceRightOfForwardDirection(diff);
+	/* wTF */
+	if(this->mNet->IsKeyPressed('W', index))
+		mBalls[index]->AddForceForwardDirection(diff);
+	
+	
+	if(this->mNet->IsKeyPressed('S', index))
+		mBalls[index]->AddForceOppositeForwardDirection(diff);
+	
+	if(this->mNet->IsKeyPressed('Q', index))
+		mBalls[index]->RotateForwardLeft(diff);
+	if(this->mNet->IsKeyPressed('E', index))
+		mBalls[index]->RotateForwardRight(diff);
+	if(this->mNet->IsKeyPressed('1', index))
+		mBalls[index]->UseSpell(1);
+	if(this->mNet->IsKeyPressed('2', index))
+		mBalls[index]->UseSpell(2);
+	if(this->mNet->IsKeyPressed('3', index))
+		mBalls[index]->UseSpell(3);
+	if(this->mNet->IsKeyPressed('4', index))
+		mBalls[index]->UseSpell(4);
+	if(this->mNet->IsKeyPressed(VK_SPACE, index))
+		mBalls[index]->AddForce(Vector3(0, diff,0));
+	
+}
+
+void GameManager::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu)
+{
+	if(mGe->GetEngineParameters().CamType == TRD)
+	{
+		if(mGe->GetKeyListener()->IsPressed('A'))
+			mBalls[index]->AddForceLeftOfForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('W'))
+			mBalls[index]->AddForceForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('S'))
+			mBalls[index]->AddForceOppositeForwardDirection(diff);
+		if(mGe->GetKeyListener()->IsPressed('Q'))
+			mBalls[index]->RotateForwardLeft(diff);
+		if(mGe->GetKeyListener()->IsPressed('E'))
+			mBalls[index]->RotateForwardRight(diff);
+		if(mGe->GetKeyListener()->IsPressed('D'))
+			mBalls[index]->AddForceRightOfForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('1'))
+			mBalls[index]->UseSpell(1);
+		if(mGe->GetKeyListener()->IsPressed('2'))
+			mBalls[index]->UseSpell(2);
+		if(mGe->GetKeyListener()->IsPressed('3'))
+			mBalls[index]->UseSpell(3);
+		if(mGe->GetKeyListener()->IsPressed('4'))
+			mBalls[index]->UseSpell(4);
+		if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
+		{
+			mBalls[index]->ZoomOut();
+			zoomOutPressed = true;
+		}
+		else if(!mGe->GetKeyListener()->IsPressed('Z'))
+			zoomOutPressed = false;
+		if(mGe->GetKeyListener()->IsPressed('C') && !zoomInPressed)
+		{
+			mBalls[index]->ZoomIn();
+			zoomInPressed = true;
+		}
+		else if(!mGe->GetKeyListener()->IsPressed('C'))
+			zoomInPressed = false;
+	}
+	else
+	{
+
+	}
+	if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+	{
+		running = this->mIGM->Run();
+		quitByMenu = !running;
+	}
+}
+
+void GameManager::SendKeysPressedToServer()
+{
+		
+		this->mNet->AddKeyInput('A', mGe->GetKeyListener()->IsPressed('A'));
+		this->mNet->AddKeyInput('D', mGe->GetKeyListener()->IsPressed('D'));
+		this->mNet->AddKeyInput('W', mGe->GetKeyListener()->IsPressed('W'));
+		this->mNet->AddKeyInput('S', mGe->GetKeyListener()->IsPressed('S'));
+		this->mNet->AddKeyInput('Q', mGe->GetKeyListener()->IsPressed('Q'));
+		this->mNet->AddKeyInput('E', mGe->GetKeyListener()->IsPressed('E'));
+		this->mNet->AddKeyInput(VK_SPACE, mGe->GetKeyListener()->IsPressed(VK_SPACE));
+		this->mNet->AddKeyInput('1', mGe->GetKeyListener()->IsPressed('1'));
+		this->mNet->AddKeyInput('2', mGe->GetKeyListener()->IsPressed('2'));
+		this->mNet->AddKeyInput('3', mGe->GetKeyListener()->IsPressed('3'));
+		this->mNet->AddKeyInput('4', mGe->GetKeyListener()->IsPressed('4'));
+		
 }

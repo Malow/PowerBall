@@ -59,9 +59,17 @@ private:
 
 	bool		KingOfTheHill(float dt);
 
-	bool		WarLock(float dt);
+	bool		WarLock(float dt, float& warlockTimer);
 
 	void		AddBall();
 
+	void		AddBallWarlock();
+
 	void		InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu);
+
+	void		InputKeysPressedFromServer(float diff, int index); 
+
+	void		InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
+
+	void		SendKeysPressedToServer();
 };

@@ -23,6 +23,7 @@ private:
 	bool				mKeyInputs[PLAYER_CAP][256];
 	vector<char>		mKeyUps;
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
+	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
 	float				mTime;
 
 	/*! Updates the client side, (updates LAN - variables). */
@@ -58,6 +59,9 @@ public:
 	/*! Returns the start position on the map of the player with specified index. */
 	D3DXVECTOR3 GetStartPos(const int index) const {return this->mStartPositions[index];}
 
+	/*! Returns the forward vector of the player with specified index. */
+	D3DXVECTOR3 GetForwardVector(const int index) const { return this->mForwardVectors[index]; }
+
 	/*! Returns the position of the player with specified index. */
 	D3DXVECTOR3 GetPos(const int index) const { return this->mPos[index]; }
 	
@@ -81,6 +85,12 @@ public:
 	
 	/*! Sets the startpositions of the players (player index follows array order). */
 	void		SetStartPosistions(const D3DXVECTOR3 pos[], const int size);
+
+	/*! Sets the forwardVectors of the player with specified index. */
+	void		SetForwardVector(const D3DXVECTOR3 forward, const int index);
+
+	/*! Sets the forwardVectors of the players (player index follows array order). */
+	void		SetForwardVectors(const D3DXVECTOR3 forward[], const int size);
 
 	/*! Sets the velocity of the player with specified index. */
 	void		SetVel(const D3DXVECTOR3 vel, const int index);

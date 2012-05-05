@@ -218,6 +218,10 @@ public:
 	/*! Sets the balls forward vector (the direction the ball is moving). */
 	//void SetForwardVector(vector3 forward) { this->mForward = forward; }
 
+	/*! Sets the ball forward vector. */
+	void SetForwardVector(D3DXVECTOR3 forward) { this->mForward = Vector3(forward); }
+	void SetForwardVector(Vector3 forward) { this->mForward = forward; }
+
 
 	/*! Updates the ball. */
 	void Update(const float dt);
