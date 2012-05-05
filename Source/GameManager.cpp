@@ -383,7 +383,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 		mPlatform->Update(diff);
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
-			if(this->mGameMode == TESTW)
+			if(this->mGameMode == WARLOCK)
 				this->AddBallWarlock();
 			else
 				this->AddBall();
@@ -413,7 +413,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
 			if(!this->KingOfTheHill(diff))
 				running = false;
-		if(this->mGameMode == TESTW)
+		if(this->mGameMode == WARLOCK)
 		{
 			float tmp = (60.0f - warlockTimer);
 			tmp = floor(tmp * 10.0f) / 10.0f;
@@ -589,7 +589,7 @@ void GameManager::Initialize()
 	/**
 	* WarLock
 	**/
-	else if(this->mGameMode == TESTW)
+	else if(this->mGameMode == WARLOCK)
 	{
 		
 		D3DXVECTOR3 startPositions[4];

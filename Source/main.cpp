@@ -12,8 +12,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowHeight = 900;
-	params.windowWidth = 1600;
+	params.windowHeight = 600;
+	params.windowWidth = 800;
 	params.FXAAQuality = 0;			// 0 - 4
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
