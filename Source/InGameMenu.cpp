@@ -108,9 +108,8 @@ bool InGameMenu::Run()
 		{
 			if(returnEvent->GetEventMessage() == "ChangeSetEvent")
 			{
-				int whatSet;
 				ChangeSetEvent* temp = (ChangeSetEvent*)returnEvent;
-				temp->GetSet(whatSet);
+				int whatSet = temp->GetSet();
 				if(whatSet == IGNQUIT)
 				{
 					

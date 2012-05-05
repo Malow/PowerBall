@@ -8,17 +8,21 @@
 
 #include "GUIEvent.h"
 
-class ChangeSetEvent : public GUIEvent
+class ChangeSubSetEvent : public GUIEvent
 {
 private:
 	int mSet;
+	int mGameMode;
 public:
-	ChangeSetEvent();
-	ChangeSetEvent(int set);
-	virtual ~ChangeSetEvent();
+	ChangeSubSetEvent();
+	ChangeSubSetEvent(int set, int GameMode);
+	virtual ~ChangeSubSetEvent();
 
 	/*! Changes the value that explane what set that is going to be active*/
 	void SetSet(int set){ this->mSet = set; }
 	/*! Returns the Set value*/
 	int GetSet(){ return this->mSet; }
+
+	int GetGameMode(){ if(this->mGameMode) return this->mGameMode; else return NONE; }
+	void SetGameMode(int GameMode){ this->mGameMode = GameMode; }
 };

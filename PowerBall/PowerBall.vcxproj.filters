@@ -227,6 +227,12 @@
     <ClCompile Include="..\Source\GUI\GameModeEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -428,6 +434,12 @@
       <Filter>Game Files\Spells</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GUI\GameModeEvent.h">
+      <Filter>GUI\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\GUIPicture.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h">
       <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>

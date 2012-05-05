@@ -51,6 +51,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
+    <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="..\Source\GUI\GameModeEvent.cpp" />
     <ClCompile Include="..\Source\GUI\GUIArchButton.cpp" />
     <ClCompile Include="..\Source\GUI\GUIEvent.cpp" />
+    <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
@@ -116,6 +118,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
+    <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeResEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
@@ -123,6 +126,7 @@
     <ClInclude Include="..\Source\GUI\GameModeEvent.h" />
     <ClInclude Include="..\Source\GUI\GUIArchButton.h" />
     <ClInclude Include="..\Source\GUI\GUIEvent.h" />
+    <ClInclude Include="..\Source\GUI\GUIPicture.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />

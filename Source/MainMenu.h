@@ -14,19 +14,24 @@
 #include "GUI\NoEvent.h"
 #include "GUI\ChangeResEvent.h"
 #include "GUI\ChangeSetEvent.h"
+#include "GUI\ChangeSubSetEvent.h"
 #include "GameManager.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 
-enum MENU {BACKGROUND,
+enum MENU {NOMENU,
+	BACKGROUND,
 	MAINMENU,
 	MAINMENU_PLAY,
 	PLAY_ONLINE,
 	PLAY_HOTSEAT,
+	PLAY_LAN,
 	OPTIONS_HOTSEAT,
 	OPTIONS_ONLINE,
 	OPTIONS_LAN,
-	PLAY_LAN,
+	OPTIONS_LAN_SUBCTF,
+	OPTIONS_LAN_SUBKOTH,
+	OPTIONS_LAN_SUBWARLOCK,
 	OPTIONS_GAMEPLAY, 
 	CREDIT,
 	EXIT};
@@ -36,6 +41,7 @@ class MainMenu
 private:
 	int mNrOfSets;
 	int mCurrentSet;
+	int mSubSet;
 	bool mRunning;
 
 	GraphicsEngine* mGe;
