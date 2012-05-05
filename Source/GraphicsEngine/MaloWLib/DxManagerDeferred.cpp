@@ -209,7 +209,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetInt("height", this->params.windowHeight);
 		
 	// Set SSAO settings
-	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
+	//this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 
 	// Set lava-texture
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
@@ -233,7 +233,7 @@ void DxManager::RenderDeferredPerPixel()
 	}
 
 	// Unbind SSAO
-	this->ssao->PostRender(this->Shader_DeferredLightning);
+	//this->ssao->PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
 }
@@ -301,7 +301,7 @@ void DxManager::RenderDeferredTexture()
 	this->Shader_DeferredTexture->SetResource("LightAccu", this->Dx_DeferredSRV);
 
 	// Set SSAO settings
-	this->ssao->PreRender(this->Shader_DeferredTexture, this->params, this->camera);
+	//this->ssao->PreRender(this->Shader_DeferredTexture, this->params, this->camera);
 	this->Shader_DeferredTexture->Apply(0);
 
 	
@@ -316,7 +316,7 @@ void DxManager::RenderDeferredTexture()
 	this->Shader_DeferredTexture->SetResource("LightAccu", NULL);
 
 	// Unbind SSAO
-	this->ssao->PostRender(this->Shader_DeferredTexture);
+	//this->ssao->PostRender(this->Shader_DeferredTexture);
 
 	this->Shader_DeferredTexture->Apply(0);
 }

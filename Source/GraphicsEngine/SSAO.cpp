@@ -121,6 +121,7 @@ void SSAO::PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam
 	D3D11_SUBRESOURCE_DATA initData = {0};
 	initData.SysMemPitch = 256 * sizeof(D3DXVECTOR3);
 
+	
 	D3DXVECTOR3 color[256*256];
 	for(int i = 0; i < 256; ++i)
 	{

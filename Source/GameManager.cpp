@@ -415,7 +415,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 				running = false;
 		if(this->mGameMode == WARLOCK)
 		{
-			float tmp = (60.0f - warlockTimer);
+			float tmp = (600.0f - warlockTimer);
 			tmp = floor(tmp * 10.0f) / 10.0f;
 			s = "Timer: " + MaloW::convertNrToString(tmp);
 			hudR1->SetText(s);
@@ -795,7 +795,7 @@ bool GameManager::WarLock(float dt, float& warlockTimer)
 	float newdt = dt/1000.0f;
 	/* will be implemented when we have the rules, for now just play around in 1 minutes then gameover */
 	warlockTimer += newdt;
-	if(warlockTimer > 60.0f)
+	if(warlockTimer > 600.0f)
 		return false;
 	return true;
 }

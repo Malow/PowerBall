@@ -12,9 +12,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowHeight = 600;
-	params.windowWidth = 800;
-	params.FXAAQuality = 0;			// 0 - 4
+	params.windowHeight = 900;
+	params.windowWidth = 1600;
+	params.FXAAQuality = 3;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 
@@ -35,7 +35,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
-		
+	
 	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
 	//ani->LoopNormal();
 	ani->LoopSeamless();
@@ -45,8 +45,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
 	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	seng->SetMasterVolume(1.0f);
-	//ss1->Play();
+	seng->SetMasterVolume(0.1f);
+	ss1->Play();
 	
 	
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
