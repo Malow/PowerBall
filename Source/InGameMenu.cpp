@@ -29,16 +29,16 @@ bool InGameMenu::Initialize()
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
-	/*Element* tempElement =  new GUIArchButton(0, 0, 1, "Media/MainMenu_Circle/MainMenu_Wallpaper_1920_1080.png", windowWidth, windowHeight, new NoEvent(), "", "");
+	/*Element* tempElement =  new GUIArchButton(0, 0, 1, "Media/MainMenu_Circle/MainMenu_Wallpaper_1920_1080.png", windowWidth, windowHeight, new NoEvent(), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	this->mSets[IGNBACKGROUND].AddElement(tempElement);*/
 
-	Element* tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.19f, 0, "Media/Menus/ResumeGame.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNRESUME), "", "", windowWidth * 0.35f, windowHeight * 0.19f, windowWidth * 0.30f, windowHeight * 0.15f);
+	Element* tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.19f, 0, "Media/Menus/ResumeGame.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNRESUME), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.19f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.37f, 0, "Media/Menus/Options.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNOPTIONS), "", "", windowWidth * 0.35f, windowHeight * 0.37f, windowWidth * 0.30f, windowHeight * 0.15f);
+	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.37f, 0, "Media/Menus/Options.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNOPTIONS), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.37f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.55f, 0, "Media/Menus/Quit.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNQUIT), "", "", windowWidth * 0.35f, windowHeight * 0.55f, windowWidth * 0.30f, windowHeight * 0.15f);
+	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.55f, 0, "Media/Menus/Quit.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNQUIT), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.55f, windowWidth * 0.30f, windowHeight * 0.15f);
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
 	/* Adding the buttons for the options menu*/

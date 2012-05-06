@@ -42,5 +42,6 @@ bool Element::RemoveFromRenderer(GraphicsEngine* ge)
 {
 	ge->DeleteImage(this->mImage);
 	this->mImage = NULL;
+
 	return true;
 }

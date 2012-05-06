@@ -111,7 +111,6 @@ bool MainMenu::Run()
 			if(returnEvent != NULL)
 			{
 				ChangeSetEvent* tempReturnEvent1 = (ChangeSetEvent*)returnEvent;
-				MaloW::Debug(tempReturnEvent1->GetSet());
 				if(returnEvent->GetEventMessage() == "ChangeSetEvent")
 				{
 					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
@@ -123,6 +122,7 @@ bool MainMenu::Run()
 						int lifes = -1;
 						int rounds = -1; 
 						int flags = -1;
+						int secondsToWin = -1;
 
 						/* Getting some needed info to start a server*/
 						GUIEvent* tempEvent = this->mSets[this->mSubSet].GetEventFromDropDown("GameMode");
@@ -133,7 +133,8 @@ bool MainMenu::Run()
 						}
 						else if(GameMode->GetGameMode() == KOTH)
 						{
-
+							secondsToWin = atoi(this->mSets[this->mSubSet].GetTextFromField("SecondsToWin").c_str());
+							rounds = atoi(this->mSets[this->mSubSet].GetTextFromField("Rounds").c_str());
 						}
 						else if(GameMode->GetGameMode() == WARLOCK)
 						{
@@ -245,6 +246,23 @@ bool MainMenu::Run()
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 						this->mSubSet = OPTIONS_LAN_SUBCTF;
 						this->mCurrentSet = OPTIONS_LAN;
+
+						float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+						float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+						float dx = (windowHeight * 4.0f) / 3.0f;
+						float offSet = (windowWidth - dx) / 2.0f;
+
+						/*this->mGm = new GameManager(this->mGe);
+						//add button called find servers or something and copy the row below to retrieve a list of all servers currently open on the LAN
+						vector<ServerInfo> servers = this->mGm->GetLanPointer()->FindServers();
+						Element* tempElement;
+						for(int i = 0; i < servers.size(); i++)
+						{
+							tempElement = new TextBox(dx * (680.0f / 1200.0f), windowHeight * (280.0f / 900.0f) + 40 * i, 1, "Media/Menus/EmptyMenu.png", 0, 0, servers.at(i).GetServerName(), "Server" + MaloW::convertNrToString(i), 0.80, servers.at(i).GetServerName().size());
+							this->mSets[this->mSubSet].AddElement(tempElement);
+						}
+						tempElement = NULL;
+						SAFE_DELETE(this->mGm);*/
 					}
 
 					this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
