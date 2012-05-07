@@ -240,6 +240,17 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = OPTIONS_ONLINE;
 					}
+					else if(tempEventSet == CREDIT)
+					{
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
+						this->mGm = new GameManager(this->mGe);
+
+						//mGm->PlayCREDIT(); /*Dont know what params to use*/
+
+						this->mSubSet = NOMENU;
+						this->mCurrentSet = MAINMENU;
+					}
 					else if(tempEventSet == OPTIONS_LAN)
 					{
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);

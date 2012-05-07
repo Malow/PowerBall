@@ -32,13 +32,26 @@ bool InGameMenu::Initialize()
 	/*Element* tempElement =  new GUIArchButton(0, 0, 1, "Media/MainMenu_Circle/MainMenu_Wallpaper_1920_1080.png", windowWidth, windowHeight, new NoEvent(), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	this->mSets[IGNBACKGROUND].AddElement(tempElement);*/
 
-	Element* tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.19f, 0, "Media/Menus/ResumeGame.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNRESUME), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.19f, windowWidth * 0.30f, windowHeight * 0.15f);
+	/*Some calcs to make it easier*/
+	float imageWidthHalf = (dx * (400.0f / 1200.0f)) / 2;
+	float middleOfScreen = (dx / 2);
+
+	Element* tempElement = new SimpleButton(middleOfScreen - imageWidthHalf + offSet, windowHeight * (170.0f / 900.0f), 0, "Media/Menus/ResumeGame.png", dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f), new ChangeSetEvent(IGNRESUME),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", middleOfScreen - imageWidthHalf + offSet, windowHeight * (170.0f / 900.0f), dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f));
+
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.37f, 0, "Media/Menus/Options.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNOPTIONS), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.37f, windowWidth * 0.30f, windowHeight * 0.15f);
+
+	tempElement = new SimpleButton(middleOfScreen - imageWidthHalf + offSet, windowHeight * (325.0f / 900.0f), 0, "Media/Menus/Options.png", dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f), new ChangeSetEvent(IGNOPTIONS),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", middleOfScreen - imageWidthHalf + offSet, windowHeight * (325.0f / 900.0f), dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f));
+
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
-	tempElement = new SimpleButton(windowWidth * 0.35f, windowHeight * 0.55f, 0, "Media/Menus/Quit.png", windowWidth * 0.30f, windowHeight * 0.15f, new ChangeSetEvent(IGNQUIT), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", windowWidth * 0.35f, windowHeight * 0.55f, windowWidth * 0.30f, windowHeight * 0.15f);
+
+	tempElement = new SimpleButton(middleOfScreen - imageWidthHalf + offSet, windowHeight * (480.0f / 900.0f), 0, "Media/Menus/Quit.png", dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f), new ChangeSetEvent(IGNQUIT),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png", middleOfScreen - imageWidthHalf + offSet, windowHeight * (480.0f / 900.0f), dx * (400.0f / 1200.0f), windowHeight * (150.0f / 900.0f));
+
+
 	this->mSets[INGAMEMENU].AddElement(tempElement);
 
 	/* Adding the buttons for the options menu*/
@@ -53,18 +66,6 @@ bool InGameMenu::Initialize()
 	
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonbasic.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickbasic.png", "Media/OptionsMenu/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[IGNOPTIONS].AddElement(tempElement);
-
-	//Ugly drop down list to start with
-	float dropX = dx * (380.0f / 1200.0f) + offSet, dropY = windowHeight * (80.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 60.0f, "UglyExample");
-	DropDownList* dropdownlist = (DropDownList*)tempElement;
-
-	dropdownlist->AddButton("Media/Menus/Options1920_1080.png", new ChangeResEvent(1920, 1080), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png");
-	dropdownlist->AddButton("Media/Menus/Options1920_1080.png", new ChangeResEvent(1680, 1050), "Media/Menus/PressedOptions1920_1080.png", "Media/Menus/MouseOverOptions1920_1080.png");
-
-
-	this->mSets[IGNOPTIONS].AddElement(tempElement);
-
 	/*
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/clickadvanced.png", "Media/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);

@@ -3,7 +3,14 @@
 #include "Element.h"
 #include "..\GraphicsEngine\GraphicsEngine.h"
 #include "..\stdafx.h"
-
+enum TEXTBOX {NOTHINGALLOWED,
+	ALL,
+	NORMALCHAR,
+	NORMALCHAR_NR,
+	NORMALCHAR_NR_SPECIAL,
+	NR,
+	NR_SPECIAL,
+	SPECIAL};
 class TextBox : public Element
 {
 private:

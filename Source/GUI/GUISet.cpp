@@ -298,7 +298,6 @@ GUIEvent* GUISet::GetEventFromDropDown(string dropDownMenu)
 			DropDownList* temp = (DropDownList*)this->mElements[i];
 			if(temp->GetName() == dropDownMenu)
 			{
-				MaloW::Debug("Was here");
 				return temp->GetEventFromTop();
 			}
 		}
