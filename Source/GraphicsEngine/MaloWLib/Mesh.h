@@ -18,6 +18,7 @@ class Mesh
 {
 protected:
 	COLOR specialColor;
+	float transparency; //default 0.0f (full visibility)
 
 	MaloW::Array<MeshStrip*>* strips;
 
@@ -31,8 +32,11 @@ protected:
 public:
 	Mesh(D3DXVECTOR3 pos);
 	virtual ~Mesh();
-
+	
+	/*! Sets mesh's specialcolor. */
 	void SetSpecialColor(COLOR specialColor);
+	/*! Sets the level of transparency. Range is [0,1]. */
+	void SetTransparency(float transparency);
 	void SetPosition(D3DXVECTOR3 pos);
 	void MoveBy(D3DXVECTOR3 moveby);
 	void Rotate(D3DXVECTOR3 radians);
@@ -42,6 +46,7 @@ public:
 	void Scale(float scale);
 
 	COLOR GetSpecialColor() const { return this->specialColor; }
+	float GetTransparency() const { return this->transparency; }
 	D3DXVECTOR3 GetPosition() const { return this->pos; }
 	D3DXQUATERNION GetRotation() const { return this->rotQuat; }
 	D3DXVECTOR3 GetScaling() const { return this->scale; }

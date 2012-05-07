@@ -3,6 +3,7 @@
 Mesh::Mesh(D3DXVECTOR3 pos)
 {
 	this->specialColor = NULL_COLOR;
+	this->transparency = 0.0f;
 
 	this->strips = new MaloW::Array<MeshStrip*>();
 
@@ -105,6 +106,22 @@ void Mesh::LoadFromFile(string file)
 void Mesh::SetSpecialColor(COLOR specialColor)
 {
 	this->specialColor = specialColor;
+}
+
+void Mesh::SetTransparency(float transparency)
+{
+	if(transparency < 0.0f)
+	{
+		this->transparency = 0.0f;
+	}
+	else if(transparency > 1.0f)
+	{
+		this->transparency = 1.0f;
+	}
+	else
+	{
+		this->transparency = transparency;
+	}
 }
 
 void Mesh::SetPosition(D3DXVECTOR3 pos)
