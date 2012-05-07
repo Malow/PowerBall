@@ -311,24 +311,26 @@ bool GameManager::PlayLAN(ServerInfo server)
 			}
 			if(this->mNet->GetIndex() < this->mNumPlayers)
 			{
-				//REDUNDANT CODE, THE KEY CHECKS APPEAR AT MULTIPLE PLACES (DUE TO SPLIT SERVER/CLIENT): FIX THIS!
-				
 				int i = this->mNet->GetIndex();
 
 				this->SendKeyInputs(i, diff);
 				this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
 				
-				Ball* b1 = this->mBalls[i];
-				for(int j = i+1; j < this->mNumPlayers; j++)
+				for(int c = 0; c < this->mNumPlayers; c++)
 				{
-					Ball* b2 = this->mBalls[j];
-					if(b1->collisionWithSphereSimple(b2))
-						b1->collisionSphereResponse(b2);
+					Ball* b1 = this->mBalls[c];
+					for(int j = c+1; j < this->mNumPlayers; j++)
+					{
+						Ball* b2 = this->mBalls[j];
+						if(b1->collisionWithSphereSimple(b2))
+							b1->collisionSphereResponse(b2);
 
+					}
 				}
+
 				Vector3 normalPlane;
-				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				if(this->mBalls[i]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+					this->mBalls[i]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 
 				this->mBalls[i]->Update(diff);
 				
