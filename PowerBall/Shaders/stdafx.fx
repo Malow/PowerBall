@@ -62,6 +62,12 @@ SamplerState LinearWrapSampler
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
+SamplerState LinearClampSampler
+{
+	Filter = MIN_MAG_MIP_LINEAR; 
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
 SamplerState PointWrapSampler
 {
 	Filter = MIN_MAG_MIP_POINT; 

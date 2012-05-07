@@ -209,7 +209,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetInt("height", this->params.windowHeight);
 		
 	// Set SSAO settings
-	//this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
+	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 
 	// Set lava-texture
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
