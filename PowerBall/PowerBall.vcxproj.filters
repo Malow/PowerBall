@@ -239,6 +239,15 @@
     <ClCompile Include="..\Source\MsgHandler.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\ParticleShader.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\ParticleSystem.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GraphicsEngine\ParticleSystemsHandler.cpp">
+      <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -453,6 +462,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\MsgHandler.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\ParticleShader.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\ParticleSystem.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GraphicsEngine\ParticleSystemHandler.h">
+      <Filter>Graphics Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

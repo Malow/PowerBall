@@ -72,7 +72,7 @@ inline float RndFloat(float a, float b)
 	return a + RndFloat() * (b - a);
 }
 /*! returns random D3DXVECTOR3 with x,y,z between [-1,1] where x^2 + y^2 + z^2 = 1 */
-inline D3DXVECTOR3 RandUnitVec3()
+inline D3DXVECTOR3 RndUnitVec3()
 {
 	D3DXVECTOR3 v = D3DXVECTOR3(RndFloat(-1.0f, 1.0f), RndFloat(-1.0f, 1.0f), RndFloat(-1.0f, 1.0f));
 	D3DXVec3Normalize(&v, &v);

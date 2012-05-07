@@ -26,6 +26,10 @@ void DxManager::RenderDeferredGeometry()
 	{
 		MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
 		
+		// Per object
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
+		this->Shader_DeferredGeometry->SetFloat("transparency", this->objects[i]->GetTransparency()); //**
+
 		// Set matrixes
 		world = this->objects[i]->GetWorldMatrix();
 		wvp = world * view * proj;
@@ -35,7 +39,6 @@ void DxManager::RenderDeferredGeometry()
 		this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
-		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
 
 		for(int u = 0; u < strips->size(); u++)
 		{

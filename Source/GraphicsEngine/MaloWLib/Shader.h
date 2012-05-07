@@ -10,7 +10,7 @@ class Shader
 	ID3D11DeviceContext*	mImmediateContext;
 	ID3D11InputLayout*		m_pInputLayout;
 
-	ID3DX11Effect* m_pEffect;
+	ID3DX11Effect*			m_pEffect;
 	ID3DX11EffectTechnique* m_pTechnique;
 
 public:
