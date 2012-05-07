@@ -67,9 +67,13 @@ private:
 
 	void		InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu);
 
-	void		InputKeysPressedFromServer(float diff, int index); 
+
+
+	void		ClientKeyPress(float diff, const int index, char key); 
 
 	void		InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
 
-	void		SendKeysPressedToServer();
+
+	void		SendKeyInputs(const int clientIndex, float diff);
+	void		HandleClientKeyInputs(const int clientIndex, float diff);
 };

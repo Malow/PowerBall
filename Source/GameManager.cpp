@@ -238,91 +238,59 @@ bool GameManager::PlayLAN(ServerInfo server)
 	float warlockTimer = 0;
 	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 	string s;
+
+	
+	LARGE_INTEGER oldTick = LARGE_INTEGER();
+	LARGE_INTEGER now =  LARGE_INTEGER();
+
+
 	while(running)
 	{
-		float diff = mGe->Update();	
+		float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
 		
+		QueryPerformanceCounter(&now);
+		LARGE_INTEGER proc_freq;
+		::QueryPerformanceFrequency(&proc_freq);
+		double frequency = proc_freq.QuadPart;
 
-		if(!this->mNet->Update(this->mBalls, this->mNumPlayers, diff))
-			running = false;
+		//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
+		QueryPerformanceCounter(&oldTick);
 
 		if(this->mNet->IsServer())
 		{
-			for(int i = 0; i < this->mNumPlayers; i++)
-				this->mBalls[i]->Update(diff);
+
 			// will be moved to phisics simulation class
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
 				if(i != this->mNet->GetIndex())
 				{
-					/*
-					if(this->mNet->IsKeyPressed('W', i));
-						mBalls[i]->AddForceForwardDirection(diff);
-						*/
-					/*
-					if(this->mNet->IsKeyPressed('W', i))
-						mBalls[i]->AddForce(Vector3(0,0,diff));	
-						*/
-					/*
-					if(this->mNet->IsKeyPressed('W', i))
-						mBalls[i]->AddForceForwardDirection(diff);
-						*/
-					this->InputKeysPressedFromServer(diff, i);
-					// does not work in the funktion above
-					
-					/*
-						int flip = 1;
-						if(this->mNet->GetStartPos(i).z > 0)
-							flip = -1;
-						if(this->mNet->IsKeyPressed('A', i))
-							mBalls[i]->AddForce(Vector3(-diff * flip,0,0));	
-						if(this->mNet->IsKeyPressed('D', i))
-							mBalls[i]->AddForce(Vector3(diff * flip,0,0));
-						if(this->mNet->IsKeyPressed('W', i))
-							mBalls[i]->AddForce(Vector3(0,0,diff * flip));	
-						if(this->mNet->IsKeyPressed('S', i))
-							mBalls[i]->AddForce(Vector3(0,0,-diff * flip));
-						if(this->mNet->IsKeyPressed(VK_SPACE, i))
-							mBalls[i]->AddForce(Vector3(0, diff,0));
-					*/
-						
+					this->mBalls[i]->SetForwardVector(this->mNet->GetForwardVector(i));
+					this->HandleClientKeyInputs(i, diff);
 				}
 				else
 				{
-					/*
-						if(mGe->GetKeyListener()->IsPressed('A'))
-							mBalls[i]->AddForce(Vector3(-diff,0,0));	
-						if(mGe->GetKeyListener()->IsPressed('D'))
-							mBalls[i]->AddForce(Vector3(diff,0,0));
-						if(mGe->GetKeyListener()->IsPressed('W'))
-							mBalls[i]->AddForce(Vector3(0,0,diff));	
-						if(mGe->GetKeyListener()->IsPressed('S'))
-							mBalls[i]->AddForce(Vector3(0,0,-diff));
-						if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
-							mBalls[i]->AddForce(Vector3(0,diff,0));
-					*/
 					this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
 				}	
-				
-			}
-			for(int i = 0;i<this->mNumPlayers;i++)
-			{
+
 				Ball* b1 = this->mBalls[i];
 				for(int j = i+1; j < this->mNumPlayers; j++)
 				{
 					Ball* b2 = this->mBalls[j];
 					if(b1->collisionWithSphereSimple(b2))
 						b1->collisionSphereResponse(b2);
+
 				}
 				Vector3 normalPlane;
 				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 			}
 			
-		
+			for(int i = 0; i < this->mNumPlayers; i++)
+				this->mBalls[i]->Update(diff); //split up due to the balls affecting each other, so cant send final position until all balls updated
+
 			for(int i = 0; i < this->mNumPlayers; i++)
 			{
 				this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
@@ -330,57 +298,59 @@ bool GameManager::PlayLAN(ServerInfo server)
 				this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
 			}
 		}
-		else 
+		else //is client
 		{
-			/*
-			this->mNet->AddKeyInput('A', mGe->GetKeyListener()->IsPressed('A'));
-			this->mNet->AddKeyInput('D', mGe->GetKeyListener()->IsPressed('D'));
-			this->mNet->AddKeyInput('W', mGe->GetKeyListener()->IsPressed('W'));
-			this->mNet->AddKeyInput('S', mGe->GetKeyListener()->IsPressed('S'));
-			this->mNet->AddKeyInput(VK_SPACE, mGe->GetKeyListener()->IsPressed(VK_SPACE));
-			*/
-			this->SendKeysPressedToServer();
-			if(this->mNet->GetIndex() < this->mNumPlayers)
+			for(int i = 0; i < this->mNumPlayers; i++)
 			{
-				
-				/*
-				int flip = 1;
-				if(this->mNet->GetStartPos(this->mNet->GetIndex()).z > 0)
-					flip = -1;
-				if(mGe->GetKeyListener()->IsPressed('A'))
-					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(-diff*flip,0,0));	
-				if(mGe->GetKeyListener()->IsPressed('D'))
-					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(diff*flip,0,0));
-				if(mGe->GetKeyListener()->IsPressed('W'))
-					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,diff*flip));	
-				if(mGe->GetKeyListener()->IsPressed('S'))
-					mBalls[this->mNet->GetIndex()]->AddForce(Vector3(0,0,-diff*flip));
-				*/
-				this->InputKeysPressedSelf(diff, this->mNet->GetIndex(), zoomOutPressed, zoomInPressed, running, quitByMenu);
-				for(int i = 0; i < this->mNumPlayers; i++)
-					this->mBalls[i]->Update(diff);
-				for(int i = 0; i < this->mNumPlayers; i++)
+				if(this->mNet->GetIndex() != i)
 				{
-					Ball* b1 = this->mBalls[i];
-					for(int j = i+1; j < this->mNumPlayers; j++)
-					{
-						Ball* b2 = this->mBalls[j];
-						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2);
-
-					}
-					Vector3 normalPlane;
-					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+					D3DXVECTOR3 rotVector = this->mNet->GetPos(i) - this->mBalls[i]->GetPosition();
+					this->mBalls[i]->SetPosition(this->mNet->GetPos(i));
+					this->mBalls[i]->Rotate(rotVector);
 				}
 			}
+			if(this->mNet->GetIndex() < this->mNumPlayers)
+			{
+				//REDUNDANT CODE, THE KEY CHECKS APPEAR AT MULTIPLE PLACES (DUE TO SPLIT SERVER/CLIENT): FIX THIS!
+				
+				int i = this->mNet->GetIndex();
+
+				this->SendKeyInputs(i, diff);
+				this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
+				
+				Ball* b1 = this->mBalls[i];
+				for(int j = i+1; j < this->mNumPlayers; j++)
+				{
+					Ball* b2 = this->mBalls[j];
+					if(b1->collisionWithSphereSimple(b2))
+						b1->collisionSphereResponse(b2);
+
+				}
+				Vector3 normalPlane;
+				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+
+				this->mBalls[i]->Update(diff);
+				
+
+				this->mNet->AddMovement(this->mBalls[i]);
+				Vector3 temp = this->mBalls[i]->GetForwardVector();
+				this->mNet->SetForwardVector(D3DXVECTOR3(temp.x, temp.y, temp.z), i);
+
+			}
 		}
+
 		for(int i = 0; i < this->mNumPlayers; i++)
 		{
 			if(this->mBalls[i]->IsAlive())
 				numAlivePlayers += 1;
 		}
 		mPlatform->Update(diff);
+
+		
+		if(!this->mNet->Update(this->mBalls, this->mNumPlayers, diff))
+			running = false;
+
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
 			if(this->mGameMode == WARLOCK)
@@ -872,34 +842,34 @@ void GameManager::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPr
 
 }
 
-void GameManager::InputKeysPressedFromServer(float diff, int index)
+void GameManager::ClientKeyPress(float diff, const int index, char key)
 {
 
-	if(this->mNet->IsKeyPressed('A', index))
+	if(key == 'A')
 		mBalls[index]->AddForceLeftOfForwardDirection(diff);
-	if(this->mNet->IsKeyPressed('D', index))
+	if(key == 'D')
 		mBalls[index]->AddForceRightOfForwardDirection(diff);
 	/* wTF */
-	if(this->mNet->IsKeyPressed('W', index))
+	if(key == 'W')
 		mBalls[index]->AddForceForwardDirection(diff);
 	
 	
-	if(this->mNet->IsKeyPressed('S', index))
+	if(key == 'S')
 		mBalls[index]->AddForceOppositeForwardDirection(diff);
 	
-	if(this->mNet->IsKeyPressed('Q', index))
+	if(key == 'Q')
 		mBalls[index]->RotateForwardLeft(diff);
-	if(this->mNet->IsKeyPressed('E', index))
+	if(key == 'E')
 		mBalls[index]->RotateForwardRight(diff);
-	if(this->mNet->IsKeyPressed('1', index))
+	if(key == '1')
 		mBalls[index]->UseSpell(1);
-	if(this->mNet->IsKeyPressed('2', index))
+	if(key == '2')
 		mBalls[index]->UseSpell(2);
-	if(this->mNet->IsKeyPressed('3', index))
+	if(key == '3')
 		mBalls[index]->UseSpell(3);
-	if(this->mNet->IsKeyPressed('4', index))
+	if(key == '4')
 		mBalls[index]->UseSpell(4);
-	if(this->mNet->IsKeyPressed(VK_SPACE, index))
+	if(key == VK_SPACE)
 		mBalls[index]->AddForce(Vector3(0, diff,0));
 	
 }
@@ -954,19 +924,65 @@ void GameManager::InputKeysPressedSelf(float diff, int index, bool& zoomOutPress
 	}
 }
 
-void GameManager::SendKeysPressedToServer()
+
+void GameManager::SendKeyInputs(const int clientIndex, float diff)
 {
-		
-		this->mNet->AddKeyInput('A', mGe->GetKeyListener()->IsPressed('A'));
-		this->mNet->AddKeyInput('D', mGe->GetKeyListener()->IsPressed('D'));
-		this->mNet->AddKeyInput('W', mGe->GetKeyListener()->IsPressed('W'));
-		this->mNet->AddKeyInput('S', mGe->GetKeyListener()->IsPressed('S'));
-		this->mNet->AddKeyInput('Q', mGe->GetKeyListener()->IsPressed('Q'));
-		this->mNet->AddKeyInput('E', mGe->GetKeyListener()->IsPressed('E'));
-		this->mNet->AddKeyInput(VK_SPACE, mGe->GetKeyListener()->IsPressed(VK_SPACE));
-		this->mNet->AddKeyInput('1', mGe->GetKeyListener()->IsPressed('1'));
-		this->mNet->AddKeyInput('2', mGe->GetKeyListener()->IsPressed('2'));
-		this->mNet->AddKeyInput('3', mGe->GetKeyListener()->IsPressed('3'));
-		this->mNet->AddKeyInput('4', mGe->GetKeyListener()->IsPressed('4'));
-		
+	char keyDowns[5] = {0};
+	char keysToCheck[11] = {'A', 'D', 'W', 'S', 'Q', 'E', VK_SPACE, '1', '2', '3', '4'};
+	int numKeys = 0;
+	for(int i = 0; i < 11; i++)
+	{
+		if(mGe->GetKeyListener()->IsPressed(keysToCheck[i]) && numKeys < 5)
+			keyDowns[numKeys++] = keysToCheck[i];
+	}
+				
+	if(numKeys == 0)
+		keyDowns[numKeys++] = '?'; //"idle"-key
+
+	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff);
+	
+}
+void GameManager::HandleClientKeyInputs(const int clientIndex, float diff)
+{
+	
+	int flip = 1;
+	if(this->mNet->GetStartPos(clientIndex).z > 0)
+		flip = -1;
+	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
+	KeyInput* command = this->mNet->GetNextCommand(clientIndex);
+	float duration = 0.0f;
+	if(command != NULL)
+	{
+		duration = command->dt;
+		while(duration <=  diff && command != NULL)
+		{
+			for(int c = 0; c < command->numKeys; c++)
+			{
+				this->ClientKeyPress(command->dt, clientIndex, command->keys[c]);
+			}
+			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + command->dt, clientIndex);
+			this->mNet->PopCommand(clientIndex);
+
+
+			command = this->mNet->GetNextCommand(clientIndex);
+			if(command != NULL)
+				duration += command->dt;
+								
+		}
+		if(duration > diff && command != NULL)
+		{
+			duration -= command->dt;
+									
+			for(int c = 0; c < command->numKeys; c++)
+			{
+				//ADD A CHECK HERE SO THAT THE SAME KEY CANT APPEAR MORE THAN ONCE IN THE ARRAY (COULD CHEAT THE SYSTEM THIS WAY)
+				
+				this->ClientKeyPress((diff - duration), clientIndex, command->keys[c]);
+			}
+
+			command->dt -= (diff - duration);
+								
+			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + (diff - duration), clientIndex);
+		}
+	}
 }

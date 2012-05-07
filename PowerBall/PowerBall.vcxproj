@@ -72,7 +72,9 @@
     <ClCompile Include="..\Source\MaloWLib\KeyListener.cpp" />
     <ClCompile Include="..\Source\MaloWLib\Process.cpp" />
     <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
+    <ClCompile Include="..\Source\MsgHandler.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
+    <ClCompile Include="..\Source\PlayerHistory.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
     <ClCompile Include="..\Source\ServerInfo.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp" />
@@ -142,7 +144,9 @@
     <ClInclude Include="..\Source\MaloWLib\Process.h" />
     <ClInclude Include="..\Source\MaloWLib\Queue.h" />
     <ClInclude Include="..\Source\MaloWLib\TCBSpline.h" />
+    <ClInclude Include="..\Source\MsgHandler.h" />
     <ClInclude Include="..\Source\Platform.h" />
+    <ClInclude Include="..\Source\PlayerHistory.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />
     <ClInclude Include="..\Source\ServerInfo.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundEffect.h" />

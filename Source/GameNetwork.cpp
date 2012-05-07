@@ -9,6 +9,13 @@ GameNetwork::GameNetwork()
 	this->mFlagPos		= new D3DXVECTOR3[2];
 	this->mIndex		= 0;
 	this->mNumPlayers	= 1;
+	this->mIsRunning	= true;
+	this->mLatency		= 50.0f;
+	for(int i = 0; i < PLAYER_CAP; i++)
+	{
+		this->mExecTime[i] = 0.0f;
+	}
+	MsgHandler::GetInstance().Set(this, this->mConn);
 }
 GameNetwork::~GameNetwork()
 {
@@ -16,20 +23,10 @@ GameNetwork::~GameNetwork()
 	SAFE_DELETE_ARRAY(this->mPos);
 	SAFE_DELETE_ARRAY(this->mVel);
 	SAFE_DELETE_ARRAY(this->mFlagPos);
-}
-void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
-{
-	this->mPos[index] = pos;
-}
-void GameNetwork::SetStartPos(const D3DXVECTOR3 pos, const int index)
-{
-	this->mStartPositions[index] = pos;
-}
-void GameNetwork::SetStartPosistions(const D3DXVECTOR3 pos[], const int size)
-{
-	for(int i = 0; i < size; i++)
+	for(int i = 0; i < this->mNumPlayers; i++)
 	{
-		this->mStartPositions[i] = pos[i];
+		while(this->mKeyInputs[i].size() > 0)
+			this->PopCommand(i);
 	}
 }
 
@@ -46,6 +43,21 @@ void GameNetwork::SetForwardVectors(const D3DXVECTOR3 forward[], const int size)
 	}
 }
 
+void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
+{
+	this->mPos[index] = pos;
+}
+void GameNetwork::SetStartPos(const D3DXVECTOR3 pos, const int index)
+{
+	this->mStartPositions[index] = pos;
+}
+void GameNetwork::SetStartPosistions(const D3DXVECTOR3 pos[], const int size)
+{
+	for(int i = 0; i < size; i++)
+	{
+		this->mStartPositions[i] = pos[i];
+	}
+}
 void GameNetwork::SetVel(const D3DXVECTOR3 vel, const int index)
 {
 	this->mVel[index] = vel;
@@ -54,118 +66,73 @@ void GameNetwork::SetFlagPos(const D3DXVECTOR3 pos, const int index)
 {
 	this->mFlagPos[index] = pos;
 }
-void GameNetwork::AddKeyInput(const char key, const bool down)
+void GameNetwork::AddKeyInput(const int index, char keys[], const int numKeys, const float dt)
 {
-	if(this->mKeyInputs[this->mIndex][key] && down == false)
+	if(!this->IsServer())
 	{
-		this->mKeyUps.push_back(key);
+		static char previousKeys[5] = {0};
+		bool same = true;
+		for(int i = 0; i < numKeys; i++)
+		{
+			if(previousKeys[i] != keys[i])
+				same = false;
+		}
+		if(!same || this->mKeyInputs[index].empty())
+		{
+			this->mKeyInputs[index].push(new KeyInput(keys, numKeys, dt));
+		}
+		else
+		{
+			KeyInput* command = this->mKeyInputs[index].back();
+			command->dt += dt;
+		}
+	
+		for (int i = 0; i < 5; i++)
+			previousKeys[i] = 0;
+		for (int i = 0; i < numKeys; i++)
+			previousKeys[i] = keys[i];
+		
+		this->mExecTime[this->mIndex] += dt;
+
 	}
-	this->mKeyInputs[this->mIndex][key] = down;
+	else
+	{
+		this->mKeyInputs[index].push( new KeyInput(keys, numKeys, dt));
+	}
 }
-bool GameNetwork::IsKeyPressed(const char key, const int index) const
+KeyInput* GameNetwork::GetNextCommand(const int index) 
 {
-	return this->mKeyInputs[index][key];
+	if(this->mKeyInputs[index].size() > 0) // size has a max limit too it seems, so check that too
+	{
+		return this->mKeyInputs[index].front();
+	}
+	else return NULL;
+}
+void GameNetwork::PopCommand(const int index)
+{
+	if(!this->mKeyInputs[index].empty())
+	{
+		KeyInput* temp =  this->mKeyInputs[index].front();
+		this->mKeyInputs[index].pop();
+		delete temp;
+	}
+}
+void GameNetwork::AddMovement(Ball* ball)
+{
+	this->mPlayerHistories[this->mIndex].AddSnapshot(ball->GetPosition(), this->mExecTime[this->mIndex]);
 }
 bool GameNetwork::ClientUpdate()
 {
 	bool ret = true;
-	char bufW[256] = {0};
-	int offset = 0;
 	/*
 		Valve limits client sends to 30 packets per second.
 	*/
-	for(int i = 0; i < 256; i++)
-	{
-		if(this->mKeyInputs[this->mIndex][i])
-		{
-			this->AddToBuffer(bufW, offset, (char)i);
-		}
-	}
-	if(offset > 0 || (this->mKeyUps.size() > 0 && offset == 0))
-		this->AddToBuffer(bufW, offset, ';');
-
-	for(int i = 0; i < this->mKeyUps.size(); i++)
-	{
-		this->AddToBuffer(bufW, offset, this->mKeyUps[i]);
-	}
-	this->mKeyUps.clear();
-
-	if(offset > 0)
-	{
-		this->AddToBuffer(bufW, offset, ';');
-		this->mConn->SetWriteBuffer(bufW, offset, 0);
-	}
-
-
-	char buf[256] = {0};
-	if(this->mConn->GetReadBuffer(buf, 256, 0))
-	{
-		offset = 0;
-		char identifier = this->GetFromBufferC(buf, offset);
-		switch(identifier)
-		{
-		case 'K':
-			{
-				this->mIndex = (int) this->GetFromBufferC(buf, offset);
-				this->mNumPlayers = (int) this->GetFromBufferC(buf, offset);
-
-				for(int i = 0; i < this->mNumPlayers; i++) 
-				{
-					int index = (int) this->GetFromBufferC(buf, offset);
-					this->mPos[index] = this->GetFromBufferD(buf, offset);
-					this->mVel[index] = this->GetFromBufferD(buf, offset);
-				}
-				this->mFlagPos[0] = this->GetFromBufferD(buf, offset);
-				this->mFlagPos[1] = this->GetFromBufferD(buf, offset);
-				break;
-			}
-		case 'F':
-			{
-				this->mFlagPos[0] = this->GetFromBufferD(buf, offset);
-				this->mFlagPos[1] = this->GetFromBufferD(buf, offset);
-				break;
-			}
-		case 'C':
-			{
-				ret = false;
-				this->Close();
-				break;
-			}
-		}
-	}
-	
-	//for(int a = 0; a < 256; a++)
-		//this->mKeyInputs[this->mIndex][a] = false;
-
+	MsgHandler::GetInstance().SendClientData();
 	return ret;
 }
 
 void GameNetwork::ServerUpdate()
 {
-	//if(this->mServer.GetGameMode() == CTF)
-		//this->SendCTFParams();
-	for(int i = 1; i < this->mConn->GetNumConnections(); i++)
-	{
-
-		char buf[256];
-		if(this->mConn->GetReadBuffer(buf, 256, i - 1))
-		{
-			for(int a = 0; a < 256; a++)
-				this->mKeyInputs[i][a] = false;
-			int offset = 0;
-			while(buf[offset] != ';')
-			{
-				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = true;
-			}
-			offset += sizeof(char);
-			
-			while(buf[offset] != ';')
-			{
-				this->mKeyInputs[i][this->GetFromBufferC(buf, offset)] = false;
-			}
-			offset += sizeof(char);
-		}
-	}
 	/*
 		Clients usually have only a limited amount of available bandwidth. 
 		In the worst case, players with a modem connection can't receive more than 5 to 7 KB/sec. If the server tried to send them updates with a higher data rate, 
@@ -198,108 +165,141 @@ void GameNetwork::ServerUpdate()
 
 
 	//Perhaps add some rules here, so doesnt send stuff that isnt necessary to update (like a player standing still)
-	for(int a = 1; a < this->mNumPlayers; a++)
-	{
-		char bufW[256] = {0};
-		int offset = 0;
-		this->AddToBuffer(bufW, offset, 'K');
-
-		this->AddToBuffer(bufW, offset, (char)a);
-		this->AddToBuffer(bufW, offset, (char)this->mNumPlayers);
-
-		for(int i = 0; i < this->mNumPlayers; i++)
-		{
-			this->AddToBuffer(bufW, offset, (char)i);
-			this->AddToBuffer(bufW, offset, this->mPos[i]);
-			this->AddToBuffer(bufW, offset, this->mVel[i]);
-		}
-		this->AddToBuffer(bufW, offset, this->mFlagPos[0]);
-		this->AddToBuffer(bufW, offset, this->mFlagPos[1]);
-
-		this->mConn->SetWriteBuffer(bufW, offset, a-1);
-	}
-
+	MsgHandler::GetInstance().SendServerData();
+	
 }
+//temporary test variables
 int test = 0;
+Ball* shadow;
+Ball* shadow2;
+ofstream file2;
+D3DXVECTOR3 interpolationVector(0,0,0);
 
-//Ball* shadow;
 bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 {
-	bool ret = true;
+	static float counter = 0.0f;
+	counter += dt;
+	
 	if(this->IsServer())
-	{	
-		if(this->mNumPlayers != this->mConn->GetNumConnections())
-		{
-			this->mNumPlayers = this->mConn->GetNumConnections();
-			for(int i = 0; i < this->mNumPlayers - 1; i++)
-			{
-				this->mPos[i] = this->mStartPositions[i];
-				balls[i]->SetPosition(this->mStartPositions[i]);
-				balls[i]->SetNumLives(2);
-			}
-		}
-		if(this->mConn->GetNumConnections() > 1)
-			this->ServerUpdate();
-		//update ball (diff = RTT)
-	}
-	else ret = this->ClientUpdate();
-
-	if(!this->IsServer())
-	for(int i = 0; i < numBalls; i++)
 	{
-		/*if(i != this->mIndex)
+		if(counter > SERVER_SEND_MS) 
 		{
-			balls[i]->SetVelocity(Vector3(this->mVel[i]));
-			Vector3 direction = Vector3(this->mPos[i].x - balls[i]->GetPosition().x, 0, this->mPos[i].z - balls[i]->GetPosition().z);
-			balls[i]->Rotate(direction);
-			balls[i]->SetPosition(this->mPos[i]);
-		}
-		else
-		{*/
-			D3DXVECTOR3 direction = D3DXVECTOR3(this->mPos[i].x - balls[i]->GetPosition().x, this->mPos[i].y - balls[i]->GetPosition().y, this->mPos[i].z - balls[i]->GetPosition().z);
-			float length = D3DXVec3Length(&direction);
-			if(length < INTERPOS_MIN || length > INTERPOS_MAX) // the difference is so little or too great so just replace the local pos with network pos.
+			counter = fmodf(counter, SERVER_SEND_MS);
+		
+			if(this->mNumPlayers != this->mConn->GetNumConnections())
 			{
+				this->mNumPlayers = this->mConn->GetNumConnections();
+				for(int i = 0; i < this->mNumPlayers - 1; i++)
+				{
+					this->mPos[i] = this->mStartPositions[i];
+					balls[i]->SetPosition(this->mStartPositions[i]);
+					balls[i]->SetNumLives(2);
+				}
+			}
+			if(this->mConn->GetNumConnections() > 1)
+				this->ServerUpdate();
+		}
+	}
+	else //Is client
+	{
+		if(counter > CLIENT_SEND_MS)
+		{
+			counter = fmodf(counter, CLIENT_SEND_MS);
+			this->ClientUpdate();
+		}
+		
+		if(test == 0)
+		{
+			file2.open("testdata.txt", ios::out);
+			//shadow = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+			//shadow2 = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+			test++;
+		}
+		//shadow->SetPosition(this->mPos[this->mIndex]);
+		static float ping_counter = 0.0f;
+		ping_counter++;
+		if(ping_counter > 1000.0f)
+		{
+			ping_counter = 0.0f;
+			MsgHandler::GetInstance().Ping(0);
+		}
+		file2 << this->mLatency << endl;
+		if(numBalls > this->mIndex)
+		{
+			D3DXVECTOR3 mod = this->CorrectPosition();//(0,0,0);//
+			/*
+				Have a interpolation vector and add mod to it all the time and then in the update loop u slowly subtracts from it so it become a smooth movement and not as spiky as now.
 				
-				balls[i]->SetVelocity(Vector3(this->mVel[i]));
-				//Vector3 direction = Vector3(this->mPos[i].x - balls[i]->GetPosition().x, 0, this->mPos[i].z - balls[i]->GetPosition().z);
-				balls[i]->Rotate(direction);
-				balls[i]->SetPosition(this->mPos[i]);
+			*/
+			//interpolation, MAYBE MOVE TO PLAYERHISTORY
+			/*interpolationVector += mod;
+			float length = D3DXVec3Length(&interpolationVector);
+
+			if(length < INTERPOS_MIN) // the difference is so little or too great so just replace the local pos with network pos.
+			{
+				if(length > FLOAT_EPSILON) //float epsilon
+				{
+					balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + interpolationVector);
+					balls[this->mIndex]->Rotate(interpolationVector);
+					this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+					interpolationVector = D3DXVECTOR3(0,0,0);
+
+				}
+			}
+			else if (length > INTERPOS_MAX) //May be caused my lag or external movement of the ball.
+			{
+				balls[this->mIndex]->SetPosition(this->mPos[this->mIndex]);
+				this->mPlayerHistories[this->mIndex].Reset(this->mStartPositions[this->mIndex]);
+				interpolationVector = D3DXVECTOR3(0,0,0);
 			}
 			else
 			{
-				balls[i]->SetVelocity(Vector3(this->mVel[i])*INTERVEL_MOD  + balls[i]->GetVelocity() * (1.0f-INTERVEL_MOD));
+				D3DXVECTOR3 modifier = interpolationVector * dt * 0.001f * INTERPOS_MOD;
+				interpolationVector -= modifier;
+				balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + modifier);
+				balls[this->mIndex]->Rotate(modifier);
+				this->mPlayerHistories[this->mIndex].MoveHistory(modifier); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+			}*/
 
-
-				//balls[i]->SetVelocity(balls[i]->GetVelocity() + direction * 0.25);
-
-
-				D3DXVECTOR3 modifier = direction * dt * 0.001f * INTERPOS_MOD;
-				balls[i]->Rotate(modifier);
-				balls[i]->SetPosition(balls[i]->GetPosition() + modifier);
-				
+			//NO iNTERPOLATION, MIGHT GET SPIKY. Smooth corretion needs a bit more work.
+			interpolationVector = mod;
+			if(D3DXVec3Length(&interpolationVector) > FLOAT_EPSILON)
+			{
+				balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + interpolationVector );
+				balls[this->mIndex]->Rotate(interpolationVector);
+				this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}
-		//}
-	}
-	/*if(!this->IsServer())
-	{
-		if(test == 0)
-		{
-			shadow = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
-			test++;
 		}
-		shadow->SetPosition(this->mPos[1]);
-	}*/
-	return ret;
+	}
+	return this->mIsRunning;
+}
+D3DXVECTOR3 GameNetwork::CorrectPosition()
+{
+	D3DXVECTOR3 mod(0.0f, 0.0f, 0.0f);
+	if(this->GetServerExecTime() > 0 && this->GetServerExecTime() < this->mExecTime[this->mIndex])
+	{
+		// this->mTime - mLatency;//this->totExectime;// ;//this->totExectime;//this->totExectime;// mLatency;// - 100;// latency(which isnt really latency, just the time since server used the keyinput) can get really low if packets stack up, fix this
+		//LATENCY = (TIME PING PACKET RECV - TIME PING PACKET SENT)  + TIME OF THE SUM OF THE KEYCOMMANDS EXECUTED BY SERVER. (execution time)
+		
+		D3DXVECTOR3 historyPos = this->mPlayerHistories[this->mIndex].GetPos(this->GetServerExecTime());
+		//shadow2->SetPosition(historyPos );
+		mod = this->mPos[this->mIndex] - historyPos;
+		
+		mod.y = 0;//Ignoring y, maybe remove (weird due to the way collision is implemented, y-value always changes)
+		if(D3DXVec3Length(&mod) < 0.11f)
+		{
+			mod.x = 0;
+			mod.z = 0;
+		}
+	}
+	return mod;
 }
 void GameNetwork::Start(ServerInfo server)
 {
 	this->mServer = server;
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
-		for(int a = 0; a < 256; a++)
-			this->mKeyInputs[i][a]=false;
-
 		this->mPos[i] = this->mStartPositions[i];
 		this->mVel[i] = D3DXVECTOR3(0,0,0);
 	}
@@ -312,75 +312,19 @@ void GameNetwork::Start(ServerInfo server)
 	{
 		mConn->Connect(server);
 	}
+	this->mPlayerHistories[this->mIndex].Reset(this->mStartPositions[this->mIndex]);
 	
 }
 void GameNetwork::Close()
 {
+	this->mIsRunning = false;
 	if(this->IsServer())
 	{
-		char buf[BUFFER_SIZE];
-		int offset = 0;
-		this->AddToBuffer(buf, offset, 'C');
-		for(int i = 0; i < this->mNumPlayers - 1; i++)
-		{
-			this->mConn->SetWriteBuffer(buf, BUFFER_SIZE, i);
-		}
-		Sleep(500);
+		MsgHandler::GetInstance().SendClose();
 	}
 	this->mConn->Close();
 }
 vector<ServerInfo> GameNetwork::FindServers()
 {
 	return this->mConn->FindServers();
-}
-void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, float in)
-{
-	memmove(bufOut + offsetOut, &in, sizeof (in));
-	offsetOut += sizeof (in);
-}
-void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, char in)
-{
-	memmove(bufOut + offsetOut, &in, sizeof (in));
-	offsetOut += sizeof (in);
-}
-void GameNetwork::AddToBuffer(char* bufOut, int &offsetOut, D3DXVECTOR3 in)
-{
-	this->AddToBuffer(bufOut, offsetOut, in.x);
-	this->AddToBuffer(bufOut, offsetOut, in.y);
-	this->AddToBuffer(bufOut, offsetOut, in.z);
-}
-float GameNetwork::GetFromBufferF(char* buf, int &offsetOut)
-{
-	float out = 0.0f;
-	memmove(&out, &buf[offsetOut], sizeof (float));
-	offsetOut += sizeof (float);
-	return out;
-}
-char GameNetwork::GetFromBufferC(char* buf, int &offsetOut)
-{
-	char out = '0';
-	memmove(&out, &buf[offsetOut], sizeof (char));
-	offsetOut += sizeof (char);
-	return out;
-}
-D3DXVECTOR3	GameNetwork::GetFromBufferD(char* buf, int &offsetOut)
-{
-	D3DXVECTOR3 out;
-	out.x = this->GetFromBufferF(buf, offsetOut);
-	out.y = this->GetFromBufferF(buf, offsetOut);
-	out.z = this->GetFromBufferF(buf, offsetOut);
-	return out;
-}
-void GameNetwork::SendCTFParams()
-{
-	/*char bufW[256] = {0};
-	int offset = 0;
-	this->AddToBuffer(bufW, offset, 'F');
-	this->AddToBuffer(bufW, offset, this->mFlagPos[0]);
-	this->AddToBuffer(bufW, offset, this->mFlagPos[1]);
-
-	for(int a = 1; a < this->mNumPlayers; a++)
-	{
-		this->mConn->SetWriteBuffer(bufW, 256, a-1);
-	}*/
 }

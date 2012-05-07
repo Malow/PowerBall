@@ -1,30 +1,56 @@
+#pragma once
 
 #include "stdafx.h"
 #include "ServerConnection.h"
 #include "Ball.h"
+#include "MsgHandler.h"
+#include "PlayerHistory.h"
+#include <queue>
 using namespace std;
 #define PLAYER_CAP 10
-#define INTERPOS_MIN 0.025f //if the position difference (vector length) is lesser than this -> sets local position to network position
-#define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
-#define INTERPOS_MOD 0.65f // 1 = setting local position to latest network position, 0 = ignore network position.
-#define INTERVEL_MOD 0.3f // 1 = setting local vel to latest network vel, 0 = ignore network position.
+#define FLOAT_EPSILON 0.01f //used for ignoring very tiny movements
+#define INTERPOS_MIN .3f //if the position difference (vector length) is lesser than this -> sets local position to network position
+#define INTERPOS_MAX 10.0f //if the position difference (vector length) is greater than this -> sets local position to network position
+#define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
+#define SERVER_SEND_MS 25.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define CLIENT_SEND_MS 50.0f //MAX 1 PACKET PER XX MILLISECONDS
 
+struct KeyInput
+{
+	char keys[5];
+	int numKeys;
+	float dt;
+	KeyInput()
+	{
+	}
+	KeyInput(char _keys[], int _numKeys, float _dt)
+	{
+		for(int i = 0; i < _numKeys; i++)
+			this->keys[i]	= _keys[i];
+		this->numKeys = _numKeys;
+		this->dt	= _dt;
+	}
+};
 
 class GameNetwork
 {
 private:
+
+
 	ServerInfo			mServer;
 	ServerConnection*	mConn;
 	D3DXVECTOR3*		mPos;
 	D3DXVECTOR3*		mVel;
 	D3DXVECTOR3*		mFlagPos;
+	PlayerHistory		mPlayerHistories[PLAYER_CAP];
 	int					mIndex;
 	int					mNumPlayers;
-	bool				mKeyInputs[PLAYER_CAP][256];
-	vector<char>		mKeyUps;
+	queue<KeyInput*>	mKeyInputs[PLAYER_CAP];
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
-	float				mTime;
+	float				mExecTime[PLAYER_CAP];
+	float				mLatency;
+	bool				mIsRunning;
 
 	/*! Updates the client side, (updates LAN - variables). */
 	bool				ClientUpdate();
@@ -32,35 +58,21 @@ private:
 	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
 
-	/*! Adds a float to the char buffer and counts up the offset. */
-	void		AddToBuffer(char* bufOut, int &offsetOut, float in);
-
-	/*! Adds a char to the char buffer and counts up the offset. */
-	void		AddToBuffer(char* bufOut, int &offsetOut, char in);
-
-	/*! Adds a d3dxvector3 to the char buffer and counts up the offset. */
-	void		AddToBuffer(char* bufOut, int &offsetOut, D3DXVECTOR3 in);
-	
-	/*! Retrieves a float from the char buffer and counts up the offset. */
-	float		GetFromBufferF(char* buf, int &offsetOut);
-	
-	/*! Retrieves a char from the char buffer and counts up the offset. */
-	char		GetFromBufferC(char* buf, int &offsetOut);
-	
-	/*! Retrieves a d3dxvector3 from the char buffer and counts up the offset. */
-	D3DXVECTOR3	GetFromBufferD(char* buf, int &offsetOut);
-
-	/*! Sends CTF parameters to the clients. */
-	void		SendCTFParams();
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
+	void		SetLatency(float latency){this->mLatency = latency;}
+	float		GetLatency() const {return this->mLatency;}
+	void		AddMovement(Ball* ball);
+	D3DXVECTOR3 		CorrectPosition();
+
+	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
+	void SetExecTime(const float time, const int index){this->mExecTime[index] = time;}
+	float GetServerExecTime() const {return this->mExecTime[0];}
+	float GetExecTime(const int index) const {return this->mExecTime[index];}
 	
 	/*! Returns the start position on the map of the player with specified index. */
 	D3DXVECTOR3 GetStartPos(const int index) const {return this->mStartPositions[index];}
-
-	/*! Returns the forward vector of the player with specified index. */
-	D3DXVECTOR3 GetForwardVector(const int index) const { return this->mForwardVectors[index]; }
 
 	/*! Returns the position of the player with specified index. */
 	D3DXVECTOR3 GetPos(const int index) const { return this->mPos[index]; }
@@ -76,6 +88,9 @@ public:
 
 	/*! Returns the number of players on the LAN. */
 	int			GetNumPlayers() const {return this->mNumPlayers;}
+	
+	/*! Returns the forward vector of the player with specified index. */
+	D3DXVECTOR3 GetForwardVector(const int index) const { return this->mForwardVectors[index]; }
 
 	/*! Sets the position of the player with specified index. */
 	void		SetPos(const D3DXVECTOR3 pos, const int index);
@@ -86,23 +101,36 @@ public:
 	/*! Sets the startpositions of the players (player index follows array order). */
 	void		SetStartPosistions(const D3DXVECTOR3 pos[], const int size);
 
+	/*! Sets the velocity of the player with specified index. */
+	void		SetVel(const D3DXVECTOR3 vel, const int index);
+
 	/*! Sets the forwardVectors of the player with specified index. */
 	void		SetForwardVector(const D3DXVECTOR3 forward, const int index);
 
 	/*! Sets the forwardVectors of the players (player index follows array order). */
 	void		SetForwardVectors(const D3DXVECTOR3 forward[], const int size);
 
-	/*! Sets the velocity of the player with specified index. */
-	void		SetVel(const D3DXVECTOR3 vel, const int index);
-
 	/*! Sets the position of the flag with specified index. */
 	void		SetFlagPos(const D3DXVECTOR3 pos, const int index);
 
+	/*! Sets the number of players on the LAN. */
+	void		SetNumPlayers(int n) { this->mNumPlayers = n;}
+
+	/*! Sets the index of this player. */
+	void		SetIndex(int n) { this->mIndex = n;}
+
 	/*! For client: Sets the key to down/up which will be sent to server. */
-	void		AddKeyInput(const char key, const bool down);
+	void		AddKeyInput(const int index, char keys[], const int numKeys, const float dt);
+
+	/*! For client: Sets the key to down/up which will be sent to server. */
+	void		ResetKeyInput(const int index, const char key);
 
 	/*! Returns true if the client is pressing the specified key. */
-	bool		IsKeyPressed(const char key, const int index) const;
+	float 		IsKeyPressed(const char key, const int index) const;
+	
+	/*! Returns true if the client is pressing the specified key. */
+	KeyInput* 	GetNextCommand(const int index);
+	void		PopCommand(const int index);
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
 	bool		Update(Ball** balls, int &numBalls, float dt);

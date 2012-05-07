@@ -233,6 +233,12 @@
     <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp">
       <Filter>GUI\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\PlayerHistory.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MsgHandler.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\GameManager.h">
@@ -441,6 +447,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h">
       <Filter>GUI\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\PlayerHistory.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MsgHandler.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

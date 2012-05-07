@@ -76,7 +76,7 @@ vector<ServerInfo> ServerConnection::FindServers()
 		sockaddr_in address;
 		address.sin_family = AF_INET;
 		address.sin_addr.s_addr = broadcastAddr;
-		address.sin_port = htons(this->mPort);
+		address.sin_port = htons((u_short)this->mPort);
 
 		sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&address, sizeof(sockaddr_in) );
     }
@@ -119,22 +119,8 @@ void ServerConnection::Host(ServerInfo server)
 	adress.sin_family = AF_INET;
 	adress.sin_addr.s_addr = htonl(INADDR_ANY);
 	adress.sin_port = htons((u_short)this->mPort);
+
 	bind(this->mServerSocket->sock, (const sockaddr*)&adress, sizeof(sockaddr_in));
-
-	//DWORD nonBlocking = 1;
-	//ioctlsocket(this->mServerSocket->sock, FIONBIO, &nonBlocking);
-
-	/*
-	unsigned char packet_data[256];
-    unsigned int maximum_packet_size = sizeof( packet_data );
-	sockaddr_in from;
-    int fromLength = sizeof( from );
-
-	while(true)
-	{
-		int received_bytes = recvfrom(this->mServerSocket->sock, (char*)packet_data, maximum_packet_size,
-                                   0, (sockaddr*)&from, &fromLength );
-	}*/
 
 	this->mServerSocket->handle = CreateThread(0, 0, &ListenForClient, (void*) this, 0, 0);
 }
@@ -165,7 +151,7 @@ void ServerConnection::Connect(ServerInfo server)
 	//ioctlsocket(this->mServerSocket->sock, FIONBIO, &nonBlocking);
 
 
-	CreateThread(0, 0, &TalkToClient, (void*) this->mServerSocket, 0, 0) ;
+	this->mServerSocket->handle = CreateThread(0, 0, &CommunicateClient, (void*) this->mServerSocket, 0, 0) ;
 }
 DWORD WINAPI ServerConnection::ListenForClient(void* param)
 {
@@ -209,90 +195,16 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 				sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
 
 				client->adress = from;
-				client->handle = CreateThread(0, 0, &TalkToClient, (void*) client, 0, 0);
+				client->index = sc->GetNumConnections() - 1;
+				client->handle = CreateThread(0, 0, &Communicate, (void*) client, 0, 0);
 			}
 		
 		}
 	}
 	return 0;
 }
-void ServerConnection::Read()
-{
-	if(!this->mServer)
-	{
-		int numBytes = recv(this->mServerSocket->sock, this->mServerSocket->buf + this->mServerSocket->numCharsInBuf, BUFFER_SIZE - this->mServerSocket->numCharsInBuf, 0);
-		this->mServerSocket->numCharsInBuf += numBytes;
-	}
-}
-void ServerConnection::Write()
-{
-	if(!this->mServer)
-	{
-		int numBytes = send(this->mServerSocket->sock, this->mServerSocket->bufW, this->mServerSocket->numCharsInBufW, 0 );
-		if(numBytes != this->mServerSocket->numCharsInBufW) 
-		{        
-			this->mServerSocket->numCharsInBufW -= numBytes;
-			memmove(this->mServerSocket->bufW, this->mServerSocket->bufW + numBytes, this->mServerSocket->numCharsInBufW);
-		}
-		else this->mServerSocket->numCharsInBufW = 0;
-	}
-}
-
-void ServerConnection::SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& ExceptFDs) 
-{
-	if(!this->mServer)
-	{
-		FD_ZERO(&ReadFDs);
-		FD_ZERO(&WriteFDs);
-		FD_ZERO(&ExceptFDs);
-
-		if (this->mServerSocket->numCharsInBuf < BUFFER_SIZE) 
-		{
-			FD_SET(this->mServerSocket->sock, &ReadFDs);
-		}
-
-		if (this->mServerSocket->numCharsInBufW > 0) 
-		{
-			FD_SET(this->mServerSocket->sock, &WriteFDs);
-		}
-
-		FD_SET(this->mServerSocket->sock, &ExceptFDs);
-	}
-}
-
-bool ServerConnection::Update()
-{
-	int a = WSAGetLastError();
-	if(a == WSAECONNRESET) //connection lost
-	{
-		return false;
-	}
-	if(!this->mServer)
-	{
-		fd_set ReadFDs, WriteFDs, ExceptFDs;
-		SetupFDSets(ReadFDs, WriteFDs, ExceptFDs);
-
-		TIMEVAL timeOut;
-		timeOut.tv_sec = 0;
-		if (select(0, &ReadFDs, &WriteFDs, NULL, 0) > 0) 
-		{
-			if (FD_ISSET(this->mServerSocket->sock, &ReadFDs)) 
-			{
-				Read();
-				FD_CLR(this->mServerSocket->sock, &ReadFDs);
-			}
-			if (FD_ISSET(this->mServerSocket->sock, &WriteFDs)) 
-			{
-				Write();
-				FD_CLR(this->mServerSocket->sock, &WriteFDs);
-			}
-		}
-	}
-	return true;
-}
-
 bool ServerConnection::GetReadBuffer(char* bufOut, const int size, const int clientIndex)
-{
+{ 
 	bool somethingToRead = false;
 	if(this->mServer)
 	{
@@ -326,114 +238,73 @@ void ServerConnection::SetWriteBuffer(const char* buf, const int size, const int
 		if(clientIndex >= 0 && clientIndex < this->mNumClients)
 		{
 			for(int i = 0; i < size; i++)
-				this->mClientSocket[clientIndex]->bufW[i] = buf[i];
-			this->mClientSocket[clientIndex]->numCharsInBufW = size;
+				this->mClientSocket[clientIndex]->bufW[this->mClientSocket[clientIndex]->numCharsInBufW + i] = buf[i];
+			this->mClientSocket[clientIndex]->numCharsInBufW += size;
 		}
 	}
 	else
 	{
 		for(int i = 0; i < size; i++)
-			this->mServerSocket->bufW[i] = buf[i];
-		this->mServerSocket->numCharsInBufW = size;
+			this->mServerSocket->bufW[this->mServerSocket->numCharsInBufW + i] = buf[i];
+		this->mServerSocket->numCharsInBufW += size;
 	}
 }
-DWORD WINAPI ServerConnection::TalkToClient(void* param)
+DWORD WINAPI ServerConnection::Communicate(void* param)
 {
 	Connection* conn = (Connection*)param;
+    u_long noBlocking = 0;
+    ioctlsocket(conn->sock, FIONBIO, &noBlocking);
 	while(running)
 	{
-		for(int i = 0; i < 2; i++)
+		int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
+		if(recvBytes > 0)
 		{
-			int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
-			if(recvBytes > 0)
-				conn->numCharsInBuf = recvBytes;
-		}
-
-		if(conn->numCharsInBufW > 0)
-		{
-			int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
-			
-			if(sentBytes > 0)
-				conn->numCharsInBufW = 0;
-		}
-		::Sleep(50);	
-	}
-
-	return 0;
-}
-DWORD WINAPI ServerConnection::TalkToServer(void* param)
-{
-	
-	Connection* conn = (Connection*)param;
-	fd_set readFDs, writeFDs, exceptFDs;
-	FD_ZERO(&readFDs); FD_ZERO(&writeFDs); FD_ZERO(&exceptFDs);
-
-	
-
-	while(running)
-	{
-		TIMEVAL timeOut;
-		FD_ZERO(&readFDs); FD_ZERO(&writeFDs); FD_ZERO(&exceptFDs);
-		FD_SET(conn->sock, &readFDs);
-		FD_SET(conn->sock, &writeFDs);
-		timeOut.tv_sec = 20;
-		if (select(0, &readFDs, &writeFDs, NULL, &timeOut) > 0) 
-		{
-			if (FD_ISSET(conn->sock, &readFDs)) 
-			{
-
-				int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
-				if(recvBytes > 0)
-					conn->numCharsInBuf = recvBytes;
-
-			}
-			if (FD_ISSET(conn->sock, &writeFDs)) 
-			{
-				if(conn->numCharsInBufW > 0)
-				{
-					int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
-			
-					if(sentBytes > 0)
-						conn->numCharsInBufW = 0;
-				}
-			}
-		}
-	}
-		FD_CLR(conn->sock, &readFDs);
-		FD_CLR(conn->sock, &writeFDs);
-
-	return 0;
-}
-DWORD WINAPI ServerConnection::ReadFromServer(void* param)
-{
-	Connection* conn = (Connection*)param;
-	while(running)
-	{
-		int numBytes = recvfrom(conn->sock, conn->buf + conn->numCharsInBuf, BUFFER_SIZE - conn->numCharsInBuf, 0, 0, 0);
-		conn->numCharsInBuf += numBytes;	
-	}
-	return 0;
-}
-DWORD WINAPI ServerConnection::WriteToServer(void* param)
-{
-	Connection* conn = (Connection*)param;
-	while(running)
-	{
-		if(conn->numCharsInBufW > 0 && conn->sock != INVALID_SOCKET)
-		{
-			int numBytes = 0;
-		
-			numBytes = sendto(conn->sock, conn->bufW, conn->numCharsInBufW, 0, 0, 0);
-			if(numBytes != conn->numCharsInBufW  && conn->sock != INVALID_SOCKET) 
-			{        
-				conn->numCharsInBufW -= numBytes;
-				memmove(conn->bufW, conn->bufW + numBytes, conn->numCharsInBufW);
-			}
-			else conn->numCharsInBufW = 0;
+			conn->numCharsInBuf = recvBytes;
+			MsgHandler::GetInstance().ProcessMSG(conn->buf, recvBytes, conn->index);
 		}
 		
+		//::Sleep(50 - 5);	
 	}
+
 	return 0;
+}
+DWORD WINAPI ServerConnection::CommunicateClient(void* param)
+{
+	Connection* conn = (Connection*)param;
+    u_long noBlocking = 0;
+    ioctlsocket(conn->sock, FIONBIO, &noBlocking);
+	while(running)
+	{
+		int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
+		if(recvBytes > 0)
+		{
+			conn->numCharsInBuf = recvBytes;
+			MsgHandler::GetInstance().ProcessMSG(conn->buf, recvBytes, conn->index);
+		}
+		
+		//::Sleep(25 - 5);	
+	}
+
+	return 0;
+}
+void ServerConnection::Send(int index)
+{
+	
+	Connection* conn = this->mServerSocket;
+	if(this->mServer)
+		conn = this->mClientSocket[index];
+
+   // u_long noBlocking = 1;
+    //ioctlsocket(conn->sock, FIONBIO, &noBlocking);
+	if(conn->numCharsInBufW > 0)
+	{
+		int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
+			
+		if(sentBytes > 0)
+			conn->numCharsInBufW -= sentBytes;
+	}
+    //noBlocking = 0;
+    //ioctlsocket(conn->sock, FIONBIO, &noBlocking);
 }
 void ServerConnection::Close()
 {

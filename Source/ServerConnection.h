@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "ServerInfo.h"
+#include "MsgHandler.h"
 //#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 1024
+#define PACKET_QUEUE_SIZE 10
 class ServerConnection
 {
 private:
@@ -20,9 +22,11 @@ private:
 		char bufW[BUFFER_SIZE];
 		int numCharsInBuf;
 		int numCharsInBufW;
+		int index;
 		Connection(){}
 		Connection(SOCKET socket)
 		{ 
+			this->index = 0;
 			this->sock = socket;
 			this->numCharsInBuf = 0;
 			this->numCharsInBufW = 0;
@@ -37,30 +41,16 @@ private:
 	bool				mServer;
 
 	/*! Thread for communication between server and client. */
-	static DWORD WINAPI		TalkToClient(void* param);
-
-	// SPLIT INTO TWO! --->>>----<<<
-	/*! Thread for communication between client and server. */
-	static DWORD WINAPI		TalkToServer(void* param);
-	static DWORD WINAPI		ReadFromServer(void* param);
-	static DWORD WINAPI		WriteToServer(void* param);
+	static DWORD WINAPI		Communicate(void* param);
+	static DWORD WINAPI		CommunicateClient(void* param);
 
 	/*! Thread for the LAN host that listens for new client conections. */
 	static DWORD WINAPI		ListenForClient(void* param);
 
-	/*! Receives data buffer on socket. */
-	void		Read();
-
-	/*! Sends data buffer over socket. */
-	void		Write();
-
-	/*! Setups the Select params for clients. */
-	void		SetupFDSets(fd_set& ReadFDs, fd_set& WriteFDs, fd_set& ExceptFDs);
-
 public:
+	void Send(int index);
 				ServerConnection();
 	virtual		~ServerConnection();
-
 
 	/*! Sets the network port. */
 	void		SetPort(const int port);
@@ -80,9 +70,6 @@ public:
 
 	/*! Broadcasts a msgs that servers will pick up on the lan and reply to it. */
 	vector<ServerInfo>	FindServers();
-
-	/*! Sends and receives data over socket, only called by clients at the moment. */
-	bool		Update();
 
 	/*! Returns true if you're the LAN host. */
 	bool		IsServer() const {return this->mServer;}
