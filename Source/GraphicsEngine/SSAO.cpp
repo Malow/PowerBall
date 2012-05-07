@@ -106,7 +106,7 @@ void SSAO::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 
 
-
+	//**old**
 	//TextureManager texMgr = TextureManager();
 	//texMgr.Init(device, deviceContext);
 
@@ -127,61 +127,17 @@ void SSAO::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 void SSAO::PreRender(Shader* shader, GraphicsEngineParams engParams, Camera* cam)
 {	
-
-
-	
-
-
-	//shader->SetResource("rndTex", this->mRndTex);
-
-	shader->SetInt("nrOfSamples", this->mNrOfSamples);
-	shader->SetInt("width", engParams.windowWidth);
-	shader->SetInt("height", engParams.windowHeight);
-	shader->SetFloat("radius", this->mRadius);
-
-	shader->SetFloat("angleBias", this->mAngleBias);
-
-	D3DXMATRIX viewInverseTranspose, invProj, viewToTex;
-	D3DXMatrixInverse(&viewInverseTranspose, NULL, &cam->GetViewMatrix());
-	D3DXMatrixTranspose(&viewInverseTranspose, &viewInverseTranspose);
-	shader->SetMatrix("viewInverseTranspose", viewInverseTranspose);
-	shader->SetMatrix("projMatrix", cam->GetProjectionMatrix());
-	D3DXMatrixInverse(&invProj, NULL, &cam->GetProjectionMatrix());
-	shader->SetMatrix("invProjMatrix", invProj);
-
-	shader->SetMatrix("viewMatrix", cam->GetViewMatrix());
-
-
-	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
-	static const D3DXMATRIX T(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-	D3DXMatrixMultiply(&viewToTex, &cam->GetProjectionMatrix(), &T);
-	shader->SetMatrix("viewToTex", viewToTex);
-
-
-	
-
-	shader->SetFloatVectorArray("uniRndVectors", this->mUniRndVectors, 14);
-	
 	shader->SetResource("rndVectorsTex", this->mRndVectorsSRV);
-
-
-
-
-
-
-	
-
-
-
+	this->mNrOfSamples = 32; //**tmp**
+	shader->SetInt("nrOfSamples", this->mNrOfSamples);
+	//shader->SetFloat("radius", this->mRadius); **
+	shader->SetFloat("angleBias", this->mAngleBias);
+	shader->SetMatrix("projMatrix", cam->GetProjectionMatrix());
+	shader->SetMatrix("viewMatrix", cam->GetViewMatrix());
+	shader->SetFloatVectorArray("uniRndVectors", this->mUniRndVectors, 14);
 }
 
 void SSAO::PostRender(Shader* shader)
 {
-	//shader->SetResource("rndTex", NULL);
-
 	shader->SetResource("gRandomVecMap", NULL);
 }

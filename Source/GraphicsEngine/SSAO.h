@@ -15,10 +15,9 @@ class SSAO
 		UINT						mNrOfSamples;	/*! The number of samples to use. 8 is default. */
 		float						mRadius;		/*! Radius of sphere (max length of sample vectors). */
 		float						mAngleBias;		/*! Angle in radian from plane of pixel to ignore samples. 0.0 is default. */
-		//ID3D11ShaderResourceView*	mRndTex;		/*! Texture to store randomized 3D-vectors x,y,z[-root((radius^2 / 3),root((radius^2 / 3)], length[0,radius]. */
-		//ID3D11Device* tmp;
-		D3DXVECTOR3*				mUniRndVectors;
-		ID3D11ShaderResourceView*	mRndVectorsSRV;
+		D3DXVECTOR3*				mUniRndVectors; /*! Array of 14 uniformally distributed vectors. */
+		ID3D11ShaderResourceView*	mRndVectorsSRV; /*! Texture to store randomized 3D-vectors with xyz ranging from [-1,1]*/
+		
 
 	public:
 		SSAO();
