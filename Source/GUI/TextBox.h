@@ -7,7 +7,7 @@ enum TEXTBOX {NOTHINGALLOWED,
 	ALL,
 	NORMALCHAR,
 	NORMALCHAR_NR,
-	NORMALCHAR_NR_SPECIAL,
+	NORMALCHAR_SPECIAL,
 	NR,
 	NR_SPECIAL,
 	SPECIAL};
@@ -26,6 +26,7 @@ private:
 
 	float mTextSize;
 	int mMaxNrOfChars;
+	int mAllowedChars;
 
 	string mText;
 	string mName;
@@ -33,7 +34,7 @@ private:
 	Text* mPointText;
 public:
 	TextBox();
-	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars);
+	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys);
 	virtual ~TextBox();
 
 	/*! Adds the element to the renderer*/
