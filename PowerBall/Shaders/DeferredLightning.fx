@@ -119,12 +119,10 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 //-----------------------------------------------------------------------------------------
 float4 PSScene(PSSceneIn input) : SV_Target
 {	
-	float4 DiffuseColor = Texture.Sample(linearSampler, input.tex);		
+	float4 DiffuseColor = Texture.Sample(linearSampler, input.tex);
 	float4 NormsAndDepth = NormalAndDepth.Sample(linearSampler, input.tex);
 	
 	float4 WorldPos = Position.Sample(linearSampler, input.tex);
-
-	//DiffuseColor.w = 1.0f; **
 
 	float4 AmbientLight = float4(DiffuseColor.xyz * 0.5f, 1.0f);
 	float SpecularPower = Specular.Sample(linearSampler, input.tex).w;
@@ -212,11 +210,12 @@ float4 PSScene(PSSceneIn input) : SV_Target
 
 	// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
 	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
+		finalColor.xyz = DiffuseColor.xyz;
 
 	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
-	
+		finalColor.xyz = DiffuseColor.xyz;
+		
+	finalColor.w = 1.0f;
 	
 	/*
 	// Basic fog:
@@ -236,12 +235,13 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	//todo: if player is on red team, reduce redness and increase blueness**
 
 	//Exlude skybox
+	uint specialColor = DiffuseColor.w;
 	if(NormsAndDepth.w < 1.00001f)
 	{
 		//Exclude nullColor
-		if((uint)DiffuseColor.w != 0)
+		if((uint)specialColor != 0)
 		{
-			switch((uint)DiffuseColor.w)
+			switch((uint)specialColor)
 			{
 				case 1: (finalColor += WHITE) * 0.5f; break;
 				case 2: (finalColor += BLACK) * 0.5f; break;

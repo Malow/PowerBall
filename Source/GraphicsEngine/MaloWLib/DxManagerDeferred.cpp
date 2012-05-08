@@ -22,16 +22,17 @@ void DxManager::RenderDeferredGeometry()
 	
 	this->Shader_DeferredGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	
+	//Normal (visibile) geometry
 	for(int i = 0; i < this->objects.size(); i++)
 	{
-		this->objects[0]->UseInvisibilityEffect(true); //**test**
+		//this->objects[0]->UseInvisibilityEffect(true); //**test**
+		//this->objects[0]->SetSpecialColor(WHITE_COLOR); //**test**
 		if(!this->objects[i]->IsUsingInvisibility())
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
 		
 			// Per object
 			this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
-			this->Shader_DeferredGeometry->SetBool("useInvisibilityEffect", false);
 
 			// Set matrixes
 			world = this->objects[i]->GetWorldMatrix();
@@ -82,76 +83,7 @@ void DxManager::RenderDeferredGeometry()
 	}
 
 
-
-
-	for(int i = 0; i < this->objects.size(); i++)
-	{
-		if(this->objects[i]->IsUsingInvisibility())
-		{
-			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
-		
-			// Per object
-			this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
-			this->Shader_DeferredGeometry->SetBool("useInvisibilityEffect", true);
-		
-			// Set matrixes
-			world = this->objects[i]->GetWorldMatrix();
-			wvp = world * view * proj;
-			D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
-			D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
-
-			this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
-			this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
-			this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
-
-			for(int u = 0; u < strips->size(); u++)
-			{
-				Object3D* obj = strips->get(u)->GetRenderObject();
-				this->Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
-
-				// Setting lightning from material
-				this->Shader_DeferredGeometry->SetFloat4("SpecularColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->SpecularColor, 1));
-				this->Shader_DeferredGeometry->SetFloat("SpecularPower", strips->get(u)->GetMaterial()->SpecularPower);
-				this->Shader_DeferredGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(strips->get(u)->GetMaterial()->AmbientColor, 1));
-				this->Shader_DeferredGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->DiffuseColor, 1));
-
-				Buffer* verts = obj->GetVertBuff();
-				if(verts)
-					verts->Apply();
-
-				if(ID3D11ShaderResourceView* texture = obj->GetTexture())
-				{
-					this->Shader_DeferredGeometry->SetBool("textured", true);
-					this->Shader_DeferredGeometry->SetResource("tex2D", texture);
-				}
-				else
-					this->Shader_DeferredGeometry->SetBool("textured", false);
-
-				Buffer* inds = obj->GetIndsBuff();
-				if(inds)
-					inds->Apply();
-			
-				this->Shader_DeferredGeometry->Apply(0);
-
-				// draw
-				if(inds)
-					this->Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
-				else
-					this->Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
-			}
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-	// Animated meshes
+	//Normal (visible) Animated meshes
 	this->Shader_DeferredAnimatedGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	for(int i = 0; i < this->animations.size(); i++)
 	{
@@ -312,6 +244,95 @@ void DxManager::RenderDeferredPerPixel()
 	this->ssao->PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
+}
+
+void DxManager::RenderInvisibilityEffect() //***********
+{
+	//this->Dx_RenderTargetView->GetResource**
+
+	//Matrixes
+	D3DXMATRIX world, view, proj, wvp, worldInverseTranspose;
+	view = this->camera->GetViewMatrix();
+	proj = this->camera->GetProjectionMatrix();
+
+	//clear and set render target/depth
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+
+	static float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1.0f};
+	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_RenderTargetView, ClearColor);
+
+	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+
+	this->Dx_DeviceContext->ClearDepthStencilView(this->Dx_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	//float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1};
+	//float ClearColor[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
+	for(int i = 0; i < this->NrOfRenderTargets; i++)
+		this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_GbufferRTs[i], ClearColor);
+	float ClearColor2[4] = {0.5f, 0.71f, 1.0f, 1};
+	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_GbufferRTs[0], ClearColor2);
+	
+	this->Shader_DeferredGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
+	
+
+	//Invisible(effect) geometry **ändra shader**
+	for(int i = 0; i < this->objects.size(); i++)
+	{
+		if(this->objects[i]->IsUsingInvisibility())
+		{
+			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
+		
+			// Per object
+			this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
+		
+			// Set matrixes
+			world = this->objects[i]->GetWorldMatrix();
+			wvp = world * view * proj;
+			D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
+			D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
+
+			this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
+			this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
+			this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
+
+			for(int u = 0; u < strips->size(); u++)
+			{
+				Object3D* obj = strips->get(u)->GetRenderObject();
+				this->Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
+
+				// Setting lightning from material
+				this->Shader_DeferredGeometry->SetFloat4("SpecularColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->SpecularColor, 1));
+				this->Shader_DeferredGeometry->SetFloat("SpecularPower", strips->get(u)->GetMaterial()->SpecularPower);
+				this->Shader_DeferredGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(strips->get(u)->GetMaterial()->AmbientColor, 1));
+				this->Shader_DeferredGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->DiffuseColor, 1));
+
+				Buffer* verts = obj->GetVertBuff();
+				if(verts)
+					verts->Apply();
+
+				if(ID3D11ShaderResourceView* texture = obj->GetTexture())
+				{
+					this->Shader_DeferredGeometry->SetBool("textured", true);
+					this->Shader_DeferredGeometry->SetResource("tex2D", texture);
+				}
+				else
+					this->Shader_DeferredGeometry->SetBool("textured", false);
+
+				Buffer* inds = obj->GetIndsBuff();
+				if(inds)
+					inds->Apply();
+			
+				this->Shader_DeferredGeometry->Apply(0);
+
+				// draw
+				if(inds)
+					this->Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
+				else
+					this->Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
+			}
+		}
+	}
 }
 
 void DxManager::RenderQuadDeferred()

@@ -52,7 +52,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	//Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	//Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
 	//testLight->SetPosition(testBall->GetPosition() + D3DXVECTOR3(0, 5, 0));
 	//testLight->SetLookAt(testLight->GetPosition() - D3DXVECTOR3(0, 5, 0));
 	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));

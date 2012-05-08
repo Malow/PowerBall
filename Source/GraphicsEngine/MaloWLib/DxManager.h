@@ -174,6 +174,7 @@ private:
 	ID3D11ShaderResourceView* Dx_GbufferSRVs[NrOfRenderTargets];
 	Shader* Shader_DeferredGeometry;
 	Shader* Shader_DeferredLightning;
+	Shader* Shader_InvisibilityEffect;
 
 	Shader* Shader_DeferredQuad;
 	Shader* Shader_DeferredTexture;
@@ -197,6 +198,7 @@ private:
 	void RenderForward();
 	void RenderDeferredGeometry();
 	void RenderDeferredPerPixel();
+	void RenderInvisibilityEffect();
 	void RenderParticles();
 	void RenderShadowMap();
 	void RenderImages();

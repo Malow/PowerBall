@@ -257,7 +257,7 @@ void CamRecording::Load(CAMERA_PATH camPath)
 		nrOfPoints = 1000;
 		nrOfRotations = 1;
 		float startX = 30.0f;
-		float startY = 30.0f;
+		float startY = 50.0f;
 		float startZ = 30.0f;
 		float dAngle = ((2 * PI) / nrOfPoints) * nrOfRotations;
 		float angle = dAngle;

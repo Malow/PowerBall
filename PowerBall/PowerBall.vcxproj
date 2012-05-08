@@ -183,6 +183,7 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Shaders\FXAA.fx" />
+    <None Include="Shaders\InvisibilityEffect.fx" />
     <None Include="Shaders\Lava.fx" />
     <None Include="Shaders\DeferredAnimatedGeometry.fx" />
     <None Include="Shaders\ScreenSpaceBillBoard.fx" />
