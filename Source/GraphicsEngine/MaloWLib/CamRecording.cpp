@@ -214,8 +214,8 @@ void CamRecording::Load(CAMERA_PATH camPath)
 	D3DXVECTOR3 vecIn = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vecOut = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXMATRIX mat;
-	unsigned int nrOfPoints = -1;
-	unsigned int nrOfRotations = -1;
+	unsigned int nrOfPoints = 0;
+	unsigned int nrOfRotations = 0;
 
 	//remove previous recording, if any
 	if(this->mHasRecorded)
@@ -250,7 +250,7 @@ void CamRecording::Load(CAMERA_PATH camPath)
 			angle += dAngle;
 		}
 	}
-	else if(camPath = CIRCLE_AROUND)
+	else if(camPath == CIRCLE_AROUND)
 	{
 		this->mIsLoopingSeamless = true;
 		this->mInterval = 50;
