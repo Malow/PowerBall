@@ -14,8 +14,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.FXAAQuality = 0;			// 0 - 4 
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
+	params.FXAAQuality = 1;			// 0 - 4 
+	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 
 	// Create the graphics engine
@@ -23,7 +23,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 	
-	#define LOLTEST
+	//#define LOLTEST
 	#ifdef LOLTEST
 	
 	// Example of GE useage
@@ -110,8 +110,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			text->SetSize(size);
 			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
-			se1->Play();
+			
 		}
+		else
+			se1->Play();
 
 		if(eng->GetKeyListener()->IsClicked(2))
 		{

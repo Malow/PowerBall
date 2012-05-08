@@ -91,16 +91,20 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 	float imgWidth = 0.0f;
 	float imgHeight = 0.0f;
 	tex2D.GetDimensions(imgWidth, imgHeight);
+
+	float scale = 80.0f;
+	float widthScale = (windowHeight / windowWidth) * 2.5f;
 	
 	//create sprite quad
 	float4 basepos = float4(posx, posy, 0, 1);
-	float height = (imgHeight * size) / windowHeight;
+	float height = (size * scale) / windowHeight;
+	//height *= windowHeight / windowWidth;
 	float width = 0.0f;
 
 	
 	for(int i = 0; i < NrOfChars; i++)
 	{
-		float thiswidth = (charWidth[text[i]] / imgWidth) * size;
+		float thiswidth = (charWidth[text[i]] / imgWidth) * size * widthScale;
 		float texxwidth = (charWidth[text[i]] / imgWidth);
 		float texx = charTex[text[i]] / imgWidth;
 

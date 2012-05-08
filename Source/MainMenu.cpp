@@ -286,7 +286,7 @@ bool MainMenu::Run()
 
 						this->DeleteScene();
 
-						this->mGm->PlayCredits();
+						this->mGm->PlayCredits2();
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
