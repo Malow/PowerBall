@@ -35,7 +35,6 @@ cbuffer EveryStrip
 cbuffer EveryMesh
 {
 	uint specialColor;
-	float transparency; //**
 }
 
 cbuffer EveryFrame

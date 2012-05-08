@@ -18,7 +18,8 @@ class Mesh
 {
 protected:
 	COLOR specialColor;
-	float transparency; //default 0.0f (full visibility)
+	//float transparency; //default 0.0f (full visibility)
+	bool useInvisibilityEffect;
 
 	MaloW::Array<MeshStrip*>* strips;
 
@@ -36,7 +37,9 @@ public:
 	/*! Sets mesh's specialcolor. */
 	void SetSpecialColor(COLOR specialColor);
 	/*! Sets the level of transparency. Range is [0,1]. */
-	void SetTransparency(float transparency);
+	//void SetTransparency(float transparency);
+	/*! Set ball to use invisibility effect or not. */
+	void UseInvisibilityEffect(bool use);
 	void SetPosition(D3DXVECTOR3 pos);
 	void SetQuaternion(D3DXQUATERNION quat);
 	void MoveBy(D3DXVECTOR3 moveby);
@@ -47,7 +50,7 @@ public:
 	void Scale(float scale);
 
 	COLOR GetSpecialColor() const { return this->specialColor; }
-	float GetTransparency() const { return this->transparency; }
+	//float GetTransparency() const { return this->transparency; }
 	D3DXVECTOR3 GetPosition() const { return this->pos; }
 	D3DXQUATERNION GetRotation() const { return this->rotQuat; }
 	D3DXVECTOR3 GetScaling() const { return this->scale; }
