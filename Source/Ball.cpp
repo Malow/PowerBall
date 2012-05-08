@@ -29,6 +29,7 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
+	this->mTempPosition = position;
 	this->mSteering      = true;
 	this->mNrOfSpells	 = 0;
 	this->mMaxNrOfSpells = 4;
@@ -53,7 +54,9 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
+	this->mSound		  = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
+	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
 	file.open ("Verts.txt", ios::out );
 	/*
 	this->mMaxNrOfItems = 6;
@@ -150,12 +153,13 @@ void Ball::Update(const float dt)
 	Vector3 direction = newPosition - oldPosition;
 	direction.y = 0;
 	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
-	this->GetMesh()->SetPosition(temp);
+	this->mTempPosition = newPosition;
+	//this->GetMesh()->SetPosition(temp);
 	if(this->mFlag != NULL)
 		this->mFlag->SetPosition(this->mMesh->GetPosition());
 	temp = D3DXVECTOR3(direction.x, direction.y, direction.z);
 
-	this->Rotate(direction);
+	//this->Rotate(direction);
 	
 	Vector3 resAcc = this->mAcceleration;
 	// F = ma <-> a = F/m 
@@ -214,6 +218,20 @@ void Ball::Update(const float dt)
 		}
 	}
 }
+
+void Ball::UpdatePost()
+{
+	Vector3 oldPosition = Vector3(this->mMesh->GetPosition());
+	Vector3 newPosition = this->mTempPosition;
+	Vector3 direction = newPosition - oldPosition;
+	direction.y = 0;
+	D3DXVECTOR3 temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
+	this->GetMesh()->SetPosition(temp);
+	temp = D3DXVECTOR3(direction.x, direction.y, direction.z);
+	this->Rotate(direction);	
+
+}
+
 bool Ball::IsAlive() const
 {
 	
@@ -261,9 +279,12 @@ void Ball::ZoomIn()
 	if(this->mDistanceCam > 2)
 		this->mDistanceCam -= 1.0f;
 }
+
 bool Ball::collisionWithSphereSimple(Ball* b1)
 {
 	Vector3 r = this->GetPositionVector3() - b1->GetPositionVector3();
+	r = this->GetTempPosition() - b1->GetTempPosition();
+
 	float distanceBalls = r.GetLength();
 	float sumRadius = this->GetRadius() + b1->GetRadius();
 	if(distanceBalls > sumRadius)
@@ -281,6 +302,8 @@ bool Ball::collisionWithSphereSimple(Ball* b1)
 	*
 	*/
 	Vector3 d = this->GetPositionVector3() - b1->GetPositionVector3();
+	d = this->GetTempPosition() - b1->GetTempPosition();
+
 	Vector3 rV = b1->mVelocity - this->mVelocity;
 	float sumR = this->mRadius + b1->mRadius;
 	float tempA = rV.GetDotProduct(d) / rV.GetLengthSquared();
@@ -296,17 +319,32 @@ bool Ball::collisionWithSphereSimple(Ball* b1)
 		Vector3 newPos1, newPos2;
 		if(t1 >= 0)
 		{
+			/*
 			newPos1 = this->GetPositionVector3() - this->mVelocity*t1;
 			newPos2 = b1->GetPositionVector3() - b1->mVelocity*t1;
+								
 			this->SetPosition(newPos1);
 			b1->SetPosition(newPos2);
+			*/
+
+			newPos1 = this->GetTempPosition() - this->mVelocity*t1;
+			newPos2 = b1->GetTempPosition() - b1->mVelocity*t1;
+			this->SetTempPosition(newPos1);
+			b1->SetTempPosition(newPos2);
 		}
 		else if(t2 >= 0)
 		{
+			/*
 			newPos1 = this->GetPositionVector3() - this->mVelocity*t2;
 			newPos2 = b1->GetPositionVector3() - b1->mVelocity*t2;
+			
 			this->SetPosition(newPos1);
 			b1->SetPosition(newPos2);
+			*/
+			newPos1 = this->GetTempPosition() - this->mVelocity*t2;
+			newPos2 = b1->GetTempPosition() - b1->mVelocity*t2;
+			this->SetTempPosition(newPos1);
+			b1->SetTempPosition(newPos2);
 		}
 		else 
 			return false;
@@ -317,7 +355,8 @@ bool Ball::collisionWithSphereSimple(Ball* b1)
 void Ball::collisionSphereResponse(Ball* b1)
 {
 	// normal of the "collision plane"
-	Vector3 nColl = this->GetPositionVector3() - b1->GetPositionVector3();
+	//Vector3 nColl = this->GetPositionVector3() - b1->GetPositionVector3();
+	Vector3 nColl = this->GetTempPosition() - b1->GetTempPosition();
 	// for easy projecting of vector, no div by |n|^2 in proj formula
 	nColl.normalize();
 
@@ -342,6 +381,10 @@ void Ball::collisionSphereResponse(Ball* b1)
 	float e1 = this->mRestitution;
 	float e2 = b1->mRestitution;
 	float e = (e1 + e2)/2.0f;
+
+	if((abs(v1x.GetLength()-v2x.GetLength()) > 0.6f) && this->mSound)
+		this->mCollisionWithBall->Play();
+
 	/*
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
 	b1->mVelocity = Vector3( v1x*(2*m1)/(mSum) + v2x*(m2-m1)/(mSum) + v2y );
@@ -359,11 +402,13 @@ void Ball::collisionSphereResponse(Ball* b1)
 
 bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 {
+	
 	MaloW::Array<MeshStrip*>* temp = p->GetMesh()->GetStrips();
 	//int sizeMstrip = temp->size();
 	int sizeVertexS0 = temp->get(0)->getNrOfVerts();
 	Vertex* verts;
-	Vector3 origin = this->GetPositionVector3();
+	//Vector3 origin = this->GetPositionVector3();
+	Vector3 origin = this->GetTempPosition();
 	Vector3 dir = this->mVelocity;
 	Vector3 dirN = dir/dir.GetLength();
 	verts = temp->get(0)->getVerts();
@@ -380,14 +425,35 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 	float lengthProjN = 0;
 	Vector3 p0Store, p1Store,p2Store, normalStore;
 	Vector3 pos = Vector3(p->GetMesh()->GetPosition());
-	Vector3 posS = this->GetPositionVector3();
+	Vector3 posS = this->GetTempPosition();//this->GetPositionVector3();
 	Vector3 rayDirection;
 	Vector3 scalingMesh = p->GetMesh()->GetScaling();
+
+	D3DXMATRIX quat;
+	D3DXMatrixRotationQuaternion(&quat, &p->GetMesh()->GetRotation()); 
+	Matrix4 rotate(quat);
+	rotate.TransposeThis();
+
+	Matrix4 scaling;
+	scaling.SetScale(scalingMesh);
+
+	Matrix4 translate;
+	translate.SetTranslate(pos);
+	
+	Matrix4 world = translate*rotate*scaling;
+	
 	for(int i =0; i< sizeVertexS0; i+=3)
 	{
+		
+		/*
 		p0 = Vector3(verts[i].pos).GetComponentMultiplication(scalingMesh) + pos;
 		p1 = Vector3(verts[i+1].pos).GetComponentMultiplication(scalingMesh) +pos;
 		p2 = Vector3(verts[i+2].pos).GetComponentMultiplication(scalingMesh) + pos;
+		*/
+		p0 = world*Vector3(verts[i].pos);
+		p1 = world*Vector3(verts[i+1].pos);
+		p2 = world*Vector3(verts[i+2].pos);
+
 		v1 = p1-p0;
 		v2 = p2-p0;
 		rayDirection = v1.GetCrossProduct(v2);
@@ -539,7 +605,12 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 
 		if( lengthProjN < this->mRadius)
 		{
-
+			Vector3 velNorm = this->mVelocity;
+			velNorm.normalize();
+			
+			if(normalStore.GetDotProduct(velNorm) >=0)
+				return false;
+	
 			float diff = abs(lengthProjN-this->mRadius);
 			
 			//Vector3 newPo = origin -dirN*diff;
@@ -554,7 +625,9 @@ bool Ball::collisionWithPlatformSimple(Platform* p, Vector3 &normalPlane)
 			else
 				newPo = origin + normalStore*diff;
 			*/
-			this->SetPosition(newPo);
+			
+			//this->SetPosition(newPo);
+			this->SetTempPosition(newPo);
 			normalPlane = normalStore;
 			return true;
 		}
@@ -574,6 +647,10 @@ void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 	/* HÄR ÄR LJUDET!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if(this->mVelocity.GetLength() > this->mMaxVelocity/5)
 		this->mCollisionWithWall->Play();*/
+
+	
+
+
 	/* simple response
 	Vector3 normal = Vector3(0,1,0);
 	Vector3 vn = normal*(this->mVelocity.GetDotProduct(normal));
@@ -606,6 +683,10 @@ void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 	Vector3 v2x = nColl*x2;					// projetion done
 	Vector3 v2y = v2 - v2x;					// perpendicular vector 
 	
+	
+	if((v1x.GetLength() >1.5f) && this->mSound)
+		this->mCollisionWithWall->Play();
+	
 	//float e = this->mRestitution;
 	float e = p->GetRestitution();
 	float newdt = dt*0.001f;
@@ -619,17 +700,19 @@ void Ball::collisionPlatformResponse(Platform* p, Vector3 normalPlane, float dt)
 	return;
 }
 
+
 void Ball::Rotate(Vector3 direction)
 {
 	direction.y = 0;
 	float angleRad = (direction.GetLength()/(2*PI*this->mRadius))*(180/PI);
-	Vector3 around = direction.GetCrossProduct(Vector3(0,1,0));
+	Vector3 around = Vector3(0,1,0).GetCrossProduct(direction);
 	around.normalize();
 	D3DXVECTOR3 aroundD3D = D3DXVECTOR3(around.x, around.y, around.z);
 	angleRad = (direction.GetLength()/(2*PI*this->mRadius))*2*PI;
 
 	this->mMesh->RotateAxis(aroundD3D, angleRad);
 }
+
 
 bool Ball::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector3 p1, Vector3 p2, float &u, float &v, float &t)
 {

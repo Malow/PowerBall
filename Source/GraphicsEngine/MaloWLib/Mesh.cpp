@@ -159,7 +159,7 @@ void Mesh::Rotate(D3DXQUATERNION quat)
 void Mesh::RotateAxis(D3DXVECTOR3 around, float angle)
 {
 	D3DXQUATERNION quaternion = D3DXQUATERNION(0, 0, 0, 1);
-	D3DXQuaternionRotationAxis(&quaternion, &around, -angle);
+	D3DXQuaternionRotationAxis(&quaternion, &around, angle);
 	
 	D3DXQuaternionMultiply(&this->rotQuat, &this->rotQuat, &quaternion);
 	this->RecreateWorldMatrix();

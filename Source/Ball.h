@@ -6,6 +6,9 @@
 #include "Platform.h"
 #include "Flag.h"
 #include "Spells\Spell.h"
+
+#include "Physics\Matrix3.h"
+#include "Physics\Matrix4.h"
 using namespace MaloW;
 using namespace std;
 
@@ -18,6 +21,7 @@ private:
 	float		mMass;
 	float		mDamping;
 	Vector3		mSumAddedForce;
+	Vector3		mTempPosition;
 	Vector3		mVelocity;
 	bool		mSteering;
 	Spell**		mSpells;
@@ -48,7 +52,9 @@ private:
 	float		mTimeInHotZone;
 	//vector3	mForward;
 	//Sound effects
+	bool		mSound;
 	SoundEffect*	mCollisionWithWall;
+	SoundEffect*	mCollisionWithBall;
 
 public:
 	//constructors and destructors
@@ -72,6 +78,9 @@ public:
 	/*! Returns the position of the platform in XZ plane */
 	Vector3 GetPositionXZ() const;
 	
+	/*! Returns the temp position of the ball that is before its going through physics .*/
+	Vector3 GetTempPosition() const { return this->mTempPosition; }
+
 	/*! Returns the balls current velocity. */
 	Vector3 GetVelocity() const { return this->mVelocity; } 
 
@@ -167,6 +176,9 @@ public:
 	/*! Sets the position of the ball in world space. */
 	void SetPosition(const Vector3 position) { this->mMesh->SetPosition(D3DXVECTOR3(position.x,position.y,position.z)); }
 
+	/*! Sets the temp position of the ball that is before its going through physics .*/
+	void SetTempPosition(Vector3 temp) { this->mTempPosition = temp; }
+
 	/*! Sets the balls current velocity. */
 	void SetVelocity(Vector3 vel) { this->mVelocity = vel; } 
 
@@ -222,10 +234,15 @@ public:
 	void SetForwardVector(D3DXVECTOR3 forward) { this->mForward = Vector3(forward); }
 	void SetForwardVector(Vector3 forward) { this->mForward = forward; }
 
+	/*! Sets sound of if false. */
+	void SetSound(bool sound) { this->mSound = sound; }
 
 	/*! Updates the ball. */
 	void Update(const float dt);
 	
+	/*! Post update the ball with the new position given by physics. And apply rotation */
+	void UpdatePost();
+
 	/*! Returns false if the number of ball lives reaches 0. */
 	bool IsAlive() const;
 

@@ -12,7 +12,9 @@ enum GAMEMODE{
 	KOTH,
 	KOTH2,
 	WARLOCK,
-	TESTW
+	TESTW,
+	CREDITS,
+	CREDITS2
 };
 
 #include <windows.h>

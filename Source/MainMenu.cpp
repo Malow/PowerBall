@@ -174,6 +174,22 @@ bool MainMenu::Run()
 						this->mGm->Play(2);
 						
 						SAFE_DELETE(this->mGm);*/
+						
+						CursorControl cc;
+						cc.SetVisibility(true);
+						this->mGm = new GameManager(this->mGe);
+
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
+
+						this->mGm->PlayCredits();
+
+						this->mSubSet = NOMENU;
+						this->mCurrentSet = MAINMENU;
+
+						SAFE_DELETE(this->mGm);
+
+						
 					}
 					if(tempEventSet == MAINMENU_PLAY)
 					{
@@ -242,14 +258,30 @@ bool MainMenu::Run()
 					}
 					else if(tempEventSet == CREDIT)
 					{
+
+						CursorControl cc;
+						cc.SetVisibility(true);
+						this->mGm = new GameManager(this->mGe);
+
+						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
+						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
+
+						this->mGm->PlayCredits2();
+
+						this->mSubSet = NOMENU;
+						this->mCurrentSet = MAINMENU;
+
+						SAFE_DELETE(this->mGm);
+						/*
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 						this->mGm = new GameManager(this->mGe);
 
-						//mGm->PlayCREDIT(); /*Dont know what params to use*/
+						mGm->PlayCredits2(); 
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
+						*/
 					}
 					else if(tempEventSet == OPTIONS_LAN)
 					{

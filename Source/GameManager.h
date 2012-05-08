@@ -44,6 +44,12 @@ public:
 	/*! Starts the game with the assigned amount of players. */
 	bool		Play(const int numPlayers, int lifes, int rounds);
 
+	/*! Starts the credit gamemode 1. Random tilt */
+	bool		PlayCredits();
+
+	/*! Starts the credit gamemode 2. Oldschool you turn the maze. */
+	bool	    PlayCredits2();
+
 	/*! Starts LAN game with the assigned amount of players. */
 	bool		PlayLAN(ServerInfo server);
 

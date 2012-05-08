@@ -114,6 +114,10 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 				
 			}
+			for(int i = 0; i<this->mNumPlayers;i++)
+			{
+				this->mBalls[i]->UpdatePost();
+			}
 			mPlatform->Update(diff);
 			if(!this->mGe->isRunning())
 			{
@@ -286,6 +290,9 @@ bool GameManager::PlayLAN(ServerInfo server)
 				Vector3 normalPlane;
 				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				for(int i = 0; i < this->mNumPlayers; i++)
+					this->mBalls[i]->UpdatePost();
+	
 			}
 			
 			for(int i = 0; i < this->mNumPlayers; i++)
@@ -331,6 +338,8 @@ bool GameManager::PlayLAN(ServerInfo server)
 				Vector3 normalPlane;
 				if(this->mBalls[i]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 					this->mBalls[i]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				for(int i = 0; i < this->mNumPlayers; i++)
+					this->mBalls[i]->UpdatePost();
 
 				this->mBalls[i]->Update(diff);
 				
@@ -401,6 +410,193 @@ bool GameManager::PlayLAN(ServerInfo server)
 	//returns to menu after some win/draw screen.
 	return true;
 }
+
+bool GameManager::PlayCredits()
+{
+	bool running = true;
+	this->mGameMode = CREDITS;
+	this->mNumPlayers = 1;
+	this->Initialize();
+	float diff;
+	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
+	Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,80),1.0f,"Media/Fonts/1");
+	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
+	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,200),1.0f,"Media/Fonts/1");
+	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,260),1.0f,"Media/Fonts/1");
+	string s;
+	s = "Credits: Random";
+	hudR1->SetText(s);
+	diff = mGe->Update();
+	srand ( time(NULL) );
+	float targetX = -10 + rand() % 21; // random angle [-10, 10] in x-axis
+	float targetZ = -10 + rand() % 21; // random angle [-10, 10] in z-axis
+	targetX = targetX*(PI/180.0f);
+	targetZ = targetZ*(PI/180.0f);
+	this->mPlatform->SetTargetAngleX(targetX);
+	this->mPlatform->SetTargetAngleZ(targetZ);
+	while(running)
+	{
+		
+		diff = mGe->Update();
+		if(this->mPlatform->IsTargetAngleReachedX())
+		{
+			targetX = -10 + rand() % 21;
+			targetX = targetX*(PI/180.0f);
+			this->mPlatform->SetTargetAngleX(targetX);
+		}
+		if(this->mPlatform->IsTargetAngleReachedZ())
+		{
+			targetZ = -10 + rand() % 21;
+			targetZ = targetZ*(PI/180.0f);
+			this->mPlatform->SetTargetAngleZ(targetZ);
+		}
+		
+		
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+			running = false;
+		
+		if(mGe->GetKeyListener()->IsPressed('W'))
+			mBalls[0]->AddForceForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('S'))
+			mBalls[0]->AddForceOppositeForwardDirection(diff);
+		if(mGe->GetKeyListener()->IsPressed('A'))
+			mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('D'))
+			mBalls[0]->AddForceRightOfForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsClicked(2))
+			mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+		mBalls[0]->Update(diff);
+		Vector3 normalPlane;
+		if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+				this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+		mBalls[0]->UpdatePost();
+		mPlatform->Update(diff);
+		if(!this->mGe->isRunning())
+			running = false;
+		if(!mBalls[0]->IsAlive())
+			running = false;
+		
+		
+		
+		s = "Target X = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleX()*(180.0f/PI));
+		hudR2->SetText(s);
+		s = "Current X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
+		hudR3->SetText(s);
+		
+		s = "Target Z = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleZ()*(180.0f/PI));
+		hudR4->SetText(s);
+		
+		s = "Current Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
+		hudR5->SetText(s);
+		
+		if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
+		{
+			running = false;
+			s = "Mission Accomplished, you rock!";
+			hudR3->SetText(s);
+			while(diff < 2000)
+				diff += mGe->Update();
+			hudR3->SetText("");
+		}
+		
+
+	}
+	mGe->DeleteText(hudR1);
+	mGe->DeleteText(hudR2);
+	mGe->DeleteText(hudR3);
+	mGe->DeleteText(hudR4);
+	mGe->DeleteText(hudR5);
+	return true;
+}
+
+bool GameManager::PlayCredits2()
+{
+	bool running = true;
+	this->mGameMode = CREDITS2;
+	this->mNumPlayers = 1;
+	this->Initialize();
+	float diff;
+	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,5),1.5f,"Media/Fonts/1");
+	Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,80),2.0f,"Media/Fonts/1");
+	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(90,140),2.0f,"Media/Fonts/1");
+	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,200),1.5f,"Media/Fonts/1");
+	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,260),1.5f,"Media/Fonts/1");
+	string s;
+	s = "Credits: OldStyle";
+	hudR1->SetText(s);
+	this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
+	this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
+	diff = mGe->Update();
+	
+	while(running)
+	{
+		
+		diff = mGe->Update();
+			
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+			running = false;
+		
+		if(mGe->GetKeyListener()->IsPressed('W'))
+			this->mPlatform->RotateX(diff);
+		if(mGe->GetKeyListener()->IsPressed('S'))
+			this->mPlatform->RotateX(-diff);
+		if(mGe->GetKeyListener()->IsPressed('A'))
+			this->mPlatform->RotateZ(diff);
+		if(mGe->GetKeyListener()->IsPressed('D'))
+			this->mPlatform->RotateZ(-diff);
+		if(mGe->GetKeyListener()->IsClicked(2))
+			mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+		mBalls[0]->Update(diff);
+		Vector3 normalPlane;
+		if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+				this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+		mBalls[0]->UpdatePost();
+		mPlatform->Update(diff);
+		if(!this->mGe->isRunning())
+			running = false;
+		
+		/*
+		s = MaloW::convertNrToString(this->mBalls[0]->GetPosition().y);
+		hudR1->SetText(s);
+		s = "Target X = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleX()*(180.0f/PI));
+		*/
+		
+		s = "X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
+		hudR4->SetText(s);
+		s = "Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
+		hudR5->SetText(s);
+		
+		if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
+		{
+			running = false;
+			s = "Mission Accomplished, you rock!";
+			hudR3->SetText(s);
+			while(diff < 2000)
+				diff += mGe->Update();
+			hudR3->SetText("");
+		}
+		s = "Position ball: X = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().x) + " Y = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().y) + " Z = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().z);
+		hudR3->SetText(s);
+		
+		Vector3 p = this->mPlatform->GetMesh()->GetPosition();
+		if( (p - this->mPlatform->GetHotZonePosition()).GetLength() <2)
+		{
+			running = false;
+			s = "Mission Accomplished, you rock!!";
+			hudR3->SetText(s);
+			while(diff < 2000)
+				diff += mGe->Update();
+			hudR3->SetText("");
+		}
+	}
+		mGe->DeleteText(hudR1);
+		mGe->DeleteText(hudR2);
+		mGe->DeleteText(hudR3);
+		mGe->DeleteText(hudR4);
+		mGe->DeleteText(hudR5);
+		return true;
+	}
+
 void GameManager::Initialize()
 {
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
@@ -546,11 +742,13 @@ void GameManager::Initialize()
 			{
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5));
 				this->mBalls[i]->SetKnockoutMode();
+				this->mBalls[i]->SetSound(true);
 			}
 			else
 			{
 				this->mBalls[i] = new Ball("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5));
 				this->mBalls[i]->SetKnockoutMode();
+				this->mBalls[i]->SetSound(true);
 			}
 		}
 		/*
@@ -607,6 +805,60 @@ void GameManager::Initialize()
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 		*/
 		
+	}
+	else if(this->mGameMode == CREDITS)
+	{
+		//mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 35, -5));
+		//mGe->GetCamera()->LookAt(centerPlatform);
+		centerPlatform = D3DXVECTOR3(0,20,0);
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 45, 0));
+		mGe->GetCamera()->LookAt(centerPlatform);
+		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
+		this->mPlatform		= new Platform("Media/MazeMap.obj", centerPlatform);
+		this->mPlatform->SetRotate(true);
+		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(12,22.5f,11));
+		this->mPlatform->SetMeshHotZone(fla);
+		this->mPlatform->SetHotZonePosition(Vector3(12,22.5f,11));
+		this->mPlatform->SetHotZoneRadius(2.0f);
+		this->mPlatform->SetShrinkValue(0.0f);
+		this->mPlatform->SetRestition(0.2f);
+		this->mBalls		= new Ball*[this->mNumPlayers];
+		//this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,20,-11));
+		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,24,-11));
+		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
+		this->mBalls[0]->SetKnockoutMode();
+		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
+		/*
+		if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
+		*/
+	}
+	else if(this->mGameMode == CREDITS2)
+	{
+		centerPlatform = D3DXVECTOR3(0,20,0);
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 45, 0));
+		mGe->GetCamera()->LookAt(centerPlatform);
+		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
+		this->mPlatform		= new Platform("Media/MazeMap.obj", centerPlatform);
+		
+		//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
+		this->mPlatform->SetShrinkValue(0.0f);
+		this->mPlatform->SetRestition(0.0f);
+		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(12,22.5f,11));
+		this->mPlatform->SetMeshHotZone(fla);
+		this->mPlatform->SetHotZonePosition(Vector3(12,23.5f,11));
+		this->mPlatform->SetHotZoneRadius(2.5f);
+		this->mBalls		= new Ball*[this->mNumPlayers];
+		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,24,-11));
+		
+		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
+		this->mBalls[0]->SetKnockoutMode();
+		this->mBalls[0]->SetAcceleration(Vector3(0,-40,0));
+
+		/*
+		if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
+		*/
 	}
 	// wait until everything is loaded and then drop the balls from hight above
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
