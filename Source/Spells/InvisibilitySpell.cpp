@@ -30,8 +30,8 @@ void InvisibilitySpell::Use()
 {
 	if(!this->mNeedCoolDown && !this->mIsInUse && !this->SpellInUse())
 	{
-		/* switch mesh here to an almost transparent mesh */
-		this->mBall->SetTransparancy(1.0f);
+		/* set mesh to use invisibility effect */
+		this->mBall->UseInvisibilityEffect(true);
 		
 		/* backup ball info */
 		//this->mBackup.e = this->mBall->GetRestitution();
@@ -49,7 +49,7 @@ void InvisibilitySpell::Restore()
 {
 	if(this->mIsInUse)
 	{
-		this->mBall->SetTransparancy(0.0f);
+		this->mBall->UseInvisibilityEffect(false);
 		//this->mBall->SetRestitution(this->mBackup.e);
 		this->mBall->SetMass(mBackup.mass);
 		this->mIsInUse = false;

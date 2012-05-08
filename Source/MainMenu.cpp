@@ -115,6 +115,7 @@ bool MainMenu::Run()
 				{
 					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
 					int tempEventSet = tempReturnEvent->GetSet();
+					MaloW::Debug(tempEventSet);
 					if(tempEventSet == PLAY_LAN)
 					{
 						CursorControl cc;
@@ -266,7 +267,7 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
-						this->mGm->PlayCredits2();
+						this->mGm->PlayCredits();
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;

@@ -190,6 +190,11 @@ void Shader::SetStructMemberAtIndexAsMatrix(int index, char* structVariable, cha
 }
 
 
+
+void Shader::SetFloat3(char* variable, D3DXVECTOR3 value)
+{
+	m_pEffect->GetVariableByName(variable)->AsVector()->SetFloatVector((float*)&value);
+}
 void Shader::SetFloatVectorArray(char* variable, D3DXVECTOR3* values, unsigned int nrOfElements)
 {
 	m_pEffect->GetVariableByName(variable)->AsVector()->SetFloatVectorArray((const float*)values, 0, nrOfElements);
