@@ -110,6 +110,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			text->SetSize(size);
 			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
+			se1->Play();
 		}
 
 		if(eng->GetKeyListener()->IsClicked(2))
