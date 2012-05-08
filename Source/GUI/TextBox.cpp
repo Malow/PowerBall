@@ -16,7 +16,7 @@ TextBox::TextBox() : Element()
 	this->mPressedOutside = false;
 	this->mTextSize = 0;
 }
-TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars) : Element(x, y, z, textureName, width, height)
+TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys) : Element(x, y, z, textureName, width, height)
 {
 	this->mActiveX = x;
 	this->mActiveY = y;
@@ -26,8 +26,9 @@ TextBox::TextBox(float x, float y, float z, string textureName, float width, flo
 
 	this->mText = text;
 	this->mName = name;
-
+	
 	this->mMaxNrOfChars = maxNrOfChars;
+	this->mAllowedChars = allowedKeys;
 
 	this->mFocused = false;
 	this->mPressed = false;
@@ -104,43 +105,72 @@ bool TextBox::AddToRenderer(GraphicsEngine* ge)
 
  void TextBox::CheckString(GraphicsEngine* ge)
  {
-	 if(this->mPointText->GetText().size() < this->mMaxNrOfChars)
-	 {
-		 string pushString = "";
-		 const int NROFLETTERS = 37;
-		 char keys[NROFLETTERS] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-		 char KEYS[NROFLETTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-		 if(ge->GetKeyListener()->IsPressed(VK_SHIFT))
-		 {
-			 for(int i = 0; i < NROFLETTERS; i++)
-			 {
-				 if(ge->GetKeyListener()->IsPressed(KEYS[i]))
-				 {
-					 pushString = KEYS[i];
-					 this->mPointText->AppendText(pushString);
-					 ge->GetKeyListener()->KeyUp(KEYS[i]);
-				 }
-			 }
-		 }
-		 if(!ge->GetKeyListener()->IsPressed(VK_SHIFT))
-		 {
-			 for(int i = 0; i < NROFLETTERS; i++)
-			 {
-				 if(ge->GetKeyListener()->IsPressed(KEYS[i]))
-				 {
-					 pushString = keys[i];
-					 this->mPointText->AppendText(pushString);
-					 ge->GetKeyListener()->KeyUp(KEYS[i]);
-				 }
-			 }
-		 }
-	 }
-	 if(this->mPointText->GetText().size() > 0)
-	 {
-		 if(ge->GetKeyListener()->IsPressed(VK_BACK))
-		 {
-			 this->mPointText->DeleteFromEnd(1);
-			 ge->GetKeyListener()->KeyUp(VK_BACK);
-		 }
-	 }
+	if(this->mPointText->GetText().size() < this->mMaxNrOfChars)
+	{
+		string pushString = "";
+		const int NROFLETTERS = 27;
+		const int NROFSPECIAL = 11;
+		char keys[NROFLETTERS] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' '};
+		char KEYS[NROFLETTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' '};
+		char specialChars[NROFSPECIAL] = {',', '.', ';', ':', '*', '?', '!', '<', '>', '-', '_'};
+		char numbers[10] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+
+		/*Check if a char is pressed*/
+		if(this->mAllowedChars == ALL || this->mAllowedChars == NORMALCHAR || this->mAllowedChars == NORMALCHAR_NR ||
+			this->mAllowedChars == NORMALCHAR_SPECIAL)
+		{
+			for(int i = 0; i < NROFLETTERS; i++)
+			{
+				if(ge->GetKeyListener()->IsPressed(KEYS[i]))
+				{
+					if(!ge->GetKeyListener()->IsPressed(VK_SHIFT))
+						pushString = keys[i];
+					else
+						pushString = KEYS[i];
+
+					this->mPointText->AppendText(pushString);
+					ge->GetKeyListener()->KeyUp(KEYS[i]);
+				}
+			}
+		}
+		/*Check if a number is pressed*/
+		if(this->mAllowedChars == ALL || this->mAllowedChars == NR || this->mAllowedChars == NORMALCHAR_NR ||
+				this->mAllowedChars == NR_SPECIAL)
+		{
+			for(int i = 0; i < 10; i++)
+			{
+				if(ge->GetKeyListener()->IsPressed(numbers[i]))
+				{
+					pushString = numbers[i];
+
+					this->mPointText->AppendText(pushString);
+					ge->GetKeyListener()->KeyUp(numbers[i]);
+				}
+			}
+		}
+		/*Check with special characters*/
+		if(this->mAllowedChars == ALL || this->mAllowedChars == SPECIAL || this->mAllowedChars == NORMALCHAR_SPECIAL ||
+				this->mAllowedChars == NR_SPECIAL)
+		{
+			for(int i = 0; i < NROFSPECIAL; i++)
+			{
+				if(ge->GetKeyListener()->IsPressed(specialChars[i]))
+				{
+					pushString = specialChars[i];
+
+					this->mPointText->AppendText(pushString);
+					ge->GetKeyListener()->KeyUp(specialChars[i]);
+				}
+			}
+		}
+
+	}
+	if(this->mPointText->GetText().size() > 0)
+	{
+		if(ge->GetKeyListener()->IsPressed(VK_BACK))
+		{
+			this->mPointText->DeleteFromEnd(1);
+			ge->GetKeyListener()->KeyUp(VK_BACK);
+		}
+	}
  }

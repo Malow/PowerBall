@@ -423,6 +423,11 @@ bool GameManager::PlayCredits()
 	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
 	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,200),1.0f,"Media/Fonts/1");
 	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,260),1.0f,"Media/Fonts/1");
+	Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(20,560),1.0f,"Media/Fonts/1");
+	Text* hudR7 = mGe->CreateText("",D3DXVECTOR2(20,600),1.0f,"Media/Fonts/1");
+	Text* hudR8 = mGe->CreateText("",D3DXVECTOR2(20,640),1.0f,"Media/Fonts/1");
+	Text* hudR9 = mGe->CreateText("",D3DXVECTOR2(20,680),1.0f,"Media/Fonts/1");
+	Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 	string s;
 	s = "Credits: Random";
 	hudR1->SetText(s);
@@ -489,14 +494,32 @@ bool GameManager::PlayCredits()
 		s = "Current Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
 		hudR5->SetText(s);
 		
+		s = "Position ball:";
+		hudR6->SetText(s);
+		s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().z)/10.0f);
+		hudR7->SetText(s);
+		s = "Position hotzone flag: ";
+		hudR8->SetText(s);
+		s =  "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().z)/10.0f);
+		hudR9->SetText(s);
+		Vector3 p = this->mPlatform->GetMesh()->GetPosition();
+
 		if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
 		{
-			running = false;
-			s = "Mission Accomplished, you rock!";
-			hudR3->SetText(s);
-			while(diff < 2000)
-				diff += mGe->Update();
+			hudR2->SetText("");
 			hudR3->SetText("");
+			hudR4->SetText("");
+			hudR5->SetText("");
+			hudR6->SetText("");
+			hudR7->SetText("");
+			hudR8->SetText("");
+			hudR9->SetText("");
+			running = false;
+			s = "Mission Accomplished: you rock!";
+			hudR10->SetText(s);
+			while(diff < 4000)
+				diff += mGe->Update();
+			hudR10->SetText("");
 		}
 		
 
@@ -506,6 +529,11 @@ bool GameManager::PlayCredits()
 	mGe->DeleteText(hudR3);
 	mGe->DeleteText(hudR4);
 	mGe->DeleteText(hudR5);
+	mGe->DeleteText(hudR6);
+	mGe->DeleteText(hudR7);
+	mGe->DeleteText(hudR8);
+	mGe->DeleteText(hudR9);
+	mGe->DeleteText(hudR10);
 	return true;
 }
 
@@ -516,11 +544,16 @@ bool GameManager::PlayCredits2()
 	this->mNumPlayers = 1;
 	this->Initialize();
 	float diff;
-	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,5),1.5f,"Media/Fonts/1");
-	Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,80),2.0f,"Media/Fonts/1");
-	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(90,140),2.0f,"Media/Fonts/1");
-	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,200),1.5f,"Media/Fonts/1");
-	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,260),1.5f,"Media/Fonts/1");
+	Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
+	Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
+	Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,180),1.0f,"Media/Fonts/1");
+	Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,500),1.0f,"Media/Fonts/1");
+	Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,540),1.0f,"Media/Fonts/1");
+	Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(20,580),1.0f,"Media/Fonts/1");
+	Text* hudR7 = mGe->CreateText("",D3DXVECTOR2(20,620),1.0f,"Media/Fonts/1");
+	Text* hudR8 = mGe->CreateText("",D3DXVECTOR2(20,660),1.0f,"Media/Fonts/1");
+	Text* hudR9 = mGe->CreateText("",D3DXVECTOR2(20,700),1.0f,"Media/Fonts/1");
+	Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 	string s;
 	s = "Credits: OldStyle";
 	hudR1->SetText(s);
@@ -555,38 +588,42 @@ bool GameManager::PlayCredits2()
 		if(!this->mGe->isRunning())
 			running = false;
 		
-		/*
-		s = MaloW::convertNrToString(this->mBalls[0]->GetPosition().y);
-		hudR1->SetText(s);
-		s = "Target X = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleX()*(180.0f/PI));
-		*/
+		
 		
 		s = "X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
-		hudR4->SetText(s);
+		hudR2->SetText(s);
 		s = "Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
+		hudR3->SetText(s);
+		
+		
+		s = "Position ball:";
+		hudR4->SetText(s);
+		s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().z)/10.0f);
 		hudR5->SetText(s);
+		s = "Position hotzone flag: ";
+		hudR6->SetText(s);
+		s =  "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().z)/10.0f);
+		hudR7->SetText(s);
+		//Vector3 distVec = this->mPlatform->GetHotZonePosition() - this-mBalls[0]->GetPositionVector3();
+		//float dist = distVec.GetLength();
+		//s = "Distance to flag: " +  MaloW::convertNrToString(floor(10.0f*dist)/10.0f);
 		
 		if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
 		{
-			running = false;
-			s = "Mission Accomplished, you rock!";
-			hudR3->SetText(s);
-			while(diff < 2000)
-				diff += mGe->Update();
+			hudR2->SetText("");
 			hudR3->SetText("");
-		}
-		s = "Position ball: X = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().x) + " Y = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().y) + " Z = " + MaloW::convertNrToString(this->mBalls[0]->GetPosition().z);
-		hudR3->SetText(s);
-		
-		Vector3 p = this->mPlatform->GetMesh()->GetPosition();
-		if( (p - this->mPlatform->GetHotZonePosition()).GetLength() <2)
-		{
+			hudR4->SetText("");
+			hudR5->SetText("");
+			hudR6->SetText("");
+			hudR7->SetText("");
+			hudR8->SetText("");
+			hudR9->SetText("");
 			running = false;
-			s = "Mission Accomplished, you rock!!";
-			hudR3->SetText(s);
-			while(diff < 2000)
+			s = "Mission Accomplished: you rock!";
+			hudR10->SetText(s);
+			while(diff < 4000)
 				diff += mGe->Update();
-			hudR3->SetText("");
+			hudR10->SetText("");
 		}
 	}
 		mGe->DeleteText(hudR1);
@@ -594,6 +631,10 @@ bool GameManager::PlayCredits2()
 		mGe->DeleteText(hudR3);
 		mGe->DeleteText(hudR4);
 		mGe->DeleteText(hudR5);
+		mGe->DeleteText(hudR6);
+		mGe->DeleteText(hudR7);
+		mGe->DeleteText(hudR8);
+
 		return true;
 	}
 
