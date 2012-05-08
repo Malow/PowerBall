@@ -12,8 +12,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowHeight = 900;
 	params.windowWidth = 1600;
+	params.windowHeight = 900;
 	params.FXAAQuality = 0;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
@@ -45,7 +45,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
 	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	seng->SetMasterVolume(0.1f);
+	seng->SetMasterVolume(0.05f);
 	ss1->Play();
 	
 	
@@ -110,6 +110,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			text->SetSize(size);
 			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
+			se1->Play();
 		}
 
 		if(eng->GetKeyListener()->IsClicked(2))

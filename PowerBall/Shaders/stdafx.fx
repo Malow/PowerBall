@@ -49,8 +49,8 @@ cbuffer EveryFrame
 
 	float timerMillis;
 
-	uint width;
-	uint height;
+	uint windowWidth;
+	uint windowHeight;
 };
 
 //------------------------------------------------------------------------------------------------------

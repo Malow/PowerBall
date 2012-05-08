@@ -123,6 +123,7 @@ PSout PSScene(PSSceneIn input) : SV_Target
 		textureColor.xyz = tex2D.Sample(linearSampler, input.tex).xyz;
 	}
 	float4 finalColor = (textureColor + input.Color) * DiffuseColor;
+	
 	finalColor.w = (float)specialColor;
 
 	PSout output;

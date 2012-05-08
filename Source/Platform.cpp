@@ -114,7 +114,7 @@ void Platform::Update(const float dt)
 		this->mMeshHotZone->SetPosition(newPos4HotZoneMesh.GetD3DVec());
 		this->mMeshHotZone->RotateAxis(newYrot2.GetD3DVec(), this->mAngleY);
 		
-		Vector3 hotPos = this->GetHotZonePosition();
+		Vector3 hotPos = Vector3(12,4.5,11);
 		Vector3 newHotPos = world * hotPos;
 		/* test to see that the flag mesh is not straight and thats true. */
 		//this->mMeshHotZone->RotateAxis(D3DXVECTOR3(0,1,0), dt*0.001f*(PI/2.0f));
