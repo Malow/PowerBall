@@ -236,7 +236,7 @@ void DxManager::RenderDeferredPerPixel()
 	}
 
 	// Unbind SSAO
-	//this->ssao->PostRender(this->Shader_DeferredLightning);
+	this->ssao->PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
 }

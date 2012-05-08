@@ -8,11 +8,10 @@ class ParticleSystemHandler
 	private:
 		ID3D11Device*			gDevice;
 		ID3D11DeviceContext*	gDeviceContext;
-		//Camera*				gCamera;
 		
 		int					mNrOfShaders;
 		int					mShaderCapacity;
-		//ParticleShader**	mShaders;
+		ParticleShader**	mShaders;
 		string**			mShaderNames;
 
 		int					mNrOfSystems;
@@ -38,10 +37,10 @@ class ParticleSystemHandler
 		virtual ~ParticleSystemHandler();
 		void Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
-		int GetNrOfParticleShaders() const;
-		int GetNrOfParticleSystems() const;
-		const string* GetParticleShaderName(int index) const;
-		const string* GetParticleSystemName(int index) const;
+		int				GetNrOfParticleShaders() const;
+		int				GetNrOfParticleSystems() const;
+		const string*	GetParticleShaderName(int index) const;
+		const string*	GetParticleSystemName(int index) const;
 
 		bool AddParticleShader(	string particleShaderName, 
 								string fileName, 
@@ -59,6 +58,8 @@ class ParticleSystemHandler
 								const vector<string>& fileNames);
 		void MoveParticleSystem(string name, float deltaTime); 
 		void MoveParticleSystemTo(string name, D3DXVECTOR3 pos);
-		void Update(float deltaTime, float gameTime);
-		void Draw();
+		void Update(float deltaTime, float gameTime, D3DXVECTOR3 camPos);
+		
+		void PreRender(GraphicsEngineParams engParams, Camera* cam);
+		void PostRender();
 };
