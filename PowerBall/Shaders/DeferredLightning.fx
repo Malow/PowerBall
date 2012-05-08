@@ -119,14 +119,17 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 //-----------------------------------------------------------------------------------------
 float4 PSScene(PSSceneIn input) : SV_Target
 {	
-	float4 DiffuseColor = Texture.Sample(linearSampler, input.tex);		
+	float3 DiffuseColor = Texture.Sample(linearSampler, input.tex).xyz;		
+	//return float4(DiffuseColor, 1.0f);
+
+	
 	float4 NormsAndDepth = NormalAndDepth.Sample(linearSampler, input.tex);
 	
 	float4 WorldPos = Position.Sample(linearSampler, input.tex);
 
-	//DiffuseColor.w = 1.0f; **
+	//float4 AmbientLight = float4(DiffuseColor * 0.5f, 1.0f);
+	float4 AmbientLight = float4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	float4 AmbientLight = float4(DiffuseColor.xyz * 0.5f, 1.0f);
 	float SpecularPower = Specular.Sample(linearSampler, input.tex).w;
 	float4 SpecularColor = float4(Specular.Sample(linearSampler, input.tex).xyz, 1.0f);
 
@@ -187,10 +190,11 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		float coef = (lights[i].LightIntensity / 1000.0f) + (DistanceToLight * DistanceToLight) / (lights[i].LightIntensity * lights[i].LightIntensity);
 
 		difflight /= coef;
-		/*	/// For slower fall-off on spec light. Doesnt work with quad-based culling tho.
-		if(coef > 10.0f)
-			speclight /= coef / 10.0f;
-			*/
+
+		/// For slower fall-off on spec light. Doesnt work with quad-based culling tho.
+		//if(coef > 10.0f)
+		//	speclight /= coef / 10.0f;
+			
 		speclight /= coef;
 		
 		difflight *= shadow;
@@ -200,22 +204,25 @@ float4 PSScene(PSSceneIn input) : SV_Target
 		specLighting += speclight;
 	}
 	
-	diffuseLighting = saturate(diffuseLighting / NrOfLights);
-	specLighting = saturate(specLighting / NrOfLights);
+	if(NrOfLights > 0)
+	{
+		diffuseLighting = saturate(diffuseLighting / NrOfLights);
+		specLighting = saturate(specLighting / NrOfLights);
+	}
 
 	//float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), DiffuseColor.w);
-	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor.xyz + DiffuseColor.xyz * diffuseLighting + SpecularColor.xyz * specLighting), 1.0f);
+	float4 finalColor = float4((AmbientLight.xyz * DiffuseColor + DiffuseColor * diffuseLighting + SpecularColor.xyz * specLighting), 1.0f);
 
 	
 
 
-
+	
 	// Haxfix, want it above but I lose 75% of my FPS then (??!?!? :S:S:S:S:S)
-	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
+	if(NormsAndDepth.w < -0.5f)		// All pixels that has a negative depth means that there is no geometry, therefor go without lightcalcs.
+		finalColor = float4(DiffuseColor, 1.0f);
 
-	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor return without lightcalcs.
-		finalColor = DiffuseColor;
+	if(NormsAndDepth.w > 1.0f)		// All pixels that has a greater than 1 depth means that there is no geometry and there is skybox, therefor go without lightcalcs.
+		finalColor = float4(DiffuseColor, 1.0f);
 	
 	
 	/*
@@ -231,17 +238,18 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	if(fogDepth < -0.5f)
 		finalColor = float4(0.5, 0.5, 0.5, 1.0f);
 	*/
-
-	//**temp:**
+	
+	//temp:
 	//todo: if player is on red team, reduce redness and increase blueness**
-
+	
 	//Exlude skybox
+	float TeamColor = Texture.Sample(linearSampler, input.tex).w;
 	if(NormsAndDepth.w < 1.00001f)
 	{
 		//Exclude nullColor
-		if((uint)DiffuseColor.w != 0)
+		if((uint)TeamColor != 0)
 		{
-			switch((uint)DiffuseColor.w)
+			switch((uint)TeamColor)
 			{
 				case 1: (finalColor += WHITE) * 0.5f; break;
 				case 2: (finalColor += BLACK) * 0.5f; break;
