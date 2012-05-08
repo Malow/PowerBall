@@ -28,7 +28,6 @@ void DxManager::RenderDeferredGeometry()
 		
 		// Per object
 		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
-		this->Shader_DeferredGeometry->SetFloat("transparency", this->objects[i]->GetTransparency()); //**
 
 		// Set matrixes
 		world = this->objects[i]->GetWorldMatrix();
@@ -236,7 +235,7 @@ void DxManager::RenderDeferredPerPixel()
 	}
 
 	// Unbind SSAO
-	//this->ssao->PostRender(this->Shader_DeferredLightning);
+	this->ssao->PostRender(this->Shader_DeferredLightning);
 
 	this->Shader_DeferredLightning->Apply(0);
 }

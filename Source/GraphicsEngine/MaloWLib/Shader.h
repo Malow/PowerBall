@@ -5,7 +5,7 @@
 
 class Shader
 {
-
+protected:
 	ID3D11Device*			mDevice;
 	ID3D11DeviceContext*	mImmediateContext;
 	ID3D11InputLayout*		m_pInputLayout;
@@ -43,7 +43,7 @@ public:
 	void SetMatrixAtIndex(int index, char* variable, D3DXMATRIX& mat);
 	void SetStructMemberAtIndexAsMatrix(int index, char* structVariable, char* memberVariable, D3DXMATRIX& mat);
 
-	
+	void SetFloat3(char* variable, D3DXVECTOR3 value);
 	void SetFloatVectorArray(char* variable, D3DXVECTOR3* values, unsigned int nrOfElements);
 };
 

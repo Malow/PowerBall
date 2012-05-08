@@ -115,6 +115,8 @@ public:
 	Text* CreateText(string text, D3DXVECTOR2 position, float size, string fontTexturePath);
 	bool DeleteText(Text* delText);
 
+
+
 	GraphicsEngineParams GetEngineParameters() const { return this->parameters; }
 
 	/*! Updates the Camera and takes care of all key-inputs and returns diff in milliseconds (47.0f as return = 47 ms, IE. NOT SECONDS) */

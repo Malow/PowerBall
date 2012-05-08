@@ -3,7 +3,7 @@
 Mesh::Mesh(D3DXVECTOR3 pos)
 {
 	this->specialColor = NULL_COLOR;
-	this->transparency = 0.0f;
+	//this->transparency = 0.0f;
 
 	this->strips = new MaloW::Array<MeshStrip*>();
 
@@ -107,7 +107,7 @@ void Mesh::SetSpecialColor(COLOR specialColor)
 {
 	this->specialColor = specialColor;
 }
-
+/*
 void Mesh::SetTransparency(float transparency)
 {
 	if(transparency < 0.0f)
@@ -122,6 +122,10 @@ void Mesh::SetTransparency(float transparency)
 	{
 		this->transparency = transparency;
 	}
+}*/
+void Mesh::UseInvisibilityEffect(bool use)
+{
+	this->useInvisibilityEffect = use;
 }
 
 void Mesh::SetPosition(D3DXVECTOR3 pos)

@@ -322,5 +322,8 @@ public:
 	bool RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, Vector3 p1, Vector3 p2, float &u, float &v, float &t);
 
 	/*! Sets the transparency of the ball. Range is [0,1] */
-	void SetTransparancy(float transparency) { this->mMesh->SetTransparency(transparency); }
+	//void SetTransparency(float transparency) { this->mMesh->SetTransparency(transparency); }
+
+	/*! Set ball to use invisibility effect or not. */
+	void UseInvisibilityEffect(bool use) { this->mMesh->UseInvisibilityEffect(use); }
 };
