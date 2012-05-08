@@ -76,6 +76,8 @@
     <ClCompile Include="..\Source\MaloWLib\Process.cpp" />
     <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
     <ClCompile Include="..\Source\MsgHandler.cpp" />
+    <ClCompile Include="..\Source\Physics\Matrix3.cpp" />
+    <ClCompile Include="..\Source\Physics\Matrix4.cpp" />
     <ClCompile Include="..\Source\Platform.cpp" />
     <ClCompile Include="..\Source\PlayerHistory.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
@@ -151,6 +153,9 @@
     <ClInclude Include="..\Source\MaloWLib\Queue.h" />
     <ClInclude Include="..\Source\MaloWLib\TCBSpline.h" />
     <ClInclude Include="..\Source\MsgHandler.h" />
+    <ClInclude Include="..\Source\Physics\Matrix3.h" />
+    <ClInclude Include="..\Source\Physics\Matrix4.h" />
+    <ClInclude Include="..\Source\Physics\Vector4.h" />
     <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\PlayerHistory.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />

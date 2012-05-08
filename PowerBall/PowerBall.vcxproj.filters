@@ -39,6 +39,9 @@
     <Filter Include="Game Files\Spells">
       <UniqueIdentifier>{ffdb4581-bc73-4ac7-aae0-708c766074c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Physics">
+      <UniqueIdentifier>{27a39241-73b8-49b0-b779-a81390b3384d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -247,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\ParticleSystemsHandler.cpp">
       <Filter>Graphics Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\Matrix3.cpp">
+      <Filter>Game Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\Matrix4.cpp">
+      <Filter>Game Files\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +480,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\ParticleSystemHandler.h">
       <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\Matrix3.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\Matrix4.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\Vector4.h">
+      <Filter>Game Files\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

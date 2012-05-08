@@ -1,4 +1,10 @@
 #pragma once
+/**
+* Author: Jerry Rahmqvist
+* Create Date: 03/05/2012
+* 
+* 
+**/
 #include "..\Spells\Spell.h"
 
 
