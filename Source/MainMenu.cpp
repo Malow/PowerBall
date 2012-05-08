@@ -9,7 +9,7 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mSubSet = NOMENU;
 	this->mGm = NULL;
 	this->mGe = ge;
-	
+
 	this->Initialize();
 }
 MainMenu::~MainMenu()
@@ -19,13 +19,15 @@ MainMenu::~MainMenu()
 }
 bool MainMenu::Initialize()
 {
-	CreateCircleMenu();
+	this->CreateCircleMenu();
 
-	CreateOptionsMenu();
+	this->CreateOptionsMenu();
 	
-	CreateHotseatMenu();
+	this->CreateHotseatMenu();
 	
-	CreateOnlineAndLanMenu();
+	this->CreateOnlineAndLanMenu();
+
+	this->CreateScene();
 
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 	
@@ -66,9 +68,11 @@ bool MainMenu::Run()
 	float menuChangeTime = 0;
 	while(isRunning)
 	{
-		
 		returnEvent = NULL;
+
 		dt = this->mGe->Update();
+		if(this->mCamRec != NULL)
+			this->mCamRec->Update(dt);
 
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
 
@@ -115,7 +119,6 @@ bool MainMenu::Run()
 				{
 					ChangeSetEvent* tempReturnEvent = (ChangeSetEvent*)returnEvent;
 					int tempEventSet = tempReturnEvent->GetSet();
-					MaloW::Debug(tempEventSet);
 					if(tempEventSet == PLAY_LAN)
 					{
 						CursorControl cc;
@@ -124,6 +127,7 @@ bool MainMenu::Run()
 						int rounds = -1; 
 						int flags = -1;
 						int secondsToWin = -1;
+						string serverName = "PowerBall server";
 
 						/* Getting some needed info to start a server*/
 						GUIEvent* tempEvent = this->mSets[this->mSubSet].GetEventFromDropDown("GameMode");
@@ -141,7 +145,8 @@ bool MainMenu::Run()
 						{
 
 						}
-
+						serverName  = this->mSets[this->mSubSet].GetTextFromField("ServerName");
+						this->DeleteScene();
 						this->mGm = new GameManager(this->mGe);
 						
 						//add button called find servers or something and copy the row below to retrieve a list of all servers currently open on the LAN
@@ -156,10 +161,12 @@ bool MainMenu::Run()
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host("PowerBall Server", 0, 5, GameMode->GetGameMode(), "");
+							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "");
 							this->mGm->PlayLAN(host);
 						} 
-						
+						this->CreateScene();
+						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
+
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
 
@@ -183,7 +190,12 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
+						this->DeleteScene();
+
 						this->mGm->PlayCredits();
+
+						this->CreateScene();
+						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
@@ -212,7 +224,12 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
+						this->DeleteScene();
+
 						this->mGm->Play(2, atoi(lifes.c_str()), atoi(rounds.c_str()));
+
+						this->CreateScene();
+						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
@@ -267,7 +284,12 @@ bool MainMenu::Run()
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
+						this->DeleteScene();
+
 						this->mGm->PlayCredits();
+
+						this->CreateScene();
+						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;

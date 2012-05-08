@@ -2,6 +2,7 @@
 
 SimpleButton::SimpleButton() : Element()
 {
+	this->mMouseClick = NULL;
 	this->mActiveX = 0;
 	this->mActiveY = 0;
 
@@ -27,6 +28,8 @@ SimpleButton::SimpleButton(float x, float y, float z, string textureName, float 
 		string mTextureNamePressed, string mTextureNameHovered, float activeX, float activeY, float activeWidth, float activeHeight) 
 	: Element(x, y, z, textureName, width, height)
 {
+	this->mMouseClick = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
+
 	this->mActiveX = activeX;
 	this->mActiveY = activeY;
 	
@@ -100,6 +103,7 @@ GUIEvent* SimpleButton::CheckCollision(float mouseX, float mouseY, bool mousePre
 					ge->DeleteImage(this->mPressedImage);
 					this->mPressedImage = NULL;
 				}
+				this->mMouseClick->Play();
 				return this->GetEvent();
 			}
 			else

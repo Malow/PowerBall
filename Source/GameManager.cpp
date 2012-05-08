@@ -611,7 +611,7 @@ void GameManager::Initialize()
 	for(int i = 0; i < 5; i++)
 		this->mLights[i]->SetIntensity(30.0f);
 
-	this->mIGM			= new InGameMenu(this->mGe);
+	this->mIGM	= new InGameMenu(this->mGe);
 
 	//replace with MAP->GETSTARTPOSITIONS() ?
 	//

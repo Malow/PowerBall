@@ -18,6 +18,8 @@
 #include "GameManager.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
+#include "Ball.h"
+#include "Platform.h"
 
 enum MENU {NOMENU,
 	BACKGROUND,
@@ -60,7 +62,15 @@ private:
 	void CreateOptionsMenu();
 	void CreateHotseatMenu();
 	void CreateOnlineAndLanMenu();
-
+	void CreateScene();
+	void DeleteScene();
+	/*Needed for the Scene*/
+	StaticMesh* mBall1;
+	StaticMesh* mBall2;
+	StaticMesh* mPlatform;
+	CamRecording* mCamRec;
+	Light* mLight1;
+	Light* mLight2;
 public:
 	/*! This function will create the main menu and init all buttons etc.*/
 	MainMenu(GraphicsEngine* ge);

@@ -9,6 +9,8 @@ DropDownList::DropDownList() : Element()
 DropDownList::DropDownList(float x, float y, float z, string textureName, float width, float height, string name) 
 	: Element(x, y, z, textureName, width, height)
 {
+	this->mMouseClick = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
+
 	this->mActiveX = x;
 	this->mActiveY = y;
 	this->mActiveHeight = 24;
@@ -70,15 +72,17 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 			this->mPressed = false;
 			if(!this->mDropActive)
 			{
+				this->mMouseClick->Play();
 				this->mDropActive = true;
 				this->AddListToRenderer(ge);
 			}
 			else if(this->mDropActive)
 			{
+				this->mMouseClick->Play();
 				this->mDropActive = false;
 				this->RemoveListFromRenderer(ge);
 			}
-			for(int i = 0; i < this->mNrOfElements; i++)
+			for(int i = 1; i < this->mNrOfElements; i++)
 			{
 				if(typeid(*this->mElements[i]) == typeid(SimpleButton))
 				{
@@ -101,7 +105,7 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 	}
 	if(this->mDropActive)
 	{
-		for(int i = 0; i < this->mNrOfElements; i++)
+		for(int i = 1; i < this->mNrOfElements; i++)
 		{
 			if(typeid(*this->mElements[i]) == typeid(SimpleButton))
 			{
