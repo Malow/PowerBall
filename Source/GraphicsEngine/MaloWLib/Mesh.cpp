@@ -130,6 +130,12 @@ void Mesh::SetPosition(D3DXVECTOR3 pos)
 	this->RecreateWorldMatrix();
 }
 
+void Mesh::SetQuaternion(D3DXQUATERNION quat)
+{
+	this->rotQuat = quat;
+	this->RecreateWorldMatrix();
+}
+
 void Mesh::MoveBy(D3DXVECTOR3 moveby)
 { 
 	this->pos += moveby; 

@@ -38,6 +38,7 @@ public:
 	/*! Sets the level of transparency. Range is [0,1]. */
 	void SetTransparency(float transparency);
 	void SetPosition(D3DXVECTOR3 pos);
+	void SetQuaternion(D3DXQUATERNION quat);
 	void MoveBy(D3DXVECTOR3 moveby);
 	void Rotate(D3DXVECTOR3 radians);
 	void Rotate(D3DXQUATERNION quat);
