@@ -5,12 +5,14 @@ GUIArchButton::GUIArchButton() : Element()
 	this->mPressed = false;
 	this->mHovered = false;
 
-	this->mTextureNamePressed = " ";
-	this->mTextureNameHovered = " ";
+	this->mTextureNamePressed = "";
+	this->mTextureNameHovered = "";
 
 	this->mPressedImage = NULL;
 	this->mHoveredImage = NULL;
-	
+
+	this->mMouseClick = NULL;
+
 	this->mEvent = NULL;
 }
 GUIArchButton::~GUIArchButton()
@@ -20,6 +22,9 @@ GUIArchButton::~GUIArchButton()
 GUIArchButton::GUIArchButton(float x, float y, float z, string textureName, float width, float height, GUIEvent* tempEvent, 
 	string mTextureNamePressed, string mTextureNameHovered) : Element(x, y, z, textureName, width, height)
 {
+
+	this->mMouseClick = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
+
 	this->mPressed = false;
 	this->mHovered = false;
 

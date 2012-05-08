@@ -12,8 +12,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
+	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.windowWidth = 1200;
 	params.FXAAQuality = 0;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
@@ -23,7 +23,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 	
-	//#define LOLTEST
+	#define LOLTEST
 	#ifdef LOLTEST
 	
 	// Example of GE useage
@@ -45,14 +45,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
 	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
 	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	seng->SetMasterVolume(0.1f);
+	seng->SetMasterVolume(0.05f);
 	ss1->Play();
 	
 	
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
 	bth->Scale(0.1f);
 	//Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	//Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
 	//testLight->SetPosition(testBall->GetPosition() + D3DXVECTOR3(0, 5, 0));
 	//testLight->SetLookAt(testLight->GetPosition() - D3DXVECTOR3(0, 5, 0));
 	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
@@ -110,6 +110,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			text->SetSize(size);
 			ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
+			se1->Play();
 		}
 
 		if(eng->GetKeyListener()->IsClicked(2))

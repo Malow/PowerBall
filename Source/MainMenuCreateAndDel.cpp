@@ -83,13 +83,13 @@ void MainMenu::CreateHotseatMenu()
 	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (50.0f / 900.0f), 1, "Media/Menus/Lifes.png", dx * (135.0f / 1200.0f), windowHeight * (25.0f / 900.0f));
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
-	tempElement = new TextBox(offSet + dx * (185.0f / 1200.0f), windowHeight * (48.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "3", "Lifes", 0.80, 2, NR);
+	tempElement = new TextBox(offSet + dx * (185.0f / 1200.0f), windowHeight * (48.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (35.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "3", "Lifes", 0.80, 2, NR);
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
 	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/Rounds.png", dx * (190.0f / 1200.0f), windowHeight * (25.0f / 900.0f));
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
-	tempElement = new TextBox(offSet + dx * (240.0f / 1200.0f), windowHeight * (98.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "5", "Rounds", 0.80, 2, NR);
+	tempElement = new TextBox(offSet + dx * (240.0f / 1200.0f), windowHeight * (98.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (35.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80, 2, NR);
 	this->mSets[OPTIONS_HOTSEAT].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/HotseatMenu/buttonbacktomenuhotseat.png", dx, windowHeight, new ChangeSetEvent(MAINMENU_PLAY), "Media/HotseatMenu/clickbacktomenuhotseat.png" , "Media/HotseatMenu/mouseoverbacktomenuhotseat.png", dx * (605.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (330.0f / 1200), windowHeight * (30.0f / 900));
@@ -158,7 +158,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Flags.png", dx * (150.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
 
-	tempElement = new TextBox(offSet + dx * (855.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "5", "Flags", 0.75f, 2, NR);
+	tempElement = new TextBox(offSet + dx * (855.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (35.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Flags", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
 	
 	/* Sub menu for KOTH LAN*/
@@ -178,16 +178,16 @@ void MainMenu::CreateOnlineAndLanMenu()
 
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 	
-	tempElement = new GUIPicture(dx * (700.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Seconds_To_Win.png", dx * (375.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
+	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Seconds_To_Win.png", dx * (375.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (1075.0f / 1200.0f) + offSet, windowHeight * (79.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "20", "SecondsToWin", 0.80f, 2, NR);
+	tempElement = new TextBox(dx * (1080.0f / 1200.0f) + offSet, windowHeight * (79.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (35.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "SecondsToWin", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new GUIPicture(dx * (700.0f / 1200.0f) + offSet, windowHeight * (140.0f / 900.0f), 1, "Media/Menus/Rounds.png", dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
+	tempElement = new GUIPicture(dx * (710.0f / 1200.0f) + offSet, windowHeight * (140.0f / 900.0f), 1, "Media/Menus/Rounds.png", dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (890.0f / 1200.0f) + offSet, windowHeight * (139.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
+	tempElement = new TextBox(dx * (900.0f / 1200.0f) + offSet, windowHeight * (139.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png", dx * (35.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 	/* Sub menu for WARLOCK LAN*/
@@ -205,4 +205,48 @@ void MainMenu::CreateOnlineAndLanMenu()
 	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF), "Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
+}
+
+void MainMenu::CreateScene()
+{
+	/*this->mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
+	this->mGe->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));*/
+
+	this->mCamRec = new CamRecording(2000, true);
+	this->mCamRec->Init(this->mGe->GetCamera());
+
+	this->mCamRec->Load(CIRCLE_AROUND);
+
+	if(!this->mCamRec->IsPlaying())
+		this->mCamRec->Play();
+	this->mCamRec->Update(1);
+
+	this->mBall1 = this->mGe->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(0,14.71f,5));
+	this->mBall2 = this->mGe->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(0,14.71f,-5));
+
+	this->mPlatform = this->mGe->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(0,10,0));
+
+	this->mLight1 = this->mGe->CreateLight(D3DXVECTOR3(0, 50.0f, -20));
+	this->mLight1->SetIntensity(50.0f);
+	this->mLight2 = this->mGe->CreateLight(D3DXVECTOR3(0, 50.0f, 20));
+	this->mLight2->SetIntensity(50.0f);
+
+}
+void MainMenu::DeleteScene()
+{
+
+	this->mGe->DeleteStaticMesh(this->mBall1);
+	this->mBall1 = NULL;
+	this->mGe->DeleteStaticMesh(this->mBall2);
+	this->mBall2 = NULL;
+	
+	this->mGe->DeleteLight(this->mLight1);
+	this->mLight1 = NULL;
+	this->mGe->DeleteLight(this->mLight2);
+	this->mLight2 = NULL;
+
+	this->mGe->DeleteStaticMesh(this->mPlatform);
+	this->mPlatform = NULL;
+
+	SAFE_DELETE(this->mCamRec);
 }

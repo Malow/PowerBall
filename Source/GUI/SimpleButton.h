@@ -20,6 +20,8 @@ private:
 	Image* mHoveredImage;
 	Image* mPressedImage;
 
+	SoundEffect* mMouseClick;
+
 	GUIEvent* mEvent;
 public:
 	SimpleButton();

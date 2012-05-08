@@ -14,6 +14,8 @@ private:
 	Image* mHoveredImage;
 	Image* mPressedImage;
 
+	SoundEffect* mMouseClick;
+
 	GUIEvent* mEvent;
 public:
 	GUIArchButton();
@@ -30,7 +32,7 @@ public:
 	/*! Sets the event of the element*/
 	void SetEvent(GUIEvent* tempEvent){ this->mEvent = tempEvent; }
 	/*! Gets the event from the element*/
-	GUIEvent* GetEvent(){ return this->mEvent; }
+	GUIEvent* GetEvent(){ this->mMouseClick->Play(); return this->mEvent; }
 
 	void ChangePicture(GraphicsEngine* ge);
 	
