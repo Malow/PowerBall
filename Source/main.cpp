@@ -18,7 +18,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.windowHeight = 900;
 	params.FXAAQuality = 1;			// 0 - 4 
 	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = TRD;
+	params.CamType = RTS;
 
 
 
@@ -34,13 +34,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		ge->CreateSkyBox("Media/skymap.dds");
 	
 
-		//#define LOLTEST
-		#ifdef LOLTEST
-		test();
-		#endif
+		//test();	// Instead of ifndef lol
+
 
 		// Create the MainMenu and send the graphics engine, and then run Run();
-	
 		MainMenu* mm = new MainMenu(ge);
 		/*RunAgain = */mm->Run();
 		delete mm;
@@ -124,7 +121,7 @@ void test()
 		if(eng->GetKeyListener()->IsPressed(VK_RETURN))	// For keys other than the main-chars you use the VK_ Enums, rightclick on VK_RETURN and "Go to definition" to find the list of all keys
 			cc.SetVisibility(true);
 		if(eng->GetKeyListener()->IsPressed('A'))
-			cc.SetVisibility(false);
+			eng->GetCamera()->moveLeft(diff);
 		if(eng->GetKeyListener()->IsPressed('S'))	
 			eng->GetCamera()->moveBackward(diff);
 		if(eng->GetKeyListener()->IsPressed('D'))	
@@ -155,9 +152,10 @@ void test()
 
 		if(eng->GetKeyListener()->IsClicked(2))
 		{
-			ge->DeleteText(text);
+			testBall->UseInvisibilityEffect(true);
 		}
-
+		else 
+			testBall->UseInvisibilityEffect(false);
 
 		if(eng->GetKeyListener()->IsPressed('G'))	
 		{

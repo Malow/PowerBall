@@ -376,7 +376,7 @@ void DxManager::RenderInvisibilityEffect() //***********
 	SAFE_RELEASE(backBufferRTV);
 	SAFE_RELEASE(backBufferRTVResource);
 	SAFE_RELEASE(sceneSRV);
-	
+	this->Shader_InvisibilityEffect->SetResource("sceneTex", NULL);
 }
 
 void DxManager::RenderQuadDeferred()

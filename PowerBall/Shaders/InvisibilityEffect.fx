@@ -44,6 +44,7 @@ float4 PSScene(float4 pos : SV_POSITION) : SV_Target
 {	
 	float4 test = float4(0,0,0,1);
 	float2 texCoords = float2(pos.x / windowWidth, pos.y / windowHeight);
+	texCoords.y *= -1;
 	test.xyz = sceneTex.Sample(LinearWrapSampler, texCoords).xyz;
 
 	float deltaX = 1.0f / windowWidth;
@@ -59,7 +60,11 @@ float4 PSScene(float4 pos : SV_POSITION) : SV_Target
 	}
 	blurColor *= pow(PCF_SIZE, 2.0f);
 
-
+	/*		// To check that coords really are in ScreenSpace so that the texCoords above works.
+	if(pos.x > 400 && pos.x < 800 && pos.y > 200 && pos.y < 900)
+		test = float4(1,0,0,1);
+		*/
+	
 	return test;//+ float4(0,1,0,1);
 	//return float4(0.5f, 1.0f, 0.5f, 1.0f);
 }
