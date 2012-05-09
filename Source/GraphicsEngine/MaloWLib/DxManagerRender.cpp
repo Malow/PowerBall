@@ -114,6 +114,27 @@ void DxManager::HandleTextEvent(TextEvent* te)
 
 void DxManager::Life()
 {
+	//Black starting
+	if(this->TimerAnimation < 1000.0f)
+	{
+		Image* img = new Image(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->params.windowWidth, (float)this->params.windowHeight));
+		this->CreateImage(img, "Media/LoadingScreen/FadeTexture.png");
+		MaloW::ProcessEvent* ev = this->PeekEvent();
+		if(dynamic_cast<ImageEvent*>(ev) != NULL)
+		{
+			this->HandleImageEvent((ImageEvent*)ev);
+		}
+
+		delete ev;
+		while(this->TimerAnimation < 1000.0f)
+		{
+			this->Render();
+			this->framecount++;
+		}
+		delete this->images.getAndRemove(0);
+		img = NULL;
+	}
+
 	while(this->stayAlive)
 	{
 		while(MaloW::ProcessEvent* ev = this->PeekEvent())

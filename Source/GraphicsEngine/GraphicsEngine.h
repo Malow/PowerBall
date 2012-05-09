@@ -80,8 +80,6 @@ private:
 	float PCFreq;
 	__int64 prevTimeStamp;
 
-	Image* StartImage;
-
 
 public:
 	GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow);

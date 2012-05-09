@@ -45,12 +45,11 @@ GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance,
 
 		this->prevFrameCount = 0;
 		this->fpsLast = 0;
-		this->fpsTimer = 0;
+		this->fpsTimer = 0.0f;
 	}
 	this->InitWindow(hInstance, nCmdShow);
 
 	this->Start();
-	this->StartImage = this->CreateImage(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->parameters.windowWidth, (float)this->parameters.windowHeight), "Media/LoadingScreen/FadeTexture.png");
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -289,11 +288,6 @@ float GraphicsEngine::Update()
 		this->fpsLast = framecount - prevFrameCount;
 		this->prevFrameCount = framecount;
 		this->fpsTimer = 0;
-		if(this->StartImage)
-		{
-			this->DeleteImage(this->StartImage);
-			this->StartImage = NULL;
-		}
 	}
 	
 	this->dx->Update(diff);
