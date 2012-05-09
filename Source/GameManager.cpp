@@ -852,20 +852,20 @@ void GameManager::Initialize()
 		//mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 35, -5));
 		//mGe->GetCamera()->LookAt(centerPlatform);
 		centerPlatform = D3DXVECTOR3(0,20,0);
-		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 45, 0));
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 55, 0));
 		mGe->GetCamera()->LookAt(centerPlatform);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Platform("Media/MazeMap.obj", centerPlatform);
 		this->mPlatform->SetRotate(true);
-		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(12,22.5f,11));
+		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
-		this->mPlatform->SetHotZonePosition(Vector3(12,22.5f,11));
+		this->mPlatform->SetHotZonePosition(Vector3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetHotZoneRadius(2.0f);
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mPlatform->SetRestition(0.2f);
 		this->mBalls		= new Ball*[this->mNumPlayers];
 		//this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,20,-11));
-		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,24,-11));
+		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(-13.5f,24,-13));
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
@@ -877,7 +877,7 @@ void GameManager::Initialize()
 	else if(this->mGameMode == CREDITS2)
 	{
 		centerPlatform = D3DXVECTOR3(0,20,0);
-		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 45, 0));
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 55, 0));
 		mGe->GetCamera()->LookAt(centerPlatform);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Platform("Media/MazeMap.obj", centerPlatform);
@@ -885,12 +885,12 @@ void GameManager::Initialize()
 		//this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mPlatform->SetRestition(0.0f);
-		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(12,22.5f,11));
+		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
-		this->mPlatform->SetHotZonePosition(Vector3(12,23.5f,11));
+		this->mPlatform->SetHotZonePosition(Vector3(13.5f,23.5f,13.5f));
 		this->mPlatform->SetHotZoneRadius(2.5f);
 		this->mBalls		= new Ball*[this->mNumPlayers];
-		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(10,24,-11));
+		this->mBalls[0] = new Ball("Media/Ball.obj", D3DXVECTOR3(-13.5f,24,-13));
 		
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();

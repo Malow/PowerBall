@@ -213,6 +213,7 @@ void Ball::Update(const float dt)
 		{
 			this->mLivesLeft--;
 			this->mMesh->SetPosition(this->mStartPos);
+			this->SetTempPosition(this->mStartPos);
 			this->mVelocity = Vector3(0,0,0);
 			this->mRespawnTimeLeft = this->mRespawnTime;
 		}
