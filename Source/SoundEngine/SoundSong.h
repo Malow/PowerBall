@@ -11,11 +11,14 @@
 class SoundSong
 {
 private:
-	FMOD::Channel*		mSongChannel;
 	float				mSongVolume;	//default value: 1.0f
 	FMOD::Sound*		mSound;
 	FMOD::System*		sys;
+	FMOD::Channel*		mSongChannel;
 	float*				masterVol;
+
+private:
+	void ERRCHECK(FMOD_RESULT result);
 
 public:
 	SoundSong(FMOD::System* sys, float* masterVol);
