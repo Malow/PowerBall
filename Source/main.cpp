@@ -18,7 +18,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.windowHeight = 900;
 	params.FXAAQuality = 1;			// 0 - 4 
 	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = RTS;
+	params.CamType = TRD;
 
 
 
@@ -34,7 +34,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		ge->CreateSkyBox("Media/skymap.dds");
 	
 
-		test();	// Instead of ifndef lol
+		//test();	// Instead of ifndef lol
 
 
 		// Create the MainMenu and send the graphics engine, and then run Run();
