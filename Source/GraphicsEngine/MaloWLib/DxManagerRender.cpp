@@ -326,6 +326,7 @@ void DxManager::RenderImages()
 		this->Shader_BillBoard->SetFloat("posy", 2 - (img->GetPosition().y / this->params.windowHeight) * 2 - 1);
 		this->Shader_BillBoard->SetFloat("dimx", (img->GetDimensions().x / this->params.windowWidth) * 2);
 		this->Shader_BillBoard->SetFloat("dimy", -(img->GetDimensions().y / this->params.windowHeight) * 2);
+		this->Shader_BillBoard->SetFloat("opacity", img->GetOpacity());
 		
 		/*// if -1 to 1
 		this->Shader_BillBoard->SetFloat("posx", img->GetPosition().x);

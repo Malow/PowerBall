@@ -3,6 +3,8 @@
 #include "GraphicsEngine.h"
 #include "SoundEngine\SoundEngine.h"
 
+void test();
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
 #if defined(DEBUG) || defined(_DEBUG)
@@ -18,14 +20,44 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 
-	// Create the graphics engine
-	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
-	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
-	ge->CreateSkyBox("Media/skymap.dds");
+
+
+	// RunAgain for changing resolution etc.
+	/*
+	bool RunAgain = true;
+	while(RunAgain)
+	{
+		RunAgain = false;*/
+		// Create the graphics engine
+		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
+		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
+		ge->CreateSkyBox("Media/skymap.dds");
 	
-	//#define LOLTEST
-	#ifdef LOLTEST
+
+		//#define LOLTEST
+		#ifdef LOLTEST
+		test();
+		#endif
+
+		// Create the MainMenu and send the graphics engine, and then run Run();
 	
+		MainMenu* mm = new MainMenu(ge);
+		/*RunAgain = */mm->Run();
+		delete mm;
+		// Delete graphics engine
+		delete ge;
+	//}
+
+	return 0;
+}
+
+
+
+
+void test()
+{
+	GraphicsEngine* ge = GetGraphicsEngine();
+
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
 	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
@@ -33,6 +65,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	bth->Scale(0.1f);
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
 	
@@ -49,14 +84,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//ss1->Play();
 	
 	
-	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
-	bth->Scale(0.1f);
+	//eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
+	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png", 0.0f, 1.0f, 1.0f, 1.0f);
+	//eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "", 0.0f, 1.0f, 0.0f, 1.0f);
+	Text* text = eng->CreateText("Lol ", D3DXVECTOR2(500, 500), 1.0f, "Media/Fonts/1");
+	
 	//Image* testImg = eng->CreateImage(D3DXVECTOR2(50, 50), D3DXVECTOR2(500, 75), "Media/PowerBall.png");
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	
 	//testLight->SetPosition(testBall->GetPosition() + D3DXVECTOR3(0, 5, 0));
 	//testLight->SetLookAt(testLight->GetPosition() - D3DXVECTOR3(0, 5, 0));
 	//Light* testLight2 = eng->CreateLight(D3DXVECTOR3(3, 20, 3));
-	Text* text = eng->CreateText("Lol ", D3DXVECTOR2(500, 500), 1.0f, "Media/Fonts/1");
+	
 
 	CamRecording* camRec = new CamRecording(2000, true);	// How many milliseconds between each way point
 	camRec->Init(eng->GetCamera());
@@ -112,7 +150,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 			text->AppendText("LoL ");
 			//ss1->Play();
 		}
-		else
+		//else
 			//se1->Play();
 
 		if(eng->GetKeyListener()->IsClicked(2))
@@ -144,16 +182,4 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	}
 	// Delete camera recording
 	delete camRec;
-	#endif
-	// Create the MainMenu and send the graphics engine, and then run Run();
-	
-	MainMenu* mm = new MainMenu(ge);
-	mm->Run();
-	delete mm;
-	// Delete graphics engine
-	delete ge;
-	// Delete sound engine
-	//delete se;
-
-	return 0;
 }

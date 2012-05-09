@@ -13,21 +13,16 @@ enum CameraType
 class GraphicsEngineParams
 {
 public:
-	int windowWidth;
-	int windowHeight;
-	int ShadowMapSettings;
-	int FXAAQuality;
-	MaloW::KeyListener* kl;
-	CameraType CamType;
+	static int windowWidth;
+	static int windowHeight;
+	static int ShadowMapSettings;
+	static int FXAAQuality;
+	static MaloW::KeyListener* kl;
+	static CameraType CamType;
 
 	GraphicsEngineParams()
 	{
-		this->windowWidth = 1024;
-		this->windowHeight = 768;
-		this->ShadowMapSettings = 0;
-		this->FXAAQuality = 0;
-		this->kl = NULL;
-		this->CamType = FPS;
+
 	}
 
 	virtual ~GraphicsEngineParams() { }
