@@ -259,6 +259,19 @@ GUIEvent* GUISet::CheckCollision(float mouseX, float mouseY, bool mousePressed, 
 				}
 			}
 		}
+		else if(typeid(*this->mElements[i]) == typeid(CheckBox))
+		{
+			CheckBox* temp = (CheckBox*)this->mElements[i];
+			tempReturnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
+			if(tempReturnEvent != NULL)
+			{
+				if(tempReturnEvent->GetEventMessage() != "NoEvent")
+				{
+					returnEvent = tempReturnEvent;
+					break;
+				}
+			}
+		}
 	}
 	
 	return returnEvent;

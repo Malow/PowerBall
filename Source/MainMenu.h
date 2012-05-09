@@ -34,7 +34,9 @@ enum MENU {NOMENU,
 	OPTIONS_LAN_SUBCTF,
 	OPTIONS_LAN_SUBKOTH,
 	OPTIONS_LAN_SUBWARLOCK,
-	OPTIONS_GAMEPLAY, 
+	OPTIONS,
+	OPTIONS_SOUND,
+	OPTIONS_GRAPHICS, 
 	CREDIT,
 	EXIT};
 
@@ -46,6 +48,7 @@ private:
 	int mSubSet;
 	bool mRunning;
 
+	SoundSong* mSong;
 	GraphicsEngine* mGe;
 	GameManager* mGm;
 	GUISet* mSets;
@@ -64,6 +67,7 @@ private:
 	void CreateOnlineAndLanMenu();
 	void CreateScene();
 	void DeleteScene();
+
 	/*Needed for the Scene*/
 	StaticMesh* mBall1;
 	StaticMesh* mBall2;
