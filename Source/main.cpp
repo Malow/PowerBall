@@ -43,10 +43,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	
 	SoundEngine* seng = eng->GetSoundEngine();
 	SoundEffect* se1 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3", false);
-	SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
-	SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
-	seng->SetMasterVolume(0.05f);
-	ss1->Play();
+	//SoundEffect* se2 = seng->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3", false);
+	//SoundSong* ss1 = seng->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	seng->SetMasterVolume(0.5f);
+	//ss1->Play();
 	
 	
 	eng->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");			// going to LoadingScreen to load the above meshes
@@ -108,12 +108,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		{
 			size += diff * 0.001f;
 			text->SetSize(size);
-			ss1->SetVolume(0.5f);
+			//ss1->SetVolume(0.5f);
 			text->AppendText("LoL ");
-			
+			//ss1->Play();
 		}
 		else
-			se1->Play();
+			//se1->Play();
 
 		if(eng->GetKeyListener()->IsClicked(2))
 		{
@@ -135,7 +135,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		//Testing sound engine
 		if(eng->GetKeyListener()->IsPressed('B'))	
 		{
-			for(int i = 0; i < 2; i++)
+			for(int i = 0; i < 200; i++)
 			{
 				se1->Play();
 			}
