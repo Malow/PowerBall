@@ -355,6 +355,7 @@ void GraphicsEngine::CreateSkyBox(string texture)
 
 void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarTexture, float FadeBlackInInTime, float FadeBlackInOutTime, float FadeBlackOutInTime, float FadeBlackOutOutTime)
 {
+	
 	this->Update();
 
 	Image* bg = NULL;
@@ -382,7 +383,7 @@ void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarT
 	3 = fade in
 	4 = fade out to game
 	*/
-
+	this->StartRendering();
 	float timer = 0.0f;
 	bool go = true;
 	while(go)

@@ -130,6 +130,7 @@ public:
 
 
 	bool isRunning();
+	void StartRendering() { this->dx->StartRender = true; }
 
 	// Get's
 	Camera* GetCamera() const { return this->dx->GetCamera(); }

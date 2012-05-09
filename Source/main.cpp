@@ -33,10 +33,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 		ge->CreateSkyBox("Media/skymap.dds");
 	
-
+		
 		//test();	// Instead of ifndef lol
 
-
+		
 		// Create the MainMenu and send the graphics engine, and then run Run();
 		MainMenu* mm = new MainMenu(ge);
 		/*RunAgain = */mm->Run();

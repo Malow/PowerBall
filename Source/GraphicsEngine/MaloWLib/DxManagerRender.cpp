@@ -126,13 +126,14 @@ void DxManager::Life()
 		}
 
 		delete ev;
-		while(this->TimerAnimation < 1000.0f)
+		while(!this->StartRender)
 		{
 			this->Render();
 			this->framecount++;
 		}
 		delete this->images.getAndRemove(0);
 		img = NULL;
+		Sleep(500);
 	}
 
 	while(this->stayAlive)
