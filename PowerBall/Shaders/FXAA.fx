@@ -7,7 +7,7 @@
 #include "stdafx.fx"
 
 //-----------------------------------------------------------------------------------------
-// Global variables
+//	Global variables (non-numeric values cannot be added to a constantbuffer.)
 //-----------------------------------------------------------------------------------------
 Texture2D sceneTex;
 

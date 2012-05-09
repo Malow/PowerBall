@@ -207,6 +207,44 @@ void CamRecording::Open(string fileName)
 		//CamRecording::InitDrawing(this->gDevice); todo**
 	}
 }
+void CamRecording::CircleAround(bool loop, unsigned int interval, unsigned int nrOfPoints, unsigned int nrOfRotations, D3DXVECTOR3 startPos, D3DXVECTOR3 lookAt)
+{
+	//remove previous recording, if any
+	if(this->mHasRecorded)
+	{
+		CamRecording::DeletePreviousRecording();
+	}
+
+	this->mIsLoopingSeamless = loop;
+	this->mInterval = interval;
+
+	float dAngle = 0.0f;
+	if(loop)
+	{
+		dAngle = ((2 * PI) / nrOfPoints);
+	}
+	else
+	{
+		dAngle = ((2 * PI) / nrOfPoints) * nrOfRotations;
+	}
+	float currentAngle = dAngle;
+	D3DXVECTOR3 currentPos = startPos;
+	
+	D3DXMATRIX mat;
+	D3DXVECTOR3 vecIn, vecOut;
+	vecIn = currentPos - lookAt;
+		
+	for(unsigned int i = 0; i < nrOfPoints; i++)
+	{
+		this->AddCameraWaypoint(currentPos, lookAt);
+
+		D3DXMatrixRotationY(&mat, currentAngle);
+		D3DXVec3TransformNormal(&vecOut, &vecIn, &mat);
+		currentPos = lookAt + vecOut; 
+		currentAngle += dAngle;
+	}
+}
+/*
 void CamRecording::Load(CAMERA_PATH camPath)
 {
 	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -275,7 +313,7 @@ void CamRecording::Load(CAMERA_PATH camPath)
 		}
 	}
 }
-
+*/
 void CamRecording::Update(float deltaTime)
 {
 	//milliseconds per frame for 10 fps (1 / 10fps). used for when deltatime > 1. 

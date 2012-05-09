@@ -215,7 +215,7 @@ void MainMenu::CreateScene()
 	this->mCamRec = new CamRecording(2000, true);
 	this->mCamRec->Init(this->mGe->GetCamera());
 
-	this->mCamRec->Load(CIRCLE_AROUND);
+	this->mCamRec->CircleAround(true, 50, 1000, 0, D3DXVECTOR3(30, 60, 30), D3DXVECTOR3(0,-5,0));
 
 	if(!this->mCamRec->IsPlaying())
 		this->mCamRec->Play();

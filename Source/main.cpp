@@ -60,7 +60,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 	CamRecording* camRec = new CamRecording(2000, true);	// How many milliseconds between each way point
 	camRec->Init(eng->GetCamera());
-
 	
 	/*camRec->AddCameraWaypoint(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 30, 0), D3DXVECTOR3(8, 16, 8));
@@ -68,7 +67,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	camRec->AddCameraWaypoint(D3DXVECTOR3(-20, 20, 30), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 50, 0), D3DXVECTOR3(8, 16, 8));
 	camRec->AddCameraWaypoint(D3DXVECTOR3(0, 20, 0), D3DXVECTOR3(8, 16, 8));*/
-	camRec->Load(CIRCLE_AROUND);
+	//camRec->Load(CIRCLE_AROUND);
+	camRec->CircleAround(true, 50, 1000, 0, D3DXVECTOR3(30, 50, 0), D3DXVECTOR3(0,0,30));
 	
 	bool sw = true;
 	float size = 1.0f;
