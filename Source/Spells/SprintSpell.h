@@ -15,6 +15,7 @@ private:
 public:
 	SprintSpell();
 	SprintSpell(Ball* ball);
+	SprintSpell(PowerBall* ball);
 	virtual ~SprintSpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();

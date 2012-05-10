@@ -4,12 +4,13 @@
 #include "Camera.h"
 
 class Ball;
-
+class PowerBall;
 class TRDCamera : public Camera
 {
 private: 
 		D3DXVECTOR3 mTargetVector;
 		Ball* mBallToFollow;
+		PowerBall* mPowerBallToFollow;
 		bool mIsClicked;
 		POINT mOldPos;
 public:
@@ -25,7 +26,9 @@ public:
 
 	void setBallToFollow(Ball* ball);
 	Ball* getBallToFollow();
-	void removeFollowBall() { this->mBallToFollow = NULL; }
+	void setPowerBallToFollow(PowerBall* ball);
+	PowerBall* getPowerBallToFollow();
+	void removeFollowBall() { this->mBallToFollow = NULL; this->mPowerBallToFollow = NULL;}
 	void calculateNewUp();
 };
 

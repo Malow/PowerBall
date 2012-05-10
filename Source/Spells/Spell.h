@@ -9,10 +9,12 @@
 using namespace MaloW;
 
 class Ball;
+class PowerBall;
 class Spell
 {
 	protected:
 		Ball* mBall;
+		PowerBall* mPowerBall;
 		float mTimeNeededToCoolDown;
 		float mTimerCounterCoolDown;
 		bool mNeedCoolDown;
@@ -37,5 +39,6 @@ class Spell
 		void Ready();
 		virtual void InformCollision() = 0;
 		void SetBall(Ball* ball) { this->mBall = ball; }
+		void SetPowerBall(PowerBall* ball) { this->mPowerBall = ball; }
 		bool SpellInUse();
 };

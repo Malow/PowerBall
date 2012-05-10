@@ -4,6 +4,7 @@
 ChargeSpell::ChargeSpell()
 {
 	this->mBall = NULL;
+	this->mPowerBall = NULL;
 	this->mTimeNeededToCoolDown = 15.0f;
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
@@ -11,6 +12,32 @@ ChargeSpell::ChargeSpell()
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 }
+
+ChargeSpell::ChargeSpell(Ball* ball)
+{
+	this->mBall = ball;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 1.0f;
+	this->mIsInUse = false;
+}
+
+ChargeSpell::ChargeSpell(PowerBall* ball)
+{
+	this->mBall = NULL;
+	this->mPowerBall = ball;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 1.0f;
+	this->mIsInUse = false;
+}
+
+
 
 ChargeSpell::~ChargeSpell()
 {

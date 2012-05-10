@@ -121,6 +121,12 @@ void GameNetwork::AddMovement(Ball* ball)
 {
 	this->mPlayerHistories[this->mIndex].AddSnapshot(ball->GetPosition(), this->mExecTime[this->mIndex]);
 }
+
+void GameNetwork::AddMovementPowerBall(PowerBall* ball)
+{
+	this->mPlayerHistories[this->mIndex].AddSnapshot(ball->GetPosition(), this->mExecTime[this->mIndex]);
+}
+
 bool GameNetwork::ClientUpdate()
 {
 	bool ret = true;
@@ -274,6 +280,107 @@ bool GameNetwork::Update(Ball**	balls, int &numBalls, float dt)
 	}
 	return this->mIsRunning;
 }
+
+bool GameNetwork::UpdatePowerBall(PowerBall**	balls, int &numBalls, float dt)
+{
+	static float counter = 0.0f;
+	counter += dt;
+	
+	if(this->IsServer())
+	{
+		if(counter > SERVER_SEND_MS) 
+		{
+			counter = fmodf(counter, SERVER_SEND_MS);
+		
+			if(this->mNumPlayers != this->mConn->GetNumConnections())
+			{
+				this->mNumPlayers = this->mConn->GetNumConnections();
+				for(int i = 0; i < this->mNumPlayers - 1; i++)
+				{
+					this->mPos[i] = this->mStartPositions[i];
+					balls[i]->SetPosition(this->mStartPositions[i]);
+					balls[i]->SetNumLives(2);
+				}
+			}
+			if(this->mConn->GetNumConnections() > 1)
+				this->ServerUpdate();
+		}
+	}
+	else //Is client
+	{
+		if(counter > CLIENT_SEND_MS)
+		{
+			counter = fmodf(counter, CLIENT_SEND_MS);
+			this->ClientUpdate();
+		}
+		
+		if(test == 0)
+		{
+			file2.open("testdata.txt", ios::out);
+			//shadow = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+			//shadow2 = new Ball("Media/Ball.obj", D3DXVECTOR3(0,30.0f,-15));
+			test++;
+		}
+		//shadow->SetPosition(this->mPos[this->mIndex]);
+		static float ping_counter = 0.0f;
+		ping_counter++;
+		if(ping_counter > 1000.0f)
+		{
+			ping_counter = 0.0f;
+			MsgHandler::GetInstance().Ping(0);
+		}
+		file2 << this->mLatency << endl;
+		if(numBalls > this->mIndex)
+		{
+			D3DXVECTOR3 mod = this->CorrectPosition();//(0,0,0);//
+			/*
+				Have a interpolation vector and add mod to it all the time and then in the update loop u slowly subtracts from it so it become a smooth movement and not as spiky as now.
+				
+			*/
+			//interpolation, MAYBE MOVE TO PLAYERHISTORY
+			/*interpolationVector += mod;
+			float length = D3DXVec3Length(&interpolationVector);
+
+			if(length < INTERPOS_MIN) // the difference is so little or too great so just replace the local pos with network pos.
+			{
+				if(length > FLOAT_EPSILON) //float epsilon
+				{
+					balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + interpolationVector);
+					balls[this->mIndex]->Rotate(interpolationVector);
+					this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+					interpolationVector = D3DXVECTOR3(0,0,0);
+
+				}
+			}
+			else if (length > INTERPOS_MAX) //May be caused my lag or external movement of the ball.
+			{
+				balls[this->mIndex]->SetPosition(this->mPos[this->mIndex]);
+				this->mPlayerHistories[this->mIndex].Reset(this->mStartPositions[this->mIndex]);
+				interpolationVector = D3DXVECTOR3(0,0,0);
+			}
+			else
+			{
+				D3DXVECTOR3 modifier = interpolationVector * dt * 0.001f * INTERPOS_MOD;
+				interpolationVector -= modifier;
+				balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + modifier);
+				balls[this->mIndex]->Rotate(modifier);
+				this->mPlayerHistories[this->mIndex].MoveHistory(modifier); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+			}*/
+
+			//NO iNTERPOLATION, MIGHT GET SPIKY. Smooth corretion needs a bit more work.
+			interpolationVector = mod;
+			if(D3DXVec3Length(&interpolationVector) > FLOAT_EPSILON)
+			{
+				balls[this->mIndex]->SetPosition(balls[this->mIndex]->GetPosition() + interpolationVector );
+				balls[this->mIndex]->Rotate(interpolationVector);
+				this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				interpolationVector = ::D3DXVECTOR3(0,0,0);
+			}
+		}
+	}
+	return this->mIsRunning;
+}
+
 D3DXVECTOR3 GameNetwork::CorrectPosition()
 {
 	D3DXVECTOR3 mod(0.0f, 0.0f, 0.0f);

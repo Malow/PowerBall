@@ -2,6 +2,8 @@
 #include "Vector.h"
 using namespace MaloW;
 #include "..\..\Ball.h"
+#include "..\..\Game Objects\PowerBall.h"
+
 TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, params)
 {
 	this->up = D3DXVECTOR3(0, 1, 0);	// dummy vector, will calculate a new up with gram-schmidt orthogonalization process
@@ -9,6 +11,7 @@ TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, 
 	this->forward = this->NormalizeVector(this->forward);
 	this->mTargetVector = D3DXVECTOR3(0, 0, 0);
 	this->mBallToFollow = NULL;
+	this->mPowerBallToFollow = NULL;
 	this->mIsClicked = false;
 }
 
@@ -64,6 +67,52 @@ void TRDCamera::updateSpecific(float delta)
 		cc.SetVisibility(!this->mIsClicked);
 		
 	}
+
+	if(this->mPowerBallToFollow)
+	{
+		D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
+		this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mPowerBallToFollow->GetDistanceToCam();
+		this->pos = this->mPowerBallToFollow->GetPosition() - this->mTargetVector;
+		this->forward = this->NormalizeVector(this->mTargetVector);
+		POINT p;
+		GetCursorPos(&p);
+		ScreenToClient(this->g_hWnd, &p);
+		int dx = 0;
+		int dy = 0;
+		if(GetGraphicsEngine()->GetKeyListener()->IsClicked(1))
+		{
+			if(!this->mIsClicked)
+			{
+				this->mIsClicked = true;
+				this->mOldPos = p;
+			}
+			else
+			{
+				dx = p.x - this->mOldPos.x;
+				dy = p.y - this->mOldPos.y;
+				
+				/* add this line if you not want to keep the mouse position after click */
+				// this->mOldPos = p;
+				
+				this->mPowerBallToFollow->RotateForwardRight(dx);
+				/* remove the 3 lines below if you not want to keep the mouse position after click */
+				POINT newP = this->mOldPos;
+				ClientToScreen(this->g_hWnd, &newP);
+				SetCursorPos(newP.x, newP.y);
+				
+			}
+			
+		}
+		else
+		{
+			if(this->mIsClicked)
+				this->mIsClicked = false;
+		}
+		/* remove 2 lines below if you want to show the mouse pointer after a click */
+		CursorControl cc;
+		cc.SetVisibility(!this->mIsClicked);
+		
+	}
 	
 }
 
@@ -92,11 +141,20 @@ void TRDCamera::setBallToFollow(Ball* ball)
 	this->mBallToFollow = ball;
 }
 
+void TRDCamera::setPowerBallToFollow(PowerBall* ball)
+{
+	this->mPowerBallToFollow = ball;
+}
+
 Ball* TRDCamera::getBallToFollow()
 {
 	 return this->mBallToFollow;
 }
 
+PowerBall* TRDCamera::getPowerBallToFollow()
+{
+	return this->mPowerBallToFollow;
+}
 void TRDCamera::calculateNewUp()
 {
 	/* Gram-Schmidt process */

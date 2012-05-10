@@ -4,6 +4,7 @@
 SprintSpell::SprintSpell()
 {
 	this->mBall = NULL;
+	this->mPowerBall = NULL;
 	this->mTimeNeededToCoolDown = 20.0f;
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
@@ -15,6 +16,19 @@ SprintSpell::SprintSpell()
 SprintSpell::SprintSpell(Ball* ball)
 {
 	this->mBall = ball;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 20.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 5.0f;
+	this->mIsInUse = false;
+}
+
+SprintSpell::SprintSpell(PowerBall* ball)
+{
+	this->mBall = NULL;
+	this->mPowerBall = ball;
 	this->mTimeNeededToCoolDown = 20.0f;
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;

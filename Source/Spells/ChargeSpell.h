@@ -14,6 +14,8 @@ private:
 	backup mBackup;
 public:
 	ChargeSpell();
+	ChargeSpell(Ball* ball);
+	ChargeSpell(PowerBall* ball);
 	virtual ~ChargeSpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();

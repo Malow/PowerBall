@@ -4,6 +4,7 @@
 Spell::Spell()
 {
 	this->mBall = NULL;
+	this->mPowerBall = NULL;
 	this->mIsInUse = false;
 	this->mNeedCoolDown = false;
 }

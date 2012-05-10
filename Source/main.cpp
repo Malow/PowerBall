@@ -14,8 +14,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.FXAAQuality = 1;			// 0 - 4 
-	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
+	params.FXAAQuality = 0;			// 0 - 4 
+	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 
 	// Create the graphics engine
@@ -146,10 +146,30 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	delete camRec;
 	#endif
 	// Create the MainMenu and send the graphics engine, and then run Run();
+	/*
+	GameHandler* temp = new GameHandler(ge);
+	temp->CreateKnockoutGame(2,3);
+	temp->Start();
+	delete temp;
+	*/
+	
+	/*
+	GameHandler* temp = new GameHandler(ge);
+	temp->CreateMazeGame();
+	temp->Start();
+	delete temp;
+	*/
+	ServerInfo host("TEST" , 0, 5, 3, "");
+	GameHandler* temp = new GameHandler(ge);
+	temp->CreateKingOfTheHill(host);
+	temp->Start();
+	delete temp;
+	/*
 	
 	MainMenu* mm = new MainMenu(ge);
 	mm->Run();
 	delete mm;
+	*/
 	// Delete graphics engine
 	delete ge;
 	// Delete sound engine

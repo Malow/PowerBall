@@ -4,6 +4,31 @@
 InvisibilitySpell::InvisibilitySpell()
 {
 	this->mBall = NULL;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 30.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 5.0f;
+	this->mIsInUse = false;
+}
+
+InvisibilitySpell::InvisibilitySpell(Ball* ball)
+{
+	this->mBall = ball;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 30.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 5.0f;
+	this->mIsInUse = false;
+}
+
+InvisibilitySpell::InvisibilitySpell(PowerBall* ball)
+{
+	this->mBall = NULL;
+	this->mPowerBall = ball;
 	this->mTimeNeededToCoolDown = 30.0f;
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;

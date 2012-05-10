@@ -42,6 +42,12 @@
     <Filter Include="Game Files\Physics">
       <UniqueIdentifier>{27a39241-73b8-49b0-b779-a81390b3384d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Game Modes">
+      <UniqueIdentifier>{af15df33-e91a-49c4-a11f-bcc93cc7938f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Game Objects">
+      <UniqueIdentifier>{31256a25-7b79-42ab-9cc0-731710f8499a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\main.cpp">
@@ -256,6 +262,42 @@
     </ClCompile>
     <ClCompile Include="..\Source\MainMenuCreateAndDel.cpp">
       <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\GameMode.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Objects\PowerBall.cpp">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Objects\Map.cpp">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Objects\FlagCTF.cpp">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Objects\GameObject.cpp">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GameHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\Knockout.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\Maze.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\Warlock.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\KingOfTheHill.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\CaptureTheFlag.cpp">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\Maze2.cpp">
+      <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -489,6 +531,42 @@
     </ClInclude>
     <ClInclude Include="..\Source\Physics\Vector4.h">
       <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GameHandler.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\Knockout.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\GameMode.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Objects\PowerBall.h">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Objects\Map.h">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Objects\FlagCTF.h">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\Maze.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Objects\GameObject.h">
+      <Filter>Game Files\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\Warlock.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\KingOfTheHill.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\CaptureTheFlag.h">
+      <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Game Modes\Maze2.h">
+      <Filter>Game Files\Game Modes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

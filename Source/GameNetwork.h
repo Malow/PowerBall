@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "ServerConnection.h"
 #include "Ball.h"
+#include "Game Objects\PowerBall.h"
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
 #include <queue>
@@ -64,6 +65,7 @@ public:
 	void		SetLatency(float latency){this->mLatency = latency;}
 	float		GetLatency() const {return this->mLatency;}
 	void		AddMovement(Ball* ball);
+	void		AddMovementPowerBall(PowerBall* ball);
 	D3DXVECTOR3 		CorrectPosition();
 
 	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
@@ -134,6 +136,8 @@ public:
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
 	bool		Update(Ball** balls, int &numBalls, float dt);
+	bool		UpdatePowerBall(PowerBall** balls, int &numBalls, float dt);
+
 
 	/*! Starts the game network. */
 	void		Start(ServerInfo server);

@@ -4,6 +4,31 @@
 HardenSpell::HardenSpell()
 {
 	this->mBall = NULL;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 3.0f;
+	this->mIsInUse = false;
+}
+
+HardenSpell::HardenSpell(Ball* ball)
+{
+	this->mBall = ball;
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 3.0f;
+	this->mIsInUse = false;
+}
+
+HardenSpell::HardenSpell(PowerBall* ball)
+{
+	this->mBall = NULL;
+	this->mPowerBall = ball;
 	this->mTimeNeededToCoolDown = 15.0f;
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
