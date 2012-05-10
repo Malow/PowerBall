@@ -105,7 +105,7 @@ float4 PSScene(PSSceneIn input) : SV_Target
 
 	float4 AmbientColor = float4(DiffuseColor.xyz * 0.3f, 1.0f);	
 
-	float4 finalColor = float4((AmbientColor.xyz + DiffuseColor.xyz * Lighting), DiffuseColor.w);
+	float4 finalColor = float4((AmbientColor.xyz + DiffuseColor.xyz * Lighting.xyz), DiffuseColor.w);
 
 	/*
 	// Basic fog:

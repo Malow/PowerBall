@@ -47,8 +47,8 @@ float4 Lava(float4 color, float4 pixelWorldPosition, float depth)
 
 		float height = 0.0f;
 
-		for(int i = 0; i < 1; i++)
-		{
+		//for(int i = 0; i < 1; i++)
+		//{
 			/*
 			float3 heightSample = LavaHeightMap.Sample(LinearWrapSampler, float2(S.x, S.z) / 100.0f).xyz;
 			height = (heightSample.x + heightSample.y + heightSample.z) / 3.0f;			// Using RGB instead of just R when sampling height because working with a black/white heightmap is easier than a red/black.
@@ -79,7 +79,7 @@ float4 Lava(float4 color, float4 pixelWorldPosition, float depth)
 			L += bias * H;
 			t = (L - CameraPosition.y) / E.y;
 			S = CameraPosition.xyz + E * t;
-		}
+		//}
 
 		//if(length(CameraPosition.xyz - S) < length(CameraPosition.xyz - pixelWorldPosition.xyz))
 		

@@ -54,7 +54,7 @@ SKYMAP_VS_OUTPUT SKYMAP_VS(VSIn input)
 
 	//Set Pos to xyww instead of xyzw, so that z will always be 1 (furthest from camera)
 	output.Pos = mul(float4(input.Pos, 1.0f), gWVP).xyww;
-	output.WorldPos = mul(input.Pos, worldMatrix);
+	output.WorldPos = mul(float4(input.Pos, 1.0f), worldMatrix);
 
 	output.texCoord = input.Pos;
 
