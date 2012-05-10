@@ -37,6 +37,9 @@ class GameHandler
 			/* This start the game. */
 			bool Start();
 
+			/*! Create a game*/
+			bool CreateGame(int gameMode, ServerInfo server);
+
 			/* Creates a Knockout game for hotseat. */
 			bool CreateKnockoutGame(int numberOfPlayers, int numberOfRounds);
 

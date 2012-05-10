@@ -105,7 +105,7 @@ void MainMenu::CreateOptionsMenu()
 		dx * (155.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 
-	tempElement = new CheckBox(dx * (555.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png", 30, 30,
+	tempElement = new CheckBox(dx * (555.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png",dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Sound", "true"), "Sound");
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 

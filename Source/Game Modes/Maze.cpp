@@ -186,7 +186,7 @@ void Maze::Play()
 
 void Maze::ShowStats()
 {
-
+	mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,1,0));
 }
 
 bool Maze::checkWinConditions(float dt)

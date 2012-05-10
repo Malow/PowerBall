@@ -251,7 +251,6 @@ bool GameManager::PlayLAN(ServerInfo server)
 	while(running)
 	{
 		float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
-
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = this->mIGM->Run();
 		
@@ -391,7 +390,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 				this->mFriendlyFlag->GetMesh()->SetPosition(this->mNet->GetFlagPos(1));
 			}
 		}
-		if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
+		if(this->mGameMode == KOTH)
 			if(!this->KingOfTheHill(diff))
 				running = false;
 		if(this->mGameMode == WARLOCK)
@@ -565,7 +564,7 @@ bool GameManager::PlayCredits2()
 	{
 		
 		diff = mGe->Update();
-			
+		MaloW::Debug(diff);
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			running = false;
 		
@@ -664,7 +663,7 @@ void GameManager::Initialize()
 	/**
 	* King of the hill
 	**/
-	if(this->mGameMode == KOTH || this->mGameMode == KOTH2)
+	if(this->mGameMode == KOTH)
 	{
 		D3DXVECTOR3 startPositions[4];
 		startPositions[0] = D3DXVECTOR3(0,24.7f,-14);
@@ -822,7 +821,7 @@ void GameManager::Initialize()
 		}
 		this->mNet->SetForwardVectors(forwardVectors, 4);
 		this->mPlatform		= new Platform("Media/Cylinder.obj", centerPlatform);
-		this->mPlatform->SetScale(Vector3(3,3,3));
+		this->mPlatform->SetScale(Vector3(5,5,5));
 		this->mBalls		= new Ball*[this->mNumPlayers];
 		this->mPlatform->SetShrinkValue(0.0f);
 		/*
@@ -1120,13 +1119,13 @@ void GameManager::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPr
 		
 
 		// move ball 2
-		if(mGe->GetKeyListener()->IsPressed('H'))
+		if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
 			mBalls[1]->AddForce(Vector3(-diff,0,0));	
-		if(mGe->GetKeyListener()->IsPressed('K'))
+		if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
 			mBalls[1]->AddForce(Vector3(diff,0,0));
-		if(mGe->GetKeyListener()->IsPressed('U'))
+		if(mGe->GetKeyListener()->IsPressed(VK_UP))
 			mBalls[1]->AddForce(Vector3(0,0,diff));	
-		if(mGe->GetKeyListener()->IsPressed('J'))
+		if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
 			mBalls[1]->AddForce(Vector3(0,0,-diff));
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))

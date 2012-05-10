@@ -76,14 +76,14 @@ void CaptureTheFlag::Initialize()
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
 		this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
-		D3DXVECTOR3 startPositions[4];
+		/*D3DXVECTOR3 startPositions[4];
 		startPositions[0] = D3DXVECTOR3(0,24.7f,-14);
 		startPositions[1] = D3DXVECTOR3(0,24.7f,14);
 		startPositions[2] = D3DXVECTOR3(0,24.7f,-12);
-		startPositions[3] = D3DXVECTOR3(0,24.7f,12);
+		startPositions[3] = D3DXVECTOR3(0,24.7f,12);*/
 	
 		this->mNet->SetStartPosistions(startPositions, 4);
-		D3DXVECTOR3 forwardVectors[4];
+		//D3DXVECTOR3 forwardVectors[4];
 		for(int i = 0; i<4;i++)
 		{
 			if(i%2 == 0)
@@ -103,8 +103,7 @@ void CaptureTheFlag::Initialize()
 		}
 		*/
 		this->mNet->SetForwardVectors(forwardVectors, 4);
-		
-		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
+
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 		mGe->GetCamera()->LookAt(centerPlatform);	
 		this->mNumberOfRounds = 3;

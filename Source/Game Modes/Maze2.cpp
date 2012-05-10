@@ -1,6 +1,6 @@
-#include "Maze.h"
+#include "Maze2.h"
 
-Maze::Maze()
+Maze2::Maze2()
 {
 	this->mGe = NULL;
 	this->mIGM = NULL;
@@ -12,7 +12,7 @@ Maze::Maze()
 	this->mTimeElapsed = 0.0f;
 }
 
-Maze::Maze(GraphicsEngine* ge)
+Maze2::Maze2(GraphicsEngine* ge)
 {
 	this->mGe = ge;
 	this->mNumberOfPlayers = 1;
@@ -21,7 +21,7 @@ Maze::Maze(GraphicsEngine* ge)
 	this->mTimeElapsed = 0.0f;
 }
 
-Maze::~Maze()
+Maze2::~Maze2()
 {
 	for(int i = 0; i < 5; i++)
 	{
@@ -29,7 +29,7 @@ Maze::~Maze()
 	}
 }
 
-void Maze::Initialize()
+void Maze2::Initialize()
 {
 		D3DXVECTOR3 centerPlatform;
 		centerPlatform = D3DXVECTOR3(0,20,0);
@@ -62,7 +62,7 @@ void Maze::Initialize()
 		*/
 }
 
-void Maze::Intro()
+void Maze2::Intro()
 {
 	Text*	intro = mGe->CreateText("Maze",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
@@ -70,7 +70,7 @@ void Maze::Intro()
 	mGe->DeleteText(intro);
 }
 
-void Maze::Play()
+void Maze2::Play()
 {	
 		bool running = true;
 		this->mGameMode = CREDITS;
@@ -184,12 +184,12 @@ void Maze::Play()
 		mGe->DeleteText(hudR10);
 }
 
-void Maze::ShowStats()
+void Maze2::ShowStats()
 {
-
+	mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,1,0));
 }
 
-bool Maze::checkWinConditions(float dt)
+bool Maze2::checkWinConditions(float dt)
 {
 	Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 	string s;

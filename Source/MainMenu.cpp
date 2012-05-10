@@ -10,6 +10,8 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mGm = NULL;
 	this->mGe = ge;
 
+	this->mGh = new GameHandler(ge);
+
 	this->mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
 	this->mSong->Play();
@@ -20,6 +22,8 @@ MainMenu::~MainMenu()
 {
 	if(this->mSets)
 		delete [] this->mSets;
+
+	SAFE_DELETE(this->mGh);
 }
 bool MainMenu::Initialize()
 {
@@ -166,6 +170,8 @@ bool MainMenu::Run()
 						else //atm, will host if no servers running on LAN
 						{
 							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "");
+							//this->mGh->CreateGame(GameMode->GetGameMode(), host);
+							//this->mGh->Start();
 							this->mGm->PlayLAN(host);
 						} 
 						this->CreateScene();
@@ -293,8 +299,6 @@ bool MainMenu::Run()
 						bool temp = false;
 						while(!temp)
 							temp = this->mGm->PlayCredits2();
-
-						this->mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,1,0));
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");

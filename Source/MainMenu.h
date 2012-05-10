@@ -16,6 +16,7 @@
 #include "GUI\ChangeSetEvent.h"
 #include "GUI\ChangeSubSetEvent.h"
 #include "GameManager.h"
+#include "GameHandler.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 #include "Ball.h"
@@ -51,6 +52,7 @@ private:
 	SoundSong* mSong;
 	GraphicsEngine* mGe;
 	GameManager* mGm;
+	GameHandler* mGh;
 	GUISet* mSets;
 
 	/*! Creates the sets etc, has to be called before run.*/

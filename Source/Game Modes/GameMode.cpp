@@ -79,13 +79,13 @@ void GameMode::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPress
 		
 
 		// move ball 2
-		if(mGe->GetKeyListener()->IsPressed('H'))
+		if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
 			mBalls[1]->AddForce(Vector3(-diff,0,0));	
-		if(mGe->GetKeyListener()->IsPressed('K'))
+		if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
 			mBalls[1]->AddForce(Vector3(diff,0,0));
-		if(mGe->GetKeyListener()->IsPressed('U'))
+		if(mGe->GetKeyListener()->IsPressed(VK_UP))
 			mBalls[1]->AddForce(Vector3(0,0,diff));	
-		if(mGe->GetKeyListener()->IsPressed('J'))
+		if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
 			mBalls[1]->AddForce(Vector3(0,0,-diff));
 
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))

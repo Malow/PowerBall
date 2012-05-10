@@ -38,13 +38,13 @@ Ball::Ball(const string meshFilePath, D3DXVECTOR3 position)
 	this->mWinTimerActivated = false;
 	this->mWinTimer = 0.0f;
 	this->mForward		 = Vector3(0,0,1);
-	this->mDistanceCam	= 5;
+	this->mDistanceCam	= 8;
 	this->mMaxVelocity	 = 10.0f;
 	this->mAcceleration	 = Vector3(0,-9.81f,0);
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
-	this->mRestitution   = 1.0f; //0.95f
+	this->mRestitution   = 1.3f; //0.95f
 	this->mForcePress	 = 180.0f;
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
@@ -142,9 +142,11 @@ void Ball::Update(const float dt)
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
 
-	if(newPosition.y < 6)
+	if(newPosition.y < 7)
 	{
-		newPosition.y = 6;
+		this->mVelocity = Vector3(0,-2,0);
+		((TRDCamera*)GetGraphicsEngine()->GetCamera())->setBallToFollow(NULL);
+		((TRDCamera*)GetGraphicsEngine()->GetCamera())->LookAt(this->GetPosition());
 	}
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
@@ -198,7 +200,7 @@ void Ball::Update(const float dt)
 	//*this->mPos = this->mMesh->GetPosition();
 	//*this->mFor = this->mForward.GetD3DVec();
 	
-	if((this->mMesh->GetPosition().y < 7) && !this->mKnockoutMode)
+	if((this->mMesh->GetPosition().y < 8) && !this->mKnockoutMode)
 	{
 		if(this->mFlag != NULL)
 		{
@@ -211,6 +213,7 @@ void Ball::Update(const float dt)
 		this->mRespawnTimeLeft -= newdt;
 		if(this->mRespawnTimeLeft <= 0.0f)
 		{
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->setBallToFollow(this);
 			this->mLivesLeft--;
 			this->mMesh->SetPosition(this->mStartPos);
 			this->SetTempPosition(this->mStartPos);
@@ -246,7 +249,7 @@ bool Ball::IsAlive() const
 	else
 	{
 		bool alive = true;
-		if(this->mMesh->GetPosition().y < 7)
+		if(this->mMesh->GetPosition().y < 8)
 			alive = false;
 		return alive;
 	}

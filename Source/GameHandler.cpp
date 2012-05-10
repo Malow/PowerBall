@@ -16,7 +16,7 @@ GameHandler::GameHandler(GraphicsEngine* ge)
 {
 	this->mGameMode = NULL;
 	this->mGe = ge;
-	this->mNet = NULL;
+	this->mNet = new GameNetwork();
 }
 
 GameHandler::~GameHandler()
@@ -25,7 +25,23 @@ GameHandler::~GameHandler()
 	this->mGe = NULL;
 	SAFE_DELETE(this->mNet);
 }
-
+bool GameHandler::CreateGame(int gameMode, ServerInfo server)
+{
+	if(gameMode == CTF)
+		this->CreateCaptureTheFlag(server);
+	if(gameMode == KOTH)
+		this->CreateKingOfTheHill(server);
+	if(gameMode == WARLOCK)
+		this->CreateWarlockGame(server);
+	if(gameMode == CREDITS)
+		this->CreateMazeGame();
+	if(gameMode == CREDITS2)
+		this->CreateMazeGame2();
+	if(gameMode == DM)
+		this->CreateKnockoutGame(2, 3);
+	
+	return true;
+}
 bool GameHandler::CreateKnockoutGame(int numberOfPlayers, int numberOfRounds)
 {
 	if(numberOfRounds <= 0 || numberOfPlayers <= 0)
