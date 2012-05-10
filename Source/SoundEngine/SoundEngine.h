@@ -33,10 +33,6 @@ class SoundEngine
 
 		
 		//sound effects 2D
-		/*
-		unsigned int		mNrOfSoundFX2D;
-		unsigned int		mSoundFXCap2D;
-		FMOD::Sound**		mSoundFX2D;*/
 		MaloW::Array<SoundEffect*> mEffects;
 
 		FMOD::Channel*		mSoundFXChannel2D;
@@ -49,14 +45,7 @@ class SoundEngine
 		float				mDistanceFactor;//default value: 100.0f. Units per meter (100 cm).
 
 		//songs (2D)
-		
-
 		MaloW::Array<SoundSong*> mSongs;
-		/*
-		unsigned int		mNrOfSongs;
-		unsigned int		mSongsCap;
-		FMOD::Sound**		mSongs;
-		*/
 
 	private:
 		void ERRCHECK(FMOD_RESULT result);

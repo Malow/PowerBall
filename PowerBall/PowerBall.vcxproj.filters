@@ -263,6 +263,12 @@
     <ClCompile Include="..\Source\MainMenuCreateAndDel.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\CheckBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\ChangeOptionEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source\Game Modes\GameMode.cpp">
       <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
@@ -531,6 +537,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\Physics\Vector4.h">
       <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\CheckBox.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\ChangeOptionEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GameHandler.h">
       <Filter>Game Files</Filter>

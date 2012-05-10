@@ -11,6 +11,13 @@ SoundEngine* GraphicsEngine::sound = NULL;
 
 bool CursorControl::visable = true;
 
+int GraphicsEngineParams::windowWidth = 1024;
+int GraphicsEngineParams::windowHeight = 768;
+int GraphicsEngineParams::ShadowMapSettings = 0;
+int GraphicsEngineParams::FXAAQuality = 0;
+MaloW::KeyListener* GraphicsEngineParams::kl = NULL;
+CameraType GraphicsEngineParams::CamType = FPS;
+
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {
 	if(!this->initDone)
@@ -38,7 +45,7 @@ GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance,
 
 		this->prevFrameCount = 0;
 		this->fpsLast = 0;
-		this->fpsTimer = 0;
+		this->fpsTimer = 0.0f;
 	}
 	this->InitWindow(hInstance, nCmdShow);
 
@@ -346,29 +353,134 @@ void GraphicsEngine::CreateSkyBox(string texture)
 	this->dx->CreateSkyBox(texture);
 }
 
-void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarTexture)
+void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarTexture, float FadeBlackInInTime, float FadeBlackInOutTime, float FadeBlackOutInTime, float FadeBlackOutOutTime)
 {
-	Image* bg = this->CreateImage(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->parameters.windowWidth, (float)this->parameters.windowHeight), BackgroundTexture);
-	Image* pb = this->CreateImage(D3DXVECTOR2((this->parameters.windowWidth / 4.0f), ((this->parameters.windowHeight * 3.0f) / 4.0f)), D3DXVECTOR2(0, this->parameters.windowHeight / 10.0f), ProgressBarTexture);
+	
+	this->Update();
+
+	Image* bg = NULL;
+	if(BackgroundTexture != "")
+		bg = this->CreateImage(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->parameters.windowWidth, (float)this->parameters.windowHeight), BackgroundTexture);
+
+	Image* pb = NULL;
+	if(ProgressBarTexture != "")
+		pb = this->CreateImage(D3DXVECTOR2((this->parameters.windowWidth / 4.0f), ((this->parameters.windowHeight * 3.0f) / 4.0f)), D3DXVECTOR2(0, this->parameters.windowHeight / 10.0f), ProgressBarTexture);
 
 	int TotalItems = this->GetEventQueueSize();
 
 	float dx = (this->parameters.windowWidth / 2.0f) / TotalItems;
 	float y = this->parameters.windowHeight / 10.0f;
 
+	Image* fade = NULL;
+	if(FadeBlackInInTime != 0.0f || FadeBlackInOutTime != 0.0f || FadeBlackOutInTime != 0.0f || FadeBlackOutOutTime != 0.0f)
+		fade = this->CreateImage(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->parameters.windowWidth, (float)this->parameters.windowHeight), "Media/LoadingScreen/FadeTexture.png");
 
+	int state = 0;
+	/*
+	0 = fade in
+	1 = fade out to loading screen
+	2 = loading 
+	3 = fade in
+	4 = fade out to game
+	*/
+	this->StartRendering();
+	float timer = 0.0f;
 	bool go = true;
 	while(go)
 	{
-		this->Update();
+		float diff = this->Update();
+		timer += diff * 0.001f;
+
+		
+		if(state == 0)
+		{
+			if(FadeBlackInInTime > 0.0f)
+			{
+				float op = timer / FadeBlackInInTime;
+				if(op > 1.0f)
+					op = 1.0f;
+				if(fade)
+					fade->SetOpacity(op);
+			}
+			if(timer > FadeBlackInInTime)
+			{
+				state++;
+				timer = 0;
+			}
+		}
+		else if(state == 1)
+		{
+			if(FadeBlackInOutTime > 0.0f)
+			{
+				float op = 1 - (timer / FadeBlackInOutTime);
+				if(op < 0.0f)
+					op = 0.0f;
+				if(fade)
+					fade->SetOpacity(op);
+			}
+
+			if(timer > FadeBlackInOutTime)
+				state++;
+		}
+		else if(state == 2)
+		{
+			if(!this->loading)
+			{
+				timer = 0;
+				state++;
+			}
+		}
+		else if(state == 3)
+		{
+			if(FadeBlackOutInTime > 0.0f)
+			{
+				float op = timer / FadeBlackOutInTime;
+				if(op > 1.0f)
+					op = 1.0f;
+				if(fade)
+					fade->SetOpacity(op);
+			}
+
+			if(timer > FadeBlackOutInTime)
+			{
+				state++;
+				timer = 0;
+
+				if(pb)
+					this->DeleteImage(pb);
+				if(bg)
+					this->DeleteImage(bg);
+			}
+
+		}
+		else
+		{
+			if(FadeBlackOutOutTime > 0.0f)
+			{
+				float op = 1 - (timer / FadeBlackOutOutTime);
+				if(op < 0.0f)
+					op = 0.0f;
+				if(fade)
+					fade->SetOpacity(op);
+			}
+
+			if(timer > FadeBlackOutOutTime)
+			{
+				state++;
+				go = false;
+			}
+		}
+
 
 		int ItemsToGo = this->GetEventQueueSize();
 		
-		pb->SetDimensions(D3DXVECTOR2(dx * (TotalItems - ItemsToGo), y));
-		if(!this->loading)
-			go = false;
+		if(this->loading)
+			if(pb)
+				pb->SetDimensions(D3DXVECTOR2(dx * (TotalItems - ItemsToGo), y));
 	}
 
-	this->DeleteImage(pb);
-	this->DeleteImage(bg);
+	if(fade)
+	{
+		this->DeleteImage(fade);
+	}
 }

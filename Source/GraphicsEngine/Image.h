@@ -12,6 +12,7 @@ class Image
 private:
 	D3DXVECTOR2 position;
 	D3DXVECTOR2 dimensions;
+	float opacity;
 	ID3D11ShaderResourceView* texture;
 
 
@@ -25,4 +26,6 @@ public:
 	void SetTexture(ID3D11ShaderResourceView* text) { this->texture = text; }
 	D3DXVECTOR2 GetDimensions() const { return this->dimensions; }
 	void SetDimensions(D3DXVECTOR2 dims) { this->dimensions = dims; }
+	float GetOpacity() const { return this->opacity; }
+	void SetOpacity(float opacity) { this->opacity = opacity; }
 };

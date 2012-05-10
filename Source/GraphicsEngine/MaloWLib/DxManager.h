@@ -214,10 +214,9 @@ private:
 	
 
 public:
+	bool StartRender;
 	DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam);
 	virtual ~DxManager();
-
-
 
 	void HandleMeshEvent(MeshEvent* me);
 	void HandleLightEvent(LightEvent* le);

@@ -114,6 +114,28 @@ void DxManager::HandleTextEvent(TextEvent* te)
 
 void DxManager::Life()
 {
+	//Black starting
+	if(this->TimerAnimation < 1000.0f)
+	{
+		Image* img = new Image(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2((float)this->params.windowWidth, (float)this->params.windowHeight));
+		this->CreateImage(img, "Media/LoadingScreen/FadeTexture.png");
+		MaloW::ProcessEvent* ev = this->PeekEvent();
+		if(dynamic_cast<ImageEvent*>(ev) != NULL)
+		{
+			this->HandleImageEvent((ImageEvent*)ev);
+		}
+
+		delete ev;
+		while(!this->StartRender)
+		{
+			this->Render();
+			this->framecount++;
+		}
+		delete this->images.getAndRemove(0);
+		img = NULL;
+		Sleep(500);
+	}
+
 	while(this->stayAlive)
 	{
 		while(MaloW::ProcessEvent* ev = this->PeekEvent())
@@ -326,6 +348,7 @@ void DxManager::RenderImages()
 		this->Shader_BillBoard->SetFloat("posy", 2 - (img->GetPosition().y / this->params.windowHeight) * 2 - 1);
 		this->Shader_BillBoard->SetFloat("dimx", (img->GetDimensions().x / this->params.windowWidth) * 2);
 		this->Shader_BillBoard->SetFloat("dimy", -(img->GetDimensions().y / this->params.windowHeight) * 2);
+		this->Shader_BillBoard->SetFloat("opacity", img->GetOpacity());
 		
 		/*// if -1 to 1
 		this->Shader_BillBoard->SetFloat("posx", img->GetPosition().x);
@@ -459,6 +482,8 @@ HRESULT DxManager::Render()
 	//this->RenderQuadDeferred();
 	//this->RenderDeferredTexture();
 	this->RenderDeferredPerPixel();
+
+	//this->RenderInvisibilityEffect(); //**
 
 	this->RenderParticles();
 	

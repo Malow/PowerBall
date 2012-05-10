@@ -92,8 +92,22 @@ class CamRecording
 		void Save(string fileName);
 		/*! Open camera path (points) from file. */
 		void Open(string fileName);
+		/*! Set the camera to circle around a target. */
+		/*! loop - set path to be looped. */
+		/*! interval - number of milliseconds between each point */
+		/*! nrOfPoints - the number of points (camera & lookAt positions) on the circle. */
+		/*! nrOfRotations - the number of rotations to do if looping is set to false. */
+		/*! startPos - start position of camera. */
+		/*! lookAt - what the camera will look at during play. */
+		void CircleAround(	bool loop, 
+							unsigned int interval, 
+							unsigned int nrOfPoints, 
+							unsigned int nrOfRotations, 
+							D3DXVECTOR3 startPos, 
+							D3DXVECTOR3 lookAt);
+
 		/*! Load predefined camera path. */
-		void Load(CAMERA_PATH camPath);
+		//void Load(CAMERA_PATH camPath);
 
 		/*! Used to update recording and playing. */
 		void Update(float deltaTime);

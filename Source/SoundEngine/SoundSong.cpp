@@ -1,12 +1,24 @@
 #include "SoundSong.h"
 
+void SoundSong::ERRCHECK(FMOD_RESULT result)
+{
+#ifdef _DEBUG
+	if (result != FMOD_OK)
+	{
+		OutputDebugString(FMOD_ErrorString(result));
+	}
+#endif
+}
+
+
+
 SoundSong::SoundSong(FMOD::System* sys, float* masterVol)
 {
-	this->masterVol = masterVol;
-	this->sys = sys;
 	this->mSongVolume = 1.0f;
-	this->mSongChannel = NULL;
 	this->mSound = NULL;
+	this->sys = sys;
+	this->mSongChannel = NULL;
+	this->masterVol = masterVol;
 }
 
 SoundSong::~SoundSong()
@@ -17,38 +29,44 @@ SoundSong::~SoundSong()
 
 void SoundSong::Play()
 {
+	FMOD_RESULT fr;
 	FMOD::Sound* currentSound = NULL;
 	if(this->mSongChannel)
-		this->mSongChannel->getCurrentSound(&currentSound);
+		ERRCHECK(fr = this->mSongChannel->getCurrentSound(&currentSound));
 	
 	if(currentSound != this->mSound)
 	{
-		this->sys->playSound(FMOD_CHANNEL_REUSE, this->mSound, false, &this->mSongChannel);
-		this->mSongChannel->setVolume(this->mSongVolume * *this->masterVol); //set volume of channel
+		ERRCHECK(fr = this->sys->playSound(FMOD_CHANNEL_FREE, this->mSound, false, &this->mSongChannel));
+		ERRCHECK(fr = this->mSongChannel->setVolume(this->mSongVolume * *this->masterVol)); //set volume of channel
 	}
 }
 
 void SoundSong::SetVolume(float volume) 
 { 
+	FMOD_RESULT fr;
 	this->mSongVolume = volume; 
 	if(this->mSongChannel)
-		this->mSongChannel->setVolume(this->mSongVolume * *this->masterVol); //set volume of channel
+		ERRCHECK(fr = this->mSongChannel->setVolume(this->mSongVolume * *this->masterVol)); //set volume of channel
 }
 
 void SoundSong::Mute()
 {
-	this->mSongChannel->setMute(true);
+	FMOD_RESULT fr;
+	ERRCHECK(fr = this->mSongChannel->setMute(true));
 }
 void SoundSong::Unmute()
 {
-	this->mSongChannel->setMute(false);
+	FMOD_RESULT fr;
+	ERRCHECK(fr = this->mSongChannel->setMute(false));
 }
 
 void SoundSong::Pause()
 {
-	this->mSongChannel->setPaused(true);
+	FMOD_RESULT fr;
+	ERRCHECK(fr = this->mSongChannel->setPaused(true));
 }
 void SoundSong::Unpause()
 {
-	this->mSongChannel->setPaused(false);
+	FMOD_RESULT fr;
+	ERRCHECK(fr = this->mSongChannel->setPaused(false));
 }

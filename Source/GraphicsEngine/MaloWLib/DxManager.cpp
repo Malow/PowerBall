@@ -2,6 +2,7 @@
 
 DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 {
+	this->StartRender = false;
 	this->params = params;
 	this->hWnd = g_hWnd;
 

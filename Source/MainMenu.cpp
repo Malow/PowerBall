@@ -10,6 +10,10 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mGm = NULL;
 	this->mGe = ge;
 
+	this->mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
+	this->mSong->Play();
+
 	this->Initialize();
 }
 MainMenu::~MainMenu()
@@ -93,7 +97,7 @@ bool MainMenu::Run()
 			}
 			else{ updateMouse -= dt; }
 		}
-		else if(this->mCurrentSet == OPTIONS_GAMEPLAY || this->mCurrentSet == OPTIONS_HOTSEAT || this->mCurrentSet == OPTIONS_ONLINE
+		else if(this->mCurrentSet == OPTIONS || this->mCurrentSet == OPTIONS_HOTSEAT || this->mCurrentSet == OPTIONS_ONLINE
 			|| this->mCurrentSet == OPTIONS_LAN)
 		{
 			CursorControl cc;
@@ -246,12 +250,12 @@ bool MainMenu::Run()
 						isRunning = false;
 						return true;
 					}
-					else if(tempEventSet == OPTIONS_GAMEPLAY)
+					else if(tempEventSet == OPTIONS)
 					{
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
-						this->mSubSet = NOMENU;
-						this->mCurrentSet = OPTIONS_GAMEPLAY;
+						this->mSubSet = OPTIONS_GRAPHICS;
+						this->mCurrentSet = OPTIONS;
 					}
 					else if(tempEventSet == MAINMENU)
 					{
@@ -286,7 +290,11 @@ bool MainMenu::Run()
 
 						this->DeleteScene();
 
-						this->mGm->PlayCredits2();
+						bool temp = false;
+						while(!temp)
+							temp = this->mGm->PlayCredits2();
+
+						this->mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,1,0));
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
@@ -346,6 +354,17 @@ bool MainMenu::Run()
 					/*
 					Make something that change res here
 					*/
+				}
+				else if(returnEvent->GetEventMessage() == "ChangeOptionEvent")
+				{
+					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
+					if(tempReturnEvent->GetOption() == "Sound")
+					{
+						if(tempReturnEvent->GetValue() == "true")
+							this->mSong->Unmute();
+						else
+							this->mSong->Mute();
+					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
 				{

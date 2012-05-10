@@ -248,84 +248,116 @@ void DxManager::RenderDeferredPerPixel()
 
 void DxManager::RenderInvisibilityEffect() //***********
 {
-	//this->Dx_RenderTargetView->GetResource**
+	/** format prob.**
+	D3D11_TEXTURE2D_DESC texDesc;
+	ZeroMemory(&texDesc, sizeof(texDesc));
+	texDesc.Width = this->params.windowWidth;
+	texDesc.Height = this->params.windowHeight;	
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
 
-	//Matrixes
-	D3DXMATRIX world, view, proj, wvp, worldInverseTranspose;
-	view = this->camera->GetViewMatrix();
-	proj = this->camera->GetProjectionMatrix();
+	//create texture
+	ID3D11Texture2D* sceneTex;
+	this->Dx_Device->CreateTexture2D(&texDesc, NULL, &sceneTex);	
+
+	ID3D11Resource* res;
+	this->Dx_RenderTargetView->GetResource(&res);
+	//copy data from the resource to the texture
+	this->Dx_DeviceContext->CopyResource(sceneTex, res);
+
+	ID3D11ShaderResourceView* srv;
+	this->Dx_Device->CreateShaderResourceView(res, NULL, &srv); 
+	
+	this->Shader_InvisibilityEffect->SetResource("scene", srv);
+	**/
+
 
 	//clear and set render target/depth
-	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
-	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+	//this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	//this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
 
-	static float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1.0f};
-	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_RenderTargetView, ClearColor);
+	HRESULT hr = S_OK;
 
-	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-
-	this->Dx_DeviceContext->ClearDepthStencilView(this->Dx_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	//float ClearColor[4] = {0.5f, 0.71f, 1.0f, 1};
-	//float ClearColor[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
-	for(int i = 0; i < this->NrOfRenderTargets; i++)
-		this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_GbufferRTs[i], ClearColor);
-	float ClearColor2[4] = {0.5f, 0.71f, 1.0f, 1};
-	this->Dx_DeviceContext->ClearRenderTargetView(this->Dx_GbufferRTs[0], ClearColor2);
+	//get the surface/texture from the swap chain
+	ID3D11Texture2D* backBufferTex;
+	this->Dx_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferTex);
 	
-	this->Shader_DeferredGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
+	//get texture description
+	D3D11_TEXTURE2D_DESC texDesc;
+	backBufferTex->GetDesc(&texDesc);
 	
+	//change bindflag for use as a shader resource
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE; 
 
-	//Invisible(effect) geometry **ändra shader**
+	//create texture
+	ID3D11Texture2D* sceneTex;
+	hr = this->Dx_Device->CreateTexture2D(&texDesc, NULL, &sceneTex);	
+	if(FAILED(hr))
+	{
+		MaloW::Debug("InvisibilityEffect: Failed to create texture");
+	}
+	
+	//get resource from the render target view of the backbuffer
+	ID3D11RenderTargetView* backBufferRTV = NULL;
+	this->Dx_DeviceContext->OMGetRenderTargets(1, &backBufferRTV, NULL);
+	ID3D11Resource* backBufferRTVResource = NULL;
+	backBufferRTV->GetResource(&backBufferRTVResource);
+
+	//copy data from the resource to the scene texture
+	this->Dx_DeviceContext->CopyResource(sceneTex, backBufferRTVResource);
+
+	//create shader resource view
+	ID3D11ShaderResourceView* sceneSRV;
+	hr = this->Dx_Device->CreateShaderResourceView(sceneTex, NULL, &sceneSRV);
+	if(FAILED(hr))
+	{
+		MaloW::Debug("InvisibilityEffect: Failed to create shader resource view");
+	}
+
+	//set shader variables
+	this->Shader_InvisibilityEffect->SetResource("sceneTex", sceneSRV);
+
+
+	//Invisible(effect) geometry
+	D3DXMATRIX wvp;
 	for(int i = 0; i < this->objects.size(); i++)
 	{
 		if(this->objects[i]->IsUsingInvisibility())
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
 		
-			// Per object
-			this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
-		
-			// Set matrixes
-			world = this->objects[i]->GetWorldMatrix();
-			wvp = world * view * proj;
-			D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
-			D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
+			//Per object
+			wvp = this->objects[i]->GetWorldMatrix() * this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
+			this->Shader_InvisibilityEffect->SetMatrix("WVP", wvp);
 
-			this->Shader_DeferredGeometry->SetMatrix("WVP", wvp);
-			this->Shader_DeferredGeometry->SetMatrix("worldMatrix", world);
-			this->Shader_DeferredGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
-
+			//Per strip
 			for(int u = 0; u < strips->size(); u++)
 			{
+				//Set topology
 				Object3D* obj = strips->get(u)->GetRenderObject();
 				this->Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
 
-				// Setting lightning from material
-				this->Shader_DeferredGeometry->SetFloat4("SpecularColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->SpecularColor, 1));
-				this->Shader_DeferredGeometry->SetFloat("SpecularPower", strips->get(u)->GetMaterial()->SpecularPower);
-				this->Shader_DeferredGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(strips->get(u)->GetMaterial()->AmbientColor, 1));
-				this->Shader_DeferredGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(strips->get(u)->GetMaterial()->DiffuseColor, 1));
-
+				//Apply vertex buffer
 				Buffer* verts = obj->GetVertBuff();
 				if(verts)
 					verts->Apply();
 
-				if(ID3D11ShaderResourceView* texture = obj->GetTexture())
-				{
-					this->Shader_DeferredGeometry->SetBool("textured", true);
-					this->Shader_DeferredGeometry->SetResource("tex2D", texture);
-				}
-				else
-					this->Shader_DeferredGeometry->SetBool("textured", false);
-
+				//Apply index buffer
 				Buffer* inds = obj->GetIndsBuff();
 				if(inds)
 					inds->Apply();
 			
-				this->Shader_DeferredGeometry->Apply(0);
+				//Apply shader
+				this->Shader_InvisibilityEffect->Apply(0);
 
-				// draw
+				//Draw
 				if(inds)
 					this->Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
 				else
@@ -333,6 +365,18 @@ void DxManager::RenderInvisibilityEffect() //***********
 			}
 		}
 	}
+
+
+	//SAFE_RELEASE(sceneTex);
+	//SAFE_RELEASE(res);
+	//SAFE_RELEASE(srv);
+	
+	SAFE_RELEASE(backBufferTex);
+	SAFE_RELEASE(sceneTex);
+	SAFE_RELEASE(backBufferRTV);
+	SAFE_RELEASE(backBufferRTVResource);
+	SAFE_RELEASE(sceneSRV);
+	this->Shader_InvisibilityEffect->SetResource("sceneTex", NULL);
 }
 
 void DxManager::RenderQuadDeferred()

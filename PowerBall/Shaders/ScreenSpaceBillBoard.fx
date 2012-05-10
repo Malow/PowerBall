@@ -31,6 +31,7 @@ DepthStencilState DisableDepthWrite
 
 cbuffer EveryFrame
 {
+	float opacity;
 	float posx;
 	float posy;
 	float dimx;
@@ -112,6 +113,7 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 float4 PSScene(PSSceneIn input) : SV_Target
 {	
 	float4 tex = tex2D.Sample(linearSampler, input.tex);
+	tex.w *= opacity;
 	return tex;
 }
 

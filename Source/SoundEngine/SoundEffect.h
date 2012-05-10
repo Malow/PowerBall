@@ -17,8 +17,13 @@ private:
 	FMOD::Channel*		chan;
 	float*				masterVol;
 
+	
+private:
+	void ERRCHECK(FMOD_RESULT result);
+
 public:
-	SoundEffect(FMOD::System* sys, FMOD::Channel* chan, float* masterVol);
+	//SoundEffect(FMOD::System* sys, FMOD::Channel* chan, float* masterVol);
+	SoundEffect(FMOD::System* sys, float* masterVol);
 	virtual ~SoundEffect();
 
 	void SetVolume(float volume);
@@ -26,7 +31,7 @@ public:
 	FMOD::Sound* GetSound() const { return this->mSoundFX2D; }
 	void SetSound(FMOD::Sound* s) { this->mSoundFX2D = s; }
 
-	/*! Play sound effect at index. */
+	/*! Play sound effect. */
 	void Play();
 
 };

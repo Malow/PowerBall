@@ -120,7 +120,7 @@ int SoundEngine::Init()
 			ERRCHECK(this->mResult);
 		}
 	}
-	this->mResult = this->mSystem->init(100, FMOD_INIT_NORMAL, 0);
+	this->mResult = this->mSystem->init(1000, FMOD_INIT_NORMAL, 0);
 	if(this->mResult == FMOD_ERR_OUTPUT_CREATEBUFFER)
 	{
 		/*
@@ -158,7 +158,8 @@ void SoundEngine::SetDebugLevel(unsigned int level)
 //other
 SoundEffect* SoundEngine::LoadSoundEffect(string filename, bool as3D)
 {
-	SoundEffect* se = new SoundEffect(this->mSystem, this->mSoundFXChannel2D, this->mMasterVolume);
+	//SoundEffect* se = new SoundEffect(this->mSystem, this->mSoundFXChannel2D, this->mMasterVolume);
+	SoundEffect* se = new SoundEffect(this->mSystem, this->mMasterVolume);
 
 	if(as3D)
 	{

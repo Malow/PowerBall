@@ -66,9 +66,11 @@
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
+    <ClCompile Include="..\Source\GUI\ChangeOptionEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSetEvent.cpp" />
+    <ClCompile Include="..\Source\GUI\CheckBox.cpp" />
     <ClCompile Include="..\Source\GUI\DropDownList.cpp" />
     <ClCompile Include="..\Source\GUI\Element.cpp" />
     <ClCompile Include="..\Source\GUI\GameModeEvent.cpp" />
@@ -152,9 +154,11 @@
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
+    <ClInclude Include="..\Source\GUI\ChangeOptionEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeResEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeSetEvent.h" />
+    <ClInclude Include="..\Source\GUI\CheckBox.h" />
     <ClInclude Include="..\Source\GUI\DropDownList.h" />
     <ClInclude Include="..\Source\GUI\Element.h" />
     <ClInclude Include="..\Source\GUI\GameModeEvent.h" />
