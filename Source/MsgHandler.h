@@ -1,12 +1,14 @@
 #pragma once
 
 #include "stdafx.h"
+//class Lobby;
 class GameNetwork;
 class ServerConnection;
 #define SEGMENT_END ';'
 class MsgHandler
 {
 private:
+	//Lobby*				mLobby;
 	GameNetwork*		mNet;
 	ServerConnection*	mConn;
 	LARGE_INTEGER		mOldTick;
@@ -40,7 +42,7 @@ public:
 		static MsgHandler singleton;
 		return singleton;
 	}
-	void		Set(GameNetwork* gn, ServerConnection*	conn);
+	void		Set(GameNetwork* gn, ServerConnection* conn);//, Lobby* lobby = NULL);
 	void		ProcessMSG(char* buffer, int size, int index);
 
 	
@@ -49,6 +51,10 @@ public:
 	void		SendClientData();
 	void		SendServerData();
 
+	//lobby
+	void		SendIdentifyYourself();
+	void		SendPlayerInfos();
+	void		SendPlayerProfile();
 
 
 private:
@@ -59,4 +65,7 @@ private:
 
 	void		ReceiveClientData(char* buf, int &offset, int index);
 	void		ReceiveServerData(char* buf, int &offset);
+
+	void		ReceiveIdentification(char* buf, int &offset, int index);
+	void		ReceivePlayerInfos(char* buf, int &offset);
 };

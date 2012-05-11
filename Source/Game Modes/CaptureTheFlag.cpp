@@ -375,10 +375,15 @@ void CaptureTheFlag::AddBall()
 		temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
 	}
 	delete[] this->mBalls;
-	this->mBalls = temp;
+	this->mBalls = temp;		
 
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
-	mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[this->mNet->GetIndex()]);
+	else
+	{
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	}
 
 
 }

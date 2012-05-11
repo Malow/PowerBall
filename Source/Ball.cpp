@@ -142,7 +142,7 @@ void Ball::Update(const float dt)
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
 
-	if(newPosition.y < 7)
+	if(newPosition.y < 7 && !this->mKnockoutMode)
 	{
 		this->mVelocity = Vector3(0,-2,0);
 		((TRDCamera*)GetGraphicsEngine()->GetCamera())->setBallToFollow(NULL);
@@ -213,6 +213,9 @@ void Ball::Update(const float dt)
 		this->mRespawnTimeLeft -= newdt;
 		if(this->mRespawnTimeLeft <= 0.0f)
 		{
+			D3DXVECTOR3 dir(-this->mStartPos.x, 0, -this->mStartPos.z);
+			::D3DXVec3Normalize(&dir, &dir);
+			this->mForward = dir;
 			((TRDCamera*)GetGraphicsEngine()->GetCamera())->setBallToFollow(this);
 			this->mLivesLeft--;
 			this->mMesh->SetPosition(this->mStartPos);
