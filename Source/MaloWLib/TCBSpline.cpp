@@ -336,6 +336,8 @@ void TCBSpline::Clear()
 		for(int i = 0; i < this->mNrOfControlPoints; i++)
 		{
 			SAFE_DELETE(this->mControlPoints[i]);
+			//SAFE_DELETE(this->mSource[i]); **
+			//SAFE_DELETE(this->mDestination[i]); **
 		}
 		this->mNrOfControlPoints = 0;
 	}

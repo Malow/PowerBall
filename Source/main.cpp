@@ -44,7 +44,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		// Delete graphics engine
 		delete ge;
 	//}
-
+	
+#if defined(DEBUG) || defined(_DEBUG)
+	myDumpMemoryLeaks();
+#endif
 	return 0;
 }
 

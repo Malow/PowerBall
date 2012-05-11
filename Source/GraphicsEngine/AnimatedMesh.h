@@ -47,6 +47,7 @@ class AnimatedMesh : public Mesh
 		unsigned int				mNrOfTimesLooped;
 		bool						mLoopNormal;
 		bool						mLoopSeamless;
+		float						mCurrentTime;
 		MaloW::Array<KeyFrame*>*	mKeyFrames;
 
 	public:
