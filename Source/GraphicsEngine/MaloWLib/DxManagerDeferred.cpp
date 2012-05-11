@@ -90,7 +90,8 @@ void DxManager::RenderDeferredGeometry()
 		KeyFrame* one;
 		KeyFrame* two;
 		float t = 0.0f;
-		this->animations[i]->GetCurrentKeyFrames(&one, &two, t, this->TimerAnimation);
+		this->animations[i]->SetCurrentTime(this->TimerAnimation);
+		this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
 
 		MaloW::Array<MeshStrip*>* stripsOne = one->strips;
 		MaloW::Array<MeshStrip*>* stripsTwo = two->strips;

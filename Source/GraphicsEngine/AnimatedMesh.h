@@ -59,9 +59,16 @@ class AnimatedMesh : public Mesh
 		bool						IsLoopingNormal()		const { return this->mLoopNormal; }
 		bool						IsLoopingSeamless()		const { return this->mLoopSeamless; }
 		MaloW::Array<KeyFrame*>*	GetKeyFrames()			const { return this->mKeyFrames; }
+
 		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time. */
 		/*!	Note that currentTime is expected to be in milliseconds. Returns NULL if there's no keyframes loaded. */
-		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime);
+		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t);
+
+		/* ! Returns the strips of the second mesh currently being used. */
+		virtual MaloW::Array<MeshStrip*>* GetStrips();
+
+		/*! Set the current time. This must be done every frame to for the animation to be animated. */
+		void SetCurrentTime(float currentTime);
 
 		/*! Prevents looping. Default. */
 		void NoLooping();
@@ -72,8 +79,5 @@ class AnimatedMesh : public Mesh
 
 		/*! Load the keyframes from file. Input is exptected to be "'filename'.ani". */
 		virtual void LoadFromFile(string file);
-
-		/* ! Returns the strips of the second mesh currently being used. */
-		virtual MaloW::Array<MeshStrip*>* GetCurrentMeshStrips(float currentTime);
 
 };
