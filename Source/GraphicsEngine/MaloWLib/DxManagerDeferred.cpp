@@ -234,7 +234,6 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetResource("Position", NULL);
 	this->Shader_DeferredLightning->SetResource("Specular", NULL);
 	this->Shader_DeferredLightning->SetResource("LavaTexture", NULL);
-	this->Shader_DeferredLightning->SetResource("LavaHeightMap", NULL);
 	for(int i = 0; i < this->lights.size(); i++)
 	{
 		this->Shader_DeferredLightning->SetResourceAtIndex(i, "ShadowMap", NULL);

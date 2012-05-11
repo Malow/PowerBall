@@ -65,7 +65,7 @@ public:
 	
 	virtual void LoadFromFile(string file);
 
-	virtual MaloW::Array<MeshStrip*>* GetStrips() = 0;
+	//virtual MaloW::Array<MeshStrip*>* GetStrips() = 0;
 };
 
 class ParticleMesh

@@ -6,7 +6,6 @@ AnimatedMesh::AnimatedMesh(D3DXVECTOR3 pos) : Mesh(pos)
 	this->mNrOfTimesLooped = 0;
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
-	this->mTimer = 0.0f; //not currently used**
 	this->mKeyFrames = new MaloW::Array<KeyFrame*>();
 }
 
@@ -24,8 +23,6 @@ AnimatedMesh::~AnimatedMesh()
 
 void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime)
 {
-	//this->mTimer = currentTime; //not currently used**
-
 	if(this->mKeyFrames->size() > 1)
 	{
 		if(this->IsLooping() || !this->mNrOfTimesLooped)
@@ -261,22 +258,12 @@ void AnimatedMesh::LoadFromFile(string file)
 		MaloW::Debug("Failed to open AnimatedMesh: " + file);
 }
 
-MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
+MaloW::Array<MeshStrip*>* AnimatedMesh::GetCurrentMeshStrips(float currentTime)
 {
-	/* **
-	if(this->strips)
-	{
-		while(this->strips->size() > 0)
-		{
-			delete this->strips->GetAndRemoev(0);
-		}
-		delete this->strips;
-	}
+	KeyFrame* one;
+	KeyFrame* two;
+	float t = 0.0f;
+	this->GetCurrentKeyFrames(&one, &two, t, currentTime);
 
-	this->strips = InterpolatedStrips(this->timer);
-
-
-	*/
-
-	return this->strips;
+	return two->strips;
 }
