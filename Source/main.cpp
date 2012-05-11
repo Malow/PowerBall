@@ -3,8 +3,6 @@
 #include "GraphicsEngine.h"
 #include "SoundEngine\SoundEngine.h"
 
-
-
 void test();
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
@@ -13,7 +11,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	myInitMemoryCheck();
 #endif
 	MaloW::ClearDebug();
-	//_CrtSetBreakAlloc(1554);
+
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
@@ -21,7 +19,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.FXAAQuality = 0;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
-
+	
 	// RunAgain for changing resolution etc.
 	/*
 	bool RunAgain = true;
@@ -44,9 +42,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		delete ge;
 	//}
 	
-#if defined(DEBUG) || defined(_DEBUG)
-	myDumpMemoryLeaks();
-#endif
+	#if defined(DEBUG) || defined(_DEBUG)
+		myDumpMemoryLeaks();
+	#endif
 	return 0;
 }
 

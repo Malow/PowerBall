@@ -171,19 +171,41 @@ bool InGameMenu::Run()
 					this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
 				}
 			}
-			if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
+			else if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
 			{
 				this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
 				ChangeSubSetEvent* tempReturnEvent = (ChangeSubSetEvent*)returnEvent;
 				int tempEventSet = tempReturnEvent->GetSet();
 
+				if(tempEventSet == IGNOPTIONS_SOUND)
+				{
+					CheckBox* temp = this->mSets[IGNOPTIONS_SOUND].GetCheckBox("Sound");
+					temp->SetChecked(BackgroundSong::mPlaying);
+				}
 				int set = tempReturnEvent->GetSet();
 				this->mSubSet = set;
 				this->mSets[this->mSubSet].AddSetToRenderer(this->mGe);
 				int menuChangeTime = 50;
 				while(menuChangeTime > 0)
 					menuChangeTime -= this->mGe->Update();
+			}
+			else if(returnEvent->GetEventMessage() == "ChangeOptionEvent")
+			{
+				ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
+				if(tempReturnEvent->GetOption() == "Sound")
+				{
+					if(tempReturnEvent->GetValue() == "true")
+					{
+						BackgroundSong::mSong->Unmute();
+						BackgroundSong::mPlaying = true;
+					}
+					else
+					{
+						BackgroundSong::mSong->Mute();
+						BackgroundSong::mPlaying = false;
+					}
+				}
 			}
 		}
 		if(!IsClicked && mousePressed)

@@ -580,6 +580,9 @@
     <ClInclude Include="..\Source\Game Modes\Maze2.h">
       <Filter>Game Files\Game Modes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\GameOptions.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">

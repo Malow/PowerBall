@@ -1,4 +1,6 @@
 #include "MainMenu.h"
+SoundSong* BackgroundSong::mSong = NULL;
+bool BackgroundSong::mPlaying = false;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
@@ -10,9 +12,11 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mGm = NULL;
 	this->mGe = ge;
 
-	this->mGh = new GameHandler(ge);
-
 	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
+
+	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+
+	this->mGh = new GameHandler(ge);
 
 	this->Initialize();
 }
@@ -57,6 +61,9 @@ void MainMenu::UpdateMousePosition()
 bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
+	BackgroundSong::mSong->Play();
+	BackgroundSong::mPlaying = true;
+
 	bool IsClicked = false;
 
 	CursorControl cc;
@@ -360,10 +367,16 @@ bool MainMenu::Run()
 					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
 					if(tempReturnEvent->GetOption() == "Sound")
 					{
-						//if(tempReturnEvent->GetValue() == "true")
-							//GameOptions::getInstance()->GetSong(0)->Unmute();
-						//else
-							//GameOptions::getInstance()->GetSong(0)->Mute();
+						if(tempReturnEvent->GetValue() == "true")
+						{
+							BackgroundSong::mSong->Unmute();
+							BackgroundSong::mPlaying = true;
+						}
+						else
+						{
+							BackgroundSong::mSong->Mute();
+							BackgroundSong::mPlaying = false;
+						}
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
@@ -372,6 +385,12 @@ bool MainMenu::Run()
 
 					ChangeSubSetEvent* tempReturnEvent = (ChangeSubSetEvent*)returnEvent;
 					int tempEventSet = tempReturnEvent->GetSet();
+
+					if(tempEventSet == OPTIONS_SOUND)
+					{
+						CheckBox* temp = this->mSets[OPTIONS_SOUND].GetCheckBox("Sound");
+						temp->SetChecked(BackgroundSong::mPlaying);
+					}
 
 					int set = tempReturnEvent->GetSet();
 					this->mSubSet = set;

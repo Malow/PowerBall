@@ -10,8 +10,8 @@
 #include "GUI\NoEvent.h"
 #include "GUI\ChangeResEvent.h"
 #include "GUI\ChangeSubSetEvent.h"
-#include "GraphicsEngine.h"
 #include "stdafx.h"
+#include "GameOptions.h"
 
 enum INGAMEMENU {IGNNOMENU,
 	IGNBACKGROUND,
