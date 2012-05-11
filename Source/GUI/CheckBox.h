@@ -41,6 +41,8 @@ public:
 
 	bool GetOn(){ return this->mOn; }
 
+	void SetChecked(bool checked){ this->mOn = checked; }
+
 	GUIEvent* CheckCollision(float mouseX, float mouseY, bool mousePressed, GraphicsEngine* ge);
 
 };

@@ -310,6 +310,9 @@ void MainMenu::CreateScene()
 	this->mBall2 = this->mGe->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(0,14.71f,-5));
 
 	this->mPlatform = this->mGe->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(0,10,0));
+	this->mKoth = this->mGe->CreateStaticMesh("Media/KOTHMap1.obj", D3DXVECTOR3(40,5,0));
+	this->mCtf = this->mGe->CreateStaticMesh("Media/CTFMap1.obj", D3DXVECTOR3(-40,5,0));
+
 
 	this->mLight1 = this->mGe->CreateLight(D3DXVECTOR3(0, 50.0f, -20));
 	this->mLight1->SetIntensity(50.0f);
@@ -332,6 +335,10 @@ void MainMenu::DeleteScene()
 
 	this->mGe->DeleteStaticMesh(this->mPlatform);
 	this->mPlatform = NULL;
+	this->mGe->DeleteStaticMesh(this->mKoth);
+	this->mKoth = NULL;
+	this->mGe->DeleteStaticMesh(this->mCtf);
+	this->mCtf = NULL;
 
 	SAFE_DELETE(this->mCamRec);
 }
