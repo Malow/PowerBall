@@ -1,13 +1,11 @@
 #include "ServerConnection.h"
 
-volatile bool running = true;
 ServerConnection::ServerConnection()
 {
 	WSADATA wsaData = {0};
 	WSAStartup(MAKEWORD(2,2), &wsaData);
 	this->mPort = 10000;
 	this->mServerSocket = new Connection(socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ));
-	running = true;
     u_long noBlocking = 1;
     ioctlsocket(this->mServerSocket->sock, FIONBIO, &noBlocking);
 
@@ -22,18 +20,24 @@ ServerConnection::~ServerConnection()
 		//GetExitCodeThread(this->mServerSocket->handle, &exitCode);
 		//ExitThread(exitCode);
 		closesocket(this->mServerSocket->sock);
-		running = false;
+		this->mServerSocket->running = false;
 		CloseHandle(this->mServerSocket->handle);
 		for(int i = 0; i < this->mNumClients; i++)
 		{
 			//GetExitCodeThread(this->mClientSocket[i]->handle, &exitCode);
 			//ExitThread(exitCode);
+			this->mClientSocket[i]->running = false;
 			closesocket(this->mClientSocket[i]->sock);
 			CloseHandle(this->mClientSocket[i]->handle);
 			SAFE_DELETE(this->mClientSocket[i]);
 		}
 	}
-	else closesocket(this->mServerSocket->sock);
+	else 
+	{
+		closesocket(this->mServerSocket->sock);
+		this->mServerSocket->running = false;
+		//CloseHandle(this->mServerSocket->handle);
+	}
 	WSACleanup();
 	SAFE_DELETE(this->mServerSocket);
 }
@@ -131,7 +135,7 @@ void ServerConnection::Connect(ServerInfo server)
 	sockaddr_in adress = {0};
 	adress.sin_family = AF_INET;
 	adress.sin_port = htons((u_short)this->mPort);
-	adress.sin_addr.s_addr = inet_addr(server.GetIP().c_str()); //om sätts innan bind så skickas det till en själv :P
+	adress.sin_addr.s_addr = inet_addr(server.GetIP().c_str());
 
 	sendto( this->mServerSocket->sock, buffer, sizeof(buffer), 0, (sockaddr*)&adress, sizeof(sockaddr_in) );
 	
@@ -156,7 +160,7 @@ void ServerConnection::Connect(ServerInfo server)
 DWORD WINAPI ServerConnection::ListenForClient(void* param)
 {
 	ServerConnection* sc = (ServerConnection*) param;
-	while(running)
+	while(sc->mServerSocket->running)
 	{
 		char buf[BUFFER_SIZE];
 		sockaddr_in from;
@@ -200,6 +204,9 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 			}
 		
 		}
+		
+		if(sc->GetNumConnections() >= sc->mCurrentServer.GetMaxNumPlayers())
+			sc->mServerSocket->running = false;
 	}
 	return 0;
 }
@@ -254,7 +261,7 @@ DWORD WINAPI ServerConnection::Communicate(void* param)
 	Connection* conn = (Connection*)param;
     u_long noBlocking = 0;
     ioctlsocket(conn->sock, FIONBIO, &noBlocking);
-	while(running)
+	while(conn->running)
 	{
 		int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
 		if(recvBytes > 0)
@@ -273,7 +280,7 @@ DWORD WINAPI ServerConnection::CommunicateClient(void* param)
 	Connection* conn = (Connection*)param;
     u_long noBlocking = 0;
     ioctlsocket(conn->sock, FIONBIO, &noBlocking);
-	while(running)
+	while(conn->running)
 	{
 		int recvBytes = recvfrom(conn->sock, (char*)conn->buf, sizeof(conn->buf), 0, 0, 0);
 		if(recvBytes > 0)
@@ -294,27 +301,31 @@ void ServerConnection::Send(int index)
 	if(this->mServer)
 		conn = this->mClientSocket[index];
 
+	if(conn->running)
+	{
    // u_long noBlocking = 1;
     //ioctlsocket(conn->sock, FIONBIO, &noBlocking);
-	if(conn->numCharsInBufW > 0)
-	{
-		int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
+		if(conn->numCharsInBufW > 0)
+		{
+			int sentBytes = sendto( conn->sock, (char*)conn->bufW, conn->numCharsInBufW, 0, (sockaddr*)&conn->adress, sizeof(sockaddr_in) );
 			
-		if(sentBytes > 0)
-			conn->numCharsInBufW -= sentBytes;
+			if(sentBytes > 0)
+				conn->numCharsInBufW -= sentBytes;
+		}
 	}
     //noBlocking = 0;
     //ioctlsocket(conn->sock, FIONBIO, &noBlocking);
 }
 void ServerConnection::Close()
 {
-	running = false;
+	this->mServerSocket->running = false;
 	closesocket(this->mServerSocket->sock);
 	this->mServerSocket->sock = INVALID_SOCKET;
 	if(this->mServer)
 	{
 		for(int i = 0; i < this->mNumClients; i++)
 		{
+			this->mClientSocket[i]->running = false;
 			closesocket(this->mClientSocket[i]->sock);
 			this->mClientSocket[i]->sock = INVALID_SOCKET;
 		}

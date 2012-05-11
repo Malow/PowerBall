@@ -1,12 +1,14 @@
 #include "MsgHandler.h"
 #include "GameNetwork.h"
+//#include "Lobby.h"
 MsgHandler::~MsgHandler()
 {
 }
-void MsgHandler::Set(GameNetwork* gn, ServerConnection*	conn)
+void MsgHandler::Set(GameNetwork* gn, ServerConnection*	conn)//, Lobby* lobby)
 {
 	this->mConn = conn;
 	this->mNet = gn;
+	//this->mLobby = lobby;
 }
 void MsgHandler::ProcessMSG(char* buffer, int size, int index)
 {
@@ -32,6 +34,16 @@ void MsgHandler::ProcessMSG(char* buffer, int size, int index)
 			break;
 		case 7:
 			this->ReceiveServerData(buffer, offset);
+			break;
+
+		case 8:
+			this->ReceiveIdentification(buffer, offset, index);
+			break;
+		case 9:
+			this->ReceivePlayerInfos(buffer, offset);
+			break;
+		case 10:
+			//this->SendPlayerProfile();
 			break;
 		}
 	}
@@ -73,6 +85,7 @@ void MsgHandler::SendClientData()
 			this->AddToBuffer(bufW, offset, command->keys[i]);
 		}
 		this->AddToBuffer(bufW, offset, command->dt);
+		this->AddToBuffer(bufW, offset, command->forward);
 
 		this->mNet->PopCommand(this->mNet->GetIndex());
 		command = this->mNet->GetNextCommand(this->mNet->GetIndex());
@@ -81,7 +94,6 @@ void MsgHandler::SendClientData()
 	if(offset > 1)
 	{
 		this->AddToBuffer(bufW, offset, SEGMENT_END);
-		this->AddToBuffer(bufW, offset, this->mNet->GetForwardVector(this->mNet->GetIndex()));
 		this->mConn->SetWriteBuffer(bufW, offset, 0);
 		this->mConn->Send(-1);
 	}
@@ -115,6 +127,23 @@ void MsgHandler::SendServerData()
 		this->mConn->Send(a-1);
 	}
 }
+void MsgHandler::SendIdentifyYourself()
+{
+	char identifier = (char)7;
+	int numPlayers = this->mNet->GetNumPlayers();
+	for(int a = 1; a < numPlayers; a++)
+	{
+		char bufW[BUFFER_SIZE] = {0};
+		int offset = 0;
+		this->AddToBuffer(bufW, offset, identifier);
+		this->mConn->SetWriteBuffer(bufW, offset, a-1);
+		this->mConn->Send(a-1);
+	}
+}
+void MsgHandler::SendPlayerInfos()
+{
+}
+
 
 
 void MsgHandler::ReceivePing(int index)
@@ -157,10 +186,10 @@ void MsgHandler::ReceiveClientData(char* buf, int &offset, int index)
 			keys[i] = this->GetFromBufferC(buf, offset);
 		}
 		float duration = this->GetFromBufferF(buf, offset);
-		this->mNet->AddKeyInput(index, keys, numKeys, duration);
+		D3DXVECTOR3 forward = this->GetFromBufferD(buf, offset);
+		this->mNet->AddKeyInput(index, keys, numKeys, duration, forward);
 	}
 	offset += sizeof(SEGMENT_END);
-	this->mNet->SetForwardVector(this->GetFromBufferD(buf, offset), index);
 }
 void MsgHandler::ReceiveServerData(char* buf, int &offset)
 {
@@ -179,6 +208,17 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 
 	this->mNet->SetServerExecTime(this->GetFromBufferF(buf, offset));
 }
+void MsgHandler::ReceiveIdentification(char* buf, int &offset, int index)
+{
+	//Profile temp("kaka");
+	//this->mLobby->AddPlayer(temp, index);
+}
+void MsgHandler::ReceivePlayerInfos(char* buf, int &offset)
+{
+	//Profile temp("kaka");
+	//this->mLobby->AddPlayer(temp,0);
+}
+
 
 void MsgHandler::AddToBuffer(char* bufOut, int &offsetOut, float in)
 {
