@@ -38,7 +38,7 @@ CheckBox::CheckBox(float x, float y, float z, string textureName, float width, f
 }
 CheckBox::~CheckBox()
 {
-
+	SAFE_DELETE(this->mEvent);
 }
 bool CheckBox::AddToRenderer(GraphicsEngine* ge)
 {

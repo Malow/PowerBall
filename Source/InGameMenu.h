@@ -9,13 +9,17 @@
 #include "GUI\GUIEvent.h"
 #include "GUI\NoEvent.h"
 #include "GUI\ChangeResEvent.h"
+#include "GUI\ChangeSubSetEvent.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
 
-enum INGAMEMENU {IGNBACKGROUND,
+enum INGAMEMENU {IGNNOMENU,
+	IGNBACKGROUND,
 	INGAMEMENU,
 	IGNRESUME,
 	IGNOPTIONS,
+	IGNOPTIONS_GRAPHICS,
+	IGNOPTIONS_SOUND,
 	IGNQUIT};
 
 class InGameMenu
@@ -23,6 +27,7 @@ class InGameMenu
 private:
 	int mNrOfSets;
 	int mCurrentSet;
+	int mSubSet;
 	bool mIsRunning;
 
 	GraphicsEngine* mGe;

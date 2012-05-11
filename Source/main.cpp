@@ -3,6 +3,8 @@
 #include "GraphicsEngine.h"
 #include "SoundEngine\SoundEngine.h"
 
+
+
 void test();
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
@@ -10,8 +12,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 #if defined(DEBUG) || defined(_DEBUG)
 	myInitMemoryCheck();
 #endif
-	
 	MaloW::ClearDebug();
+	//_CrtSetBreakAlloc(1554);
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
@@ -19,8 +21,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.FXAAQuality = 0;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
-
-
 
 	// RunAgain for changing resolution etc.
 	/*
@@ -32,14 +32,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 		ge->CreateSkyBox("Media/skymap.dds");
-	
 		
 		//test();	// Instead of ifndef lol
 
 		
 		// Create the MainMenu and send the graphics engine, and then run Run();
 		MainMenu* mm = new MainMenu(ge);
-		/*RunAgain = */mm->Run();
+		mm->Run();
 		delete mm;
 		// Delete graphics engine
 		delete ge;
