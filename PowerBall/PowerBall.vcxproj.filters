@@ -209,12 +209,6 @@
     <ClCompile Include="..\Source\GUI\SliderBar.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Spells\ChargeSpell.cpp">
       <Filter>Game Files\Spells</Filter>
     </ClCompile>
@@ -304,6 +298,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\Game Modes\Maze2.cpp">
       <Filter>Game Files\Game Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
+      <Filter>Sound Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
+      <Filter>Sound Engine Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -484,12 +484,6 @@
     <ClInclude Include="..\Source\GUI\SliderBar.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
-      <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
-      <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Spells\ChargeSpell.h">
       <Filter>Game Files\Spells</Filter>
     </ClInclude>
@@ -579,6 +573,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\Game Modes\Maze2.h">
       <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
+      <Filter>Sound Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
+      <Filter>Sound Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

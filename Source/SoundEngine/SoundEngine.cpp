@@ -145,6 +145,14 @@ int SoundEngine::Init()
 void SoundEngine::SetMasterVolume(float volume)
 {
 	*this->mMasterVolume = volume;
+
+
+	// Update all songs and effects channels
+	for(int i = 0; i < this->mSongs.size(); i++)
+		this->mSongs.get(i)->SetVolume(this->mSongs.get(i)->GetVolume());
+
+	for(int i = 0; i < this->mEffects2D.size(); i++)
+		this->mEffects2D.get(i)->SetVolume(this->mEffects2D.get(i)->GetVolume());
 }
 
 void SoundEngine::SetDebugLevel(unsigned int level)

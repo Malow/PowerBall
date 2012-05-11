@@ -27,6 +27,7 @@ public:
 	virtual ~SoundEffect();
 
 	void SetVolume(float volume);
+	float GetVolume() { return this->mSoundFXVolume; }
 
 	FMOD::Sound* GetSound() const { return this->mSoundFX2D; }
 	void SetSound(FMOD::Sound* s) { this->mSoundFX2D = s; }

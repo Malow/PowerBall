@@ -7,18 +7,23 @@ void test();
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
+	
 #if defined(DEBUG) || defined(_DEBUG)
 	myInitMemoryCheck();
 #endif
-	
+	//_CrtSetBreakAlloc(199);
+
+
 	MaloW::ClearDebug();
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.FXAAQuality = 0;			// 0 - 4 
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
+	params.FXAAQuality = 1;			// 0 - 4 
+	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
+
+
 
 	// RunAgain for changing resolution etc.
 	/*
@@ -37,7 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		
 		// Create the MainMenu and send the graphics engine, and then run Run();
 		MainMenu* mm = new MainMenu(ge);
-		mm->Run();
+		/*RunAgain = */mm->Run();
 		delete mm;
 		// Delete graphics engine
 		delete ge;
@@ -46,6 +51,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 #if defined(DEBUG) || defined(_DEBUG)
 	myDumpMemoryLeaks();
 #endif
+	
 	return 0;
 }
 
@@ -63,8 +69,9 @@ void test()
 	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
+	StaticMesh* flag = eng->CreateStaticMesh("Media/FlagRed.obj", D3DXVECTOR3(8, 15, 8));
 	bth->Scale(0.1f);
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(8, 20, 8));
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
 	
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
@@ -109,8 +116,10 @@ void test()
 	
 	bool sw = true;
 	float size = 1.0f;
+
+	bool go = true;
 		
-	while(eng->isRunning())	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
+	while(eng->isRunning() && go)	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
 
@@ -128,6 +137,9 @@ void test()
 			eng->GetCamera()->moveBackward(diff);
 		if(eng->GetKeyListener()->IsPressed('D'))	
 			eng->GetCamera()->moveRight(diff);
+
+		if(eng->GetKeyListener()->IsPressed(VK_ESCAPE))
+			go = false;
 
 		if(eng->GetKeyListener()->IsPressed(VK_BACK))
 		{
@@ -165,8 +177,7 @@ void test()
 			if(!once)
 			{
 				once = true;
-
-				//camRec->Play();						// Play to start moving the camera along the path
+				camRec->Play();						// Play to start moving the camera along the path
 			}
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
