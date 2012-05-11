@@ -16,7 +16,7 @@ GameHandler::GameHandler(GraphicsEngine* ge)
 {
 	this->mGameMode = NULL;
 	this->mGe = ge;
-	this->mNet = new GameNetwork();
+	this->mNet = NULL;
 }
 
 GameHandler::~GameHandler()
