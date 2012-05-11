@@ -15,17 +15,18 @@ class FXAA
 		ID3D11DeviceContext*	gDeviceContext;
 		IDXGISwapChain*			gSwapChain;
 
-		UINT mPreset; /*! range [0,4]. 1 is lowest quality and highest performance. Default is 0. (FXAA turned off). */
+		bool mAppliedPresetToShader;
+		int mPreset; /*! range [0,4]. 1 is lowest quality and highest performance. Default is 0. (FXAA turned off). */
 
 	public:
 		FXAA();
 		virtual ~FXAA();
 		void Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain);
 
-		UINT GetPreset() const;
+		int GetPreset() const;
 
 		/*! Set preset. Range is 0-4. If out of range preset is set to 0. (No FXAA). */
-		void SetPreset(UINT preset);
+		void SetPreset(unsigned int preset);
 
 		/*! Sets all FXAA settings to the shader. */
 		void PreRender(Shader* shader);
