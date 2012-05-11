@@ -53,20 +53,11 @@
     <ClCompile Include="..\Source\main.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GameManager.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\MainMenu.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp">
       <Filter>Graphics Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Ball.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Platform.cpp">
-      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp">
       <Filter>Graphics Engine Files</Filter>
@@ -178,9 +169,6 @@
     </ClCompile>
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
       <Filter>Sound Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Flag.cpp">
-      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp">
       <Filter>Graphics Engine Files</Filter>
@@ -307,9 +295,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\GameManager.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\MainMenu.h">
       <Filter>Game Files</Filter>
     </ClInclude>
@@ -318,12 +303,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h">
       <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Ball.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Platform.h">
-      <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\Image.h">
       <Filter>Graphics Engine Files</Filter>
@@ -462,9 +441,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">
       <Filter>Sound Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Flag.h">
-      <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h">
       <Filter>Graphics Engine Files</Filter>

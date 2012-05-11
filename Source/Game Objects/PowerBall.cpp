@@ -27,7 +27,7 @@ std::string OurItoa(int n)
 	return stream.str();
 }
 */
-#define Y_LEVEL_BOUNDARY 7
+#define Y_LEVEL_BOUNDARY 10
 PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
@@ -122,7 +122,7 @@ void PowerBall::SetToStartPosition()
 	this->SetTempPosition(this->mStartPosition);
 	this->SetVelocity(Vector3(0,0,0));
 }
-void PowerBall::Update(const float dt)
+void PowerBall::Update(const float dt, bool clientBall)
 {
 
 	/*
@@ -155,7 +155,12 @@ void PowerBall::Update(const float dt)
 
 	if(newPosition.y < Y_LEVEL_BOUNDARY && !this->mKnockoutMode)
 	{
-		newPosition.y = Y_LEVEL_BOUNDARY;
+		this->mVelocity = Vector3(0,-2,0);
+		if(!clientBall)
+		{
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(NULL);
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->LookAt(this->GetPosition());
+		}
 	}
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
@@ -222,10 +227,13 @@ void PowerBall::Update(const float dt)
 		this->mRespawnTimeLeft -= newdt;
 		if(this->mRespawnTimeLeft <= 0.0f)
 		{
-			D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
-			::D3DXVec3Normalize(&dir, &dir);
-			this->mForward = dir;
-
+			if(!clientBall)
+			{
+				D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
+				::D3DXVec3Normalize(&dir, &dir);
+				this->mForward = dir;
+				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);
+			}
 			this->mLivesLeft--;
 			this->mMesh->SetPosition(this->mStartPosition);
 			this->SetTempPosition(this->mStartPosition);

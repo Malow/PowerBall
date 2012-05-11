@@ -1,6 +1,7 @@
 #include "GameHandler.h"
 #include "Game Modes\Knockout.h"
 #include "Game Modes\Maze.h"
+#include "Game Modes\Maze2.h"
 #include "Game Modes\Warlock.h"
 #include "Game Modes\KingOfTheHill.h"
 #include "Game Modes\CaptureTheFlag.h"
@@ -52,21 +53,18 @@ bool GameHandler::CreateKnockoutGame(int numberOfPlayers, int numberOfRounds)
 
 bool GameHandler::CreateWarlockGame(ServerInfo server)
 {
-	this->mNet = new GameNetwork();
 	this->mGameMode = new Warlock(this->mGe, this->mNet,server);
 	return true;
 }
 
 bool GameHandler::CreateKingOfTheHill(ServerInfo server)
 {
-	this->mNet = new GameNetwork();
 	this->mGameMode = new KingOfTheHill(this->mGe, this->mNet,server);
 	return true;
 }
 
 bool GameHandler::CreateCaptureTheFlag(ServerInfo server)
 {
-	this->mNet = new GameNetwork();
 	this->mGameMode = new CaptureTheFlag(this->mGe, this->mNet,server);
 	return true;
 }
@@ -78,6 +76,7 @@ bool GameHandler::CreateMazeGame()
 
 bool GameHandler::CreateMazeGame2()
 {
+	this->mGameMode = new Maze2(this->mGe);
 	return true;
 }
 
@@ -88,6 +87,7 @@ bool GameHandler::Start()
 	this->mGameMode->Play();
 	this->mGameMode->ShowStats();
 	this->DeleteCreatedGame();
+	SAFE_DELETE(this->mNet);
 	return true;
 }
 
@@ -105,5 +105,7 @@ bool GameHandler::DeleteCreatedGame()
 
 GameNetwork* GameHandler::GetLanPointer()
 {
-	 return this->mNet;
+	if(!this->mNet)
+		this->mNet = new GameNetwork();
+	return this->mNet;
 }

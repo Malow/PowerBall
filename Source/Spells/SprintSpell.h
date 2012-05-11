@@ -14,7 +14,7 @@ private:
 	backup mBackup;
 public:
 	SprintSpell();
-	SprintSpell(Ball* ball);
+	//SprintSpell(Ball* ball);
 	SprintSpell(PowerBall* ball);
 	virtual ~SprintSpell();
 	virtual void UpdateSpecial(float dt);

@@ -14,7 +14,7 @@ private:
 	backup mBackup;
 public:
 	InvisibilitySpell();
-	InvisibilitySpell(Ball* ball);
+//	InvisibilitySpell(Ball* ball);
 	InvisibilitySpell(PowerBall* ball);
 	virtual ~InvisibilitySpell();
 	virtual void UpdateSpecial(float dt);

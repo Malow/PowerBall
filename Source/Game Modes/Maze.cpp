@@ -191,15 +191,17 @@ void Maze::ShowStats()
 
 bool Maze::checkWinConditions(float dt)
 {
-	Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
+	Text* hudR10 = NULL;
 	string s;
 	if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
 	{
+		hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 		s = "Mission Accomplished:";
 		hudR10->SetText(s);
 		while(dt < 4000)
 			dt += mGe->Update();
 		hudR10->SetText("");
+		mGe->DeleteText(hudR10);
 		return true;
 	}
 	return false;
