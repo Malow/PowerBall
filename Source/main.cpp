@@ -16,7 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.FXAAQuality = 0;			// 0 - 4 
+	params.FXAAQuality = 1;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 
@@ -158,22 +158,20 @@ void test()
 		}
 		else 
 			testBall->UseInvisibilityEffect(false);
-
+		
 		if(eng->GetKeyListener()->IsPressed('G'))	
 		{
-			static bool once = false;
-			if(!once)
-			{
-				once = true;
-
-				//camRec->Play();						// Play to start moving the camera along the path
-			}
+			eng->GetEngineParameters().FXAAQuality = 4;
+			ge->GetEngineParameters().FXAAQuality = 4;
+			//camRec->Play();						// Play to start moving the camera along the path
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
 	
 		//Testing sound engine
 		if(eng->GetKeyListener()->IsPressed('B'))	
 		{
+			eng->GetEngineParameters().FXAAQuality = 0;
+				ge->GetEngineParameters().FXAAQuality = 0;
 			for(int i = 0; i < 200; i++)
 			{
 				se1->Play();
