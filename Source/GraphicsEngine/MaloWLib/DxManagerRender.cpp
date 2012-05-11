@@ -483,7 +483,7 @@ HRESULT DxManager::Render()
 	//this->RenderDeferredTexture();
 	this->RenderDeferredPerPixel();
 
-	//this->RenderInvisibilityEffect(); //**
+	this->RenderInvisibilityEffect(); 
 
 	this->RenderParticles();
 	

@@ -25,8 +25,6 @@ void DxManager::RenderDeferredGeometry()
 	//Normal (visibile) geometry
 	for(int i = 0; i < this->objects.size(); i++)
 	{
-		//this->objects[0]->UseInvisibilityEffect(true); //**test**
-		//this->objects[0]->SetSpecialColor(WHITE_COLOR); //**test**
 		if(!this->objects[i]->IsUsingInvisibility())
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();

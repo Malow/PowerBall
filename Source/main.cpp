@@ -3,8 +3,6 @@
 #include "GraphicsEngine.h"
 #include "SoundEngine\SoundEngine.h"
 
-
-
 void test();
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
@@ -12,8 +10,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 #if defined(DEBUG) || defined(_DEBUG)
 	myInitMemoryCheck();
 #endif
+	
 	MaloW::ClearDebug();
-	//_CrtSetBreakAlloc(1554);
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
 	params.windowWidth = 700;
@@ -32,6 +30,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 		ge->CreateSkyBox("Media/skymap.dds");
+	
 		
 		//test();	// Instead of ifndef lol
 
@@ -166,7 +165,8 @@ void test()
 			if(!once)
 			{
 				once = true;
-				camRec->Play();						// Play to start moving the camera along the path
+
+				//camRec->Play();						// Play to start moving the camera along the path
 			}
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
