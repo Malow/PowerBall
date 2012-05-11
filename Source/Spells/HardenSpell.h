@@ -14,7 +14,7 @@ private:
 	backup mBackup;
 public:
 	HardenSpell();
-	HardenSpell(Ball* ball);
+	//HardenSpell(Ball* ball);
 	HardenSpell(PowerBall* ball);
 	virtual ~HardenSpell();
 	virtual void UpdateSpecial(float dt);

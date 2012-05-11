@@ -27,6 +27,7 @@ std::string OurItoa(int n)
 	return stream.str();
 }
 */
+#define Y_LEVEL_BOUNDARY 10
 PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
@@ -121,7 +122,7 @@ void PowerBall::SetToStartPosition()
 	this->SetTempPosition(this->mStartPosition);
 	this->SetVelocity(Vector3(0,0,0));
 }
-void PowerBall::Update(const float dt)
+void PowerBall::Update(const float dt, bool clientBall)
 {
 
 	/*
@@ -152,9 +153,14 @@ void PowerBall::Update(const float dt)
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
 
-	if(newPosition.y < 6)
+	if(newPosition.y < Y_LEVEL_BOUNDARY && !this->mKnockoutMode)
 	{
-		newPosition.y = 6;
+		this->mVelocity = Vector3(0,-2,0);
+		if(!clientBall)
+		{
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(NULL);
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->LookAt(this->GetPosition());
+		}
 	}
 	/*
 	if(newPosition.y < 14.7f && platform->IsOnPlatform(temp.x, temp.z))
@@ -208,7 +214,7 @@ void PowerBall::Update(const float dt)
 	//*this->mPos = this->mMesh->GetPosition();
 	//*this->mFor = this->mForward.GetD3DVec();
 	
-	if((this->mMesh->GetPosition().y < 7) && !this->mKnockoutMode)
+	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode)
 	{
 		if(this->mFlag != NULL)
 		{
@@ -221,6 +227,13 @@ void PowerBall::Update(const float dt)
 		this->mRespawnTimeLeft -= newdt;
 		if(this->mRespawnTimeLeft <= 0.0f)
 		{
+			if(!clientBall)
+			{
+				D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
+				::D3DXVec3Normalize(&dir, &dir);
+				this->mForward = dir;
+				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);
+			}
 			this->mLivesLeft--;
 			this->mMesh->SetPosition(this->mStartPosition);
 			this->SetTempPosition(this->mStartPosition);
@@ -256,7 +269,7 @@ bool PowerBall::IsAlive() const
 	else
 	{
 		bool alive = true;
-		if(this->mMesh->GetPosition().y < 7)
+		if(this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1)
 			alive = false;
 		return alive;
 	}

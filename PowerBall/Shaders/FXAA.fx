@@ -14,9 +14,18 @@ Texture2D sceneTex;
 //-----------------------------------------------------------------------------------------
 // Constant buffers
 //-----------------------------------------------------------------------------------------
-cbuffer PerFrame
+cbuffer Rarely
 {
-	uint FXAAPreset;
+	float FXAA_EDGE_THRESHOLD;
+	float FXAA_EDGE_THRESHOLD_MIN;
+	int FXAA_SEARCH_STEPS;
+	int FXAA_SEARCH_ACCELERATION;
+	float FXAA_SEARCH_THRESHOLD;
+	int FXAA_SUBPIX;
+	int FXAA_SUBPIX_FASTER;
+	float FXAA_SUBPIX_CAP;
+	float FXAA_SUBPIX_TRIM;
+	float FXAA_SUBPIX_TRIM_SCALE;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -92,67 +101,6 @@ float3 FxaaLerp3(float3 a, float3 b, float amountOfA)
 	return (FxaaToFloat3(-amountOfA) * b) + ((a * FxaaToFloat3(amountOfA)) + b); 
 } 
 
-void SetSettings(uint preset)
-{ 
-	switch(preset)
-	{
-		case 1:
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/4.0)
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/12.0)
-			#define FXAA_SEARCH_STEPS        2
-			#define FXAA_SEARCH_ACCELERATION 4
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-			#define FXAA_SUBPIX              1
-			#define FXAA_SUBPIX_FASTER       1
-			#define FXAA_SUBPIX_CAP          (2.0/3.0)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
-		}
-		break;
-		case 2:
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/16.0)
-			#define FXAA_SEARCH_STEPS        4
-			#define FXAA_SEARCH_ACCELERATION 3
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-			#define FXAA_SUBPIX              1
-			#define FXAA_SUBPIX_FASTER       0
-			#define FXAA_SUBPIX_CAP          (3.0/4.0)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
-		}
-		break;
-		case 3:
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-			#define FXAA_SEARCH_STEPS        8
-			#define FXAA_SEARCH_ACCELERATION 2
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-			#define FXAA_SUBPIX              1
-			#define FXAA_SUBPIX_FASTER       0
-			#define FXAA_SUBPIX_CAP          (3.0/4.0)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
-		}
-		break;
-		case 4:
-		{
-			#define FXAA_EDGE_THRESHOLD      (1.0/8.0)
-			#define FXAA_EDGE_THRESHOLD_MIN  (1.0/24.0)
-			#define FXAA_SEARCH_STEPS        16
-			#define FXAA_SEARCH_ACCELERATION 1
-			#define FXAA_SEARCH_THRESHOLD    (1.0/4.0)
-			#define FXAA_SUBPIX              1
-			#define FXAA_SUBPIX_FASTER       0
-			#define FXAA_SUBPIX_CAP          (3.0/4.0)
-			#define FXAA_SUBPIX_TRIM         (1.0/4.0)
-		}
-		break;
-	};
-
-	#define FXAA_SUBPIX_TRIM_SCALE (1.0/(1.0 - FXAA_SUBPIX_TRIM))
-}
-
 //-----------------------------------------------------------------------------------------
 // Vertex shader
 //-----------------------------------------------------------------------------------------
@@ -198,39 +146,44 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
     float rangeMin = min(lumaM, min(min(lumaN, lumaW), min(lumaS, lumaE)));
     float rangeMax = max(lumaM, max(max(lumaN, lumaW), max(lumaS, lumaE)));
     float range = rangeMax - rangeMin;
- 
+	float3 rgbL;
     if(range < max(FXAA_EDGE_THRESHOLD_MIN, rangeMax * FXAA_EDGE_THRESHOLD)) {
         return rgbM; }
-    #if FXAA_SUBPIX > 0
-        #if FXAA_SUBPIX_FASTER
-            float3 rgbL = (rgbN + rgbW + rgbE + rgbS + rgbM) * 
-                FxaaToFloat3(1.0/5.0);
-        #else
-            float3 rgbL = rgbN + rgbW + rgbM + rgbE + rgbS;
-        #endif
-    #endif        
-    
-    #if FXAA_SUBPIX != 0
+    if (FXAA_SUBPIX > 0)
+        if (FXAA_SUBPIX_FASTER)
+            rgbL = (rgbN + rgbW + rgbE + rgbS + rgbM) * FxaaToFloat3(1.0/5.0);
+        else
+            rgbL = rgbN + rgbW + rgbM + rgbE + rgbS;
+        //#endif
+    //#endif        
+    float rangeL;
+    if( FXAA_SUBPIX != 0)
+	{
         float lumaL = (lumaN + lumaW + lumaE + lumaS) * 0.25;
-        float rangeL = abs(lumaL - lumaM);
-    #endif        
-    #if FXAA_SUBPIX == 1
-        float blendL = max(0.0, 
-            (rangeL / range) - FXAA_SUBPIX_TRIM) * FXAA_SUBPIX_TRIM_SCALE; 
+        rangeL = abs(lumaL - lumaM);
+	}
+    //#endif        
+	float blendL;
+    if( FXAA_SUBPIX == 1)
+	{
+        blendL = max(0.0, (rangeL / range) - FXAA_SUBPIX_TRIM) * FXAA_SUBPIX_TRIM_SCALE; 
         blendL = min(FXAA_SUBPIX_CAP, blendL);
-    #endif
-    #if FXAA_SUBPIX == 2
-        float blendL = rangeL / range; 
-    #endif
+	}
+    //#endif
+    if( FXAA_SUBPIX == 2)
+        blendL = rangeL / range; 
+    //#endif
     
     float3 rgbNW = FxaaTexOff(tex, pos.xy, int2(-1,-1), rcpFrame).xyz;
     float3 rgbNE = FxaaTexOff(tex, pos.xy, int2( 1,-1), rcpFrame).xyz;
     float3 rgbSW = FxaaTexOff(tex, pos.xy, int2(-1, 1), rcpFrame).xyz;
     float3 rgbSE = FxaaTexOff(tex, pos.xy, int2( 1, 1), rcpFrame).xyz;
-    #if (FXAA_SUBPIX_FASTER == 0) && (FXAA_SUBPIX > 0)
+    if( (FXAA_SUBPIX_FASTER == 0) && (FXAA_SUBPIX > 0))
+	{
         rgbL += (rgbNW + rgbNE + rgbSW + rgbSE);
         rgbL *= FxaaToFloat3(1.0/9.0);
-    #endif
+	}
+    //#endif
     float lumaNW = FxaaLuma(rgbNW);
     float lumaNE = FxaaLuma(rgbNE);
     float lumaSW = FxaaLuma(rgbSW);
@@ -273,37 +226,49 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
     float lumaEndP = lumaN;
     bool doneN = false;
     bool doneP = false;
-    #if FXAA_SEARCH_ACCELERATION == 1
+    if( FXAA_SEARCH_ACCELERATION == 1)
+	{
         posN += offNP * float2(-1.0, -1.0);
         posP += offNP * float2( 1.0,  1.0);
-    #endif
-    #if FXAA_SEARCH_ACCELERATION == 2
+	}
+    //#endif
+    if( FXAA_SEARCH_ACCELERATION == 2)
+	{
         posN += offNP * float2(-1.5, -1.5);
         posP += offNP * float2( 1.5,  1.5);
         offNP *= float2(2.0, 2.0);
-    #endif
-    #if FXAA_SEARCH_ACCELERATION == 3
+	}
+    //#endif
+    if( FXAA_SEARCH_ACCELERATION == 3)
+	{
         posN += offNP * float2(-2.0, -2.0);
         posP += offNP * float2( 2.0,  2.0);
         offNP *= float2(3.0, 3.0);
-    #endif
-    #if FXAA_SEARCH_ACCELERATION == 4
+	}
+    //#endif
+    if( FXAA_SEARCH_ACCELERATION == 4)
+	{
         posN += offNP * float2(-2.5, -2.5);
         posP += offNP * float2( 2.5,  2.5);
         offNP *= float2(4.0, 4.0);
-    #endif
+	}
+    //#endif
     for(int i = 0; i < FXAA_SEARCH_STEPS; i++) {
-        #if FXAA_SEARCH_ACCELERATION == 1
+        if( FXAA_SEARCH_ACCELERATION == 1)
+		{
             if(!doneN) lumaEndN = 
                 FxaaLuma(FxaaTexLod0(tex, posN.xy).xyz);
             if(!doneP) lumaEndP = 
                 FxaaLuma(FxaaTexLod0(tex, posP.xy).xyz);
-        #else
+		}
+        else
+		{
             if(!doneN) lumaEndN = 
                 FxaaLuma(FxaaTexGrad(tex, posN.xy, offNP).xyz);
             if(!doneP) lumaEndP = 
                 FxaaLuma(FxaaTexGrad(tex, posP.xy, offNP).xyz);
-        #endif
+		}	
+        //#endif
         doneN = doneN || (abs(lumaEndN - lumaN) >= gradientN);
         doneP = doneP || (abs(lumaEndP - lumaN) >= gradientN);
         if(doneN && doneP) break;
@@ -330,11 +295,11 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
     float3 rgbF = FxaaTexLod0(tex, float2(
         pos.x + (horzSpan ? 0.0 : subPixelOffset),
         pos.y + (horzSpan ? subPixelOffset : 0.0))).xyz;
-    #if FXAA_SUBPIX == 0
+    if( FXAA_SUBPIX == 0)
         return rgbF; 
-    #else        
+    else        
         return FxaaLerp3(rgbL, rgbF, blendL); 
-    #endif
+    //#endif
 }
 
 //-----------------------------------------------------------------------------------------
@@ -343,13 +308,12 @@ float3 FxaaPixelShader(float2 pos, FxaaTex tex, float2 rcpFrame)
 float4 PSScene(float4 pos : SV_Position) : SV_Target
 {	
 	//optimera:**
-	SetSettings(FXAAPreset); 
 	uint width, height;
 	sceneTex.GetDimensions(width, height);
-
-	float2 texCoord = float2(pos.x / width, pos.y / height);
-	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	
 	float2 rcpFrame = float2(1.0f / width, 1.0f / height);
+	float2 texCoord = float2(pos.x * rcpFrame.x, pos.y * rcpFrame.y);
+	FxaaTex tex = {AnisotropicSampler, sceneTex};
 	float4 color = float4(FxaaPixelShader(texCoord, tex, rcpFrame), 1.0f);
 	
 	return color; 

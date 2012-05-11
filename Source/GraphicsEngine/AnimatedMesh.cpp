@@ -6,6 +6,7 @@ AnimatedMesh::AnimatedMesh(D3DXVECTOR3 pos) : Mesh(pos)
 	this->mNrOfTimesLooped = 0;
 	this->mLoopNormal = false;
 	this->mLoopSeamless = false;
+	this->mCurrentTime = 0.0f;
 	this->mKeyFrames = new MaloW::Array<KeyFrame*>();
 }
 
@@ -15,13 +16,13 @@ AnimatedMesh::~AnimatedMesh()
 	{
 		while(this->mKeyFrames->size() > 0)
 			delete this->mKeyFrames->getAndRemove(0);
-		
+
 		delete this->mKeyFrames;
 	}
 }
 
 
-void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t, float currentTime)
+void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 {
 	if(this->mKeyFrames->size() > 1)
 	{
@@ -32,10 +33,10 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 				int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
 				int newEndTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
 
-				this->mNrOfTimesLooped = (unsigned int)((int)currentTime / newEndTime);
+				this->mNrOfTimesLooped = (unsigned int)((int)this->mCurrentTime / newEndTime);
 			
 				//compute the indices for the keyframes to interpolate
-				int currentPlayTimeMillis = (int)currentTime % newEndTime;
+				int currentPlayTimeMillis = (int)this->mCurrentTime % newEndTime;
 				int firstIndex = 0;
 				int lastIndex = 1;
 				bool foundIndex = false;
@@ -80,10 +81,10 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 			else
 			{
 				int endTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
-				this->mNrOfTimesLooped = (unsigned int)((int)currentTime / endTime);
+				this->mNrOfTimesLooped = (unsigned int)((int)this->mCurrentTime / endTime);
 
 				//compute the indices for the keyframes to interpolate
-				int currentPlayTimeMillis = (int)currentTime % endTime;
+				int currentPlayTimeMillis = (int)this->mCurrentTime % endTime;
 				int firstIndex = 0; 
 				bool foundIndex = false;
 				while(!foundIndex)
@@ -122,7 +123,20 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t,
 		t = 0.0f;
 	}
 }
+MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
+{
+	KeyFrame* one; //unused
+	KeyFrame* two;
+	float t = 0.0f; //unused
+	this->GetCurrentKeyFrames(&one, &two, t);
 
+	return two->strips;
+}
+
+void AnimatedMesh::SetCurrentTime(float currentTime)
+{
+	this->mCurrentTime = currentTime;
+}
 
 
 void AnimatedMesh::NoLooping()
@@ -256,14 +270,4 @@ void AnimatedMesh::LoadFromFile(string file)
 	}
 	else
 		MaloW::Debug("Failed to open AnimatedMesh: " + file);
-}
-
-MaloW::Array<MeshStrip*>* AnimatedMesh::GetCurrentMeshStrips(float currentTime)
-{
-	KeyFrame* one;
-	KeyFrame* two;
-	float t = 0.0f;
-	this->GetCurrentKeyFrames(&one, &two, t, currentTime);
-
-	return two->strips;
 }

@@ -143,7 +143,6 @@ void KingOfTheHill::Play()
 				{
 					if(i != this->mNet->GetIndex())
 					{
-						this->mBalls[i]->SetForwardVector(this->mNet->GetForwardVector(i));
 						this->HandleClientKeyInputs(i, diff);
 					}
 					else
@@ -162,13 +161,21 @@ void KingOfTheHill::Play()
 					Vector3 normalPlane;
 					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-						this->mBalls[i]->UpdatePost();
+					//for(int i = 0; i < this->mNumberOfPlayers; i++)
+						//this->mBalls[i]->UpdatePost();
 	
 				}
-			
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
-					this->mBalls[i]->Update(diff); //split up due to the balls affecting each other, so cant send final position until all balls updated
+				{					
+					this->mBalls[i]->UpdatePost();
+					bool clientBall = true;
+					if(i == this->mNet->GetIndex())
+						clientBall = false;
+
+					this->mBalls[i]->Update(diff, clientBall); //split up due to the balls affecting each other, so cant send final position until all balls updated
+					clientBall = true;
+
+				}
 
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
@@ -210,15 +217,13 @@ void KingOfTheHill::Play()
 					Vector3 normalPlane;
 					if(this->mBalls[i]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 						this->mBalls[i]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-						this->mBalls[i]->UpdatePost();
+
+					this->mBalls[i]->UpdatePost();
 
 					this->mBalls[i]->Update(diff);
 				
 
 					this->mNet->AddMovementPowerBall(this->mBalls[i]);
-					Vector3 temp = this->mBalls[i]->GetForwardVector();
-					this->mNet->SetForwardVector(D3DXVECTOR3(temp.x, temp.y, temp.z), i);
 
 				}
 			}
@@ -331,9 +336,14 @@ void KingOfTheHill::AddBall()
 	}
 	delete[] this->mBalls;
 	this->mBalls = temp;
-
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
-	mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	
+	if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[this->mNet->GetIndex()]);
+	else
+	{
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	}
 
 
 }

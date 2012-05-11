@@ -8,12 +8,12 @@
 #include "GraphicsEngine\MaloWLib\Vector.h"
 using namespace MaloW;
 
-class Ball;
+//class Ball;
 class PowerBall;
 class Spell
 {
 	protected:
-		Ball* mBall;
+		//Ball* mBall;
 		PowerBall* mPowerBall;
 		float mTimeNeededToCoolDown;
 		float mTimerCounterCoolDown;
@@ -38,7 +38,7 @@ class Spell
 		virtual void Restore() = 0;
 		void Ready();
 		virtual void InformCollision() = 0;
-		void SetBall(Ball* ball) { this->mBall = ball; }
+		//void SetBall(Ball* ball) { this->mBall = ball; }
 		void SetPowerBall(PowerBall* ball) { this->mPowerBall = ball; }
 		bool SpellInUse();
 };

@@ -98,9 +98,9 @@ void Knockout::Play()
 		{
 			numberAlivePlayersThisRound = 0;
 			diff = mGe->Update();	
-			s = "Player1: Rounds won: " + this->mBalls[0]->GetRoundsWonStr();
+			s = "Player 1: " + this->mBalls[0]->GetRoundsWonStr();
 			hudR1->SetText(s);
-			s = "Player2: Rounds won: " + this->mBalls[1]->GetRoundsWonStr();
+			s = "Player 2: " + this->mBalls[1]->GetRoundsWonStr();
 			hudR2->SetText(s);
 			s = "Round: " + MaloW::convertNrToString(roundsPlayed) + " of " + MaloW::convertNrToString(this->mNumberOfRounds);
 			hudR3->SetText(s);

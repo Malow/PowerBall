@@ -212,7 +212,7 @@ class PowerBall : public GameObject
 			void SetSound(bool sound) { this->mSound = sound; }
 
 			/*! Updates the ball. */
-			void Update(const float dt);
+			void Update(const float dt, bool clientBall = false);
 	
 			/*! Post update the ball with the new position given by physics. And apply rotation */
 			void UpdatePost();

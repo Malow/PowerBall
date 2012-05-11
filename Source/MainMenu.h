@@ -15,12 +15,12 @@
 #include "GUI\ChangeResEvent.h"
 #include "GUI\ChangeSetEvent.h"
 #include "GUI\ChangeSubSetEvent.h"
-#include "GameManager.h"
+//#include "GameManager.h"
 #include "GameHandler.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
-#include "Ball.h"
-#include "Platform.h"
+#include "Game Objects\PowerBall.h"
+#include "Game Objects\Map.h"
 #include "GameOptions.h"
 
 enum MENU {NOMENU,
@@ -52,7 +52,7 @@ private:
 	bool mRunning;
 
 	GraphicsEngine* mGe;
-	GameManager* mGm;
+	//GameManager* mGm;
 	GameHandler* mGh;
 	GUISet* mSets;
 	/*! Creates the sets etc, has to be called before run.*/

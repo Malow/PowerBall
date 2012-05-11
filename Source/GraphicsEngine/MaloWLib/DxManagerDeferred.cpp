@@ -25,8 +25,6 @@ void DxManager::RenderDeferredGeometry()
 	//Normal (visibile) geometry
 	for(int i = 0; i < this->objects.size(); i++)
 	{
-		//this->objects[0]->UseInvisibilityEffect(true); //**test**
-		//this->objects[0]->SetSpecialColor(WHITE_COLOR); //**test**
 		if(!this->objects[i]->IsUsingInvisibility())
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
@@ -90,7 +88,8 @@ void DxManager::RenderDeferredGeometry()
 		KeyFrame* one;
 		KeyFrame* two;
 		float t = 0.0f;
-		this->animations[i]->GetCurrentKeyFrames(&one, &two, t, this->TimerAnimation);
+		this->animations[i]->SetCurrentTime(this->TimerAnimation);
+		this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
 
 		MaloW::Array<MeshStrip*>* stripsOne = one->strips;
 		MaloW::Array<MeshStrip*>* stripsTwo = two->strips;

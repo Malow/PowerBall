@@ -28,6 +28,7 @@ public:
 
 	FMOD::Sound* GetSound() const { return this->mSound; }
 	void SetSound(FMOD::Sound* s) { this->mSound = s; }
+	float GetVolume() { return this->mSongVolume; }
 
 	/*! Play song at index. */
 	void Play();

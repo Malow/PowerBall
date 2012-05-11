@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include "ServerInfo.h"
 #include "MsgHandler.h"
-//#include <winsock2.h>
+#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 1024
@@ -23,6 +23,7 @@ private:
 		int numCharsInBuf;
 		int numCharsInBufW;
 		int index;
+		volatile bool running;
 		Connection(){}
 		Connection(SOCKET socket)
 		{ 
@@ -30,6 +31,7 @@ private:
 			this->sock = socket;
 			this->numCharsInBuf = 0;
 			this->numCharsInBufW = 0;
+			this->running = true;
 		}
 	};
 	vector<ServerInfo>	mServerInfos;

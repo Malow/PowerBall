@@ -193,16 +193,13 @@ void GameMode::SendKeyInputs(const int clientIndex, float diff)
 				
 	if(numKeys == 0)
 		keyDowns[numKeys++] = '?'; //"idle"-key
-
-	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff);
+	
+	Vector3 temp = this->mBalls[clientIndex]->GetForwardVector();
+	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff, D3DXVECTOR3(temp.x, temp.y, temp.z));
 	
 }
 void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 {
-	
-	int flip = 1;
-	if(this->mNet->GetStartPos(clientIndex).z > 0)
-		flip = -1;
 	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
 	KeyInput* command = this->mNet->GetNextCommand(clientIndex);
 	float duration = 0.0f;
@@ -211,6 +208,7 @@ void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 		duration = command->dt;
 		while(duration <=  diff && command != NULL)
 		{
+			this->mBalls[clientIndex]->SetForwardVector(command->forward);
 			for(int c = 0; c < command->numKeys; c++)
 			{
 				this->ClientKeyPress(command->dt, clientIndex, command->keys[c]);
@@ -226,6 +224,7 @@ void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 		}
 		if(duration > diff && command != NULL)
 		{
+			this->mBalls[clientIndex]->SetForwardVector(command->forward);
 			duration -= command->dt;
 									
 			for(int c = 0; c < command->numKeys; c++)
