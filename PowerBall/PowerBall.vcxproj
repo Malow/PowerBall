@@ -115,6 +115,7 @@
     <ClInclude Include="..\Source\Game Objects\PowerBall.h" />
     <ClInclude Include="..\Source\GameHandler.h" />
     <ClInclude Include="..\Source\GameNetwork.h" />
+    <ClInclude Include="..\Source\GameOptions.h" />
     <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\CursorControl.h" />
     <ClInclude Include="..\Source\GraphicsEngine\FXAA.h" />

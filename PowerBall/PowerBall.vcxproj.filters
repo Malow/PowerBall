@@ -550,6 +550,9 @@
     <ClInclude Include="..\Source\Game Modes\Maze2.h">
       <Filter>Game Files\Game Modes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\GameOptions.h">
+      <Filter>Game Files</Filter>
+	</ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
       <Filter>Sound Engine Files</Filter>
     </ClInclude>

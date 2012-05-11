@@ -1,4 +1,6 @@
 #include "MainMenu.h"
+SoundSong* BackgroundSong::mSong = NULL;
+bool BackgroundSong::mPlaying = false;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
@@ -9,12 +11,10 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mSubSet = NOMENU;
 	//this->mGm = NULL;
 	this->mGe = ge;
-
 	this->mGh = new GameHandler(ge);
 
-	//this->mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
-	//this->mSong->Play();
+	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 
 	this->Initialize();
 }
@@ -22,6 +22,8 @@ MainMenu::~MainMenu()
 {
 	if(this->mSets)
 		delete [] this->mSets;
+
+	SAFE_DELETE(this->mCamRec);
 
 	SAFE_DELETE(this->mGh);
 }
@@ -61,6 +63,9 @@ void MainMenu::UpdateMousePosition()
 bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
+	BackgroundSong::mSong->Play();
+	BackgroundSong::mPlaying = true;
+
 	bool IsClicked = false;
 
 	CursorControl cc;
@@ -375,10 +380,16 @@ bool MainMenu::Run()
 					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
 					if(tempReturnEvent->GetOption() == "Sound")
 					{
-						/*if(tempReturnEvent->GetValue() == "true")
-							this->mSong->Unmute();
+						if(tempReturnEvent->GetValue() == "true")
+						{
+							BackgroundSong::mSong->Unmute();
+							BackgroundSong::mPlaying = true;
+						}
 						else
-							this->mSong->Mute();*/
+						{
+							BackgroundSong::mSong->Mute();
+							BackgroundSong::mPlaying = false;
+						}
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
@@ -387,6 +398,12 @@ bool MainMenu::Run()
 
 					ChangeSubSetEvent* tempReturnEvent = (ChangeSubSetEvent*)returnEvent;
 					int tempEventSet = tempReturnEvent->GetSet();
+
+					if(tempEventSet == OPTIONS_SOUND)
+					{
+						CheckBox* temp = this->mSets[OPTIONS_SOUND].GetCheckBox("Sound");
+						temp->SetChecked(BackgroundSong::mPlaying);
+					}
 
 					int set = tempReturnEvent->GetSet();
 					this->mSubSet = set;
