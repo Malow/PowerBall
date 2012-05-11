@@ -19,8 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\Ball.cpp" />
-    <ClCompile Include="..\Source\Flag.cpp" />
     <ClCompile Include="..\Source\Game Modes\CaptureTheFlag.cpp" />
     <ClCompile Include="..\Source\Game Modes\GameMode.cpp" />
     <ClCompile Include="..\Source\Game Modes\KingOfTheHill.cpp" />
@@ -33,7 +31,6 @@
     <ClCompile Include="..\Source\Game Objects\Map.cpp" />
     <ClCompile Include="..\Source\Game Objects\PowerBall.cpp" />
     <ClCompile Include="..\Source\GameHandler.cpp" />
-    <ClCompile Include="..\Source\GameManager.cpp" />
     <ClCompile Include="..\Source\GameNetwork.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\FXAA.cpp" />
@@ -92,7 +89,6 @@
     <ClCompile Include="..\Source\MsgHandler.cpp" />
     <ClCompile Include="..\Source\Physics\Matrix3.cpp" />
     <ClCompile Include="..\Source\Physics\Matrix4.cpp" />
-    <ClCompile Include="..\Source\Platform.cpp" />
     <ClCompile Include="..\Source\PlayerHistory.cpp" />
     <ClCompile Include="..\Source\ServerConnection.cpp" />
     <ClCompile Include="..\Source\ServerInfo.cpp" />
@@ -106,8 +102,6 @@
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\Ball.h" />
-    <ClInclude Include="..\Source\Flag.h" />
     <ClInclude Include="..\Source\Game Modes\CaptureTheFlag.h" />
     <ClInclude Include="..\Source\Game Modes\GameMode.h" />
     <ClInclude Include="..\Source\Game Modes\KingOfTheHill.h" />
@@ -120,8 +114,8 @@
     <ClInclude Include="..\Source\Game Objects\Map.h" />
     <ClInclude Include="..\Source\Game Objects\PowerBall.h" />
     <ClInclude Include="..\Source\GameHandler.h" />
-    <ClInclude Include="..\Source\GameManager.h" />
     <ClInclude Include="..\Source\GameNetwork.h" />
+    <ClInclude Include="..\Source\GameOptions.h" />
     <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\CursorControl.h" />
     <ClInclude Include="..\Source\GraphicsEngine\FXAA.h" />
@@ -184,7 +178,6 @@
     <ClInclude Include="..\Source\Physics\Matrix3.h" />
     <ClInclude Include="..\Source\Physics\Matrix4.h" />
     <ClInclude Include="..\Source\Physics\Vector4.h" />
-    <ClInclude Include="..\Source\Platform.h" />
     <ClInclude Include="..\Source\PlayerHistory.h" />
     <ClInclude Include="..\Source\ServerConnection.h" />
     <ClInclude Include="..\Source\ServerInfo.h" />

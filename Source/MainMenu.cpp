@@ -1,4 +1,6 @@
 #include "MainMenu.h"
+SoundSong* BackgroundSong::mSong = NULL;
+bool BackgroundSong::mPlaying = false;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
@@ -7,19 +9,22 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mRunning = true;
 	this->mCurrentSet = MAINMENU;
 	this->mSubSet = NOMENU;
-	this->mGm = NULL;
+	//this->mGm = NULL;
 	this->mGe = ge;
-
 	this->mGh = new GameHandler(ge);
 
 	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
+	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 
 	this->Initialize();
 }
 MainMenu::~MainMenu()
 {
-	SAFE_DELETE_ARRAY(this->mSets);
+	if(this->mSets)
+		delete [] this->mSets;
+
 	SAFE_DELETE(this->mCamRec);
+
 	SAFE_DELETE(this->mGh);
 }
 bool MainMenu::Initialize()
@@ -54,9 +59,13 @@ void MainMenu::UpdateMousePosition()
 	}
 	
 }
+
 bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
+	BackgroundSong::mSong->Play();
+	BackgroundSong::mPlaying = true;
+
 	bool IsClicked = false;
 
 	CursorControl cc;
@@ -151,32 +160,35 @@ bool MainMenu::Run()
 						}
 						serverName  = this->mSets[this->mSubSet].GetTextFromField("ServerName");
 						this->DeleteScene();
-						this->mGm = new GameManager(this->mGe);
+						//this->mGm = new GameManager(this->mGe);
 						
 						//add button called find servers or something and copy the row below to retrieve a list of all servers currently open on the LAN
-						vector<ServerInfo> servers = this->mGm->GetLanPointer()->FindServers();
+						vector<ServerInfo> servers = this->mGh->GetLanPointer()->FindServers();
 						int chosenServer = 0; //index of the server selected from the list
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 						if(servers.size() > 0)
 						{
-							this->mGm->PlayLAN(servers[chosenServer]);
+							//this->mGm->PlayLAN(servers[chosenServer]);
+							this->mGh->CreateGame(servers[chosenServer].GetGameMode(), servers[chosenServer]);
+							this->mGh->Start();
 						}
 						else //atm, will host if no servers running on LAN
 						{
 							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "");
-							//this->mGh->CreateGame(GameMode->GetGameMode(), host);
-							//this->mGh->Start();
-							this->mGm->PlayLAN(host);
+							this->mGh->CreateGame(GameMode->GetGameMode(), host);
+							this->mGh->Start();
+
+							//this->mGm->PlayLAN(host);
 						} 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
-
-						SAFE_DELETE(this->mGm);
+						
+						//SAFE_DELETE(this->mGm);
 					}
 					if(tempEventSet == PLAY_ONLINE)
 					{
@@ -191,14 +203,16 @@ bool MainMenu::Run()
 						
 						CursorControl cc;
 						cc.SetVisibility(true);
-						this->mGm = new GameManager(this->mGe);
+						//this->mGm = new GameManager(this->mGe);
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
 						this->DeleteScene();
 
-						this->mGm->PlayCredits();
+						//this->mGm->PlayCredits();
+						this->mGh->CreateMazeGame2();
+						this->mGh->Start();
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
@@ -206,7 +220,7 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
 
-						SAFE_DELETE(this->mGm);
+						//SAFE_DELETE(this->mGm);
 
 						
 					}
@@ -225,14 +239,16 @@ bool MainMenu::Run()
 						string lifes = this->mSets[this->mCurrentSet].GetTextFromField("Lifes");
 						string rounds = this->mSets[this->mCurrentSet].GetTextFromField("Rounds");
 
-						this->mGm = new GameManager(this->mGe);
+						//this->mGm = new GameManager(this->mGe);
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
 
 						this->DeleteScene();
-
-						this->mGm->Play(2, atoi(lifes.c_str()), atoi(rounds.c_str()));
+						
+						this->mGh->CreateKnockoutGame(2, atoi(rounds.c_str()));
+						this->mGh->Start();
+						//this->mGm->Play(2, atoi(lifes.c_str()), atoi(rounds.c_str()));
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
@@ -240,7 +256,7 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
 
-						SAFE_DELETE(this->mGm);
+						//SAFE_DELETE(this->mGm);
 						
 					}
 					else if(tempEventSet == EXIT)
@@ -248,7 +264,8 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
-						SAFE_DELETE(this->mGm);
+						//SAFE_DELETE(this->mGm);
+						this->mGh->DeleteCreatedGame();
 						isRunning = false;
 						return true;
 					}
@@ -285,7 +302,7 @@ bool MainMenu::Run()
 
 						CursorControl cc;
 						cc.SetVisibility(true);
-						this->mGm = new GameManager(this->mGe);
+						//this->mGm = new GameManager(this->mGe);
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
@@ -293,8 +310,11 @@ bool MainMenu::Run()
 						this->DeleteScene();
 
 						bool temp = false;
-						while(!temp)
-							temp = this->mGm->PlayCredits2();
+						//while(!temp)
+							//temp = this->mGm->PlayCredits2();
+
+						this->mGh->CreateMazeGame();
+						this->mGh->Start();
 
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
@@ -302,7 +322,7 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
 
-						SAFE_DELETE(this->mGm);
+						//SAFE_DELETE(this->mGm);
 						/*
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
@@ -326,17 +346,17 @@ bool MainMenu::Run()
 						float dx = (windowHeight * 4.0f) / 3.0f;
 						float offSet = (windowWidth - dx) / 2.0f;
 
-						/*this->mGm = new GameManager(this->mGe);
+						//this->mGm = new GameManager(this->mGe);
 						//add button called find servers or something and copy the row below to retrieve a list of all servers currently open on the LAN
-						vector<ServerInfo> servers = this->mGm->GetLanPointer()->FindServers();
+						/*vector<ServerInfo> servers = this->mGh->GetLanPointer()->FindServers();
 						Element* tempElement;
 						for(int i = 0; i < servers.size(); i++)
 						{
 							tempElement = new TextBox(dx * (680.0f / 1200.0f), windowHeight * (280.0f / 900.0f) + 40 * i, 1, "Media/Menus/EmptyMenu.png", 0, 0, servers.at(i).GetServerName(), "Server" + MaloW::convertNrToString(i), 0.80, servers.at(i).GetServerName().size());
 							this->mSets[this->mSubSet].AddElement(tempElement);
 						}
-						tempElement = NULL;
-						SAFE_DELETE(this->mGm);*/
+						tempElement = NULL;*/
+						//SAFE_DELETE(this->mGm);
 					}
 
 					this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
@@ -360,10 +380,16 @@ bool MainMenu::Run()
 					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
 					if(tempReturnEvent->GetOption() == "Sound")
 					{
-						//if(tempReturnEvent->GetValue() == "true")
-							//GameOptions::getInstance()->GetSong(0)->Unmute();
-						//else
-							//GameOptions::getInstance()->GetSong(0)->Mute();
+						if(tempReturnEvent->GetValue() == "true")
+						{
+							BackgroundSong::mSong->Unmute();
+							BackgroundSong::mPlaying = true;
+						}
+						else
+						{
+							BackgroundSong::mSong->Mute();
+							BackgroundSong::mPlaying = false;
+						}
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
@@ -372,6 +398,12 @@ bool MainMenu::Run()
 
 					ChangeSubSetEvent* tempReturnEvent = (ChangeSubSetEvent*)returnEvent;
 					int tempEventSet = tempReturnEvent->GetSet();
+
+					if(tempEventSet == OPTIONS_SOUND)
+					{
+						CheckBox* temp = this->mSets[OPTIONS_SOUND].GetCheckBox("Sound");
+						temp->SetChecked(BackgroundSong::mPlaying);
+					}
 
 					int set = tempReturnEvent->GetSet();
 					this->mSubSet = set;

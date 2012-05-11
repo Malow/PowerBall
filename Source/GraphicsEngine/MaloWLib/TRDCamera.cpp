@@ -1,7 +1,7 @@
 #include "TRDCamera.h"
 #include "Vector.h"
 using namespace MaloW;
-#include "..\..\Ball.h"
+//#include "..\..\Ball.h"
 #include "..\..\Game Objects\PowerBall.h"
 
 TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, params)
@@ -10,7 +10,7 @@ TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, 
 	this->forward = D3DXVECTOR3(0, 0, 1);	// dummy vector, will be set when a ball is assigned 
 	this->forward = this->NormalizeVector(this->forward);
 	this->mTargetVector = D3DXVECTOR3(0, 0, 0);
-	this->mBallToFollow = NULL;
+	//this->mBallToFollow = NULL;
 	this->mPowerBallToFollow = NULL;
 	this->mIsClicked = false;
 }
@@ -21,7 +21,7 @@ TRDCamera::~TRDCamera()
 }
 
 void TRDCamera::updateSpecific(float delta)
-{
+{/*
 	if(this->mBallToFollow)
 	{
 		D3DXVECTOR3 forwardBall = this->mBallToFollow->GetForwardVector().GetD3DVec();
@@ -45,11 +45,11 @@ void TRDCamera::updateSpecific(float delta)
 				dx = p.x - this->mOldPos.x;
 				dy = p.y - this->mOldPos.y;
 				
-				/* add this line if you not want to keep the mouse position after click */
+				/* add this line if you not want to keep the mouse position after click 
 				// this->mOldPos = p;
 				
 				this->mBallToFollow->RotateForwardRight(dx);
-				/* remove the 3 lines below if you not want to keep the mouse position after click */
+				/* remove the 3 lines below if you not want to keep the mouse position after click 
 				POINT newP = this->mOldPos;
 				ClientToScreen(this->g_hWnd, &newP);
 				SetCursorPos(newP.x, newP.y);
@@ -62,12 +62,12 @@ void TRDCamera::updateSpecific(float delta)
 			if(this->mIsClicked)
 				this->mIsClicked = false;
 		}
-		/* remove 2 lines below if you want to show the mouse pointer after a click */
+		/* remove 2 lines below if you want to show the mouse pointer after a click 
 		CursorControl cc;
 		cc.SetVisibility(!this->mIsClicked);
 		
 	}
-
+	*/
 	if(this->mPowerBallToFollow)
 	{
 		D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
@@ -136,20 +136,20 @@ void TRDCamera::moveRight(float diff)
 	
 }
 
-void TRDCamera::setBallToFollow(Ball* ball)
-{
-	this->mBallToFollow = ball;
-}
+//void TRDCamera::setBallToFollow(Ball* ball)
+//{
+//	this->mBallToFollow = ball;
+//}
 
 void TRDCamera::setPowerBallToFollow(PowerBall* ball)
 {
 	this->mPowerBallToFollow = ball;
 }
 
-Ball* TRDCamera::getBallToFollow()
-{
-	 return this->mBallToFollow;
-}
+//Ball* TRDCamera::getBallToFollow()
+//{
+	// return this->mBallToFollow;
+//}
 
 PowerBall* TRDCamera::getPowerBallToFollow()
 {

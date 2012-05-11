@@ -14,7 +14,7 @@ enum GAMEMODE{
 	CREDITS,
 	CREDITS2
 };
-
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <D3D11.h>
 #include <D3DX11.h>
@@ -110,8 +110,6 @@ inline D3DXVECTOR3 RndUnitVec3()
 		#pragma comment(lib, "fmodex_vc.lib")
 	#endif
 #endif
-
-
 
 //////////////////////////////////////////////////////////////////////////
 // to find memory leaks

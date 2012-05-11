@@ -53,20 +53,11 @@
     <ClCompile Include="..\Source\main.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\GameManager.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\MainMenu.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\GraphicsEngine.cpp">
       <Filter>Graphics Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Ball.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Platform.cpp">
-      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\Image.cpp">
       <Filter>Graphics Engine Files</Filter>
@@ -179,9 +170,6 @@
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp">
       <Filter>Sound Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Flag.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\AnimatedMesh.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
@@ -208,12 +196,6 @@
     </ClCompile>
     <ClCompile Include="..\Source\GUI\SliderBar.cpp">
       <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
-      <Filter>Game Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Spells\ChargeSpell.cpp">
       <Filter>Game Files\Spells</Filter>
@@ -305,11 +287,14 @@
     <ClCompile Include="..\Source\Game Modes\Maze2.cpp">
       <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp">
+      <Filter>Sound Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
+      <Filter>Sound Engine Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\GameManager.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\MainMenu.h">
       <Filter>Game Files</Filter>
     </ClInclude>
@@ -318,12 +303,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\GraphicsEngine.h">
       <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Ball.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Platform.h">
-      <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\Image.h">
       <Filter>Graphics Engine Files</Filter>
@@ -463,9 +442,6 @@
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h">
       <Filter>Sound Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Flag.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\AnimatedMesh.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
@@ -483,12 +459,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\SliderBar.h">
       <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
-      <Filter>Graphics Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
-      <Filter>Graphics Engine Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Spells\ChargeSpell.h">
       <Filter>Game Files\Spells</Filter>
@@ -579,6 +549,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Game Modes\Maze2.h">
       <Filter>Game Files\Game Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GameOptions.h">
+      <Filter>Game Files</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
+      <Filter>Sound Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
+      <Filter>Sound Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
