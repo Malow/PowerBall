@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include "ServerConnection.h"
-#include "Ball.h"
 #include "Game Objects\PowerBall.h"
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
@@ -21,23 +20,23 @@ struct KeyInput
 	char keys[5];
 	int numKeys;
 	float dt;
+	D3DXVECTOR3 forward;
 	KeyInput()
 	{
 	}
-	KeyInput(char _keys[], int _numKeys, float _dt)
+	KeyInput(char _keys[], int _numKeys, float _dt, D3DXVECTOR3 _forward)
 	{
 		for(int i = 0; i < _numKeys; i++)
 			this->keys[i]	= _keys[i];
-		this->numKeys = _numKeys;
-		this->dt	= _dt;
+		this->numKeys	= _numKeys;
+		this->dt		= _dt;
+		this->forward	= _forward;
 	}
 };
 
 class GameNetwork
 {
 private:
-
-
 	ServerInfo			mServer;
 	ServerConnection*	mConn;
 	D3DXVECTOR3*		mPos;
@@ -64,8 +63,7 @@ public:
 	virtual		~GameNetwork();
 	void		SetLatency(float latency){this->mLatency = latency;}
 	float		GetLatency() const {return this->mLatency;}
-	void		AddMovement(Ball* ball);
-	void		AddMovementPowerBall(PowerBall* ball);
+	void		AddMovementPowerBall(PowerBall* PowerBall);
 	D3DXVECTOR3 		CorrectPosition();
 
 	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
@@ -122,7 +120,7 @@ public:
 	void		SetIndex(int n) { this->mIndex = n;}
 
 	/*! For client: Sets the key to down/up which will be sent to server. */
-	void		AddKeyInput(const int index, char keys[], const int numKeys, const float dt);
+	void		AddKeyInput(const int index, char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward);
 
 	/*! For client: Sets the key to down/up which will be sent to server. */
 	void		ResetKeyInput(const int index, const char key);
@@ -134,10 +132,8 @@ public:
 	KeyInput* 	GetNextCommand(const int index);
 	void		PopCommand(const int index);
 
-	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the balls. */
-	bool		Update(Ball** balls, int &numBalls, float dt);
-	bool		UpdatePowerBall(PowerBall** balls, int &numBalls, float dt);
-
+	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the PowerBalls. */
+	bool		UpdatePowerBall(PowerBall** PowerBalls, int &numPowerBalls, float dt);
 
 	/*! Starts the game network. */
 	void		Start(ServerInfo server);

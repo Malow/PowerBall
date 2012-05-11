@@ -227,7 +227,7 @@ void Warlock::Play()
 			{
 				running = false;
 			}
-			if(this->mGe->isRunning())
+			if(!this->mGe->isRunning())
 				running = false;
 			float tmp = (600.0f - this->mTimeElapsed);
 			tmp = floor(tmp * 10.0f) / 10.0f;

@@ -81,9 +81,9 @@ bool GameManager::Play(const int numPlayers, int lifes, int rounds)
 		{
 			numberAlivePlayersThisRound = 0;
 			diff = mGe->Update();	
-			s = "Player1: Rounds won: " + this->mBalls[0]->GetRoundsWonStr();
+			s = "Player 1: " + this->mBalls[0]->GetRoundsWonStr();
 			hudR1->SetText(s);
-			s = "Player2: Rounds won: " + this->mBalls[1]->GetRoundsWonStr();
+			s = "Player 2: " + this->mBalls[1]->GetRoundsWonStr();
 			hudR2->SetText(s);
 			s = "Round: " + MaloW::convertNrToString(roundsPlayed) + " of " + MaloW::convertNrToString(this->mRounds);
 			hudR3->SetText(s);
@@ -343,7 +343,7 @@ bool GameManager::PlayLAN(ServerInfo server)
 				this->mBalls[i]->Update(diff);
 				
 
-				this->mNet->AddMovement(this->mBalls[i]);
+				//this->mNet->AddMovement(this->mBalls[i]);
 				Vector3 temp = this->mBalls[i]->GetForwardVector();
 				this->mNet->SetForwardVector(D3DXVECTOR3(temp.x, temp.y, temp.z), i);
 
@@ -358,8 +358,8 @@ bool GameManager::PlayLAN(ServerInfo server)
 		mPlatform->Update(diff);
 
 		
-		if(!this->mNet->Update(this->mBalls, this->mNumPlayers, diff))
-			running = false;
+		//if(!this->mNet->Update(this->mBalls, this->mNumPlayers, diff))
+			//running = false;
 
 		if(this->mNet->GetNumPlayers() > this->mNumPlayers)
 		{
@@ -926,8 +926,13 @@ void GameManager::AddBall()
 	delete[] this->mBalls;
 	this->mBalls = temp;
 
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
-	mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	if(mGe->GetEngineParameters().CamType == TRD)
+			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[this->mNet->GetIndex()]);
+	else
+	{
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
+	}
 }
 
 void GameManager::AddBallWarlock()
@@ -1232,16 +1237,13 @@ void GameManager::SendKeyInputs(const int clientIndex, float diff)
 				
 	if(numKeys == 0)
 		keyDowns[numKeys++] = '?'; //"idle"-key
-
-	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff);
+	
+	Vector3 temp = this->mBalls[clientIndex]->GetForwardVector();
+	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff, D3DXVECTOR3(temp.x, temp.y, temp.z));
 	
 }
 void GameManager::HandleClientKeyInputs(const int clientIndex, float diff)
 {
-	
-	int flip = 1;
-	if(this->mNet->GetStartPos(clientIndex).z > 0)
-		flip = -1;
 	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
 	KeyInput* command = this->mNet->GetNextCommand(clientIndex);
 	float duration = 0.0f;
@@ -1250,6 +1252,7 @@ void GameManager::HandleClientKeyInputs(const int clientIndex, float diff)
 		duration = command->dt;
 		while(duration <=  diff && command != NULL)
 		{
+			this->mBalls[clientIndex]->SetForwardVector(command->forward);
 			for(int c = 0; c < command->numKeys; c++)
 			{
 				this->ClientKeyPress(command->dt, clientIndex, command->keys[c]);
@@ -1265,6 +1268,7 @@ void GameManager::HandleClientKeyInputs(const int clientIndex, float diff)
 		}
 		if(duration > diff && command != NULL)
 		{
+			this->mBalls[clientIndex]->SetForwardVector(command->forward);
 			duration -= command->dt;
 									
 			for(int c = 0; c < command->numKeys; c++)
