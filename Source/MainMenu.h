@@ -49,7 +49,6 @@ private:
 	int mSubSet;
 	bool mRunning;
 
-	SoundSong* mSong;
 	GraphicsEngine* mGe;
 	GameManager* mGm;
 	GameHandler* mGh;
@@ -74,6 +73,8 @@ private:
 	StaticMesh* mBall1;
 	StaticMesh* mBall2;
 	StaticMesh* mPlatform;
+	StaticMesh* mKoth;
+	StaticMesh* mCtf;
 	CamRecording* mCamRec;
 	Light* mLight1;
 	Light* mLight2;

@@ -26,9 +26,8 @@ SoundEngine::SoundEngine()
 	//all sound
 	this->mMasterVolume = new float(1.0f);
 
-
-	this->mSoundFXChannel2D = NULL;	// All effects use same channel
 	//sound effects 3D
+	/*
 	this->mNrOfSoundFX3D = 0;
 	this->mSoundFXCap3D = 10;
 	this->mSoundFX3D = new FMOD::Sound*[this->mSoundFXCap3D];
@@ -43,20 +42,18 @@ SoundEngine::SoundEngine()
 		this->mSoundFXChannels3D[i] = NULL;
 	}
 	this->mDistanceFactor = 100.0f;
-
+	*/
 	ERRCHECK(this->mResult = FMOD::Debug_SetLevel(0));
 }
 SoundEngine::~SoundEngine()
 {
-	//sound effects
-	while(this->mEffects.size() > 0)
-		delete this->mEffects.getAndRemove(0);
-	//do nothing with channel
+	//sound effects (2d)
+	while(this->mEffects2D.size() > 0)
+		delete this->mEffects2D.getAndRemove(0);
 
 	//songs
 	while(this->mSongs.size() > 0)
 		delete this->mSongs.getAndRemove(0);
-	//do nothing with channel
 
 	SAFE_DELETE(this->mMasterVolume);
 
@@ -139,7 +136,7 @@ int SoundEngine::Init()
 
 
 	//sound effects 3D
-	ERRCHECK(this->mResult = this->mSystem->set3DSettings(1.0, this->mDistanceFactor, 1.0f));
+	//ERRCHECK(this->mResult = this->mSystem->set3DSettings(1.0, this->mDistanceFactor, 1.0f));
 
 	return 1;
 }
@@ -181,9 +178,9 @@ SoundEffect* SoundEngine::LoadSoundEffect(string filename, bool as3D)
 		up.z = 0;
 		ERRCHECK(this->mResult = this->mSystem->set3DListenerAttributes(0, &pos, &vel, &forward, &up));
 
-		ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_3D, NULL, &this->mSoundFX3D[this->mNrOfSoundFX3D++]));
-		ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->set3DMinMaxDistance(0.5f * this->mDistanceFactor, 5000.0f * this->mDistanceFactor));
-		ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->setMode(FMOD_LOOP_OFF));
+		//ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_3D, NULL, &this->mSoundFX3D[this->mNrOfSoundFX3D++]));
+		//ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->set3DMinMaxDistance(0.5f * this->mDistanceFactor, 5000.0f * this->mDistanceFactor));
+		//ERRCHECK(this->mResult = this->mSoundFX3D[this->mNrOfSoundFX3D++]->setMode(FMOD_LOOP_OFF));
 	}
 	else
 	{
@@ -191,7 +188,7 @@ SoundEffect* SoundEngine::LoadSoundEffect(string filename, bool as3D)
 		ERRCHECK(this->mResult = this->mSystem->createSound(filename.c_str(), FMOD_HARDWARE | FMOD_2D | FMOD_LOOP_OFF, NULL, &s));
 		se->SetSound(s);
 	}
-	this->mEffects.add(se);
+	this->mEffects2D.add(se);
 
 	return se;
 }

@@ -90,7 +90,8 @@ void DxManager::RenderDeferredGeometry()
 		KeyFrame* one;
 		KeyFrame* two;
 		float t = 0.0f;
-		this->animations[i]->GetCurrentKeyFrames(&one, &two, t, this->TimerAnimation);
+		this->animations[i]->SetCurrentTime(this->TimerAnimation);
+		this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
 
 		MaloW::Array<MeshStrip*>* stripsOne = one->strips;
 		MaloW::Array<MeshStrip*>* stripsTwo = two->strips;
@@ -234,7 +235,6 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->SetResource("Position", NULL);
 	this->Shader_DeferredLightning->SetResource("Specular", NULL);
 	this->Shader_DeferredLightning->SetResource("LavaTexture", NULL);
-	this->Shader_DeferredLightning->SetResource("LavaHeightMap", NULL);
 	for(int i = 0; i < this->lights.size(); i++)
 	{
 		this->Shader_DeferredLightning->SetResourceAtIndex(i, "ShadowMap", NULL);

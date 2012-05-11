@@ -12,17 +12,14 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 
 	this->mGh = new GameHandler(ge);
 
-	this->mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
 	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
-	this->mSong->Play();
 
 	this->Initialize();
 }
 MainMenu::~MainMenu()
 {
-	if(this->mSets)
-		delete [] this->mSets;
-
+	SAFE_DELETE_ARRAY(this->mSets);
+	SAFE_DELETE(this->mCamRec);
 	SAFE_DELETE(this->mGh);
 }
 bool MainMenu::Initialize()
@@ -57,7 +54,6 @@ void MainMenu::UpdateMousePosition()
 	}
 	
 }
-
 bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
@@ -364,10 +360,10 @@ bool MainMenu::Run()
 					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
 					if(tempReturnEvent->GetOption() == "Sound")
 					{
-						if(tempReturnEvent->GetValue() == "true")
-							this->mSong->Unmute();
-						else
-							this->mSong->Mute();
+						//if(tempReturnEvent->GetValue() == "true")
+							//GameOptions::getInstance()->GetSong(0)->Unmute();
+						//else
+							//GameOptions::getInstance()->GetSong(0)->Mute();
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")

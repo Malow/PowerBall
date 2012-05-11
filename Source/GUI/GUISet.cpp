@@ -317,3 +317,18 @@ GUIEvent* GUISet::GetEventFromDropDown(string dropDownMenu)
 	}
 	return NULL;
 }
+CheckBox* GUISet::GetCheckBox(string checkBox)
+{
+	for(int i = 0; i < this->mNrOfElements; i++)
+	{
+		if(typeid(*this->mElements[i]) == typeid(CheckBox))
+		{
+			CheckBox* temp = (CheckBox*)this->mElements[i];
+			if(temp->GetName() == checkBox)
+			{
+				return temp;
+			}
+		}
+	}
+	return NULL;
+}

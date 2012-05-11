@@ -48,4 +48,6 @@ public:
 
 	/*! Returs the event that is on the top of the Drop down menu*/
 	GUIEvent* GetEventFromDropDown(string dropDownMenu);
+
+	CheckBox* GetCheckBox(string checkBox);
 };
