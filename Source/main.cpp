@@ -19,6 +19,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.windowHeight = 900;
 	params.FXAAQuality = 1;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
+	params.CamType = TRD;
 
 
 	// RunAgain for changing resolution etc.
