@@ -271,6 +271,8 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			interpolationVector = mod;
 			if(D3DXVec3Length(&interpolationVector) > FLOAT_EPSILON)
 			{
+				//PowerBalls[this->mIndex]->AddForce(interpolationVector);
+				
 				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector );
 				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector );
 				PowerBalls[this->mIndex]->UpdatePost();

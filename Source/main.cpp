@@ -16,8 +16,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	//_CrtSetBreakAlloc(1554);
 	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
 	GraphicsEngineParams params;
-	params.windowWidth = 1600;
-	params.windowHeight = 900;
+	params.windowWidth = 700;
+	params.windowHeight = 500;
 	params.FXAAQuality = 0;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;

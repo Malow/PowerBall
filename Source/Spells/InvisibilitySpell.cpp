@@ -1,9 +1,10 @@
 #include "InvisibilitySpell.h"
-#include "Ball.h"
+//#include "Ball.h"
+#include "..\Game Objects\PowerBall.h"
 
 InvisibilitySpell::InvisibilitySpell()
 {
-	this->mBall = NULL;
+	//this->mBall = NULL;
 	this->mPowerBall = NULL;
 	this->mTimeNeededToCoolDown = 30.0f;
 	this->mTimerCounterCoolDown = 0.0f;
@@ -13,7 +14,7 @@ InvisibilitySpell::InvisibilitySpell()
 	this->mIsInUse = false;
 }
 
-InvisibilitySpell::InvisibilitySpell(Ball* ball)
+/*invisibilitySpell::InvisibilitySpell(Ball* ball)
 {
 	this->mBall = ball;
 	this->mPowerBall = NULL;
@@ -23,11 +24,11 @@ InvisibilitySpell::InvisibilitySpell(Ball* ball)
 	this->mTimerCounterInUse = 0.0f;
 	this->mMaxTimeUse = 5.0f;
 	this->mIsInUse = false;
-}
+}*/
 
 InvisibilitySpell::InvisibilitySpell(PowerBall* ball)
 {
-	this->mBall = NULL;
+	//this->mBall = NULL;
 	this->mPowerBall = ball;
 	this->mTimeNeededToCoolDown = 30.0f;
 	this->mTimerCounterCoolDown = 0.0f;
@@ -56,15 +57,15 @@ void InvisibilitySpell::Use()
 	if(!this->mNeedCoolDown && !this->mIsInUse && !this->SpellInUse())
 	{
 		/* set mesh to use invisibility effect */
-		this->mBall->UseInvisibilityEffect(true);
+		this->mPowerBall->UseInvisibilityEffect(true);
 		
 		/* backup ball info */
 		//this->mBackup.e = this->mBall->GetRestitution();
-		this->mBackup.mass = this->mBall->GetMass();
+		this->mBackup.mass = this->mPowerBall->GetMass();
 		
 		/* new behaviour for ball */
 		//this->mBall->SetRestitution(0.5f);
-		this->mBall->SetMass(this->mBall->GetMass());
+		this->mPowerBall->SetMass(this->mPowerBall->GetMass());
 
 		this->mIsInUse = true;
 	}
@@ -74,9 +75,9 @@ void InvisibilitySpell::Restore()
 {
 	if(this->mIsInUse)
 	{
-		this->mBall->UseInvisibilityEffect(false);
+		this->mPowerBall->UseInvisibilityEffect(false);
 		//this->mBall->SetRestitution(this->mBackup.e);
-		this->mBall->SetMass(mBackup.mass);
+		this->mPowerBall->SetMass(mBackup.mass);
 		this->mIsInUse = false;
 		this->mTimerCounterInUse = 0.0f;
 		this->mNeedCoolDown = true;

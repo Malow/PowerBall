@@ -15,12 +15,12 @@
 #include "GUI\ChangeResEvent.h"
 #include "GUI\ChangeSetEvent.h"
 #include "GUI\ChangeSubSetEvent.h"
-#include "GameManager.h"
+//#include "GameManager.h"
 #include "GameHandler.h"
 #include "GraphicsEngine.h"
 #include "stdafx.h"
-#include "Ball.h"
-#include "Platform.h"
+//#include "Ball.h"
+//#include "Platform.h"
 
 enum MENU {NOMENU,
 	BACKGROUND,
@@ -50,7 +50,7 @@ private:
 	bool mRunning;
 
 	GraphicsEngine* mGe;
-	GameManager* mGm;
+	//GameManager* mGm;
 	GameHandler* mGh;
 	GUISet* mSets;
 

@@ -180,33 +180,57 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 			}
 			else if(buf[0] == 'S')
 			{
-				SOCKET sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
-				sc->mPort++;
-				sockaddr_in newSockAdress = from;
-				newSockAdress.sin_family = AF_INET;
-				newSockAdress.sin_port = htons((u_short) sc->mPort);
+				bool reconnectedClient = false;
+				Connection* client = NULL;
+				for(int i = 0; i < sc->mClientSocket.size(); i++)
+				{
+					if(inet_ntoa(from.sin_addr) == inet_ntoa(sc->mClientSocket[i]->adress.sin_addr))
+					{
+						//reconnection from client
+						//reconnectedClient = true;
+						//client = sc->mClientSocket[i];
+					}
+				}
+				if(!reconnectedClient && sc->GetNumConnections() < sc->mCurrentServer.GetMaxNumPlayers())
+				{
+					SOCKET sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
+					sc->mPort++;
+					sockaddr_in newSockAdress = from;
+					newSockAdress.sin_family = AF_INET;
+					newSockAdress.sin_port = htons((u_short) sc->mPort);
 
-				bind(sock, (const sockaddr*)&newSockAdress, sizeof(sockaddr_in));
+					bind(sock, (const sockaddr*)&newSockAdress, sizeof(sockaddr_in));
 
-				DWORD nonBlocking = 1;
-				ioctlsocket(sock, FIONBIO, &nonBlocking);
+					DWORD nonBlocking = 1;
+					ioctlsocket(sock, FIONBIO, &nonBlocking);
 
-				Connection* client = new Connection(sock);
-				sc->mClientSocket.push_back(client);
-				sc->mNumClients++;
+					client = new Connection(sock);
+					sc->mClientSocket.push_back(client);
+					sc->mNumClients++;
 			
-				char buffer[10] = "START";
-				sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+					char buffer[10] = "START";
+					sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
 
-				client->adress = from;
-				client->index = sc->GetNumConnections() - 1;
-				client->handle = CreateThread(0, 0, &Communicate, (void*) client, 0, 0);
+					client->adress = from;
+					client->index = sc->GetNumConnections() - 1;
+					client->handle = CreateThread(0, 0, &Communicate, (void*) client, 0, 0);
+				}
+				else if (reconnectedClient)
+				{
+					char buffer[10] = "START";
+					sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+				}
+				else
+				{
+					//char buffer[10] = "FULL";
+					//sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+				}
 			}
 		
 		}
 		
-		if(sc->GetNumConnections() >= sc->mCurrentServer.GetMaxNumPlayers())
-			sc->mServerSocket->running = false;
+		//if(sc->GetNumConnections() >= sc->mCurrentServer.GetMaxNumPlayers())
+			//sc->mServerSocket->running = false;
 	}
 	return 0;
 }

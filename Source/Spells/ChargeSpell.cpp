@@ -1,9 +1,10 @@
 #include "ChargeSpell.h"
-#include "Ball.h"
+//#include "Ball.h"
+#include "..\Game Objects\PowerBall.h"
 
 ChargeSpell::ChargeSpell()
 {
-	this->mBall = NULL;
+	//this->mBall = NULL;
 	this->mPowerBall = NULL;
 	this->mTimeNeededToCoolDown = 15.0f;
 	this->mTimerCounterCoolDown = 0.0f;
@@ -13,7 +14,7 @@ ChargeSpell::ChargeSpell()
 	this->mIsInUse = false;
 }
 
-ChargeSpell::ChargeSpell(Ball* ball)
+/*ChargeSpell::ChargeSpell(Ball* ball)
 {
 	this->mBall = ball;
 	this->mPowerBall = NULL;
@@ -23,11 +24,11 @@ ChargeSpell::ChargeSpell(Ball* ball)
 	this->mTimerCounterInUse = 0.0f;
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
-}
+}*/
 
 ChargeSpell::ChargeSpell(PowerBall* ball)
 {
-	this->mBall = NULL;
+	//this->mBall = NULL;
 	this->mPowerBall = ball;
 	this->mTimeNeededToCoolDown = 15.0f;
 	this->mTimerCounterCoolDown = 0.0f;
@@ -58,12 +59,12 @@ void ChargeSpell::Use()
 	if(!this->mNeedCoolDown && !this->mIsInUse && !this->SpellInUse())
 	{
 		/* backup ball info */
-		this->mBackup.maxSpeed = this->mBall->GetMaxVelocity();
+		this->mBackup.maxSpeed = this->mPowerBall->GetMaxVelocity();
 		
 		/* new behaviour for ball */
-		this->mBall->SetMaxVelocity(this->mBall->GetMaxVelocity()*5.0f);
-		this->mBall->SetSteering(false);
-		this->mBall->SetVelocity(this->mBall->GetForwardVector()*this->mBall->GetMaxVelocity());
+		this->mPowerBall->SetMaxVelocity(this->mPowerBall->GetMaxVelocity()*5.0f);
+		this->mPowerBall->SetSteering(false);
+		this->mPowerBall->SetVelocity(this->mPowerBall->GetForwardVector()*this->mPowerBall->GetMaxVelocity());
 
 		this->mIsInUse = true;
 	}
@@ -73,8 +74,8 @@ void ChargeSpell::Restore()
 {
 	if(this->mIsInUse)
 	{
-		this->mBall->SetMaxVelocity(this->mBackup.maxSpeed);
-		this->mBall->SetSteering(true);
+		this->mPowerBall->SetMaxVelocity(this->mBackup.maxSpeed);
+		this->mPowerBall->SetSteering(true);
 		this->mIsInUse = false;
 		this->mTimerCounterInUse = 0.0f;
 		this->mNeedCoolDown = true;
