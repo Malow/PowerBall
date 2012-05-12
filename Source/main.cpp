@@ -18,8 +18,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
 	params.FXAAQuality = 1;			// 0 - 4 
-	params.ShadowMapSettings = 2;	// 0 - 10 (works with higher but VERY consuming)
+	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
+
 
 	// RunAgain for changing resolution etc.
 	/*
@@ -64,16 +65,29 @@ void test()
 	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
-	StaticMesh* flag = eng->CreateStaticMesh("Media/FlagRed.obj", D3DXVECTOR3(8, 15, 8));
+	
+	AnimatedMesh* flag = eng->CreateAnimatedMesh("Media/FlagRed.ani",  D3DXVECTOR3(8, 15, 8));
+	//flag->LoopSeamless();
+
+	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(15, 15, 8));
+	//flagb->LoopSeamless();
+	
+	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(8, 15, 8));
+	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(10, 15, 8));
+	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(12, 15, 8));
+	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(14, 15, 8));
+	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(16, 15, 8));
+	
+
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
 	
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
 	
-	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
+	//AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
 	//ani->LoopNormal();
-	ani->LoopSeamless();
+	//ani->LoopSeamless();
 
 	
 	SoundEngine* seng = eng->GetSoundEngine();
@@ -165,21 +179,31 @@ void test()
 		}
 		else 
 			testBall->UseInvisibilityEffect(false);
-
+		
 		if(eng->GetKeyListener()->IsPressed('G'))	
 		{
-			static bool once = false;
-			if(!once)
-			{
-				once = true;
-				camRec->Play();						// Play to start moving the camera along the path
-			}
+			//ani->LoopNormal();
+			flag->LoopNormal();
+			flagb->LoopNormal();
+			eng->GetEngineParameters().FXAAQuality = 4;
+			ge->GetEngineParameters().FXAAQuality = 4;
+			//camRec->Play();						// Play to start moving the camera along the path
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
 	
-		//Testing sound engine
+		if(eng->GetKeyListener()->IsPressed('V'))	
+		{
+			//ani->NoLooping();
+			flag->NoLooping();
+			flagb->NoLooping();
+		}
 		if(eng->GetKeyListener()->IsPressed('B'))	
 		{
+			//ani->LoopSeamless();
+			flag->LoopSeamless();
+			flagb->LoopSeamless();
+			eng->GetEngineParameters().FXAAQuality = 0;
+				ge->GetEngineParameters().FXAAQuality = 0;
 			for(int i = 0; i < 200; i++)
 			{
 				se1->Play();

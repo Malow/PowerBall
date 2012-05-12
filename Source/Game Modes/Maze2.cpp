@@ -17,7 +17,7 @@ Maze2::Maze2(GraphicsEngine* ge)
 	this->mGe = ge;
 	this->mNumberOfPlayers = 1;
 	this->mNumberOfRounds = 1;
-	this->mGameMode = CREDITS;
+	this->mGameMode = CREDITS2;
 	this->mTimeElapsed = 0.0f;
 }
 
@@ -44,7 +44,7 @@ void Maze2::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Map("Media/MazeMap.obj", centerPlatform);
-		this->mPlatform->SetRotate(true);
+		
 		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
 		this->mPlatform->SetHotZonePosition(Vector3(13.5f,22.5f,13.5f));
@@ -64,66 +64,60 @@ void Maze2::Initialize()
 
 void Maze2::Intro()
 {
-	Text*	intro = mGe->CreateText("Maze",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
-	intro->SetText("");
-	mGe->DeleteText(intro);
+		Text*	intro = mGe->CreateText("Maze II",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+		mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
+		intro->SetText("");
+		mGe->DeleteText(intro);
 }
 
 void Maze2::Play()
 {	
 		bool running = true;
-		this->mGameMode = CREDITS;
+		this->mGameMode = CREDITS2;
 		float diff;
 		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
-		Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,80),1.0f,"Media/Fonts/1");
-		Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
-		Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,200),1.0f,"Media/Fonts/1");
-		Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,260),1.0f,"Media/Fonts/1");
-		Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(20,560),1.0f,"Media/Fonts/1");
-		Text* hudR7 = mGe->CreateText("",D3DXVECTOR2(20,600),1.0f,"Media/Fonts/1");
-		Text* hudR8 = mGe->CreateText("",D3DXVECTOR2(20,640),1.0f,"Media/Fonts/1");
-		Text* hudR9 = mGe->CreateText("",D3DXVECTOR2(20,680),1.0f,"Media/Fonts/1");
+		Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
+		Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,180),1.0f,"Media/Fonts/1");
+		Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,500),1.0f,"Media/Fonts/1");
+		Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,540),1.0f,"Media/Fonts/1");
+		Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(20,580),1.0f,"Media/Fonts/1");
+		Text* hudR7 = mGe->CreateText("",D3DXVECTOR2(20,620),1.0f,"Media/Fonts/1");
+		Text* hudR8 = mGe->CreateText("",D3DXVECTOR2(20,660),1.0f,"Media/Fonts/1");
+		Text* hudR9 = mGe->CreateText("",D3DXVECTOR2(20,700),1.0f,"Media/Fonts/1");
 		Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 		string s;
-		s = "Credits: Random";
+		s = "Credits: OldStyle";
 		hudR1->SetText(s);
+		this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
+		this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
 		diff = mGe->Update();
-		srand ( time(NULL) );
-		float targetX = -10 + rand() % 21; // random angle [-10, 10] in x-axis
-		float targetZ = -10 + rand() % 21; // random angle [-10, 10] in z-axis
-		targetX = targetX*(PI/180.0f);
-		targetZ = targetZ*(PI/180.0f);
-		this->mPlatform->SetTargetAngleX(targetX);
-		this->mPlatform->SetTargetAngleZ(targetZ);
+	
 		while(running)
 		{
 		
 			diff = mGe->Update();
-			if(this->mPlatform->IsTargetAngleReachedX())
-			{
-				targetX = -10 + rand() % 21;
-				targetX = targetX*(PI/180.0f);
-				this->mPlatform->SetTargetAngleX(targetX);
-			}
-			if(this->mPlatform->IsTargetAngleReachedZ())
-			{
-				targetZ = -10 + rand() % 21;
-				targetZ = targetZ*(PI/180.0f);
-				this->mPlatform->SetTargetAngleZ(targetZ);
-			}
-		
-		
+			MaloW::Debug(diff);
 			if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 				running = false;
 		
 			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForceForwardDirection(diff);	
+				this->mPlatform->RotateX(diff);
 			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForceOppositeForwardDirection(diff);
+				this->mPlatform->RotateX(-diff);
 			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+				this->mPlatform->RotateZ(diff);
 			if(mGe->GetKeyListener()->IsPressed('D'))
+				this->mPlatform->RotateZ(-diff);
+			if(mGe->GetKeyListener()->IsClicked(2))
+				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+			// cheating is gooood!!!
+			if(mGe->GetKeyListener()->IsPressed(VK_UP))
+				mBalls[0]->AddForceForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
+				mBalls[0]->AddForceOppositeForwardDirection(diff);
+			if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
+				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+			if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
 				mBalls[0]->AddForceRightOfForwardDirection(diff);	
 			if(mGe->GetKeyListener()->IsClicked(2))
 				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
@@ -135,53 +129,40 @@ void Maze2::Play()
 			mPlatform->Update(diff);
 			if(!this->mGe->isRunning())
 				running = false;
-			if(!mBalls[0]->IsAlive())
-				running = false;
 		
 		
 		
-			s = "Target X = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleX()*(180.0f/PI));
+			s = "X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
 			hudR2->SetText(s);
-			s = "Current X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
+			s = "Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
 			hudR3->SetText(s);
 		
-			s = "Target Z = " + MaloW::convertNrToString(this->mPlatform->GetTargetAngleZ()*(180.0f/PI));
-			hudR4->SetText(s);
-		
-			s = "Current Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
-			hudR5->SetText(s);
 		
 			s = "Position ball:";
-			hudR6->SetText(s);
+			hudR4->SetText(s);
 			s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().z)/10.0f);
-			hudR7->SetText(s);
+			hudR5->SetText(s);
 			s = "Position hotzone flag: ";
-			hudR8->SetText(s);
+			hudR6->SetText(s);
 			s =  "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().z)/10.0f);
-			hudR9->SetText(s);
-		
-
+			hudR7->SetText(s);
+			//Vector3 distVec = this->mPlatform->GetHotZonePosition() - this-mBalls[0]->GetPositionVector3();
+			//float dist = distVec.GetLength();
+			//s = "Distance to flag: " +  MaloW::convertNrToString(floor(10.0f*dist)/10.0f);
 			if(this->checkWinConditions(diff))
 				running = false;
+			
 		}
-		hudR2->SetText("");
-		hudR3->SetText("");
-		hudR4->SetText("");
-		hudR5->SetText("");
-		hudR6->SetText("");
-		hudR7->SetText("");
-		hudR8->SetText("");
-		hudR9->SetText("");
-		mGe->DeleteText(hudR1);
-		mGe->DeleteText(hudR2);
-		mGe->DeleteText(hudR3);
-		mGe->DeleteText(hudR4);
-		mGe->DeleteText(hudR5);
-		mGe->DeleteText(hudR6);
-		mGe->DeleteText(hudR7);
-		mGe->DeleteText(hudR8);
-		mGe->DeleteText(hudR9);
-		mGe->DeleteText(hudR10);
+			mGe->DeleteText(hudR1);
+			mGe->DeleteText(hudR2);
+			mGe->DeleteText(hudR3);
+			mGe->DeleteText(hudR4);
+			mGe->DeleteText(hudR5);
+			mGe->DeleteText(hudR6);
+			mGe->DeleteText(hudR7);
+			mGe->DeleteText(hudR8);
+
+	
 }
 
 void Maze2::ShowStats()

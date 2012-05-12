@@ -85,8 +85,8 @@ void DxManager::RenderDeferredGeometry()
 	this->Shader_DeferredAnimatedGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	for(int i = 0; i < this->animations.size(); i++)
 	{
-		KeyFrame* one;
-		KeyFrame* two;
+		KeyFrame* one = NULL;
+		KeyFrame* two = NULL;
 		float t = 0.0f;
 		this->animations[i]->SetCurrentTime(this->TimerAnimation);
 		this->animations[i]->GetCurrentKeyFrames(&one, &two, t);

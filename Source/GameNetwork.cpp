@@ -109,7 +109,14 @@ KeyInput* GameNetwork::GetNextCommand(const int index)
 {
 	if(this->mKeyInputs[index].size() > 0) // size has a max limit too it seems, so check that too
 	{
-		return this->mKeyInputs[index].front();
+		try
+		{
+			return this->mKeyInputs[index].front();
+		}
+		catch(exception e)
+		{
+			return NULL;
+		}
 	}
 	else return NULL;
 }
@@ -117,9 +124,15 @@ void GameNetwork::PopCommand(const int index)
 {
 	if(!this->mKeyInputs[index].empty())
 	{
-		KeyInput* temp =  this->mKeyInputs[index].front();
-		this->mKeyInputs[index].pop();
-		delete temp;
+		try
+		{		
+			KeyInput* temp =  this->mKeyInputs[index].front();
+			this->mKeyInputs[index].pop();
+			delete temp;
+		}
+		catch(exception e)
+		{
+		}
 	}
 }
 void GameNetwork::AddMovementPowerBall(PowerBall* PowerBall)
@@ -274,9 +287,10 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				//PowerBalls[this->mIndex]->AddForce(interpolationVector);
 				
 				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector );
-				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector );
+				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector );
 				PowerBalls[this->mIndex]->UpdatePost();
-				//PowerBalls[this->mIndex]->Rotate(-interpolationVector); //- : rotate other way :D
+				PowerBalls[this->mIndex]->Update(dt);
+				PowerBalls[this->mIndex]->Rotate(interpolationVector); //- : rotate other way :D
 				this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}

@@ -24,11 +24,11 @@ AnimatedMesh::~AnimatedMesh()
 
 void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 {
-	if(this->mKeyFrames->size() > 1)
+	if(this->mKeyFrames->size() > 1) //if 2 or more keyframes
 	{
-		if(this->IsLooping() || !this->mNrOfTimesLooped)
+		if(this->IsLooping() || !this->mNrOfTimesLooped) //is looping or still haven't reach 0 on the loop count
 		{
-			if(this->mLoopSeamless)
+			if(this->mLoopSeamless) //if looping seamlessly, add first keyframe as last keyframe & return the 2 current keyframes
 			{
 				int diff = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time - this->mKeyFrames->get(this->mKeyFrames->size() - 2)->time;
 				int newEndTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time + diff;
@@ -78,7 +78,7 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 				//convert to range [0,1]
 				t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
 			}
-			else
+			else //if not (normal looping), return the 2 current keyframes
 			{
 				int endTime = this->mKeyFrames->get(this->mKeyFrames->size() - 1)->time;
 				this->mNrOfTimesLooped = (unsigned int)((int)this->mCurrentTime / endTime);
@@ -110,14 +110,20 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 				t = ((float)newCurrentTimeMillis / (float)newTimeTwo);
 			}
 		}
+		else //if no looping, return last key frame for both
+		{
+			*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
+			*two = *one;
+			t = 0.0f;
+		}
 	}
-	else if(this->mKeyFrames->size() == 1)
+	else if(this->mKeyFrames->size() == 1) //if only 1 keyframe, return it for both
 	{
 		*one = this->mKeyFrames->get(this->mKeyFrames->size() - 1);
 		*two = *one;
 		t = 0.0f;
 	}
-	else
+	else //if no keyframes, return null
 	{
 		*one = *two = NULL;
 		t = 0.0f;

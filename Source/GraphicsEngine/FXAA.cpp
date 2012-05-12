@@ -6,8 +6,7 @@ FXAA::FXAA()
 	this->gDeviceContext = NULL;
 	this->gSwapChain = NULL;
 
-	this->mAppliedPresetToShader = false;
-	this->mPreset = 0;
+	this->mPreviousPreset = 0;
 }
 FXAA::~FXAA()
 {
@@ -20,26 +19,12 @@ void FXAA::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGIS
 	this->gSwapChain = swapChain;
 }
 
-int FXAA::GetPreset() const
+void FXAA::PreRender(Shader* shader, unsigned int preset)
 {
-	return this->mPreset;
-}
-
-void FXAA::SetPreset(unsigned int preset)
-{
-	if(0 <= preset && preset <= 4)
+	if(!preset)
 	{
-		this->mPreset = preset;
+		return;
 	}
-	else
-	{
-		this->mPreset = 0;
-	}
-	this->mAppliedPresetToShader = false;
-}
-
-void FXAA::PreRender(Shader* shader)
-{
 	HRESULT hr = S_OK;
 
 	//get the surface/texture from the swap chain
@@ -78,12 +63,14 @@ void FXAA::PreRender(Shader* shader)
 		MaloW::Debug("FXAA: Failed to create shader resource view");
 	}
 
-	//set shader variables
+	//set variables
 	shader->SetResource("sceneTex", sceneSRV);
 
-	if(!this->mAppliedPresetToShader)
+	if(preset != this->mPreviousPreset)
 	{
-		switch(this->mPreset)
+		this->mPreviousPreset = preset;
+
+		switch(preset)
 		{
 			case 1:
 				shader->SetFloat("FXAA_EDGE_THRESHOLD", (1.0/4.0));
@@ -133,10 +120,10 @@ void FXAA::PreRender(Shader* shader)
 				shader->SetFloat("FXAA_SUBPIX_TRIM", (1.0/4.0));
 				shader->SetFloat("FXAA_SUBPIX_TRIM_SCALE", (1.0/(1.0 - (1.0/4.0))));
 				break;
-			default: break;
+			default: 
+				MaloW::Debug("FXAA: Warning: Preset value can only be between 0 and 4.");
+				break;
 		}
-
-		this->mAppliedPresetToShader = true;
 	}
 
 	//apply pass

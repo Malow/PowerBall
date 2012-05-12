@@ -44,7 +44,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam	= 5;
 	this->mMaxVelocity	 = 10.0f;
-	this->mAcceleration	 = Vector3(0,-9.81f,0);
+	this->mAcceleration	 = Vector3(0,-9.81f,0);//(0,0,0);//
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);

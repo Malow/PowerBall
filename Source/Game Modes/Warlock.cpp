@@ -126,12 +126,19 @@ void Warlock::Play()
 					if(i != this->mNet->GetIndex())
 					{
 						this->HandleClientKeyInputs(i, diff);
+						this->mBalls[i]->Update(diff, true);
 					}
 					else
 					{
 						this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
+						this->mBalls[i]->Update(diff, false);
 					}	
-
+	
+				}
+			
+				
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
 					PowerBall* b1 = this->mBalls[i];
 					for(int j = i+1; j < this->mNumberOfPlayers; j++)
 					{
@@ -143,19 +150,11 @@ void Warlock::Play()
 					Vector3 normalPlane;
 					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-	
 				}
-			
+
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
 					this->mBalls[i]->UpdatePost();
-					bool clientBall = true;
-					if(i == this->mNet->GetIndex())
-						clientBall = false;
-
-					this->mBalls[i]->Update(diff, clientBall); //split up due to the balls affecting each other, so cant send final position until all balls updated
-					clientBall = true;
-
 				}
 
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
@@ -173,6 +172,8 @@ void Warlock::Play()
 					{
 						D3DXVECTOR3 rotVector = this->mNet->GetPos(i) - this->mBalls[i]->GetPosition();
 						this->mBalls[i]->SetPosition(this->mNet->GetPos(i));
+						this->mBalls[i]->SetTempPosition(this->mNet->GetPos(i));
+						this->mBalls[i]->SetVelocity(this->mNet->GetVel(i));
 						this->mBalls[i]->Rotate(rotVector);
 					}
 				}
@@ -183,6 +184,10 @@ void Warlock::Play()
 					this->SendKeyInputs(i, diff);
 					this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
 				
+
+					this->mBalls[i]->Update(diff);
+
+
 					for(int c = 0; c < this->mNumberOfPlayers; c++)
 					{
 						PowerBall* b1 = this->mBalls[c];
@@ -201,8 +206,6 @@ void Warlock::Play()
 
 
 					this->mBalls[i]->UpdatePost();
-
-					this->mBalls[i]->Update(diff);
 				
 
 					this->mNet->AddMovementPowerBall(this->mBalls[i]);
@@ -238,6 +241,7 @@ void Warlock::Play()
 			tmp = floor(tmp * 10.0f) / 10.0f;
 			s = "Timer: " + MaloW::convertNrToString(tmp);
 			hudR1->SetText(s);
+			if(this->mNet->IsServer())
 			if(this->checkWinConditions(diff))
 				running = false;
 			
