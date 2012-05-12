@@ -67,17 +67,17 @@ void test()
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	
 	AnimatedMesh* flag = eng->CreateAnimatedMesh("Media/FlagRed.ani",  D3DXVECTOR3(8, 15, 8));
-	flag->LoopSeamless();
+	//flag->LoopSeamless();
 
 	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(15, 15, 8));
-	flagb->LoopSeamless();
-	/*
+	//flagb->LoopSeamless();
+	
 	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(10, 15, 8));
 	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(12, 15, 8));
 	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(14, 15, 8));
 	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(16, 15, 8));
-	*/
+	
 
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
@@ -85,9 +85,9 @@ void test()
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
 	
-	AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
+	//AnimatedMesh* ani = eng->CreateAnimatedMesh("Media/AniTest.ani", D3DXVECTOR3(12, 16, 12));
 	//ani->LoopNormal();
-	ani->LoopSeamless();
+	//ani->LoopSeamless();
 
 	
 	SoundEngine* seng = eng->GetSoundEngine();
@@ -182,15 +182,26 @@ void test()
 		
 		if(eng->GetKeyListener()->IsPressed('G'))	
 		{
+			//ani->LoopNormal();
+			flag->LoopNormal();
+			flagb->LoopNormal();
 			eng->GetEngineParameters().FXAAQuality = 4;
 			ge->GetEngineParameters().FXAAQuality = 4;
 			//camRec->Play();						// Play to start moving the camera along the path
 		}
 		camRec->Update(diff);					// update needed to move the camera when play is initialized.
 	
-		//Testing sound engine
+		if(eng->GetKeyListener()->IsPressed('V'))	
+		{
+			//ani->NoLooping();
+			flag->NoLooping();
+			flagb->NoLooping();
+		}
 		if(eng->GetKeyListener()->IsPressed('B'))	
 		{
+			//ani->LoopSeamless();
+			flag->LoopSeamless();
+			flagb->LoopSeamless();
 			eng->GetEngineParameters().FXAAQuality = 0;
 				ge->GetEngineParameters().FXAAQuality = 0;
 			for(int i = 0; i < 200; i++)
