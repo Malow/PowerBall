@@ -1,6 +1,8 @@
 #include "MainMenu.h"
 SoundSong* BackgroundSong::mSong = NULL;
 bool BackgroundSong::mPlaying = false;
+SoundEffect* BackgroundSong::mMouseClick = NULL;
+SoundEngine* BackgroundSong::mSe = GetGraphicsEngine()->GetSoundEngine();
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
@@ -9,12 +11,14 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mRunning = true;
 	this->mCurrentSet = MAINMENU;
 	this->mSubSet = NOMENU;
-	//this->mGm = NULL;
+
 	this->mGe = ge;
 	this->mGh = new GameHandler(ge);
-
-	this->mGe->GetSoundEngine()->SetMasterVolume(0.05f);
+	
 	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	BackgroundSong::mSong->SetVolume(0.05f);
+	BackgroundSong::mMouseClick = this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
+	BackgroundSong::mMouseClick->SetVolume(0.05f);
 
 	this->Initialize();
 }
@@ -39,7 +43,7 @@ bool MainMenu::Initialize()
 
 	this->CreateScene();
 
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
+	mGe->LoadingScreen("Media/LoadingScreen/StartScreen.png", "", 0.0f, 1.0f, 1.0f, 1.0f);
 	
 	return true;
 }

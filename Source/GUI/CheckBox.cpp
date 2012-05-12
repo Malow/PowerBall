@@ -19,8 +19,6 @@ CheckBox::CheckBox() : Element()
 }
 CheckBox::CheckBox(float x, float y, float z, string textureName, float width, float height, string CheckedTextureName, bool on, GUIEvent* tempEvent, string name) : Element(x, y, z, textureName, width, height)
 {
-	this->mMouseClick = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
-
 	this->mActiveX = x;
 	this->mActiveY = y;
 	this->mActiveWidth = width;
@@ -75,7 +73,7 @@ GUIEvent* CheckBox::CheckCollision(float mouseX, float mouseY, bool mousePressed
 			this->mPressed = false;
 			if(this->mOn == false)
 			{
-				this->mMouseClick->Play();
+				BackgroundSong::mMouseClick->Play();
 				this->mOn = true;
 				D3DXVECTOR3 temp = this->GetPositionD3D();
 				if(this->mCheckedImage == NULL)
@@ -88,7 +86,7 @@ GUIEvent* CheckBox::CheckCollision(float mouseX, float mouseY, bool mousePressed
 			}
 			else if(this->mOn)
 			{
-				this->mMouseClick->Play();
+				BackgroundSong::mMouseClick->Play();
 				this->mOn = false;
 				if(this->mCheckedImage != NULL)
 				{

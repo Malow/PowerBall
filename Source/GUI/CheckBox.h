@@ -23,7 +23,6 @@ private:
 	string mName;
 
 	GUIEvent* mEvent;
-	SoundEffect* mMouseClick;
 	Image* mCheckedImage;
 public:
 	CheckBox();

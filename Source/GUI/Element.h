@@ -14,6 +14,7 @@
 #include "ChangeSetEvent.h"
 #include "GameModeEvent.h"
 #include "ChangeOptionEvent.h"
+#include "..\GameOptions.h"
 
 using namespace std;
 

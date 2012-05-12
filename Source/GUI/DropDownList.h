@@ -22,8 +22,6 @@ private:
 
 	string mName;
 
-	SoundEffect* mMouseClick;
-
 	bool mDropActive;
 	int mNrOfElements;
 	int mMaxNrOfElements;

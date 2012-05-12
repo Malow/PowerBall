@@ -293,6 +293,12 @@
     <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp">
       <Filter>Sound Engine Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\ChooseTeamMenu.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\SelectTeamEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -552,12 +558,18 @@
     </ClInclude>
     <ClInclude Include="..\Source\GameOptions.h">
       <Filter>Game Files</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundSong.h">
       <Filter>Sound Engine Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\SoundEngine\SoundEffect.h">
       <Filter>Sound Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ChooseTeamMenu.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\SelectTeamEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

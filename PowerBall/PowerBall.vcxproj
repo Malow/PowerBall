@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\ChooseTeamMenu.cpp" />
     <ClCompile Include="..\Source\Game Modes\CaptureTheFlag.cpp" />
     <ClCompile Include="..\Source\Game Modes\GameMode.cpp" />
     <ClCompile Include="..\Source\Game Modes\KingOfTheHill.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="..\Source\GUI\GUIPicture.cpp" />
     <ClCompile Include="..\Source\GUI\GUISet.cpp" />
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
+    <ClCompile Include="..\Source\GUI\SelectTeamEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
     <ClCompile Include="..\Source\GUI\SliderBar.cpp" />
     <ClCompile Include="..\Source\GUI\TextBox.cpp" />
@@ -102,6 +104,7 @@
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\ChooseTeamMenu.h" />
     <ClInclude Include="..\Source\Game Modes\CaptureTheFlag.h" />
     <ClInclude Include="..\Source\Game Modes\GameMode.h" />
     <ClInclude Include="..\Source\Game Modes\KingOfTheHill.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="..\Source\GUI\GUIPicture.h" />
     <ClInclude Include="..\Source\GUI\GUISet.h" />
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
+    <ClInclude Include="..\Source\GUI\SelectTeamEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
     <ClInclude Include="..\Source\GUI\SliderBar.h" />
     <ClInclude Include="..\Source\GUI\TextBox.h" />
