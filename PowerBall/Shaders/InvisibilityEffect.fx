@@ -13,11 +13,17 @@ Texture2D sceneTex;
 //-----------------------------------------------------------------------------------------
 // Input and Output Structures
 //-----------------------------------------------------------------------------------------
+cbuffer PerFrame
+{
+	uint width; //can't use values set in another shader (windowWidth)
+	uint height; //can't use values set in another shader (windowHeight)
+	uint blurSize; //in pixel width and height
+};
 cbuffer PerObject
 {
 	matrix WVP;
 };
-//***
+//**
 struct VSIn
 {
 	float3 Pos : POSITION;
@@ -25,16 +31,13 @@ struct VSIn
 	float3 norm : NORMAL;
 	float3 Color : COLOR;
 };
+//**
 //-----------------------------------------------------------------------------------------
 // VertexShader
 //-----------------------------------------------------------------------------------------
 float4 VSScene(float3 pos : POSITION) : SV_POSITION
-//float4 VSScene(VSIn input) : SV_POSITION
 {
 	return mul(float4(pos, 1.0f), WVP);
-
-	//input.Pos.w = 1.0f;
-	//return mul(float4(input.Pos, 1.0f), WVP);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -42,31 +45,25 @@ float4 VSScene(float3 pos : POSITION) : SV_POSITION
 //-----------------------------------------------------------------------------------------
 float4 PSScene(float4 pos : SV_POSITION) : SV_Target
 {	
-	float4 test = float4(0,0,0,1);
-	float2 texCoords = float2(pos.x / windowWidth, pos.y / windowHeight);
-	texCoords.y *= -1;
-	test.xyz = sceneTex.Sample(LinearWrapSampler, texCoords).xyz;
-
-	float deltaX = 1.0f / windowWidth;
-	float deltaY = 1.0f / windowHeight;
-	float PCF_SIZE = 3.0f;
-	float4 blurColor = float4(1,1,1,1);
-	for(float s = 0; s < PCF_SIZE; s++)
+	float dX = 1.0f / width; 
+	float dY = 1.0f / height; 
+	float2 center = float2(pos.x * dX, pos.y * dY); //center texture coordinates
+	float2 offset = float2(-dX * ((blurSize - 1) * 0.5f), dY * ((blurSize - 1) * 0.5f));
+	float4 blurColor = float4(0,0,0,1);
+	//sample the surrounding pixels + the center pixel
+	for(uint i = 0; i < blurSize; i++)
 	{
-		for(float q = 0; q < PCF_SIZE; q++)
+		for(uint j = 0; j < blurSize; j++)
 		{
-			blurColor += sceneTex.Sample(PointClampSampler, texCoords + float2(deltaX * (s - PCF_SIZE / 2) , deltaY * (q - PCF_SIZE / 2)));
+			//starting position: center
+			//offset to start in upper left corner
+			//sample the surrounding pixels: + float2(i * dX, j * dY)
+			blurColor.xyz += sceneTex.Sample(LinearWrapSampler, center + offset + float2(i * dX, j * dY)).xyz;
 		}
 	}
-	blurColor *= pow(PCF_SIZE, 2.0f);
+	blurColor.xyz /= pow(blurSize, 2);
 
-	/*		// To check that coords really are in ScreenSpace so that the texCoords above works.
-	if(pos.x > 400 && pos.x < 800 && pos.y > 200 && pos.y < 900)
-		test = float4(1,0,0,1);
-		*/
-	
-	return test;//+ float4(0,1,0,1);
-	//return float4(0.5f, 1.0f, 0.5f, 1.0f);
+	return blurColor;
 }
 
 

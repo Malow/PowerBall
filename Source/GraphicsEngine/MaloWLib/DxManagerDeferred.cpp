@@ -319,9 +319,17 @@ void DxManager::RenderInvisibilityEffect() //***********
 		MaloW::Debug("InvisibilityEffect: Failed to create shader resource view");
 	}
 
+	//set rendertarget & view port
+	//this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	//this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+
 	//set shader variables
 	this->Shader_InvisibilityEffect->SetResource("sceneTex", sceneSRV);
 
+	//Per frame
+	this->Shader_InvisibilityEffect->SetInt("width", this->params.windowWidth); 
+	this->Shader_InvisibilityEffect->SetInt("height", this->params.windowHeight); 
+	this->Shader_InvisibilityEffect->SetInt("blurSize", 3);
 
 	//Invisible(effect) geometry
 	D3DXMATRIX wvp;
