@@ -49,6 +49,7 @@ private:
 	int mCurrentSet;
 	int mSubSet;
 
+	bool mRestart;
 	bool mRunning;
 
 	GraphicsEngine* mGe;

@@ -9,6 +9,7 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mNrOfSets = 30;
 	this->mSets = new GUISet[this->mNrOfSets]();
 	this->mRunning = true;
+	this->mRestart = false;
 	this->mCurrentSet = MAINMENU;
 	this->mSubSet = NOMENU;
 
@@ -395,6 +396,17 @@ bool MainMenu::Run()
 							BackgroundSong::mPlaying = false;
 						}
 					}
+					if(tempReturnEvent->GetOption() == "Restart")
+					{
+						if(tempReturnEvent->GetValue() == "true")
+						{
+							this->mRestart = true;
+						}
+						else
+						{
+							this->mRestart = false;
+						}
+					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")
 				{
@@ -433,9 +445,11 @@ bool MainMenu::Run()
 				menuChange = false;
 			}
 		}
+		if(this->mRestart)
+			return true;
 	}
 	
-	return true;
+	return false;
 }
 
 void MainMenu::KeyBoardSteering(bool& IsClicked)

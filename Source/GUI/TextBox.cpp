@@ -29,6 +29,29 @@ TextBox::TextBox(float x, float y, float z, string textureName, float width, flo
 	
 	this->mMaxNrOfChars = maxNrOfChars;
 	this->mAllowedChars = allowedKeys;
+	this->mFrom = 0;
+	this->mTo = 9;
+
+	this->mFocused = false;
+	this->mPressed = false;
+	this->mPressedOutside = false;
+	this->mTextSize = textSize;
+}
+TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys, int from, int to) : Element(x, y, z, textureName, width, height)
+{
+	this->mActiveX = x;
+	this->mActiveY = y;
+
+	this->mActiveWidth = width;
+	this->mActiveHeight = height;
+
+	this->mText = text;
+	this->mName = name;
+	
+	this->mMaxNrOfChars = maxNrOfChars;
+	this->mAllowedChars = allowedKeys;
+	this->mFrom = from;
+	this->mTo = to;
 
 	this->mFocused = false;
 	this->mPressed = false;
@@ -113,7 +136,7 @@ bool TextBox::AddToRenderer(GraphicsEngine* ge)
 		char keys[NROFLETTERS] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' '};
 		char KEYS[NROFLETTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' '};
 		char specialChars[NROFSPECIAL] = {',', '.', ';', ':', '*', '?', '!', '<', '>', '-', '_'};
-		char numbers[10] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+		char numbers[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 		/*Check if a char is pressed*/
 		if(this->mAllowedChars == ALL || this->mAllowedChars == NORMALCHAR || this->mAllowedChars == NORMALCHAR_NR ||
@@ -137,7 +160,7 @@ bool TextBox::AddToRenderer(GraphicsEngine* ge)
 		if(this->mAllowedChars == ALL || this->mAllowedChars == NR || this->mAllowedChars == NORMALCHAR_NR ||
 				this->mAllowedChars == NR_SPECIAL)
 		{
-			for(int i = 0; i < 10; i++)
+			for(int i = this->mFrom; i < this->mTo+1; i++)
 			{
 				if(ge->GetKeyListener()->IsPressed(numbers[i]))
 				{
