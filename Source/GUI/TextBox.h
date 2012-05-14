@@ -53,5 +53,7 @@ public:
 
 	string GetText(){ return this->mPointText->GetText(); }
 
+	void SetText(string text){ this->mText = text; if(this->mPointText)this->mPointText->SetText(text); }
+
 	void CheckString(GraphicsEngine* ge);
 };

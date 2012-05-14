@@ -332,3 +332,18 @@ CheckBox* GUISet::GetCheckBox(string checkBox)
 	}
 	return NULL;
 }
+TextBox* GUISet::GetTextBox(string textBox)
+{
+	for(int i = 0; i < this->mNrOfElements; i++)
+	{
+		if(typeid(*this->mElements[i]) == typeid(TextBox))
+		{
+			TextBox* temp = (TextBox*)this->mElements[i];
+			if(temp->GetName() == textBox)
+			{
+				return temp;
+			}
+		}
+	}
+	return NULL;
+}

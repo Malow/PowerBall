@@ -10,6 +10,7 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mSets = new GUISet[this->mNrOfSets]();
 	this->mRunning = true;
 	this->mRestart = false;
+	this->mNeedRestart = false;
 	this->mCurrentSet = MAINMENU;
 	this->mSubSet = NOMENU;
 
@@ -225,9 +226,7 @@ bool MainMenu::Run()
 						this->mSubSet = NOMENU;
 						this->mCurrentSet = MAINMENU;
 
-						//SAFE_DELETE(this->mGm);
-
-						
+						//SAFE_DELETE(this->mGm);						
 					}
 					if(tempEventSet == MAINMENU_PLAY)
 					{
@@ -368,7 +367,20 @@ bool MainMenu::Run()
 					this->mSets[this->mSubSet].AddSetToRenderer(this->mGe);
 					menuChange = true;
 					menuChangeTime = 50;
-					
+
+
+					if(this->mSubSet == OPTIONS_GRAPHICS) // A extraspecial case
+					{
+						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
+						string startValue = MaloW::convertNrToString(gep.FXAAQuality);
+
+						TextBox* temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("FXAA");
+						temp->SetText(startValue);
+
+						startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
+						temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("SHADOW");
+						temp->SetText(startValue);
+					}
 				}
 				else if(returnEvent->GetEventMessage() == "ChangeResEvent")
 				{
@@ -396,11 +408,15 @@ bool MainMenu::Run()
 							BackgroundSong::mPlaying = false;
 						}
 					}
-					if(tempReturnEvent->GetOption() == "Restart")
+					if(tempReturnEvent->GetOption() == "Apply")
 					{
+						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
+						TextBox* temp = this->mSets[this->mSubSet].GetTextBox("FXAA");
+						gep.FXAAQuality = atoi(temp->GetText().c_str());
+
 						if(tempReturnEvent->GetValue() == "true")
 						{
-							this->mRestart = true;
+							this->mRestart = false;
 						}
 						else
 						{
@@ -419,6 +435,18 @@ bool MainMenu::Run()
 					{
 						CheckBox* temp = this->mSets[OPTIONS_SOUND].GetCheckBox("Sound");
 						temp->SetChecked(BackgroundSong::mPlaying);
+					}
+					if(tempEventSet == OPTIONS_GRAPHICS)
+					{
+						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
+						string startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
+
+						TextBox* temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("FXAA");
+						temp->SetText(startValue);
+
+						startValue = MaloW::convertNrToString(gep.FXAAQuality);
+						temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("SHADOW");
+						temp->SetText(startValue);
 					}
 
 					int set = tempReturnEvent->GetSet();
@@ -446,7 +474,8 @@ bool MainMenu::Run()
 			}
 		}
 		if(this->mRestart)
-			return true;
+			if(this->mNeedRestart)
+				return true;
 	}
 	
 	return false;

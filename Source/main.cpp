@@ -17,7 +17,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	GraphicsEngineParams params;
 	params.windowWidth = 1600;
 	params.windowHeight = 900;
-	params.FXAAQuality = 0;			// 0 - 4 
+	params.FXAAQuality = 3;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;
 

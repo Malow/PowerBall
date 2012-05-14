@@ -93,7 +93,7 @@ void MainMenu::CreateOptionsMenu()
 		dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS].AddElement(tempElement);
 	
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("Restart", "true"),
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("Apply", "true"),
 		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS].AddElement(tempElement);
 	
@@ -101,13 +101,52 @@ void MainMenu::CreateOptionsMenu()
 	/*
 	* Subset code start here
 	*/
-	tempElement = new GUIPicture(dx * (400.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/Sound.png",
+	/*Sound*/
+	tempElement = new GUIPicture(dx * (375.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/Sound.png",
 		dx * (155.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 
-	tempElement = new CheckBox(dx * (555.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png",dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
+	tempElement = new CheckBox(dx * (530.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png",dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Sound", "true"), "Sound");
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
+
+	/*Graphic*/
+
+	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionsresolution.png", dx, windowHeight);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	float dropX = dx * (385.0f / 1200.0f) + offSet, dropY = windowHeight * (125.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	DropDownList* dropdownlist = (DropDownList*)tempElement;
+	
+	dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
+		"", "Media/Menus/EmptyMenu.png");
+	dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionsfxaa.png", dx, windowHeight);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionshadow.png", dx, windowHeight);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
+	string startValue = MaloW::convertNrToString(gep.FXAAQuality);
+
+	tempElement = new TextBox(offSet + dx * (525.0f / 1200.0f), windowHeight * (280.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
+		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "FXAA", 0.75f, 1, NR, 0, 4);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
+
+	tempElement = new TextBox(offSet + dx * (585.0f / 1200.0f), windowHeight * (195.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
+		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "SHADOW", 0.75f, 1, NR, 0, 6);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
 
 
 	tempElement = NULL;
@@ -168,8 +207,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonstartgameonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_ONLINE),
 		"Media/OnlineAndLanMenu/clickstartgameonline.png" , "Media/OnlineAndLanMenu/mouseoverstartgameonline.png", 
-		
-dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
+		dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_ONLINE].AddElement(tempElement);
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonsendonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_ONLINE),
@@ -197,6 +235,19 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 		dx * (1006.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 	
+	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (140.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	DropDownList* dropdownlist = (DropDownList*)tempElement;
+	
+	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
+		"", "Media/Menus/EmptyMenu.png");
+	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBKOTH, KOTH),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+
+	this->mSets[OPTIONS_LAN].AddElement(tempElement);
+
 	/*
 	* SUB MENUS START HERE
 	*
@@ -209,19 +260,6 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 
 	tempElement = new TextBox(offSet + dx * (395.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox300x30.png",
 		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "CTF Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
-	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
-
-	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (140.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
-	DropDownList* dropdownlist = (DropDownList*)tempElement;
-	
-	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
-		"", "Media/Menus/EmptyMenu.png");
-	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBKOTH, KOTH),
-		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
-		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-
 	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
 
 	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Flags.png",
@@ -242,7 +280,7 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	/*tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
 	dropdownlist = (DropDownList*)tempElement;
 
 	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBKOTH, KOTH),
@@ -252,7 +290,7 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 
-	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
+	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);*/
 	
 	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Seconds_To_Win.png",
 		dx * (375.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
@@ -279,7 +317,7 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "WARLOCK Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	/*tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
 	dropdownlist = (DropDownList*)tempElement;
 
 	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
@@ -289,7 +327,7 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 
-	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
+	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);*/
 }
 
 void MainMenu::CreateScene()

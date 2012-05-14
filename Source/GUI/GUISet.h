@@ -50,4 +50,6 @@ public:
 	GUIEvent* GetEventFromDropDown(string dropDownMenu);
 
 	CheckBox* GetCheckBox(string checkBox);
+
+	TextBox* GetTextBox(string textBox);
 };
