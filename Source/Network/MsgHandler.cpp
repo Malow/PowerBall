@@ -76,16 +76,16 @@ void MsgHandler::SendClientData()
 	int offset = 0;
 	this->AddToBuffer(bufW, offset, identifier);
 
-	KeyInput* command = this->mNet->GetNextCommand(this->mNet->GetIndex());
+	Command* command = this->mNet->GetNextCommand(this->mNet->GetIndex());
 	while(command != NULL)
 	{
-		this->AddToBuffer(bufW, offset, (char)command->numKeys);
-		for(int i = 0; i < command->numKeys; i++)
+		this->AddToBuffer(bufW, offset, (char)command->GetNumInputs());
+		for(int i = 0; i < command->GetNumInputs(); i++)
 		{
-			this->AddToBuffer(bufW, offset, command->keys[i]);
+			this->AddToBuffer(bufW, offset, command->GetInput(i));
 		}
-		this->AddToBuffer(bufW, offset, command->dt);
-		this->AddToBuffer(bufW, offset, command->forward);
+		this->AddToBuffer(bufW, offset, command->GetDuration());
+		this->AddToBuffer(bufW, offset, command->GetForward());
 
 		this->mNet->PopCommand(this->mNet->GetIndex());
 		command = this->mNet->GetNextCommand(this->mNet->GetIndex());

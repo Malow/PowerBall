@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stdafx.h"
+#include "..\stdafx.h"
 #include "ServerConnection.h"
-#include "Game Objects\PowerBall.h"
+#include "..\Game Objects\PowerBall.h"
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
-#include <queue>
+#include "CommandHandler.h"
 using namespace std;
 #define PLAYER_CAP 10
 #define FLOAT_EPSILON 0.01f //used for ignoring very tiny movements
@@ -14,25 +14,6 @@ using namespace std;
 #define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
 #define SERVER_SEND_MS 25.0f //MAX 1 PACKET PER XX MILLISECONDS
 #define CLIENT_SEND_MS 50.0f //MAX 1 PACKET PER XX MILLISECONDS
-
-struct KeyInput
-{
-	char keys[5];
-	int numKeys;
-	float dt;
-	D3DXVECTOR3 forward;
-	KeyInput()
-	{
-	}
-	KeyInput(char _keys[], int _numKeys, float _dt, D3DXVECTOR3 _forward)
-	{
-		for(int i = 0; i < _numKeys; i++)
-			this->keys[i]	= _keys[i];
-		this->numKeys	= _numKeys;
-		this->dt		= _dt;
-		this->forward	= _forward;
-	}
-};
 
 class GameNetwork
 {
@@ -45,7 +26,8 @@ private:
 	PlayerHistory		mPlayerHistories[PLAYER_CAP];
 	int					mIndex;
 	int					mNumPlayers;
-	queue<KeyInput*>	mKeyInputs[PLAYER_CAP];
+	//queue<KeyInput*>	mKeyInputs[PLAYER_CAP];
+	CommandHandler		mCommandHandlers[PLAYER_CAP];
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
 	float				mExecTime[PLAYER_CAP];
@@ -129,7 +111,7 @@ public:
 	float 		IsKeyPressed(const char key, const int index) const;
 	
 	/*! Returns true if the client is pressing the specified key. */
-	KeyInput* 	GetNextCommand(const int index);
+	Command* 	GetNextCommand(const int index);
 	void		PopCommand(const int index);
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the PowerBalls. */

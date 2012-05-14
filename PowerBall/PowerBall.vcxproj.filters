@@ -30,9 +30,6 @@
     <Filter Include="GUI\Event">
       <UniqueIdentifier>{fb76ef5f-9c4c-4310-99a4-0b99699d03a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Files\Network">
-      <UniqueIdentifier>{30a8626e-046c-4981-b1d8-1d3210e82d03}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sound Engine Files">
       <UniqueIdentifier>{a4843cc2-979d-4f6c-9809-013d07a66b92}</UniqueIdentifier>
     </Filter>
@@ -47,6 +44,9 @@
     </Filter>
     <Filter Include="Game Files\Game Objects">
       <UniqueIdentifier>{31256a25-7b79-42ab-9cc0-731710f8499a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Network">
+      <UniqueIdentifier>{677a7ff9-1331-4898-81eb-19ea9c0fa03f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -137,12 +137,6 @@
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\ServerConnection.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\GameNetwork.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GUI\DropDownList.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
@@ -185,9 +179,6 @@
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp">
       <Filter>Graphics Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\ServerInfo.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.cpp">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClCompile>
@@ -220,12 +211,6 @@
     </ClCompile>
     <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp">
       <Filter>GUI\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\PlayerHistory.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\MsgHandler.cpp">
-      <Filter>Game Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\GraphicsEngine\ParticleShader.cpp">
       <Filter>Graphics Engine Files</Filter>
@@ -298,6 +283,27 @@
     </ClCompile>
     <ClCompile Include="..\Source\GUI\SelectTeamEvent.cpp">
       <Filter>GUI\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\GameNetwork.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\CommandHandler.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\Command.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\PlayerHistory.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\ServerInfo.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\ServerConnection.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\MsgHandler.cpp">
+      <Filter>Game Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -412,12 +418,6 @@
     <ClInclude Include="..\Source\GraphicsEngine\Text.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\ServerConnection.h">
-      <Filter>Game Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\GameNetwork.h">
-      <Filter>Game Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\GUI\DropDownList.h">
       <Filter>GUI</Filter>
     </ClInclude>
@@ -454,9 +454,6 @@
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h">
       <Filter>Graphics Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\ServerInfo.h">
-      <Filter>Game Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\MaloWLib\TRDCamera.h">
       <Filter>Graphics Engine Files\MaloWLib</Filter>
     </ClInclude>
@@ -489,12 +486,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h">
       <Filter>GUI\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\PlayerHistory.h">
-      <Filter>Game Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\MsgHandler.h">
-      <Filter>Game Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GraphicsEngine\ParticleShader.h">
       <Filter>Graphics Engine Files</Filter>
@@ -570,6 +561,27 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\SelectTeamEvent.h">
       <Filter>GUI\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\GameNetwork.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\CommandHandler.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\Command.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\PlayerHistory.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\ServerInfo.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\ServerConnection.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\MsgHandler.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

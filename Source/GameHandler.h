@@ -18,7 +18,7 @@
 
 
 #include "GraphicsEngine.h"
-#include "GameNetwork.h"
+#include "Network\GameNetwork.h"
 class GameMode;
 
 class GameHandler

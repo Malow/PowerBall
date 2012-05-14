@@ -23,11 +23,6 @@ GameNetwork::~GameNetwork()
 	SAFE_DELETE_ARRAY(this->mPos);
 	SAFE_DELETE_ARRAY(this->mVel);
 	SAFE_DELETE_ARRAY(this->mFlagPos);
-	for(int i = 0; i < this->mNumPlayers; i++)
-	{
-		while(this->mKeyInputs[i].size() > 0)
-			this->PopCommand(i);
-	}
 }
 
 void GameNetwork::SetForwardVector(const D3DXVECTOR3 forward, const int index)
@@ -80,14 +75,14 @@ void GameNetwork::AddKeyInput(const int index, char keys[], const int numKeys, c
 			if(previousKeys[i] != keys[i])
 				same = false;
 		}
-		if(!same || this->mKeyInputs[index].empty())
+		if(!same || this->mCommandHandlers[index].Empty())
 		{
-			this->mKeyInputs[index].push(new KeyInput(keys, numKeys, dt, forward));
+			this->mCommandHandlers[index].Push(keys, numKeys, dt, forward);
 		}
 		else
 		{
-			KeyInput* command = this->mKeyInputs[index].back();
-			command->dt += dt;
+			Command* command = this->mCommandHandlers[index].Back();
+			command->ModifyDuration(dt);
 		}
 	
 		for (int i = 0; i < 5; i++)
@@ -102,38 +97,16 @@ void GameNetwork::AddKeyInput(const int index, char keys[], const int numKeys, c
 	}
 	else
 	{
-		this->mKeyInputs[index].push( new KeyInput(keys, numKeys, dt, forward));
+		this->mCommandHandlers[index].Push(keys, numKeys, dt, forward);
 	}
 }
-KeyInput* GameNetwork::GetNextCommand(const int index) 
+Command* GameNetwork::GetNextCommand(const int index) 
 {
-	if(this->mKeyInputs[index].size() > 0) // size has a max limit too it seems, so check that too
-	{
-		try
-		{
-			return this->mKeyInputs[index].front();
-		}
-		catch(exception e)
-		{
-			return NULL;
-		}
-	}
-	else return NULL;
+	return this->mCommandHandlers[index].Front();
 }
 void GameNetwork::PopCommand(const int index)
 {
-	if(!this->mKeyInputs[index].empty())
-	{
-		try
-		{		
-			KeyInput* temp =  this->mKeyInputs[index].front();
-			this->mKeyInputs[index].pop();
-			delete temp;
-		}
-		catch(exception e)
-		{
-		}
-	}
+	this->mCommandHandlers[index].Pop();
 }
 void GameNetwork::AddMovementPowerBall(PowerBall* PowerBall)
 {
