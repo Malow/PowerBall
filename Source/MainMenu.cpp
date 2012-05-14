@@ -149,7 +149,7 @@ bool MainMenu::Run()
 						string serverName = "PowerBall server";
 
 						/* Getting some needed info to start a server*/
-						GUIEvent* tempEvent = this->mSets[this->mSubSet].GetEventFromDropDown("GameMode");
+						GUIEvent* tempEvent = this->mSets[this->mCurrentSet].GetEventFromDropDown("GameMode");
 						ChangeSubSetEvent* GameMode = (ChangeSubSetEvent*) tempEvent;
 						if(GameMode->GetGameMode() == CTF)
 						{

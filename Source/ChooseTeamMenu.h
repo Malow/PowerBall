@@ -10,7 +10,7 @@
 #include "stdafx.h"
 #include "GameOptions.h"
 
-enum INGAMEMENU {CTMENU,
+enum TEAM_MENU {CTMENU,
 	BLUE_TEAM,
 	RED_TEAM,
 };

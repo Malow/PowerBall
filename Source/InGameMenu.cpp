@@ -110,19 +110,16 @@ bool InGameMenu::Run()
 	bool mousePressed = false;
 	GUIEvent *returnEvent = NULL;
 	this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
+
+	CursorControl cc;
+	cc.SetVisibility(true);
+
 	while(this->mIsRunning)
 	{
 		/*If mouse is clicked*/
 		if(IsClicked && !mousePressed)
 		{
 			mousePressed = true;
-		}
-		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-		{
-			this->mSets[INGAMEMENU].RemoveSetFromRenderer(this->mGe);
-			this->mIsRunning = false;
-			this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
-			return true;
 		}
 		this->mGe->Update();
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
@@ -215,5 +212,6 @@ bool InGameMenu::Run()
 		if(!this->mGe->isRunning())
 			this->mIsRunning = false;
 	}
+	cc.SetVisibility(false);
 	return true;
 }

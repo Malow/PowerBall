@@ -7,19 +7,26 @@ void test();
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 {
-	
 #if defined(DEBUG) || defined(_DEBUG)
 	myInitMemoryCheck();
 #endif
-	MaloW::ClearDebug();
 	//_CrtSetBreakAlloc(1537);
-	// Create parameters for the graphics engine, LOAD THEM FROM .cfg-FILE later on!
+
+	MaloW::ClearDebug();
+	
 	GraphicsEngineParams params;
-	params.windowWidth = 1600;
+	/*params.windowWidth = 1600;
 	params.windowHeight = 900;
 	params.FXAAQuality = 3;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = TRD;
+	params.CamType = TRD;*/
+	params.LoadFromeFile("config.cfg");
+	/*	Structure of cfg file:
+	windowWidth
+	windowHeight
+	ShadowMapQuality
+	FXAAQuality
+	*/
 
 
 	// RunAgain for changing resolution etc.
@@ -42,6 +49,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		// Delete graphics engine
 		delete ge;
 	//}
+
+
 	#if defined(DEBUG) || defined(_DEBUG)
 		myDumpMemoryLeaks();
 	#endif

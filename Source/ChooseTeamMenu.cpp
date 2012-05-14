@@ -73,13 +73,6 @@ int ChooseTeamMenu::Run()
 		{
 			mousePressed = true;
 		}
-		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-		{
-			this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
-			this->mIsRunning = false;
-			this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
-			return true;
-		}
 
 		this->mGe->Update();
 		IsClicked = this->mGe->GetKeyListener()->IsClicked(1);
