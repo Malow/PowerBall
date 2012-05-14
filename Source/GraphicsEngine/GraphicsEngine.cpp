@@ -15,8 +15,7 @@ int GraphicsEngineParams::windowWidth = 1024;
 int GraphicsEngineParams::windowHeight = 768;
 int GraphicsEngineParams::ShadowMapSettings = 0;
 int GraphicsEngineParams::FXAAQuality = 0;
-MaloW::KeyListener* GraphicsEngineParams::kl = NULL;
-CameraType GraphicsEngineParams::CamType = FPS;
+CameraType GraphicsEngineParams::CamType = TRD;
 
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {

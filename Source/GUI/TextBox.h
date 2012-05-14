@@ -27,6 +27,8 @@ private:
 	float mTextSize;
 	int mMaxNrOfChars;
 	int mAllowedChars;
+	int mFrom;
+	int mTo;
 
 	string mText;
 	string mName;
@@ -35,6 +37,7 @@ private:
 public:
 	TextBox();
 	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys);
+	TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys, int from, int to);
 	virtual ~TextBox();
 
 	/*! Adds the element to the renderer*/
