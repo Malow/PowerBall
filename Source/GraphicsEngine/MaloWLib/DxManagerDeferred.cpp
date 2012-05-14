@@ -329,7 +329,7 @@ void DxManager::RenderInvisibilityEffect() //***********
 	//Per frame
 	this->Shader_InvisibilityEffect->SetInt("width", this->params.windowWidth); 
 	this->Shader_InvisibilityEffect->SetInt("height", this->params.windowHeight); 
-	this->Shader_InvisibilityEffect->SetInt("blurSize", 3);
+	this->Shader_InvisibilityEffect->SetInt("blurSize", 5);
 
 	//Invisible(effect) geometry
 	D3DXMATRIX wvp;
