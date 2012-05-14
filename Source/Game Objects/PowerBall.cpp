@@ -36,7 +36,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mTempPosition = position;
 	this->mSteering      = true;
 	this->mNrOfSpells	 = 0;
-	this->mMaxNrOfSpells = 4;
+	this->mMaxNrOfSpells = 5;
 	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
 	this->mRoundsWon	 = 0;
 	this->mWinTimerActivated = false;
@@ -44,7 +44,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam	= 5;
 	this->mMaxVelocity	 = 10.0f;
-	this->mAcceleration	 = Vector3(0,-9.81f,0);//(0,0,0);//
+	this->mAcceleration	 = Vector3(0,-9.81f,0);
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
@@ -58,6 +58,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
+	this->mTeamColor = TEAM::NOTEAM;
 	this->mSound		  = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
@@ -615,13 +616,19 @@ bool PowerBall::collisionWithPlatformSimple(Map* p, Vector3 &normalPlane)
 	if(firstHit)
 	{
 		// for checking if the ball are in the air not turned on at the moment, 
-		float eps = 0.0001f;
-		if( (lengthProjN > (this->mRadius - eps)) && (lengthProjN < (this->mRadius + eps)) )
-			this->mInTheAir = true;
+		float eps = 0.001f;
+		if( (lengthProjN < (this->mRadius + eps)) && (lengthProjN > (this->mRadius - eps)) )
+		{
+			this->mNormalContact = normalStore;
+			this->mHasContact = true;
+		}
 		else 
-			this->mInTheAir = false;
+		{
+			this->mNormalContact = normalStore;
+			this->mHasContact = false;
+		}
 
-		if( lengthProjN < this->mRadius)
+		if( lengthProjN <= this->mRadius)
 		{
 			Vector3 velNorm = this->mVelocity;
 			velNorm.normalize();
@@ -647,16 +654,22 @@ bool PowerBall::collisionWithPlatformSimple(Map* p, Vector3 &normalPlane)
 			//this->SetPosition(newPo);
 			this->SetTempPosition(newPo);
 			normalPlane = normalStore;
+			//this->mNormalContact = normalPlane;
+			//this->mHasContact  = true;
 			return true;
 		}
 		else
 		{
 			normalPlane = Vector3(0,0,0);
+			//this->mNormalContact = normalPlane;
+			//this->mHasContact  = false;
 			return false;
 		}
 		
 	}
 	normalPlane = Vector3(0,0,0);
+	this->mNormalContact = normalPlane;
+	//this->mHasContact  = false;
 	return false;
 }
 
@@ -709,6 +722,8 @@ void PowerBall::collisionPlatformResponse(Map* p, Vector3 normalPlane, float dt)
 	float e = p->GetRestitution();
 	float newdt = dt*0.001f;
 	v1y -= v1y*pow(this->mFriction, 2)*newdt;
+	
+
 
 	this->mVelocity = Vector3( v1x*(m1-e*m2)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y);
 	//this->mAcceleration = Vector3(0,0,0);

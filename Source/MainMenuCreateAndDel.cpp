@@ -92,10 +92,10 @@ void MainMenu::CreateOptionsMenu()
 		"Media/OptionsMenu/clickbasic.png", "Media/OptionsMenu/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), 
 		dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS].AddElement(tempElement);
-	/*
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonadvanced.png", dx, windowHeight, new NoEvent(), "Media/OptionsMenu/clickadvanced.png", "Media/OptionsMenu/mouseoveradvanced.png", dx * (496.0f / 1200) + offSet, windowHeight * (26.0f / 900), dx * (222.0f / 1200), windowHeight * (30.0f / 900));
-	this->mSets[OPTIONS_GAMEPLAY].AddElement(tempElement);
-	*/
+	
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("Restart", "true"),
+		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
+	this->mSets[OPTIONS].AddElement(tempElement);
 	
 
 	/*
@@ -214,7 +214,7 @@ dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200)
 	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (140.0f / 900.0f);
 	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
-
+	
 	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
 		"", "Media/Menus/EmptyMenu.png");
 	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBKOTH, KOTH),

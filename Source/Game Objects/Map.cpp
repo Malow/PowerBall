@@ -15,7 +15,7 @@ Map::Map(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMaxAngleZ	 = 0.0f;
 	this->mMeshHotZone = NULL;
 	this->mAngleY = 0.0f;
-	
+	this->mTimeInHotZoneContinuously = 0.0f;
 }
 Map::~Map()
 {

@@ -16,11 +16,27 @@
 #include "..\Spells\SprintSpell.h"
 #include "..\Spells\HardenSpell.h"
 #include "..\Spells\InvisibilitySpell.h"
+#include "..\Spells\JumpSpell.h"
 
 class Warlock : public GameMode
 {
 	private:
-			
+			Text* hudR1;
+			Text* hudR2;
+			Text* hudR3;
+			Text* hudR4;
+			Text* hudR5;
+			Text* hudR6;
+			Text* hudR7;
+			Text* hudR8;
+			Text* hudR9;
+			Text* hudR10;
+			Text* hudR11;
+			Text* hudR12;
+			Text* hudR13;
+			Text* hudR14;
+			Text* hudR15;
+			Text* hudR16;
 	public:
 			Warlock();
 			Warlock(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);
@@ -30,6 +46,7 @@ class Warlock : public GameMode
 			virtual void Play();
 			virtual void ShowStats();
 			virtual bool checkWinConditions(float dt);
+			void ShowHud();
 			void AddBall();
 
 	

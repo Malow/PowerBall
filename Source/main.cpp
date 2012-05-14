@@ -34,8 +34,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 		ge->CreateSkyBox("Media/skymap.dds");
-	
-		ge->LoadingScreen("Media/LoadingScreen/StartScreen.png", "", 0.0f, 1.0f, 1.0f, 1.0f);
 
 		//test();	// Instead of ifndef lol
 

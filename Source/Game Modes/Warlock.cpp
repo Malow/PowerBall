@@ -22,6 +22,7 @@ Warlock::Warlock(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 		this->mNet = net;
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
+		
 	
 }
 
@@ -32,6 +33,7 @@ Warlock::~Warlock()
 			this->mGe->DeleteLight(this->mLights[i]);
 		}
 		SAFE_DELETE(this->mIGM);
+
 }
 
 void Warlock::Initialize()
@@ -66,7 +68,7 @@ void Warlock::Initialize()
 		}
 		this->mNet->SetForwardVectors(forwardVectors, 4);
 		this->mPlatform		= new Map("Media/Cylinder.obj", centerPlatform);
-		this->mPlatform->SetScale(Vector3(3,3,3));
+		this->mPlatform->SetScale(Vector3(5,5,5));
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
 		this->mPlatform->SetShrinkValue(0.0f);
 		/*
@@ -94,8 +96,25 @@ void Warlock::Play()
 		this->mGe->Update();
 		int numAlivePlayers = 0;
 		float warlockTimer = 0;
-		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
-		string s;
+		
+		
+		this->hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
+		this->hudR2 = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1");
+		this->hudR3 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
+		this->hudR4 = mGe->CreateText("",D3DXVECTOR2(20,190),1.0f,"Media/Fonts/1");
+		this->hudR5 = mGe->CreateText("",D3DXVECTOR2(20,240),1.0f,"Media/Fonts/1");
+		this->hudR6 = mGe->CreateText("",D3DXVECTOR2(20,290),1.0f,"Media/Fonts/1");
+		this->hudR7 = mGe->CreateText("",D3DXVECTOR2(20,800),1.0f,"Media/Fonts/1");
+		this->hudR8 = mGe->CreateText("",D3DXVECTOR2(260,800),1.0f,"Media/Fonts/1");
+		this->hudR9 = mGe->CreateText("",D3DXVECTOR2(500,800),1.0f,"Media/Fonts/1");
+		this->hudR10 = mGe->CreateText("",D3DXVECTOR2(740,800),1.0f,"Media/Fonts/1");
+		this->hudR11 = mGe->CreateText("",D3DXVECTOR2(980,800),1.0f,"Media/Fonts/1");
+
+		this->hudR12 = mGe->CreateText("",D3DXVECTOR2(70,740),1.0f,"Media/Fonts/1");
+		this->hudR13 = mGe->CreateText("",D3DXVECTOR2(310,740),1.0f,"Media/Fonts/1");
+		this->hudR14 = mGe->CreateText("",D3DXVECTOR2(550,740),1.0f,"Media/Fonts/1");
+		this->hudR15 = mGe->CreateText("",D3DXVECTOR2(790,740),1.0f,"Media/Fonts/1");
+		this->hudR16 = mGe->CreateText("",D3DXVECTOR2(1030,740),1.0f,"Media/Fonts/1");
 
 	
 		LARGE_INTEGER oldTick = LARGE_INTEGER();
@@ -126,19 +145,12 @@ void Warlock::Play()
 					if(i != this->mNet->GetIndex())
 					{
 						this->HandleClientKeyInputs(i, diff);
-						this->mBalls[i]->Update(diff, true);
 					}
 					else
 					{
 						this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
-						this->mBalls[i]->Update(diff, false);
 					}	
-	
-				}
-			
-				
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
+
 					PowerBall* b1 = this->mBalls[i];
 					for(int j = i+1; j < this->mNumberOfPlayers; j++)
 					{
@@ -150,11 +162,19 @@ void Warlock::Play()
 					Vector3 normalPlane;
 					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+	
 				}
-
+			
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
 					this->mBalls[i]->UpdatePost();
+					bool clientBall = true;
+					if(i == this->mNet->GetIndex())
+						clientBall = false;
+
+					this->mBalls[i]->Update(diff, clientBall); //split up due to the balls affecting each other, so cant send final position until all balls updated
+					clientBall = true;
+
 				}
 
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
@@ -172,8 +192,6 @@ void Warlock::Play()
 					{
 						D3DXVECTOR3 rotVector = this->mNet->GetPos(i) - this->mBalls[i]->GetPosition();
 						this->mBalls[i]->SetPosition(this->mNet->GetPos(i));
-						this->mBalls[i]->SetTempPosition(this->mNet->GetPos(i));
-						this->mBalls[i]->SetVelocity(this->mNet->GetVel(i));
 						this->mBalls[i]->Rotate(rotVector);
 					}
 				}
@@ -184,10 +202,6 @@ void Warlock::Play()
 					this->SendKeyInputs(i, diff);
 					this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
 				
-
-					this->mBalls[i]->Update(diff);
-
-
 					for(int c = 0; c < this->mNumberOfPlayers; c++)
 					{
 						PowerBall* b1 = this->mBalls[c];
@@ -206,6 +220,8 @@ void Warlock::Play()
 
 
 					this->mBalls[i]->UpdatePost();
+
+					this->mBalls[i]->Update(diff);
 				
 
 					this->mNet->AddMovementPowerBall(this->mBalls[i]);
@@ -237,16 +253,30 @@ void Warlock::Play()
 			}
 			if(!this->mGe->isRunning())
 				running = false;
-			float tmp = (600.0f - this->mTimeElapsed);
-			tmp = floor(tmp * 10.0f) / 10.0f;
-			s = "Timer: " + MaloW::convertNrToString(tmp);
-			hudR1->SetText(s);
-			if(this->mNet->IsServer())
+			
+			this->ShowHud();
+
 			if(this->checkWinConditions(diff))
 				running = false;
 			
 		}
-		mGe->DeleteText(hudR1);
+		mGe->DeleteText(this->hudR1);
+		mGe->DeleteText(this->hudR2);
+		mGe->DeleteText(this->hudR3);
+		mGe->DeleteText(this->hudR4);
+		mGe->DeleteText(this->hudR5);
+		mGe->DeleteText(this->hudR6);
+		mGe->DeleteText(this->hudR7);
+		mGe->DeleteText(this->hudR8);
+		mGe->DeleteText(this->hudR9);
+		mGe->DeleteText(this->hudR10);
+		mGe->DeleteText(this->hudR11);
+		
+		mGe->DeleteText(this->hudR12);
+		mGe->DeleteText(this->hudR13);
+		mGe->DeleteText(this->hudR14);
+		mGe->DeleteText(this->hudR15);
+		mGe->DeleteText(this->hudR16);
 		this->mNet->Close();
 }
 
@@ -257,12 +287,136 @@ void Warlock::ShowStats()
 
 bool Warlock::checkWinConditions(float dt)
 {
-	float newdt = dt/1000.0f;
-	/* will be implemented when we have the rules, for now just play around in 600 seconds then gameover */
-	this->mTimeElapsed += newdt;
-	if(this->mTimeElapsed > 600.0f)
-		return true;
-	return false;
+		float newdt = dt/1000.0f;
+		/* will be implemented when we have the rules, for now just play around in 600 seconds then gameover */
+		this->mTimeElapsed += newdt;
+		if(this->mTimeElapsed > 600.0f)
+			return true;
+		return false;
+}
+
+void Warlock::ShowHud()
+{
+			string s;
+			
+			float tmp = (600.0f - this->mTimeElapsed);
+			tmp = floor(tmp * 10.0f) / 10.0f;
+			s = "Timer: " + MaloW::convertNrToString(tmp);
+			this->hudR1->SetText(s);
+			s = "Speed: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetVelocity().GetLength())/10.0f) + " m/s";
+			this->hudR2->SetText(s);
+			float y = floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().y)/10.0f;
+			if(y > -0.2f && y <0.2f)
+				y = 0.0f;
+			s = "Vector: ";
+			this->hudR3->SetText(s);
+			s = "x: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().x)/10.0f);
+			this->hudR4->SetText(s);
+			s = "y: " + MaloW::convertNrToString(y);
+			this->hudR5->SetText(s);
+			s = "z: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().z)/10.0f);
+			this->hudR6->SetText(s);
+			Spell** spells = this->mBalls[this->mNet->GetIndex()]->GetSpells();
+			if(spells[0]->InUse())
+				s = "Using";
+			else if(spells[0]->IsCharging())
+				s = "Charging";
+			else if(spells[0]->NeedCoolDown())
+				s = "ColdDown";
+			else
+				s = "Ready";
+			this->hudR7->SetText(s);
+
+			if(spells[1]->InUse())
+				s = "Using";
+			else if(spells[1]->IsCharging())
+				s = "Charging";
+			else if(spells[1]->NeedCoolDown())
+				s = "ColdDown";
+			else 
+				s = "Ready";
+			this->hudR8->SetText(s);
+
+			if(spells[2]->InUse())
+				s = "Using";
+			else if(spells[2]->IsCharging())
+				s = "Charging";
+			else if(spells[2]->NeedCoolDown())
+				s = "ColdDown";
+			else 
+				s = "Ready";
+			this->hudR9->SetText(s);
+
+			if(spells[3]->InUse())
+				s = "Using";
+			else if(spells[3]->IsCharging())
+				s = "Charging";
+			else if(spells[3]->NeedCoolDown())
+				s = "ColdDown";
+			else 
+				s = "Ready";
+			this->hudR10->SetText(s);
+
+			if(spells[4]->InUse())
+				s = "Using";
+			else if(spells[4]->IsCharging())
+				s = "Charging";
+			else if(spells[4]->NeedCoolDown())
+				s = "ColdDown";
+			else 
+				s = "Ready";
+			this->hudR11->SetText(s);
+
+			if(spells[0]->InUse())
+				s = "";
+			else if(spells[0]->IsCharging())
+				s = "";
+			else if(spells[0]->NeedCoolDown())
+				s = MaloW::convertNrToString(floor(10.0f*spells[0]->GetCoolDownTimeLeft())/10.0f);
+			else
+				s = "";
+			this->hudR12->SetText(s);
+
+			if(spells[1]->InUse())
+				s = "";
+			else if(spells[1]->IsCharging())
+				s = "";
+			else if(spells[1]->NeedCoolDown())
+				s = MaloW::convertNrToString(floor(10.0f*spells[1]->GetCoolDownTimeLeft())/10.0f);
+			else
+				s = "";
+			this->hudR13->SetText(s);
+
+			if(spells[2]->InUse())
+				s = "";
+			else if(spells[2]->IsCharging())
+				s = "";
+			else if(spells[2]->NeedCoolDown())
+				s = MaloW::convertNrToString(floor(10.0f*spells[2]->GetCoolDownTimeLeft())/10.0f);
+			else
+				s = "";
+			this->hudR14->SetText(s);
+
+			if(spells[3]->InUse())
+				s = "";
+			else if(spells[3]->IsCharging())
+				s = "";
+			else if(spells[3]->NeedCoolDown())
+				s = MaloW::convertNrToString(floor(10.0f*spells[3]->GetCoolDownTimeLeft())/10.0f);
+			else
+				s = "";
+			this->hudR15->SetText(s);
+
+			if(spells[4]->InUse())
+				s = "";
+			else if(spells[4]->IsCharging())
+				s = "";
+			else if(spells[4]->NeedCoolDown())
+				s = MaloW::convertNrToString(floor(10.0f*spells[4]->GetCoolDownTimeLeft())/10.0f);
+			else 
+				s = "";
+			this->hudR16->SetText(s);
+			
 }
 
 void Warlock::AddBall()
@@ -282,6 +436,7 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new SprintSpell());
 			temp[i]->AddSpell(new HardenSpell());
 			temp[i]->AddSpell(new InvisibilitySpell());
+			temp[i]->AddSpell(new JumpSpell());
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;
