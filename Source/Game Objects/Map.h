@@ -22,6 +22,8 @@ class Map : GameObject
 			Vector3		mHotZonePosition;
 			float		mHotZoneRadius;
 			float		mMaxTimeInHotZone;
+			float		mTimeInHotZoneContinuously;
+			float		mMaxTimeInHotZoneContinuously;
 			float		mTargetAngleX;
 			float		mTargetAngleZ;
 			bool		mIsRotating;
@@ -69,6 +71,9 @@ class Map : GameObject
 			/*! Returns the Maximum time the ball needs to be in hot zone. */
 			float GetMaxTimeInHotZone() const { return this->mMaxTimeInHotZone; }
 
+			/*! Returns the Maximum time the ball needs to be in the hotzone continuously. */
+			float GetMaxTimeInHotZoneContinuously() const { return this->mMaxTimeInHotZoneContinuously; }
+
 			/*! Returns the scale of the platform. */
 			Vector3 GetScale() const { return Vector3(this->mMesh->GetScaling()); }
 
@@ -93,6 +98,8 @@ class Map : GameObject
 			/*! Returns if the platform is going to rotate or not (around the x and z axis). */
 			bool GetRotate() const { return this->mIsRotating; }
 
+			/*! Returns the time for how long a ball has been continuously in the hot zone. */
+			float GetTimeInHotZoneContinuously() const { return this->mTimeInHotZoneContinuously; }
 
 			//Set-Functions
 	
@@ -107,6 +114,9 @@ class Map : GameObject
 
 			/*! Sets the Maximum time for hot zone. */
 			void SetMaxTimeInHotZone(float maxTime) { this->mMaxTimeInHotZone = maxTime; }
+
+			/*! Sets the Maximum time continuously for hot zone . */
+			void SetMaxTimeInHotZoneContinuously(float maxTime) { this->mMaxTimeInHotZoneContinuously = maxTime; }
 
 			/*! Sets the Mesh of the Hotzone. */
 			void SetMeshHotZone(StaticMesh* mesh) { this->mMeshHotZone = mesh; }
@@ -135,11 +145,17 @@ class Map : GameObject
 			/*! Sets the restitution a.k.a. e value for the platform. */
 			void SetRestition(float restitution) { this->mRestitution = restitution; }
 
+			/*! Add time to how long a ball has been continuously in the hot zone. */
+			void AddTimeInHotZoneContinuously(float dt) { this->mTimeInHotZoneContinuously = this->mTimeInHotZoneContinuously + dt; }
+
 			/*! Sets the position to the start position. */
 			virtual void SetToStartPosition();
 
 			/*! Reset the platforms scale. */
 			void Reset();
+
+			/*! Reset the time in hot zone counter. */
+			void ResetHotZone() { this->mTimeInHotZoneContinuously = 0.0f; } 
 
 			/*! Rotates the mesh around the x-axis. */
 			void RotateX(float dt);

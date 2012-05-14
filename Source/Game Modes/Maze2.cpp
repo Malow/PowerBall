@@ -132,9 +132,9 @@ void Maze2::Play()
 		
 		
 		
-			s = "X = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleX()*(180.0f/PI)));
+			s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetAngleX()*(180.0f/PI))/10.0f);
 			hudR2->SetText(s);
-			s = "Z = " + MaloW::convertNrToString(floor(this->mPlatform->GetAngleZ()*(180.0f/PI)));
+			s = "Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetAngleZ()*(180.0f/PI))/10.0f);
 			hudR3->SetText(s);
 		
 		

@@ -102,6 +102,7 @@
     <ClCompile Include="..\Source\Spells\ChargeSpell.cpp" />
     <ClCompile Include="..\Source\Spells\HardenSpell.cpp" />
     <ClCompile Include="..\Source\Spells\InvisibilitySpell.cpp" />
+    <ClCompile Include="..\Source\Spells\JumpSpell.cpp" />
     <ClCompile Include="..\Source\Spells\Spell.cpp" />
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
   </ItemGroup>
@@ -195,6 +196,7 @@
     <ClInclude Include="..\Source\Spells\ChargeSpell.h" />
     <ClInclude Include="..\Source\Spells\HardenSpell.h" />
     <ClInclude Include="..\Source\Spells\InvisibilitySpell.h" />
+    <ClInclude Include="..\Source\Spells\JumpSpell.h" />
     <ClInclude Include="..\Source\Spells\Spell.h" />
     <ClInclude Include="..\Source\Spells\SprintSpell.h" />
     <ClInclude Include="..\Source\stdafx.h" />

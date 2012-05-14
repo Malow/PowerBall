@@ -21,6 +21,8 @@ class PowerBall : public GameObject
 			float		mRestitution;
 			float		mRadius;
 			float		mDamping;
+			Vector3		mNormalContact;
+			bool		mHasContact;
 			Vector3		mSumAddedForce;
 			Vector3		mTempPosition;
 			Vector3		mVelocity;
@@ -45,7 +47,7 @@ class PowerBall : public GameObject
 			float		mRespawnTime;
 			float		mRespawnTimeLeft;
 			float		mTimeInHotZone;
-		
+			float		mTeamColor;
 			/* SoundEffects */
 			bool			mSound;
 			SoundEffect*	mCollisionWithWall;
@@ -133,6 +135,15 @@ class PowerBall : public GameObject
 			/*! Returns the time that has pased after your win timer was activated. */
 			float GetWinTimer() const { return this->mWinTimer; }
 
+			/*! Returns the normal of the contact surface. */
+			Vector3 GetNormalContact() const { return this->mNormalContact; }
+
+			/*! Returns a bool if the ball is in contact with any surface. */
+			bool GetHasContact() const { return this->mHasContact; }
+
+			/*! Returns the team color of the ball. */
+			int GetTeamColor() const { return this->mTeamColor; }
+
 			/*! Adds a item to the ball*/
 			void AddFlag(FlagCTF* item){ this->mFlag = item; }
 
@@ -210,6 +221,15 @@ class PowerBall : public GameObject
 
 			/*! Sets sound of if false. */
 			void SetSound(bool sound) { this->mSound = sound; }
+
+			/*! Sets the balls normal to the contacts surface. */
+			void SetNormalContact(Vector3 normal) { this->mNormalContact = normal; }
+
+			/*! Sets the has contact, that is saying that the ball has contact with a surface. */
+			void SetHasContact(bool contact) { this->mHasContact = contact; }
+
+			/*! Sets the team of the ball. */
+			void SetTeamColor(int team) { this->mTeamColor = team; }
 
 			/*! Updates the ball. */
 			void Update(const float dt, bool clientBall = false);
