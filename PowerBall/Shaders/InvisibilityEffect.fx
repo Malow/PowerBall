@@ -63,6 +63,9 @@ float4 PSScene(float4 pos : SV_POSITION) : SV_Target
 	}
 	blurColor.xyz /= pow(blurSize, 2);
 
+	//make it slightly more visible by ever so slightly reduce the brightness
+	blurColor.xyz -= 0.025f;
+
 	return blurColor;
 }
 
