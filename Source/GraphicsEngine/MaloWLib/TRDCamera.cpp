@@ -10,9 +10,11 @@ TRDCamera::TRDCamera(HWND g_hWnd, GraphicsEngineParams params) : Camera(g_hWnd, 
 	this->forward = D3DXVECTOR3(0, 0, 1);	// dummy vector, will be set when a ball is assigned 
 	this->forward = this->NormalizeVector(this->forward);
 	this->mTargetVector = D3DXVECTOR3(0, 0, 0);
+	this->mOldDistanceBall = D3DXVECTOR3(0, 0, 0);
 	//this->mBallToFollow = NULL;
 	this->mPowerBallToFollow = NULL;
 	this->mIsClicked = false;
+	this->mDisablePositionChanges = false;
 }
 
 TRDCamera::~TRDCamera()
@@ -70,10 +72,21 @@ void TRDCamera::updateSpecific(float delta)
 	*/
 	if(this->mPowerBallToFollow)
 	{
-		D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
-		this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mPowerBallToFollow->GetDistanceToCam();
-		this->pos = this->mPowerBallToFollow->GetPosition() - this->mTargetVector;
-		this->forward = this->NormalizeVector(this->mTargetVector);
+		if(!this->mDisablePositionChanges)
+		{
+			D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
+			this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mPowerBallToFollow->GetDistanceToCam();
+			this->pos = this->mPowerBallToFollow->GetPosition() - this->mTargetVector;
+			this->forward = this->NormalizeVector(this->mTargetVector);
+			this->mOldDistanceBall = this->mPowerBallToFollow->GetPosition();
+		}
+		else
+		{
+			D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
+			this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mPowerBallToFollow->GetDistanceToCam();
+			this->pos = this->mOldDistanceBall - this->mTargetVector;
+			this->forward = this->NormalizeVector(this->mTargetVector);
+		}
 		POINT p;
 		GetCursorPos(&p);
 		ScreenToClient(this->g_hWnd, &p);
@@ -173,4 +186,14 @@ void TRDCamera::calculateNewUp()
 	D3DXVECTOR3 left;
 	D3DXVec3Cross(&left, &this->up,&this->forward);
 	
+}
+
+void TRDCamera::disablePositionChanges()
+{
+	this->mDisablePositionChanges = true;
+}
+
+void TRDCamera::enablePositionChanges()
+{
+	this->mDisablePositionChanges = false;
 }

@@ -16,7 +16,6 @@
 class KingOfTheHill : public GameMode
 {
 	private:
-			
 	public:
 			KingOfTheHill();
 			KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);
@@ -24,6 +23,7 @@ class KingOfTheHill : public GameMode
 			virtual void Initialize();
 			virtual void Intro();
 			virtual void Play();
+			void PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
 			virtual void ShowStats();
 			virtual bool checkWinConditions(float dt);
 			void AddBall();

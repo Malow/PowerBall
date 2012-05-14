@@ -21,14 +21,18 @@ class Spell
 		float mTimerCounterInUse;
 		float mMaxTimeUse;
 		bool mIsInUse;
+		bool mCharging;
 		struct  backup
 		{
 			Vector3 velocity;
+			Vector3 acceleration;
+			Vector3 normalContact;
 			float maxSpeed;
 			float forcePress;
 			float mass;
 			float e;
 		};
+		bool mKeyUp;
 	public:
 		Spell();
 		virtual ~Spell();
@@ -36,9 +40,18 @@ class Spell
 		virtual void UpdateSpecial(float dt) = 0;
 		virtual void Use() = 0;
 		virtual void Restore() = 0;
+		void KeyUp();
 		void Ready();
 		virtual void InformCollision() = 0;
 		//void SetBall(Ball* ball) { this->mBall = ball; }
 		void SetPowerBall(PowerBall* ball) { this->mPowerBall = ball; }
 		bool SpellInUse();
+		float GetCoolDownTimeLeft() const { return (this->mTimeNeededToCoolDown - this->mTimerCounterCoolDown); }
+		bool InUse() const { return this->mIsInUse; }
+		bool NeedCoolDown() const { return this->mNeedCoolDown; }
+		bool IsCharging() const { return this->mCharging; }
+		
+		
+		
+
 };

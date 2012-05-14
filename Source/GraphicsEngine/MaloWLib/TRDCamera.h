@@ -12,6 +12,8 @@ private:
 		//Ball* mBallToFollow;
 		PowerBall* mPowerBallToFollow;
 		bool mIsClicked;
+		bool mDisablePositionChanges;
+		D3DXVECTOR3 mOldDistanceBall;
 		POINT mOldPos;
 public:
 	TRDCamera(HWND g_hWnd, GraphicsEngineParams params);
@@ -31,6 +33,8 @@ public:
 	void removeFollowBall() { //this->mBallToFollow = NULL; 
 		this->mPowerBallToFollow = NULL;}
 	void calculateNewUp();
+	void disablePositionChanges();
+	void enablePositionChanges();
 };
 
 

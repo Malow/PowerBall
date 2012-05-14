@@ -400,10 +400,11 @@ HRESULT DxManager::Init()
 
 	//Invisibility effect shader
 	D3D11_INPUT_ELEMENT_DESC InvisibilityEffectDesc[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	this->Shader_InvisibilityEffect = new Shader();
-	if(FAILED(this->Shader_InvisibilityEffect->Init(this->Dx_Device, this->Dx_DeviceContext, "Shaders/InvisibilityEffect.fx", InvisibilityEffectDesc, 1)))
+	if(FAILED(this->Shader_InvisibilityEffect->Init(this->Dx_Device, this->Dx_DeviceContext, "Shaders/InvisibilityEffect.fx", InvisibilityEffectDesc, 2)))
 	{
 		MaloW::Debug("Failed to open InvisibilityEffect.fx");
 		return E_FAIL;

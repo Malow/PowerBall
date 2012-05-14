@@ -12,6 +12,9 @@ class ChargeSpell : public Spell
 {
 private:
 	backup mBackup;
+	bool mChargingDone;
+	float mTimeHoldButton;
+	
 public:
 	ChargeSpell();
 	//ChargeSpell(Ball* ball);

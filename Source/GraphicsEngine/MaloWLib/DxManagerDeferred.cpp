@@ -246,41 +246,6 @@ void DxManager::RenderDeferredPerPixel()
 
 void DxManager::RenderInvisibilityEffect() //***********
 {
-	/** format prob.**
-	D3D11_TEXTURE2D_DESC texDesc;
-	ZeroMemory(&texDesc, sizeof(texDesc));
-	texDesc.Width = this->params.windowWidth;
-	texDesc.Height = this->params.windowHeight;	
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	texDesc.CPUAccessFlags = 0;
-	texDesc.MiscFlags = 0;
-
-	//create texture
-	ID3D11Texture2D* sceneTex;
-	this->Dx_Device->CreateTexture2D(&texDesc, NULL, &sceneTex);	
-
-	ID3D11Resource* res;
-	this->Dx_RenderTargetView->GetResource(&res);
-	//copy data from the resource to the texture
-	this->Dx_DeviceContext->CopyResource(sceneTex, res);
-
-	ID3D11ShaderResourceView* srv;
-	this->Dx_Device->CreateShaderResourceView(res, NULL, &srv); 
-	
-	this->Shader_InvisibilityEffect->SetResource("scene", srv);
-	**/
-
-
-	//clear and set render target/depth
-	//this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
-	//this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
-
 	HRESULT hr = S_OK;
 
 	//get the surface/texture from the swap chain
@@ -331,6 +296,9 @@ void DxManager::RenderInvisibilityEffect() //***********
 	this->Shader_InvisibilityEffect->SetInt("height", this->params.windowHeight); 
 	this->Shader_InvisibilityEffect->SetInt("blurSize", 5);
 
+	//this->Shader_InvisibilityEffect->SetBool("ballOwner", true); //**test**
+	//this->Shader_InvisibilityEffect->SetInt("teamColor", YELLOW_COLOR); //**test**
+
 	//Invisible(effect) geometry
 	D3DXMATRIX wvp;
 	for(int i = 0; i < this->objects.size(); i++)
@@ -339,15 +307,27 @@ void DxManager::RenderInvisibilityEffect() //***********
 		{
 			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
 		
-			//Per object
+			//Per object/mesh
 			wvp = this->objects[i]->GetWorldMatrix() * this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
 			this->Shader_InvisibilityEffect->SetMatrix("WVP", wvp);
 
 			//Per strip
 			for(int u = 0; u < strips->size(); u++)
 			{
-				//Set topology
 				Object3D* obj = strips->get(u)->GetRenderObject();
+
+				//Set texture
+				if(ID3D11ShaderResourceView* texture = obj->GetTexture())
+				{
+					this->Shader_InvisibilityEffect->SetResource("ballTex", texture);
+					this->Shader_InvisibilityEffect->SetBool("textured", true);
+				}
+				else
+				{
+					this->Shader_InvisibilityEffect->SetBool("textured", false);
+				}
+
+				//Set topology
 				this->Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
 
 				//Apply vertex buffer
@@ -372,17 +352,14 @@ void DxManager::RenderInvisibilityEffect() //***********
 		}
 	}
 
-
-	//SAFE_RELEASE(sceneTex);
-	//SAFE_RELEASE(res);
-	//SAFE_RELEASE(srv);
-	
 	SAFE_RELEASE(backBufferTex);
 	SAFE_RELEASE(sceneTex);
 	SAFE_RELEASE(backBufferRTV);
 	SAFE_RELEASE(backBufferRTVResource);
 	SAFE_RELEASE(sceneSRV);
+
 	this->Shader_InvisibilityEffect->SetResource("sceneTex", NULL);
+	this->Shader_InvisibilityEffect->SetResource("ballTex", NULL);
 }
 
 void DxManager::RenderQuadDeferred()

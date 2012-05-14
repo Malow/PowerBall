@@ -14,6 +14,11 @@ enum GAMEMODE{
 	CREDITS,
 	CREDITS2
 };
+enum TEAM{
+	NOTEAM = 0,
+	BLUETEAM = 1,
+	REDTEAM = 2
+};
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <D3D11.h>
