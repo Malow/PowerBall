@@ -201,40 +201,40 @@ void GameMode::SendKeyInputs(const int clientIndex, float diff)
 void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 {
 	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
-	KeyInput* command = this->mNet->GetNextCommand(clientIndex);
+	Command* command = this->mNet->GetNextCommand(clientIndex);
 	float duration = 0.0f;
 	if(command != NULL)
 	{
-		duration = command->dt;
+		duration = command->GetDuration();
 		while(duration <=  diff && command != NULL)
 		{
-			this->mBalls[clientIndex]->SetForwardVector(command->forward);
-			for(int c = 0; c < command->numKeys; c++)
+			this->mBalls[clientIndex]->SetForwardVector(command->GetForward());
+			for(int c = 0; c < command->GetNumInputs(); c++)
 			{
-				this->ClientKeyPress(command->dt, clientIndex, command->keys[c]);
+				this->ClientKeyPress(command->GetDuration(), clientIndex, command->GetInput(c));
 			}
-			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + command->dt, clientIndex);
+			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + command->GetDuration(), clientIndex);
 			this->mNet->PopCommand(clientIndex);
 
 
 			command = this->mNet->GetNextCommand(clientIndex);
 			if(command != NULL)
-				duration += command->dt;
+				duration += command->GetDuration();
 								
 		}
 		if(duration > diff && command != NULL)
 		{
-			this->mBalls[clientIndex]->SetForwardVector(command->forward);
-			duration -= command->dt;
+			this->mBalls[clientIndex]->SetForwardVector(command->GetForward());
+			duration -= command->GetDuration();
 									
-			for(int c = 0; c < command->numKeys; c++)
+			for(int c = 0; c < command->GetNumInputs(); c++)
 			{
 				//ADD A CHECK HERE SO THAT THE SAME KEY CANT APPEAR MORE THAN ONCE IN THE ARRAY (COULD CHEAT THE SYSTEM THIS WAY)
 				
-				this->ClientKeyPress((diff - duration), clientIndex, command->keys[c]);
+				this->ClientKeyPress((diff - duration), clientIndex, command->GetInput(c));
 			}
 
-			command->dt -= (diff - duration);
+			command->ModifyDuration(-(diff - duration));
 								
 			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + (diff - duration), clientIndex);
 		}

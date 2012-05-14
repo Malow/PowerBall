@@ -10,7 +10,7 @@
 **/
 
 #include "..\Game Modes\GameMode.h"
-#include "..\GameNetwork.h"
+#include "..\Network\GameNetwork.h"
 #include "..\Spells\Spell.h"
 #include "..\Spells\ChargeSpell.h"
 #include "..\Spells\SprintSpell.h"

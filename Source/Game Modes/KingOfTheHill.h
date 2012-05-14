@@ -10,7 +10,7 @@
 **/
 
 #include "..\Game Modes\GameMode.h"
-#include "..\GameNetwork.h"
+#include "..\Network\GameNetwork.h"
 
 
 class KingOfTheHill : public GameMode

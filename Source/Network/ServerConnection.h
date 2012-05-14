@@ -1,11 +1,10 @@
 #pragma once
-#include "stdafx.h"
+#include "..\stdafx.h"
 #include <stdio.h>
 #include <tchar.h>
 #include "ServerInfo.h"
 #include "MsgHandler.h"
 #include <winsock2.h>
-#include <WinSock.h> //for le nupcomputer
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 1024

@@ -11,7 +11,7 @@
 #include "..\Game Objects\Map.h"
 #include "..\Game Objects\PowerBall.h"
 #include "..\InGameMenu.h"
-#include "..\GameNetwork.h"
+#include "..\Network\GameNetwork.h"
 
 class GameMode
 {

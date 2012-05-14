@@ -11,7 +11,7 @@
 **/
 
 #include "..\Game Modes\GameMode.h"
-#include "..\GameNetwork.h"
+#include "..\Network\GameNetwork.h"
 
 
 class CaptureTheFlag : public GameMode
