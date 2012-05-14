@@ -11,11 +11,14 @@
 
 #include "..\Game Modes\GameMode.h"
 #include "..\Network\GameNetwork.h"
+#include "ChooseTeamMenu.h"
 
 
 class KingOfTheHill : public GameMode
 {
 	private:
+		ChooseTeamMenu* mChooseTeamMenu;
+
 	public:
 			KingOfTheHill();
 			KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);

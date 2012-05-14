@@ -11,6 +11,7 @@ KingOfTheHill::KingOfTheHill()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
+		this->mChooseTeamMenu = NULL;
 }
 
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
@@ -22,7 +23,8 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mNet = net;
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
-	
+
+		this->mChooseTeamMenu = NULL;
 }
 
 KingOfTheHill::~KingOfTheHill()
@@ -32,6 +34,8 @@ KingOfTheHill::~KingOfTheHill()
 			this->mGe->DeleteLight(this->mLights[i]);
 		}
 		SAFE_DELETE(this->mIGM);
+
+		SAFE_DELETE(this->mChooseTeamMenu);
 }
 
 void KingOfTheHill::Initialize()
@@ -90,6 +94,7 @@ void KingOfTheHill::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		this->mIGM	= new InGameMenu(this->mGe);
 		
+		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 }
 
 void KingOfTheHill::Intro()
@@ -109,13 +114,18 @@ void KingOfTheHill::Play()
 		bool roundsLeft = true;
 		int roundsPlayed = 0;
 
-		
+		//choose team before starting the game
+		int team = this->mChooseTeamMenu->Run();
+		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
+
 		while(roundsLeft && this->mGe->isRunning())
 		{
 			this->PlayRound(roundsLeft, zoomInPressed, zoomOutPressed); 
 			roundsPlayed++;;
 			if(roundsPlayed == this->mNumberOfRounds)
 				roundsLeft = false;
+
+			this->mBalls[this->mNet->GetIndex()]->SetTeamColor(team);
 		}
 		
 		/*
