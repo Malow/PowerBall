@@ -652,7 +652,7 @@ bool PowerBall::collisionWithPlatformSimple(Map* p, Vector3 &normalPlane)
 	if(firstHit)
 	{
 		// for checking if the ball are in the air not turned on at the moment, 
-		float eps = 0.001f;
+		float eps = 0.5f; //0.001
 		if( (lengthProjN < (this->mRadius + eps)) && (lengthProjN > (this->mRadius - eps)) )
 		{
 			this->mNormalContact = normalStore;

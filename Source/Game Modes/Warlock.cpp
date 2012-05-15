@@ -432,6 +432,7 @@ void Warlock::AddBall()
 		{
 			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
 			temp[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
+			temp[i]->SetStartForwardVector(this->mNet->GetStartForwardVector(i));
 			temp[i]->AddSpell(new ChargeSpell());
 			temp[i]->AddSpell(new SprintSpell());
 			temp[i]->AddSpell(new HardenSpell());
