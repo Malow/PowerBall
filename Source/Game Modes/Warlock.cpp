@@ -66,7 +66,7 @@ void Warlock::Initialize()
 			D3DXVec3Normalize(&tempN, &temp);
 			forwardVectors[i] = tempN;
 		}
-		this->mNet->SetForwardVectors(forwardVectors, 4);
+		this->mNet->SetStartForwardVectors(forwardVectors, 4);
 		this->mPlatform		= new Map("Media/Cylinder.obj", centerPlatform);
 		this->mPlatform->SetScale(Vector3(5,5,5));
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
@@ -431,7 +431,7 @@ void Warlock::AddBall()
 		for(int i = old; i < this->mNumberOfPlayers; i++)
 		{
 			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
-			temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
+			temp[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
 			temp[i]->AddSpell(new ChargeSpell());
 			temp[i]->AddSpell(new SprintSpell());
 			temp[i]->AddSpell(new HardenSpell());

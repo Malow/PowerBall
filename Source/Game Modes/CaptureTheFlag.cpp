@@ -68,7 +68,7 @@ void CaptureTheFlag::Initialize()
 		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 		mGe->GetCamera()->LookAt(centerPlatform);	
-		this->mNet->SetForwardVectors(forwardVectors, 4);
+		this->mNet->SetStartForwardVectors(forwardVectors, 4);
 
 		this->mNumberOfRounds = 3;
 		this->mPlatform		= new Map("Media/CTFMap1.obj", centerPlatform);

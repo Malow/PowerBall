@@ -13,8 +13,10 @@ ChargeSpell::ChargeSpell()
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 	this->mTimeHoldButton = 0.0f;
+	this->mMaxChargingTime = 3.0f;
 	this->mCharging = false;
 	this->mChargingDone = false;
+	
 }
 
 /*ChargeSpell::ChargeSpell(Ball* ball)
@@ -40,6 +42,7 @@ ChargeSpell::ChargeSpell(PowerBall* ball)
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 	this->mTimeHoldButton = 0.0f;
+	this->mMaxChargingTime = 3.0f;
 	this->mCharging = false;
 	this->mChargingDone = false;
 }
@@ -61,7 +64,7 @@ void ChargeSpell::UpdateSpecial(float dt)
 		rotateAround.normalize();
 		this->mPowerBall->GetMesh()->RotateAxis(rotateAround.GetD3DVec(), (PI/2)*this->mTimeHoldButton*this->mTimeHoldButton*dt);
 		
-		if(this->mTimeHoldButton <= 5.0)
+		if(this->mTimeHoldButton <= this->mMaxChargingTime)
 		{
 			this->mTimeHoldButton += dt;	
 			Vector3 acc = this->mPowerBall->GetAcceleration();
@@ -73,13 +76,15 @@ void ChargeSpell::UpdateSpecial(float dt)
 		
 		if(!GetGraphicsEngine()->GetKeyListener()->IsPressed('1'))
 		{
+
+			if(this->mTimeHoldButton <= 1)
+				this->mTimeHoldButton = 0.5*this->mMaxChargingTime;
 			/* change back to old behaviour */
 			this->mPowerBall->SetAcceleration(this->mBackup.acceleration);
 			/* setting the Camera to follow the position changes again. */
 			((TRDCamera*)GetGraphicsEngine()->GetCamera())->enablePositionChanges();
 			this->mChargingDone = true;
 			this->mCharging = false;
-			this->mTimeHoldButton = 0.0f;
 			this->Use();
 		}
 
@@ -97,16 +102,18 @@ void ChargeSpell::Use()
 	{
 		if(this->mChargingDone)
 		{
+			
 
 			/* backup ball info */
 			this->mBackup.maxSpeed = this->mPowerBall->GetMaxVelocity();
 			/* new behaviour for ball */
-			this->mPowerBall->SetMaxVelocity(this->mPowerBall->GetMaxVelocity()*5.0f);
+			this->mPowerBall->SetMaxVelocity(this->mPowerBall->GetMaxVelocity()*5.0f*(this->mTimeHoldButton/this->mMaxChargingTime));
 			this->mPowerBall->SetSteering(false);
 			this->mPowerBall->SetVelocity(this->mPowerBall->GetForwardVector()*this->mPowerBall->GetMaxVelocity());
 		
 			this->mIsInUse = true;
 			this->mChargingDone = false;
+			this->mTimeHoldButton = 0.0f;
 		}
 		else
 		{

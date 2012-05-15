@@ -14,6 +14,7 @@ private:
 	backup mBackup;
 	bool mChargingDone;
 	float mTimeHoldButton;
+	float mMaxChargingTime;
 	
 public:
 	ChargeSpell();

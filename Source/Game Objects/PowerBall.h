@@ -30,8 +30,10 @@ class PowerBall : public GameObject
 			Spell**		mSpells;
 			int			mNrOfSpells;
 			int			mMaxNrOfSpells;
+			Matrix4		mLastRotation;
 			int			mRoundsWon;
 			Vector3		mForward;
+			Vector3		mStartForwardVector;
 			float		mDistanceCam;
 			float		mMaxVelocity;
 			Vector3		mAcceleration;
@@ -53,7 +55,7 @@ class PowerBall : public GameObject
 			SoundEffect*	mCollisionWithWall;
 			SoundEffect*	mCollisionWithBall;
 
-			ofstream file;
+			
 	public:
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position);
 			virtual ~PowerBall();
@@ -144,6 +146,9 @@ class PowerBall : public GameObject
 			/*! Returns the team color of the ball. */
 			int GetTeamColor() const { return this->mTeamColor; }
 
+			/*! Returns the start forward vector. */
+			Vector3 GetStartForwardVector() const { return this->mStartForwardVector; }
+
 			/*! Adds a item to the ball*/
 			void AddFlag(FlagCTF* item){ this->mFlag = item; }
 
@@ -229,10 +234,16 @@ class PowerBall : public GameObject
 			void SetHasContact(bool contact) { this->mHasContact = contact; }
 
 			/*! Sets the team of the ball. */
-			void SetTeamColor(int team) { this->mTeamColor = team; }
+			void SetTeamColor(int team);
+
+			/*! Sets the start forward vector. */
+			void SetStartForwardVector(Vector3 forward) { this->mStartForwardVector = forward; }
 
 			/*! Updates the ball. */
 			void Update(const float dt, bool clientBall = false);
+
+			/*! Updates the balls like if the ball belong to the platform. */
+			void UpdateBallParentMode(Map* map);
 	
 			/*! Post update the ball with the new position given by physics. And apply rotation */
 			void UpdatePost();

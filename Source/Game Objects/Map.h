@@ -157,6 +157,9 @@ class Map : GameObject
 			/*! Reset the time in hot zone counter. */
 			void ResetHotZone() { this->mTimeInHotZoneContinuously = 0.0f; } 
 
+			/*! Resets the rotation angles for x-axis and z-axis. */
+			void ResetXZAngles() { this->mAngleX = this->mAngleZ = 0.0f; }
+
 			/*! Rotates the mesh around the x-axis. */
 			void RotateX(float dt);
 

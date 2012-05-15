@@ -215,3 +215,10 @@ void Mesh::RecreateWorldMatrix()
 
 	this->worldMatrix = world;
 }
+
+void Mesh::ResetRotationAndScale()
+{
+	this->rotQuat = D3DXQUATERNION(0, 0, 0, 1);
+	this->scale = D3DXVECTOR3(1, 1, 1);
+	this->RecreateWorldMatrix();
+}

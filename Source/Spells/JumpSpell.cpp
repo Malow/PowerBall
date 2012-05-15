@@ -56,7 +56,7 @@ void JumpSpell::Use()
 		Vector3 normal = this->mPowerBall->GetNormalContact();
 		this->mBackup.normalContact = normal;
 		/* the speed of the jump is a litle bit faster than the "gravity speed" */
-		normal = normal*(this->mBackup.acceleration.GetLength()*1.5f); 
+		normal = normal*(this->mBackup.acceleration.GetLength()*2.0f); 
 		this->mPowerBall->SetAcceleration(normal);
 		
 		/*	saving information to know when the ball has jumped far enough from the position 

@@ -18,6 +18,7 @@ class KingOfTheHill : public GameMode
 {
 	private:
 		ChooseTeamMenu* mChooseTeamMenu;
+		int				mTeam;
 
 	public:
 			KingOfTheHill();
