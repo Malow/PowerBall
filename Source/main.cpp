@@ -74,16 +74,16 @@ void test()
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	
 	AnimatedMesh* flag = eng->CreateAnimatedMesh("Media/FlagRed.ani",  D3DXVECTOR3(8, 15, 8));
-	//flag->LoopSeamless();
+	flag->LoopSeamless();
 
-	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(15, 15, 8));
-	//flagb->LoopSeamless();
+	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(10, 15, 8));
+	flagb->LoopSeamless();
 	
-	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(8, 15, 8));
-	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(10, 15, 8));
-	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(12, 15, 8));
-	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(14, 15, 8));
-	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(12, 15, 8));
+	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(14, 15, 8));
+	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(18, 15, 8));
+	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
 
 	bth->Scale(0.1f);

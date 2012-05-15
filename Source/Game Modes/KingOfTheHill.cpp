@@ -117,11 +117,9 @@ void KingOfTheHill::Play()
 
 		//choose team before starting the game
 		this->mTeam = this->mChooseTeamMenu->Run();
-		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
 
 		while(roundsLeft && this->mGe->isRunning())
 		{
-
 			this->PlayRound(roundsLeft, zoomInPressed, zoomOutPressed); 
 			roundsPlayed++;;
 			if(roundsPlayed == this->mNumberOfRounds)
