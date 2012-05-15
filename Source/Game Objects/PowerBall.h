@@ -26,6 +26,7 @@ class PowerBall : public GameObject
 			Vector3		mSumAddedForce;
 			Vector3		mTempPosition;
 			Vector3		mVelocity;
+			Vector3		mPreviousVelocity;
 			bool		mSteering;
 			Spell**		mSpells;
 			int			mNrOfSpells;
