@@ -308,6 +308,9 @@
     <ClCompile Include="..\Source\Spells\JumpSpell.cpp">
       <Filter>Game Files\Spells</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\GameModeInfo.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -588,6 +591,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\Spells\JumpSpell.h">
       <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\GameModeInfo.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\BufferFunctions.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

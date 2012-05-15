@@ -27,10 +27,12 @@ private:
 	int					mIndex;
 	int					mNumPlayers;
 	//queue<KeyInput*>	mKeyInputs[PLAYER_CAP];
+	//create a network-ball class instead of having multiple arrays here.
 	CommandHandler		mCommandHandlers[PLAYER_CAP];
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
 	D3DXVECTOR3			mStartForwardVectors[PLAYER_CAP];
+	TEAM				mTeams[PLAYER_CAP];
 	float				mExecTime[PLAYER_CAP];
 	float				mLatency;
 	bool				mIsRunning;
@@ -48,6 +50,8 @@ public:
 	float		GetLatency() const {return this->mLatency;}
 	void		AddMovementPowerBall(PowerBall* PowerBall);
 	D3DXVECTOR3 		CorrectPosition();
+	void		SetTeam(TEAM team, int clientIndex){this->mTeams[clientIndex] = team;}
+	TEAM		GetTeam(int clientIndex) const {return this->mTeams[clientIndex];}
 
 	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
 	void SetExecTime(const float time, const int index){this->mExecTime[index] = time;}

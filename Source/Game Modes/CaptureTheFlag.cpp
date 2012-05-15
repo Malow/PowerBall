@@ -15,6 +15,7 @@ CaptureTheFlag::CaptureTheFlag()
 
 CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
+	
 		this->mGe = ge;
 		this->mNumberOfPlayers = 0;
 		this->mNumberOfRounds = 3;
@@ -69,8 +70,10 @@ void CaptureTheFlag::Initialize()
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 		mGe->GetCamera()->LookAt(centerPlatform);	
 		this->mNet->SetStartForwardVectors(forwardVectors, 4);
+		
+		CTFInfo* gmi = (CTFInfo*)this->mServerInfo.GetGameModeInfo();
+		this->mNumberOfRounds = gmi->GetNumRounds();
 
-		this->mNumberOfRounds = 3;
 		this->mPlatform		= new Map("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
 		
@@ -154,6 +157,8 @@ void CaptureTheFlag::Play()
 		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 		string s;
 
+		//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+
 	
 		LARGE_INTEGER oldTick = LARGE_INTEGER();
 		LARGE_INTEGER now =  LARGE_INTEGER();
@@ -173,6 +178,11 @@ void CaptureTheFlag::Play()
 
 			//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
 			QueryPerformanceCounter(&oldTick);
+			for(int i = 0; i < this->mNumberOfPlayers; i++)
+			{
+				if(this->mBalls[i]->GetTeamColor() != this->mNet->GetTeam(i)) //causes lag otherwise re-setting the color every frame if its alrdy set.
+					this->mBalls[i]->SetTeamColor(this->mNet->GetTeam(i));
+			}
 
 			if(this->mNet->IsServer())
 			{
@@ -382,7 +392,7 @@ void CaptureTheFlag::AddBall()
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
 		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
-		temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
+		//temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
 	}
 	delete[] this->mBalls;
 	this->mBalls = temp;		

@@ -151,18 +151,21 @@ bool MainMenu::Run()
 						/* Getting some needed info to start a server*/
 						GUIEvent* tempEvent = this->mSets[this->mCurrentSet].GetEventFromDropDown("GameMode");
 						ChangeSubSetEvent* GameMode = (ChangeSubSetEvent*) tempEvent;
+						GameModeInfo* gmi;
 						if(GameMode->GetGameMode() == CTF)
 						{
 							flags = atoi(this->mSets[this->mSubSet].GetTextFromField("Flags").c_str());
+							gmi = new CTFInfo(flags, 2);
 						}
 						else if(GameMode->GetGameMode() == KOTH)
 						{
 							secondsToWin = atoi(this->mSets[this->mSubSet].GetTextFromField("SecondsToWin").c_str());
 							rounds = atoi(this->mSets[this->mSubSet].GetTextFromField("Rounds").c_str());
+							gmi = new KOTHInfo(rounds, 2, secondsToWin, secondsToWin);
 						}
 						else if(GameMode->GetGameMode() == WARLOCK)
 						{
-
+							gmi = new WARLOCKInfo(3, 2);
 						}
 						serverName  = this->mSets[this->mSubSet].GetTextFromField("ServerName");
 						this->DeleteScene();
@@ -182,7 +185,7 @@ bool MainMenu::Run()
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "");
+							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "", gmi);
 							this->mGh->CreateGame(GameMode->GetGameMode(), host);
 							this->mGh->Start();
 

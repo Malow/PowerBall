@@ -14,12 +14,12 @@ KingOfTheHill::KingOfTheHill()
 		this->mChooseTeamMenu = NULL;
 		this->mTeam = TEAM::NOTEAM;
 }
-
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
 		this->mGe = ge;
 		this->mNumberOfPlayers = 0;
 		this->mNumberOfRounds = 3;
+
 		this->mGameMode = server.GetGameMode();
 		this->mNet = net;
 		this->mServerInfo = server;
@@ -72,7 +72,6 @@ void KingOfTheHill::Initialize()
 		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 		mGe->GetCamera()->LookAt(centerPlatform);	
-		this->mNumberOfRounds = 3;
 		this->mPlatform		= new Map("Media/KOTHMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
 		Vector3 hotZone = Vector3(0.0f,20.2f,0.0f);
@@ -81,8 +80,13 @@ void KingOfTheHill::Initialize()
 		this->mPlatform->SetHotZoneRadius(radius);
 		
 		
-		this->mPlatform->SetMaxTimeInHotZone(30.0f);
-		this->mPlatform->SetMaxTimeInHotZoneContinuously(10.0f);
+		//this->mPlatform->SetMaxTimeInHotZone(30.0f);
+		//this->mPlatform->SetMaxTimeInHotZoneContinuously(10.0f);
+		
+		KOTHInfo* gmi = (KOTHInfo*)this->mServerInfo.GetGameModeInfo();
+		this->mPlatform->SetMaxTimeInHotZone(gmi->GetMaxTimeAccumulated());
+		this->mPlatform->SetMaxTimeInHotZoneContinuously(gmi->GetMaxTimeContinuously());
+		this->mNumberOfRounds = gmi->GetNumRounds();
 
 		
 
@@ -118,7 +122,7 @@ void KingOfTheHill::Play()
 		//choose team before starting the game
 		this->mTeam = this->mChooseTeamMenu->Run();
 		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
-
+		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
 		while(roundsLeft && this->mGe->isRunning())
 		{
 
@@ -329,7 +333,11 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 
 				//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
 				QueryPerformanceCounter(&oldTick);
-
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetTeam(i)) //causes lag otherwise re-setting the color every frame if its alrdy set.
+						this->mBalls[i]->SetTeamColor(this->mNet->GetTeam(i));
+				}
 				if(this->mNet->IsServer())
 				{
 
@@ -597,8 +605,8 @@ void KingOfTheHill::AddBall()
 		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
 		temp[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
 		temp[i]->SetStartForwardVector(this->mNet->GetStartForwardVector(i));
-		if(this->mNet->GetIndex() == i)
-			temp[i]->SetTeamColor(this->mTeam);
+		//if(this->mNet->GetIndex() == i)
+			//temp[i]->SetTeamColor(this->mTeam);
 		
 	}
 	delete[] this->mBalls;

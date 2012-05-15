@@ -75,7 +75,8 @@ void Warlock::Initialize()
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[0]);
 			*/
-		
+		WARLOCKInfo* gmi = (WARLOCKInfo*)this->mServerInfo.GetGameModeInfo();
+		this->mNumberOfRounds = gmi->GetNumRounds();
 }
 
 void Warlock::Intro()
@@ -97,6 +98,7 @@ void Warlock::Play()
 		int numAlivePlayers = 0;
 		float warlockTimer = 0;
 		
+		//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
 		
 		this->hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 		this->hudR2 = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1");
@@ -135,7 +137,12 @@ void Warlock::Play()
 
 			//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
 			QueryPerformanceCounter(&oldTick);
-
+			
+			for(int i = 0; i < this->mNumberOfPlayers; i++)
+			{
+				if(this->mBalls[i]->GetTeamColor() != this->mNet->GetTeam(i)) //causes lag otherwise re-setting the color every frame if its alrdy set.
+					this->mBalls[i]->SetTeamColor(this->mNet->GetTeam(i));
+			}
 			if(this->mNet->IsServer())
 			{
 

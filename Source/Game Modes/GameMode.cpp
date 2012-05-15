@@ -126,8 +126,8 @@ void GameMode::ClientKeyPress(float diff, const int index, char key)
 		mBalls[index]->UseSpell(4);
 	if(key == '5')
 		mBalls[index]->UseSpell(5);
-	if(key == VK_SPACE)
-		mBalls[index]->AddForce(Vector3(0, diff,0));
+	//if(key == VK_SPACE)
+		//mBalls[index]->AddForce(Vector3(0, diff,0));
 	
 }
 

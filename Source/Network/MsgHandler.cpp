@@ -45,6 +45,9 @@ void MsgHandler::ProcessMSG(char* buffer, int size, int index)
 		case 10:
 			//this->SendPlayerProfile();
 			break;
+		case 11:
+			this->ReceiveTeamChange(buffer, offset, index);
+			break;
 		}
 	}
 }
@@ -114,6 +117,7 @@ void MsgHandler::SendServerData()
 		for(int i = 0; i < numPlayers; i++)
 		{
 			this->AddToBuffer(bufW, offset, (char)i);
+			this->AddToBuffer(bufW, offset, (char)(int)this->mNet->GetTeam(i));
 			this->AddToBuffer(bufW, offset, this->mNet->GetPos(i));
 			this->AddToBuffer(bufW, offset, this->mNet->GetVel(i));
 		}
@@ -143,7 +147,20 @@ void MsgHandler::SendIdentifyYourself()
 void MsgHandler::SendPlayerInfos()
 {
 }
-
+void MsgHandler::JoinTeam(TEAM id)
+{
+	if(!this->mNet->IsServer())
+	{
+	char identifier = (char)11;
+	char bufW[BUFFER_SIZE] = {0};
+	int offset = 0;
+	this->AddToBuffer(bufW, offset, identifier);
+	this->AddToBuffer(bufW, offset, (char)(int)id);
+	this->mConn->SetWriteBuffer(bufW, offset, -1);
+	this->mConn->Send(-1);
+	}
+	else this->mNet->SetTeam(id, 0);
+}
 
 
 void MsgHandler::ReceivePing(int index)
@@ -199,6 +216,8 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 	for(int i = 0; i < numPlayers; i++) 
 	{
 		int index = (int) this->GetFromBufferC(buf, offset);
+		TEAM team = (TEAM)(int) this->GetFromBufferC(buf, offset);
+		this->mNet->SetTeam(team, index);
 		this->mNet->SetPos(this->GetFromBufferD(buf, offset), index);
 		this->mNet->SetVel(this->GetFromBufferD(buf, offset), index);
 	}
@@ -217,6 +236,11 @@ void MsgHandler::ReceivePlayerInfos(char* buf, int &offset)
 {
 	//Profile temp("kaka");
 	//this->mLobby->AddPlayer(temp,0);
+}
+void MsgHandler::ReceiveTeamChange(char* buf, int &offset, int index)
+{
+	TEAM team = (TEAM)(int)this->GetFromBufferC(buf, offset);
+	this->mNet->SetTeam(team, index);
 }
 
 

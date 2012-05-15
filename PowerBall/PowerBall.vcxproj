@@ -89,6 +89,7 @@
     <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
     <ClCompile Include="..\Source\Network\Command.cpp" />
     <ClCompile Include="..\Source\Network\CommandHandler.cpp" />
+    <ClCompile Include="..\Source\Network\GameModeInfo.cpp" />
     <ClCompile Include="..\Source\Network\GameNetwork.cpp" />
     <ClCompile Include="..\Source\Network\MsgHandler.cpp" />
     <ClCompile Include="..\Source\Network\PlayerHistory.cpp" />
@@ -180,8 +181,10 @@
     <ClInclude Include="..\Source\MaloWLib\Process.h" />
     <ClInclude Include="..\Source\MaloWLib\Queue.h" />
     <ClInclude Include="..\Source\MaloWLib\TCBSpline.h" />
+    <ClInclude Include="..\Source\Network\BufferFunctions.h" />
     <ClInclude Include="..\Source\Network\Command.h" />
     <ClInclude Include="..\Source\Network\CommandHandler.h" />
+    <ClInclude Include="..\Source\Network\GameModeInfo.h" />
     <ClInclude Include="..\Source\Network\GameNetwork.h" />
     <ClInclude Include="..\Source\Network\MsgHandler.h" />
     <ClInclude Include="..\Source\Network\PlayerHistory.h" />

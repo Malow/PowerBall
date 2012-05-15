@@ -230,10 +230,10 @@ void PowerBall::Update(const float dt, bool clientBall)
 		{
 			if(!clientBall)
 			{
-				/*
+				//setting the forward vector pointing towards the center of the map when respawning.
 				D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
 				::D3DXVec3Normalize(&dir, &dir);
-				*/
+				
 
 				this->mForward = this->mStartForwardVector;
 				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);

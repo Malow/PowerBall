@@ -50,6 +50,7 @@ public:
 	void		SendClose();
 	void		SendClientData();
 	void		SendServerData();
+	void		JoinTeam(TEAM id);
 
 	//lobby
 	void		SendIdentifyYourself();
@@ -65,6 +66,8 @@ private:
 
 	void		ReceiveClientData(char* buf, int &offset, int index);
 	void		ReceiveServerData(char* buf, int &offset);
+
+	void		ReceiveTeamChange(char* buf, int &offset, int index);
 
 	void		ReceiveIdentification(char* buf, int &offset, int index);
 	void		ReceivePlayerInfos(char* buf, int &offset);

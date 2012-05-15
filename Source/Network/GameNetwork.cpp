@@ -14,6 +14,7 @@ GameNetwork::GameNetwork()
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
 		this->mExecTime[i] = 0.0f;
+		this->mTeams[i] = TEAM::NOTEAM;
 	}
 	MsgHandler::GetInstance().Set(this, this->mConn);
 }
