@@ -186,24 +186,30 @@ void PowerBall::Update(const float dt, bool clientBall)
 	Vector3 oldVelocity = this->mVelocity;
 	this->mPreviousVelocity = oldVelocity;
 	Vector3 newVelocity = this->mVelocity + resAcc * newdt;
-	Vector3 controlledMovedVelocity = newVelocity;
-	controlledMovedVelocity.y = 0.0f;
+	//Vector3 controlledMovedVelocity = newVelocity;
+	//controlledMovedVelocity.y = 0.0f;
 
-	if(controlledMovedVelocity.GetLength() > this->mMaxVelocity)
+	if(newVelocity.GetLength() > this->mMaxVelocity)
 	{
+		float length = newVelocity.GetLength();
+		newVelocity.normalize();
+		this->mVelocity = newVelocity * this->mMaxVelocity;
+		this->mVelocity *= pow(this->mDamping, newdt);
+		/*
 		resAcc.x = 0;
 		resAcc.z = 0;
 		this->mVelocity += resAcc * newdt;
 		//this->mVelocity.y *= pow(this->mDamping, newdt);
 		this->mVelocity *= pow(this->mDamping, newdt);
+		*/
 	}
 	else
 	{
 		this->mVelocity += resAcc * newdt;
 		this->mVelocity *= pow(this->mDamping, newdt);
 	}
-	controlledMovedVelocity = this->mVelocity;
-	controlledMovedVelocity.y = 0;
+	//controlledMovedVelocity = this->mVelocity;
+	//controlledMovedVelocity.y = 0;
 
 	/*
 	if (this->mVelocity.GetLength() > this->mMaxVelocity )
