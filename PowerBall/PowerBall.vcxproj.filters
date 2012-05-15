@@ -308,6 +308,9 @@
     <ClCompile Include="..\Source\Spells\JumpSpell.cpp">
       <Filter>Game Files\Spells</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\SystemReqResart.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -588,6 +591,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Spells\JumpSpell.h">
       <Filter>Game Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SystemReqResart.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

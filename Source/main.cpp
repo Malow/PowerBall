@@ -20,21 +20,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	params.FXAAQuality = 3;			// 0 - 4 
 	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
 	params.CamType = TRD;*/
-	params.LoadFromeFile("config.cfg");
-	/*	Structure of cfg file:
-	windowWidth
-	windowHeight
-	ShadowMapQuality
-	FXAAQuality
-	*/
+	
 
 
 	// RunAgain for changing resolution etc.
-	/*
 	bool RunAgain = true;
-	while(RunAgain)
-	{
-		RunAgain = false;*/
+	/*while(RunAgain)
+	{*/
+		params.LoadFromeFile("config.cfg");
+		/*	Structure of cfg file:
+		windowWidth
+		windowHeight
+		ShadowMapQuality
+		FXAAQuality
+		*/
+		RunAgain = false;
 		// Create the graphics engine
 		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
 		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
@@ -44,7 +44,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 		// Create the MainMenu and send the graphics engine, and then run Run();
 		MainMenu* mm = new MainMenu(ge);
-		/*RunAgain = */mm->Run();
+		/*RunAgain =*/ mm->Run();
 		delete mm;
 		// Delete graphics engine
 		delete ge;

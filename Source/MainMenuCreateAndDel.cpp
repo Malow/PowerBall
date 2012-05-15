@@ -119,12 +119,42 @@ void MainMenu::CreateOptionsMenu()
 	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	
-	dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
-		"", "Media/Menus/EmptyMenu.png");
-	dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
-		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-	dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
-		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	if(windowWidth == 1920.0f && windowHeight == 1080.0f)
+	{
+		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
+			"", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	}
+	else if(windowWidth == 1680.0f && windowHeight == 1050.0f)
+	{
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
+			"", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	}
+	else if(windowWidth == 800.0f && windowHeight == 600.0f)
+	{
+		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
+			"", "Media/Menus/EmptyMenu.png");
+	}
+	else
+	{
+		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
+			"", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
+			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
+	}
 
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
@@ -141,13 +171,19 @@ void MainMenu::CreateOptionsMenu()
 		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "FXAA", 0.75f, 1, NR, 0, 4);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
+	tempElement = new GUIPicture(offSet + dx * (560.0f / 1200.0f), windowHeight * (285.0f / 900.0f),0, "Media/OptionsMenu/0-4.png", 
+		dx * (53.0f / 1200.0f), windowHeight * (22.0f / 900.0f));
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
 	startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
 
-	tempElement = new TextBox(offSet + dx * (585.0f / 1200.0f), windowHeight * (195.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
+	tempElement = new TextBox(offSet + dx * (625.0f / 1200.0f), windowHeight * (195.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
 		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "SHADOW", 0.75f, 1, NR, 0, 6);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
-
+	tempElement = new GUIPicture(offSet + dx * (660.0f / 1200.0f), windowHeight * (200.0f / 900.0f),0, "Media/OptionsMenu/0-6.png", 
+		dx * (53.0f / 1200.0f), windowHeight * (22.0f / 900.0f));
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
 	tempElement = NULL;
 }
