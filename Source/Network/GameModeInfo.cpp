@@ -82,14 +82,17 @@ void KOTHInfo::GetBuffer(char* bufOut, int &offsetOut)
 WARLOCKInfo::WARLOCKInfo()
 	: GameModeInfo()
 {
+	this->mStartHealth = 0;
 }
 WARLOCKInfo::WARLOCKInfo(char* bufOut, int &offsetOut)
 	: GameModeInfo(bufOut, offsetOut)
 {
+	this->mStartHealth = GetFromBufferF(bufOut, offsetOut);
 }
-WARLOCKInfo::WARLOCKInfo(int numRounds, int numTeams)
+WARLOCKInfo::WARLOCKInfo(int numRounds, int numTeams, float startHealth)
 	: GameModeInfo(numRounds, numTeams)
 {
+	this->mStartHealth = startHealth;
 }
 WARLOCKInfo::~WARLOCKInfo()
 {
@@ -98,4 +101,5 @@ WARLOCKInfo::~WARLOCKInfo()
 void WARLOCKInfo::GetBuffer(char* bufOut, int &offsetOut)
 {
 	GameModeInfo::GetBuffer(bufOut, offsetOut);
+	AddToBuf(bufOut, offsetOut, this->mStartHealth);
 }

@@ -32,6 +32,7 @@ private:
 	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
 	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
 	D3DXVECTOR3			mStartForwardVectors[PLAYER_CAP];
+	float				mBallHealth[PLAYER_CAP];
 	TEAM				mTeams[PLAYER_CAP];
 	float				mExecTime[PLAYER_CAP];
 	float				mLatency;
@@ -50,8 +51,13 @@ public:
 	float		GetLatency() const {return this->mLatency;}
 	void		AddMovementPowerBall(PowerBall* PowerBall);
 	D3DXVECTOR3 		CorrectPosition();
+
+	ServerInfo  GetServerInfo() const { return this->mServer; }
+
 	void		SetTeam(TEAM team, int clientIndex){this->mTeams[clientIndex] = team;}
 	TEAM		GetTeam(int clientIndex) const {return this->mTeams[clientIndex];}
+	void		SetBallHealth(float hp, int clientIndex) { this->mBallHealth[clientIndex] = hp; }
+	float		GetBallHealth(int clientIndex) const { return this->mBallHealth[clientIndex]; }
 
 	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
 	void SetExecTime(const float time, const int index){this->mExecTime[index] = time;}

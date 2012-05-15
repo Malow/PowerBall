@@ -118,11 +118,19 @@ void MsgHandler::SendServerData()
 		{
 			this->AddToBuffer(bufW, offset, (char)i);
 			this->AddToBuffer(bufW, offset, (char)(int)this->mNet->GetTeam(i));
+			
+			if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::WARLOCK)
+			{
+				this->AddToBuffer(bufW, offset, this->mNet->GetBallHealth(i));
+			}
 			this->AddToBuffer(bufW, offset, this->mNet->GetPos(i));
 			this->AddToBuffer(bufW, offset, this->mNet->GetVel(i));
 		}
-		this->AddToBuffer(bufW, offset, this->mNet->GetFlagPos(0));
-		this->AddToBuffer(bufW, offset, this->mNet->GetFlagPos(1));
+		if(this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::CTF)
+		{
+			this->AddToBuffer(bufW, offset, this->mNet->GetFlagPos(0));
+			this->AddToBuffer(bufW, offset, this->mNet->GetFlagPos(1));
+		}
 
 		
 		this->AddToBuffer(bufW, offset, this->mNet->GetExecTime(a));
@@ -218,11 +226,22 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 		int index = (int) this->GetFromBufferC(buf, offset);
 		TEAM team = (TEAM)(int) this->GetFromBufferC(buf, offset);
 		this->mNet->SetTeam(team, index);
+
+		if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::WARLOCK)
+		{
+			float hp = this->GetFromBufferF(buf, offset);
+			this->mNet->SetBallHealth(hp, index);
+		}
+
 		this->mNet->SetPos(this->GetFromBufferD(buf, offset), index);
 		this->mNet->SetVel(this->GetFromBufferD(buf, offset), index);
 	}
-	this->mNet->SetFlagPos(this->GetFromBufferD(buf, offset), 0);
-	this->mNet->SetFlagPos(this->GetFromBufferD(buf, offset), 1);
+	
+	if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::CTF)
+	{
+		this->mNet->SetFlagPos(this->GetFromBufferD(buf, offset), 0);
+		this->mNet->SetFlagPos(this->GetFromBufferD(buf, offset), 1);
+	}
 	
 
 	this->mNet->SetServerExecTime(this->GetFromBufferF(buf, offset));

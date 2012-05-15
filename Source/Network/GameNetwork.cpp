@@ -313,6 +313,7 @@ void GameNetwork::Start(ServerInfo server)
 	{
 		this->mPos[i] = this->mStartPositions[i];
 		this->mVel[i] = D3DXVECTOR3(0,0,0);
+		this->mBallHealth[i] = ((WARLOCKInfo*)server.GetGameModeInfo())->GetStartHealth();
 	}
 	
 	if(this->mServer.GetIP() == "")

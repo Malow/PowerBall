@@ -57,12 +57,14 @@ public:
 class WARLOCKInfo : public GameModeInfo
 {
 private:
+	float mStartHealth;
 public:
 	//constructors and destructors
 				WARLOCKInfo();
 				WARLOCKInfo(char* bufOut, int &offsetOut);
-				WARLOCKInfo(int numRounds, int numTeams);
+				WARLOCKInfo(int numRounds, int numTeams, float startHealth);
 				~WARLOCKInfo();
-
+	float		GetStartHealth() const { return this->mStartHealth;}
+	void		SetStartHealth(float startHealth) { this->mStartHealth = startHealth; }
 	void		GetBuffer(char* bufOut, int &offsetOut);
 };
