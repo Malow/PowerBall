@@ -501,11 +501,11 @@ HRESULT DxManager::Render()
 		DrawScreenSpaceBillboardDebug(this->Dx_DeviceContext, this->Shader_BillBoard, this->Dx_GbufferSRVs[q], q); 
 	*/
 	
-	/*
+	
 	// Render shadowmap pictures:
 	for(int q = 0; q < this->lights.size(); q++)
 		DrawScreenSpaceBillboardDebug(this->Dx_DeviceContext, this->Shader_BillBoard, this->lights[q]->GetShadowMapSRV(), q); 
-	*/
+	
 
 	this->RenderAntiAliasing();
 	
