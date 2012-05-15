@@ -2,10 +2,11 @@
 SoundSong* BackgroundSong::mSong = NULL;
 bool BackgroundSong::mPlaying = false;
 SoundEffect* BackgroundSong::mMouseClick = NULL;
-SoundEngine* BackgroundSong::mSe = GetGraphicsEngine()->GetSoundEngine();
+SoundEngine* BackgroundSong::mSe = NULL;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
+	BackgroundSong::mSe = ge->GetSoundEngine();
 	this->mNrOfSets = 30;
 	this->mSets = new GUISet[this->mNrOfSets]();
 	this->mRunning = true;

@@ -23,28 +23,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	FXAAQuality
 	*/
 
+	// Create the graphics engine
+	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
+	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
+	ge->CreateSkyBox("Media/skymap.dds");
 
-	// RunAgain for changing resolution etc.
-	/*
-	bool RunAgain = true;
-	while(RunAgain)
-	{
-		RunAgain = false;*/
-		// Create the graphics engine
-		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
-		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
-		ge->CreateSkyBox("Media/skymap.dds");
+	//test();	// Instead of ifndef lol
 
-		//test();	// Instead of ifndef lol
+	// Create the MainMenu and send the graphics engine, and then run Run();
+	MainMenu* mm = new MainMenu(ge);
+	mm->Run();
 
-		// Create the MainMenu and send the graphics engine, and then run Run();
-		MainMenu* mm = new MainMenu(ge);
-		/*RunAgain = */mm->Run();
-		delete mm;
-		// Delete graphics engine
-		delete ge;
-	//}
-
+	delete mm;
+	delete ge;
+	gfxeng::eng = NULL;
 
 	#if defined(DEBUG) || defined(_DEBUG)
 		myDumpMemoryLeaks();

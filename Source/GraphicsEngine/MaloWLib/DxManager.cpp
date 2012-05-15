@@ -102,8 +102,8 @@ DxManager::~DxManager()
 	if(this->LavaTexture)
 		this->LavaTexture->Release();
 
-	if(this->skybox)
-		delete this->skybox;
+	SAFE_DELETE(this->skybox);
+
 	if(this->Shader_Skybox)
 		delete this->Shader_Skybox;
 
@@ -456,7 +456,7 @@ void DxManager::CreateSkyBox(string texture)
 {
 	if(this->skybox)
 		delete this->skybox;
-
+		
 	SkyBox* sb = new SkyBox(this->camera->getPosition(), 10, 10);
 	MeshStrip* strip = sb->GetStrips()->get(0);
 

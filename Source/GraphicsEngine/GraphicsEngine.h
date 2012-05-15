@@ -56,12 +56,11 @@ public:
 class GraphicsEngine : public MaloW::Process
 {
 private:
-	static bool initDone;
-	static DxManager* dx;
-	static HINSTANCE hInstance;
-	static HWND hWnd;
-	static MaloW::KeyListener* kl;
-	static SoundEngine* sound;
+	DxManager* dx;
+	HINSTANCE hInstance;
+	HWND hWnd;
+	MaloW::KeyListener* kl;
+	SoundEngine* sound;
 	Camera* cam;
 
 	int fpsLast;
@@ -133,9 +132,9 @@ public:
 	void StartRendering() { this->dx->StartRender = true; }
 
 	// Get's
-	Camera* GetCamera() const { return this->dx->GetCamera(); }
+	Camera* GetCamera() const { return this->cam; } //{ return this->dx->GetCamera(); }
 	MaloW::KeyListener* GetKeyListener() const { return this->kl; }
-	SoundEngine* GetSoundEngine() const { return this->sound; }
+	SoundEngine* GetSoundEngine() const;
 	HWND GetWindowHandle() const { return this->hWnd; }
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }
