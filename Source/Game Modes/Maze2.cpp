@@ -32,6 +32,7 @@ Maze2::~Maze2()
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
 	SAFE_DELETE(this->mBox);
+	mGe->DeleteText(this->mText);
 }
 
 void Maze2::Initialize()
@@ -228,10 +229,10 @@ bool Maze2::checkRespownConditions()
 		Vector3 posBall = this->mBalls[0]->GetMesh()->GetPosition();
 		
 		Vector3 newCoord = rotate.GetInverse() * (posBall - pos - Vector3(0,5.0f,0));
-		
+		/*
 		string s = MaloW::convertNrToString(newCoord.y);
 		this->mText->SetText(s);
-		
+		*/
 		if(newCoord.y < -6.0f)
 			return true;
 		else

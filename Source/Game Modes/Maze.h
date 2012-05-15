@@ -14,7 +14,7 @@
 class Maze : public GameMode
 {
 	private:
-
+			Map* mBox;
 	public:
 			Maze();
 			Maze(GraphicsEngine* ge);
@@ -24,4 +24,6 @@ class Maze : public GameMode
 			virtual void Play();
 			virtual void ShowStats();
 			virtual bool checkWinConditions(float dt);
+			bool checkRespownConditions();
+			void ResetMaze();
 };
