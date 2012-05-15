@@ -311,6 +311,9 @@
     <ClCompile Include="..\Source\Network\GameModeInfo.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\SystemReqResart.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -597,6 +600,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Network\BufferFunctions.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SystemReqResart.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

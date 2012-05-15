@@ -15,12 +15,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	MaloW::ClearDebug();
 	
 	GraphicsEngineParams params;
-	/*params.windowWidth = 1600;
-	params.windowHeight = 900;
-	params.FXAAQuality = 3;			// 0 - 4 
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = TRD;*/
 	params.LoadFromeFile("config.cfg");
+	//params.CamType = FPS;
 	/*	Structure of cfg file:
 	windowWidth
 	windowHeight
@@ -28,28 +24,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	FXAAQuality
 	*/
 
+	// Create the graphics engine
+	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
+	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
+	ge->CreateSkyBox("Media/skymap.dds");
 
-	// RunAgain for changing resolution etc.
-	/*
-	bool RunAgain = true;
-	while(RunAgain)
-	{
-		RunAgain = false;*/
-		// Create the graphics engine
-		GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);
-		gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
-		ge->CreateSkyBox("Media/skymap.dds");
+	//test();	// Instead of ifndef lol
 
-		//test();	// Instead of ifndef lol
+	// Create the MainMenu and send the graphics engine, and then run Run();
+	MainMenu* mm = new MainMenu(ge);
+	mm->Run();
 
-		// Create the MainMenu and send the graphics engine, and then run Run();
-		MainMenu* mm = new MainMenu(ge);
-		/*RunAgain = */mm->Run();
-		delete mm;
-		// Delete graphics engine
-		delete ge;
-	//}
-
+	delete mm;
+	delete ge;
+	gfxeng::eng = NULL;
 
 	#if defined(DEBUG) || defined(_DEBUG)
 		myDumpMemoryLeaks();
@@ -74,17 +62,18 @@ void test()
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	
 	AnimatedMesh* flag = eng->CreateAnimatedMesh("Media/FlagRed.ani",  D3DXVECTOR3(8, 15, 8));
-	//flag->LoopSeamless();
+	flag->LoopSeamless();
 
-	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(15, 15, 8));
-	//flagb->LoopSeamless();
+	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(10, 15, 8));
+	flagb->LoopSeamless();
 	
-	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(8, 15, 8));
-	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(10, 15, 8));
-	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(12, 15, 8));
-	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(14, 15, 8));
-	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(12, 15, 8));
+	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(14, 15, 8));
+	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(18, 15, 8));
+	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
+	//StaticMesh* wlmap = eng->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(100, 4, 8));
 
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));

@@ -1,14 +1,12 @@
 #include "GraphicsEngine.h"
-
-bool GraphicsEngine::initDone = false;
+/*
 DxManager* GraphicsEngine::dx = NULL;
 HINSTANCE GraphicsEngine::hInstance = NULL;
 HWND GraphicsEngine::hWnd = NULL;
 MaloW::KeyListener* GraphicsEngine::kl = NULL;
-
-GraphicsEngine* gfxeng::eng = NULL;
 SoundEngine* GraphicsEngine::sound = NULL;
-
+*/
+GraphicsEngine* gfxeng::eng = NULL;
 bool CursorControl::visable = true;
 
 int GraphicsEngineParams::windowWidth = 1024;
@@ -19,33 +17,30 @@ CameraType GraphicsEngineParams::CamType = TRD;
 
 GraphicsEngine::GraphicsEngine(GraphicsEngineParams params, HINSTANCE hInstance, int nCmdShow)
 {
-	if(!this->initDone)
-	{
-		this->sound = NULL;
-		this->sound = new SoundEngine();
-		this->parameters = params;
-		this->cam = NULL;
-		this->dx = NULL;
-		this->hInstance = NULL;
-		this->hWnd = NULL;
+	this->sound = new SoundEngine();
+	this->parameters = params;
+	this->cam = NULL;
+	this->dx = NULL;
+	this->hInstance = NULL;
+	this->hWnd = NULL;
 
-		this->keepRunning = true;
-		this->loading = false;
+	this->keepRunning = true;
+	this->loading = false;
 
-		LARGE_INTEGER li;
-		if(!QueryPerformanceFrequency(&li))
-			MaloW::Debug("QueryPerformanceFrequency Failed!, High resolution performance counter not available?");
+	LARGE_INTEGER li;
+	if(!QueryPerformanceFrequency(&li))
+		MaloW::Debug("QueryPerformanceFrequency Failed!, High resolution performance counter not available?");
 
-		this->PCFreq = float(li.QuadPart)/1000.0f;
-		QueryPerformanceCounter(&li);
-		this->prevTimeStamp = li.QuadPart;
+	this->PCFreq = float(li.QuadPart)/1000.0f;
+	QueryPerformanceCounter(&li);
+	this->prevTimeStamp = li.QuadPart;
 
 
 
-		this->prevFrameCount = 0;
-		this->fpsLast = 0;
-		this->fpsTimer = 0.0f;
-	}
+	this->prevFrameCount = 0;
+	this->fpsLast = 0;
+	this->fpsTimer = 0.0f;
+	
 	this->InitWindow(hInstance, nCmdShow);
 
 	this->Start();
@@ -64,10 +59,16 @@ GraphicsEngine::~GraphicsEngine()
 	SAFE_DELETE(this->dx);
 	SAFE_DELETE(this->kl);
 	SAFE_DELETE(this->sound);
+
+	//DestroyWindow(this->hWnd);
 }
 
 LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	MaloW::KeyListener* kl = NULL;
+	if(GraphicsEngine* ge = GetGraphicsEngine())
+		kl = ge->GetKeyListener();
+
 	PAINTSTRUCT ps;
 	HDC hdc;
 	
@@ -157,8 +158,6 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 	MoveWindow(this->hWnd, 0, 0, rc.right - rc.left, rc.bottom - rc.top, false);
 
 	this->InitObjects();
-
-	this->initDone = true;
 
 	return S_OK;
 }
@@ -482,4 +481,9 @@ void GraphicsEngine::LoadingScreen(string BackgroundTexture, string ProgressBarT
 	{
 		this->DeleteImage(fade);
 	}
+}
+
+SoundEngine* GraphicsEngine::GetSoundEngine() const
+{ 
+	return this->sound; 
 }

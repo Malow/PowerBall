@@ -106,6 +106,7 @@
     <ClCompile Include="..\Source\Spells\JumpSpell.cpp" />
     <ClCompile Include="..\Source\Spells\Spell.cpp" />
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
+    <ClCompile Include="..\Source\SystemReqResart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\ChooseTeamMenu.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="..\Source\Spells\Spell.h" />
     <ClInclude Include="..\Source\Spells\SprintSpell.h" />
     <ClInclude Include="..\Source\stdafx.h" />
+    <ClInclude Include="..\Source\SystemReqResart.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx" />

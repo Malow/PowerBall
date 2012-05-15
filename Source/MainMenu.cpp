@@ -2,10 +2,11 @@
 SoundSong* BackgroundSong::mSong = NULL;
 bool BackgroundSong::mPlaying = false;
 SoundEffect* BackgroundSong::mMouseClick = NULL;
-SoundEngine* BackgroundSong::mSe = GetGraphicsEngine()->GetSoundEngine();
+SoundEngine* BackgroundSong::mSe = NULL;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
+	BackgroundSong::mSe = ge->GetSoundEngine();
 	this->mNrOfSets = 30;
 	this->mSets = new GUISet[this->mNrOfSets]();
 	this->mRunning = true;
@@ -391,6 +392,13 @@ bool MainMenu::Run()
 					int width = 0, height = 0;
 					width = tempReturnEvent->GetWidth();
 					height = tempReturnEvent->GetHeight();
+					GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
+
+					//gep.windowWidth = width;
+					//gep.windowHeight = height;
+
+					this->mNeedRestart = true;
+
 					/*
 					Make something that change res here
 					*/
@@ -417,9 +425,16 @@ bool MainMenu::Run()
 						TextBox* temp = this->mSets[this->mSubSet].GetTextBox("FXAA");
 						gep.FXAAQuality = atoi(temp->GetText().c_str());
 
+						temp = this->mSets[this->mSubSet].GetTextBox("SHADOW");
+						if(gep.ShadowMapSettings != atoi(temp->GetText().c_str()))
+						{
+							//gep.ShadowMapSettings = atoi(temp->GetText().c_str());
+							this->mNeedRestart = true;
+						}
+
 						if(tempReturnEvent->GetValue() == "true")
 						{
-							this->mRestart = false;
+							this->mRestart = true;
 						}
 						else
 						{
@@ -477,8 +492,17 @@ bool MainMenu::Run()
 			}
 		}
 		if(this->mRestart)
+		{
 			if(this->mNeedRestart)
-				return true;
+			{
+				SystemReqResart* srr =  new SystemReqResart(this->mGe);
+				srr->Run();
+				delete srr;
+				this->mNeedRestart = false;
+				this->mRestart = false;
+				//return true;
+			}
+		}
 	}
 	
 	return false;

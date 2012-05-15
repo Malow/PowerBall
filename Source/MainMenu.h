@@ -22,6 +22,7 @@
 #include "Game Objects\PowerBall.h"
 #include "Game Objects\Map.h"
 #include "GameOptions.h"
+#include "SystemReqResart.h"
 
 enum MENU {NOMENU,
 	BACKGROUND,

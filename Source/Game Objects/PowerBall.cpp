@@ -33,6 +33,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
+	this->mPreviousVelocity = Vector3(0,0,0);
 	this->mTempPosition = position;
 	this->mSteering      = true;
 	this->mNrOfSpells	 = 0;
@@ -183,6 +184,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	resAcc += (this->mSumAddedForce / this->mMass );
 	//resAcc += this->mSumAddedForce;
 	Vector3 oldVelocity = this->mVelocity;
+	this->mPreviousVelocity = oldVelocity;
 	Vector3 newVelocity = this->mVelocity + resAcc * newdt;
 	Vector3 controlledMovedVelocity = newVelocity;
 	controlledMovedVelocity.y = 0.0f;
@@ -231,8 +233,8 @@ void PowerBall::Update(const float dt, bool clientBall)
 			if(!clientBall)
 			{
 				//setting the forward vector pointing towards the center of the map when respawning.
-				D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
-				::D3DXVec3Normalize(&dir, &dir);
+				//D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
+				//::D3DXVec3Normalize(&dir, &dir);
 				
 
 				this->mForward = this->mStartForwardVector;
@@ -652,7 +654,7 @@ bool PowerBall::collisionWithPlatformSimple(Map* p, Vector3 &normalPlane)
 	if(firstHit)
 	{
 		// for checking if the ball are in the air not turned on at the moment, 
-		float eps = 0.001f;
+		float eps = 0.5f; //0.001
 		if( (lengthProjN < (this->mRadius + eps)) && (lengthProjN > (this->mRadius - eps)) )
 		{
 			this->mNormalContact = normalStore;
@@ -757,7 +759,14 @@ void PowerBall::collisionPlatformResponse(Map* p, Vector3 normalPlane, float dt)
 	//float e = this->mRestitution;
 	float e = p->GetRestitution();
 	float newdt = dt*0.001f;
-	v1y -= v1y*pow(this->mFriction, 2)*newdt;
+	//v1y -= v1y*pow(this->mFriction, 2)*newdt;
+	if( this->mPreviousVelocity.GetLength() < this->mVelocity.GetLength() )
+	{
+		if( (v1y.GetLength() < 2.0f) && (v1y.GetLength() > 0.0f) )
+			v1y -= v1y*this->mFriction*newdt;
+		if( v1y.GetLength() < 0.1f && (v1y.GetLength() > 0.0f) )
+			v1y *= this->mFriction*newdt;
+	}	
 	
 
 

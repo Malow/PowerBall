@@ -116,7 +116,7 @@ inline void DrawWireFrame(MaloW::Array<StaticMesh*>* meshes, ID3D11Device* g_Dev
 inline void DrawScreenSpaceBillboardDebug(ID3D11DeviceContext* g_DeviceContext, Shader* Shader, ID3D11ShaderResourceView* view, int ScreenPosition)
 {
 	D3DXVECTOR2 pos = D3DXVECTOR2(-1.0f, 0.5f);
-	D3DXVECTOR2 dim = D3DXVECTOR2(0.5f, 0.5f);
+	D3DXVECTOR2 dim = D3DXVECTOR2(0.3f, 0.4f);
 
 	switch(ScreenPosition)
 	{
@@ -129,7 +129,20 @@ inline void DrawScreenSpaceBillboardDebug(ID3D11DeviceContext* g_DeviceContext, 
 	case 3:
 		pos = D3DXVECTOR2(-1.0f, -1.0f);
 		break;
+	case 4:
+		pos = D3DXVECTOR2(0.5f, 0.5f);
+		break;
+	case 5:
+		pos = D3DXVECTOR2(0.5f, 0.0f);
+		break;
+	case 6:
+		pos = D3DXVECTOR2(0.5f, -0.5f);
+		break;
+	case 7:
+		pos = D3DXVECTOR2(0.5f, -1.0f);
+		break;
 	}
+
 
 
 	Shader->SetFloat("posx", pos.x);
