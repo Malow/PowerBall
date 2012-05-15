@@ -129,7 +129,7 @@ void CaptureTheFlag::Initialize()
 		this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-10, 50, 0));
 		for(int i = 0; i < 5; i++)
 		{
-			this->mLights[i]->SetIntensity(20.0f);
+			this->mLights[i]->SetIntensity(30.0f);
 			this->mLights[i]->SetLookAt(D3DXVECTOR3(0,10,0));
 		}
 
