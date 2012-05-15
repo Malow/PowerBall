@@ -79,7 +79,7 @@ void MsgHandler::SendClientData()
 	int offset = 0;
 	this->AddToBuffer(bufW, offset, identifier);
 
-	Command* command = this->mNet->GetNextCommand(this->mNet->GetIndex());
+	Command* command = this->mNet->GetBall(this->mNet->GetIndex())->GetNextCommand();
 	while(command != NULL)
 	{
 		this->AddToBuffer(bufW, offset, (char)command->GetNumInputs());
@@ -90,8 +90,8 @@ void MsgHandler::SendClientData()
 		this->AddToBuffer(bufW, offset, command->GetDuration());
 		this->AddToBuffer(bufW, offset, command->GetForward());
 
-		this->mNet->PopCommand(this->mNet->GetIndex());
-		command = this->mNet->GetNextCommand(this->mNet->GetIndex());
+		this->mNet->GetBall(this->mNet->GetIndex())->PopCommand();
+		command = this->mNet->GetBall(this->mNet->GetIndex())->GetNextCommand();
 	}
 	
 	if(offset > 1)
@@ -117,14 +117,14 @@ void MsgHandler::SendServerData()
 		for(int i = 0; i < numPlayers; i++)
 		{
 			this->AddToBuffer(bufW, offset, (char)i);
-			this->AddToBuffer(bufW, offset, (char)(int)this->mNet->GetTeam(i));
+			this->AddToBuffer(bufW, offset, (char)(int)this->mNet->GetBall(i)->GetTeam());
 			
 			if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::WARLOCK)
 			{
-				this->AddToBuffer(bufW, offset, this->mNet->GetBallHealth(i));
+				this->AddToBuffer(bufW, offset, this->mNet->GetBall(i)->GetHP());
 			}
-			this->AddToBuffer(bufW, offset, this->mNet->GetPos(i));
-			this->AddToBuffer(bufW, offset, this->mNet->GetVel(i));
+			this->AddToBuffer(bufW, offset, this->mNet->GetBall(i)->GetPos());
+			this->AddToBuffer(bufW, offset, this->mNet->GetBall(i)->GetVel());
 		}
 		if(this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::CTF)
 		{
@@ -133,7 +133,7 @@ void MsgHandler::SendServerData()
 		}
 
 		
-		this->AddToBuffer(bufW, offset, this->mNet->GetExecTime(a));
+		this->AddToBuffer(bufW, offset, this->mNet->GetBall(a)->GetExecTime());
 
 		this->mConn->SetWriteBuffer(bufW, offset, a-1);
 		this->mConn->Send(a-1);
@@ -159,15 +159,15 @@ void MsgHandler::JoinTeam(TEAM id)
 {
 	if(!this->mNet->IsServer())
 	{
-	char identifier = (char)11;
-	char bufW[BUFFER_SIZE] = {0};
-	int offset = 0;
-	this->AddToBuffer(bufW, offset, identifier);
-	this->AddToBuffer(bufW, offset, (char)(int)id);
-	this->mConn->SetWriteBuffer(bufW, offset, -1);
-	this->mConn->Send(-1);
+		char identifier = (char)11;
+		char bufW[BUFFER_SIZE] = {0};
+		int offset = 0;
+		this->AddToBuffer(bufW, offset, identifier);
+		this->AddToBuffer(bufW, offset, (char)(int)id);
+		this->mConn->SetWriteBuffer(bufW, offset, -1);
+		this->mConn->Send(-1);
 	}
-	else this->mNet->SetTeam(id, 0);
+	else this->mNet->GetBall(0)->SetTeam(id);
 }
 
 
@@ -212,7 +212,7 @@ void MsgHandler::ReceiveClientData(char* buf, int &offset, int index)
 		}
 		float duration = this->GetFromBufferF(buf, offset);
 		D3DXVECTOR3 forward = this->GetFromBufferD(buf, offset);
-		this->mNet->AddKeyInput(index, keys, numKeys, duration, forward);
+		this->mNet->GetBall(index)->AddKeyInput(keys, numKeys, duration, forward);
 	}
 	offset += sizeof(SEGMENT_END);
 }
@@ -225,16 +225,16 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 	{
 		int index = (int) this->GetFromBufferC(buf, offset);
 		TEAM team = (TEAM)(int) this->GetFromBufferC(buf, offset);
-		this->mNet->SetTeam(team, index);
+		this->mNet->GetBall(index)->SetTeam(team);
 
 		if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::WARLOCK)
 		{
 			float hp = this->GetFromBufferF(buf, offset);
-			this->mNet->SetBallHealth(hp, index);
+			this->mNet->GetBall(index)->SetHP(hp);
 		}
 
-		this->mNet->SetPos(this->GetFromBufferD(buf, offset), index);
-		this->mNet->SetVel(this->GetFromBufferD(buf, offset), index);
+		this->mNet->GetBall(index)->SetPos(this->GetFromBufferD(buf, offset));
+		this->mNet->GetBall(index)->SetVel(this->GetFromBufferD(buf, offset));
 	}
 	
 	if (this->mNet->GetServerInfo().GetGameMode() == GAMEMODE::CTF)
@@ -244,7 +244,7 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 	}
 	
 
-	this->mNet->SetServerExecTime(this->GetFromBufferF(buf, offset));
+	this->mNet->GetBall(0)->SetExecTime(this->GetFromBufferF(buf, offset));
 }
 void MsgHandler::ReceiveIdentification(char* buf, int &offset, int index)
 {
@@ -259,7 +259,7 @@ void MsgHandler::ReceivePlayerInfos(char* buf, int &offset)
 void MsgHandler::ReceiveTeamChange(char* buf, int &offset, int index)
 {
 	TEAM team = (TEAM)(int)this->GetFromBufferC(buf, offset);
-	this->mNet->SetTeam(team, index);
+	this->mNet->GetBall(index)->SetTeam(team);
 }
 
 

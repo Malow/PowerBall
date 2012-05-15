@@ -335,8 +335,8 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 				QueryPerformanceCounter(&oldTick);
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
-					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetTeam(i)) //causes lag otherwise re-setting the color every frame if its alrdy set.
-						this->mBalls[i]->SetTeamColor(this->mNet->GetTeam(i));
+					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
+						this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
 				}
 				if(this->mNet->IsServer())
 				{
@@ -382,9 +382,9 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 
 					for(int i = 0; i < this->mNumberOfPlayers; i++)
 					{
-						this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+						this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
 						Vector3 vel = this->mBalls[i]->GetVelocity();
-						this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
+						this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
 					}
 				}
 				else //is client
@@ -393,8 +393,8 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 					{
 						if(this->mNet->GetIndex() != i)
 						{
-							D3DXVECTOR3 rotVector = this->mNet->GetPos(i) - this->mBalls[i]->GetPosition();
-							this->mBalls[i]->SetPosition(this->mNet->GetPos(i));
+							D3DXVECTOR3 rotVector = this->mNet->GetBall(i)->GetPos() - this->mBalls[i]->GetPosition();
+							this->mBalls[i]->SetPosition(this->mNet->GetBall(i)->GetPos());
 							this->mBalls[i]->Rotate(rotVector);
 						}
 					}
@@ -426,7 +426,7 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 						this->mBalls[i]->Update(diff);
 				
 
-						this->mNet->AddMovementPowerBall(this->mBalls[i]);
+						this->mNet->GetBall(i)->AddMovementPowerBall(this->mBalls[i]);
 
 					}
 				}
@@ -550,11 +550,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 					{
 						this->mBalls[i]->ResetTime();
 						this->mBalls[i]->SetToStartPosition();
-						this->mBalls[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
-						this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+						this->mBalls[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+						this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
 						Vector3 vel = Vector3(0,0,0);
-						this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
-						this->mNet->SetForwardVector(this->mNet->GetStartForwardVector(i), i);
+						this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
+						this->mNet->GetBall(i)->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 						this->mPlatform->ResetHotZone();
 					}
 					returnValue = true;
@@ -569,11 +569,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 				{
 					this->mBalls[i]->ResetTime();
 					this->mBalls[i]->SetToStartPosition();
-					this->mBalls[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
-					this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+					this->mBalls[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+					this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
 					Vector3 vel = Vector3(0,0,0);
-					this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
-					this->mNet->SetForwardVector(this->mNet->GetStartForwardVector(i), i);
+					this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
+					this->mNet->GetBall(i)->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 					this->mPlatform->ResetHotZone();
 				}			
 				returnValue = true;
@@ -602,9 +602,9 @@ void KingOfTheHill::AddBall()
 	}
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
-		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
-		temp[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
-		temp[i]->SetStartForwardVector(this->mNet->GetStartForwardVector(i));
+		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos());
+		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		//if(this->mNet->GetIndex() == i)
 			//temp[i]->SetTeamColor(this->mTeam);
 		
@@ -616,7 +616,7 @@ void KingOfTheHill::AddBall()
 			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[this->mNet->GetIndex()]);
 	else
 	{
-		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetStartPos(this->mNet->GetIndex()).z * 1.5f));
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 40, this->mNet->GetBall(this->mNet->GetIndex())->GetStartPos().z * 1.5f));
 		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 	}
 

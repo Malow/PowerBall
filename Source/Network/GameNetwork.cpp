@@ -4,127 +4,56 @@
 GameNetwork::GameNetwork()
 {
 	this->mConn			= new ServerConnection();
-	this->mPos			= new D3DXVECTOR3[PLAYER_CAP];
-	this->mVel			= new D3DXVECTOR3[PLAYER_CAP];
 	this->mFlagPos		= new D3DXVECTOR3[2];
 	this->mIndex		= 0;
 	this->mNumPlayers	= 1;
 	this->mIsRunning	= true;
 	this->mLatency		= 50.0f;
+	this->mNetBalls		= new NetworkBall*[PLAYER_CAP];
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
-		this->mExecTime[i] = 0.0f;
-		this->mTeams[i] = TEAM::NOTEAM;
+		this->mNetBalls[i] = new NetworkBall();
 	}
 	MsgHandler::GetInstance().Set(this, this->mConn);
 }
 GameNetwork::~GameNetwork()
 {
 	SAFE_DELETE(this->mConn);
-	SAFE_DELETE_ARRAY(this->mPos);
-	SAFE_DELETE_ARRAY(this->mVel);
+	for(int i = 0; i < PLAYER_CAP; i++)
+	{
+		SAFE_DELETE(this->mNetBalls[i]);
+	}
+	SAFE_DELETE_ARRAY(this->mNetBalls);
 	SAFE_DELETE_ARRAY(this->mFlagPos);
-}
-
-void GameNetwork::SetForwardVector(const D3DXVECTOR3 forward, const int index)
-{
-	this->mForwardVectors[index] = forward;
 }
 
 void GameNetwork::SetForwardVectors(const D3DXVECTOR3 forward[], const int size)
 {
 	for(int i = 0; i < size; i++)
 	{
-		this->mForwardVectors[i] = forward[i];
+		this->mNetBalls[i]->SetForwardVector(forward[i]);
 	}
 }
 
-void GameNetwork::SetStartForwardVector(const D3DXVECTOR3 forward, const int index)
-{
-	this->mStartForwardVectors[index] = forward;
-}
 
 void GameNetwork::SetStartForwardVectors(const D3DXVECTOR3 forward[], const int size)
 {
 	for(int i = 0; i < size; i++)
 	{
-		this->mStartForwardVectors[i] = forward[i];
+		this->mNetBalls[i]->SetStartForwardVector(forward[i]);
 	}
 }
 
-void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
-{
-	this->mPos[index] = pos;
-}
-void GameNetwork::SetStartPos(const D3DXVECTOR3 pos, const int index)
-{
-	this->mStartPositions[index] = pos;
-}
 void GameNetwork::SetStartPosistions(const D3DXVECTOR3 pos[], const int size)
 {
 	for(int i = 0; i < size; i++)
 	{
-		this->mStartPositions[i] = pos[i];
+		this->mNetBalls[i]->SetStartPos(pos[i]);
 	}
-}
-void GameNetwork::SetVel(const D3DXVECTOR3 vel, const int index)
-{
-	this->mVel[index] = vel;
 }
 void GameNetwork::SetFlagPos(const D3DXVECTOR3 pos, const int index)
 {
 	this->mFlagPos[index] = pos;
-}
-void GameNetwork::AddKeyInput(const int index, char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward)
-{
-	if(!this->IsServer())
-	{
-		static char previousKeys[5] = {0};
-		static D3DXVECTOR3 prevForward(0,0,0);
-		bool same = true;
-		if(prevForward != forward)
-			same = false;
-		for(int i = 0; i < numKeys; i++)
-		{
-			if(previousKeys[i] != keys[i])
-				same = false;
-		}
-		if(!same || this->mCommandHandlers[index].Empty())
-		{
-			this->mCommandHandlers[index].Push(keys, numKeys, dt, forward);
-		}
-		else
-		{
-			Command* command = this->mCommandHandlers[index].Back();
-			command->ModifyDuration(dt);
-		}
-	
-		for (int i = 0; i < 5; i++)
-			previousKeys[i] = 0;
-		for (int i = 0; i < numKeys; i++)
-			previousKeys[i] = keys[i];
-
-		prevForward = forward;
-
-		this->mExecTime[this->mIndex] += dt;
-
-	}
-	else
-	{
-		this->mCommandHandlers[index].Push(keys, numKeys, dt, forward);
-	}
-}
-Command* GameNetwork::GetNextCommand(const int index) 
-{
-	return this->mCommandHandlers[index].Front();
-}
-void GameNetwork::PopCommand(const int index)
-{
-	this->mCommandHandlers[index].Pop();
-}
-void GameNetwork::AddMovementPowerBall(PowerBall* PowerBall)
-{
-	this->mPlayerHistories[this->mIndex].AddSnapshot(PowerBall->GetPosition(), this->mExecTime[this->mIndex]);
 }
 bool GameNetwork::ClientUpdate()
 {
@@ -196,9 +125,8 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				this->mNumPlayers = this->mConn->GetNumConnections();
 				for(int i = 0; i < this->mNumPlayers - 1; i++)
 				{
-					this->mPos[i] = this->mStartPositions[i];
-					PowerBalls[i]->SetPosition(this->mStartPositions[i]);
-					PowerBalls[i]->SetNumLives(2);
+					this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
+					PowerBalls[i]->SetPosition(this->mNetBalls[i]->GetStartPos());
 				}
 			}
 			if(this->mConn->GetNumConnections() > 1)
@@ -278,7 +206,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				PowerBalls[this->mIndex]->UpdatePost();
 				PowerBalls[this->mIndex]->Update(dt);
 				PowerBalls[this->mIndex]->Rotate(interpolationVector); //- : rotate other way :D
-				this->mPlayerHistories[this->mIndex].MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}
 		}
@@ -288,14 +216,14 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 D3DXVECTOR3 GameNetwork::CorrectPosition()
 {
 	D3DXVECTOR3 mod(0.0f, 0.0f, 0.0f);
-	if(this->GetServerExecTime() > 0 && this->GetServerExecTime() < this->mExecTime[this->mIndex])
+	if(this->mNetBalls[0]->GetExecTime() > 0 && this->mNetBalls[0]->GetExecTime() < this->mNetBalls[this->mIndex]->GetExecTime())
 	{
 		// this->mTime - mLatency;//this->totExectime;// ;//this->totExectime;//this->totExectime;// mLatency;// - 100;// latency(which isnt really latency, just the time since server used the keyinput) can get really low if packets stack up, fix this
 		//LATENCY = (TIME PING PACKET RECV - TIME PING PACKET SENT)  + TIME OF THE SUM OF THE KEYCOMMANDS EXECUTED BY SERVER. (execution time)
 		
-		D3DXVECTOR3 historyPos = this->mPlayerHistories[this->mIndex].GetPos(this->GetServerExecTime());
+		D3DXVECTOR3 historyPos = this->mNetBalls[this->mIndex]->GetPlayerHistory()->GetPos(this->mNetBalls[0]->GetExecTime());
 		//shadow2->SetPosition(historyPos );
-		mod = this->mPos[this->mIndex] - historyPos;
+		mod = this->mNetBalls[this->mIndex]->GetPos() - historyPos;
 		
 		mod.y = 0;//Ignoring y, maybe remove (weird due to the way collision is implemented, y-value always changes)
 		if(D3DXVec3Length(&mod) < 0.11f)
@@ -311,9 +239,10 @@ void GameNetwork::Start(ServerInfo server)
 	this->mServer = server;
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
-		this->mPos[i] = this->mStartPositions[i];
-		this->mVel[i] = D3DXVECTOR3(0,0,0);
-		this->mBallHealth[i] = ((WARLOCKInfo*)server.GetGameModeInfo())->GetStartHealth();
+		this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
+		this->mNetBalls[i]->SetHP(((WARLOCKInfo*)server.GetGameModeInfo())->GetStartHealth());
+		if(this->mServer.GetIP() == "")
+			this->mNetBalls[i]->mIsServer = true;
 	}
 	
 	if(this->mServer.GetIP() == "")
@@ -324,7 +253,7 @@ void GameNetwork::Start(ServerInfo server)
 	{
 		mConn->Connect(server);
 	}
-	this->mPlayerHistories[this->mIndex].Reset(this->mStartPositions[this->mIndex]);
+	this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetStartPos());
 	
 }
 void GameNetwork::Close()

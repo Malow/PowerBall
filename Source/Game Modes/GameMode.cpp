@@ -199,13 +199,13 @@ void GameMode::SendKeyInputs(const int clientIndex, float diff)
 		keyDowns[numKeys++] = '?'; //"idle"-key
 	
 	Vector3 temp = this->mBalls[clientIndex]->GetForwardVector();
-	this->mNet->AddKeyInput(clientIndex, keyDowns, numKeys, diff, D3DXVECTOR3(temp.x, temp.y, temp.z));
+	this->mNet->GetBall(clientIndex)->AddKeyInput(keyDowns, numKeys, diff, D3DXVECTOR3(temp.x, temp.y, temp.z));
 	
 }
 void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 {
 	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
-	Command* command = this->mNet->GetNextCommand(clientIndex);
+	Command* command = this->mNet->GetBall(clientIndex)->GetNextCommand();
 	float duration = 0.0f;
 	if(command != NULL)
 	{
@@ -217,11 +217,11 @@ void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 			{
 				this->ClientKeyPress(command->GetDuration(), clientIndex, command->GetInput(c));
 			}
-			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + command->GetDuration(), clientIndex);
-			this->mNet->PopCommand(clientIndex);
+			this->mNet->GetBall(clientIndex)->SetExecTime(this->mNet->GetBall(clientIndex)->GetExecTime() + command->GetDuration());
+			this->mNet->GetBall(clientIndex)->PopCommand();
 
 
-			command = this->mNet->GetNextCommand(clientIndex);
+			command = this->mNet->GetBall(clientIndex)->GetNextCommand();
 			if(command != NULL)
 				duration += command->GetDuration();
 								
@@ -240,7 +240,7 @@ void GameMode::HandleClientKeyInputs(const int clientIndex, float diff)
 
 			command->ModifyDuration(-(diff - duration));
 								
-			this->mNet->SetExecTime(this->mNet->GetExecTime(clientIndex) + (diff - duration), clientIndex);
+			this->mNet->GetBall(clientIndex)->SetExecTime(this->mNet->GetBall(clientIndex)->GetExecTime() + (diff - duration));
 		}
 	}
 }

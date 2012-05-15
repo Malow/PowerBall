@@ -6,6 +6,7 @@
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
 #include "CommandHandler.h"
+#include "NetworkBall.h"
 using namespace std;
 #define PLAYER_CAP 10
 #define FLOAT_EPSILON 0.01f //used for ignoring very tiny movements
@@ -20,21 +21,12 @@ class GameNetwork
 private:
 	ServerInfo			mServer;
 	ServerConnection*	mConn;
-	D3DXVECTOR3*		mPos;
-	D3DXVECTOR3*		mVel;
 	D3DXVECTOR3*		mFlagPos;
-	PlayerHistory		mPlayerHistories[PLAYER_CAP];
 	int					mIndex;
 	int					mNumPlayers;
 	//queue<KeyInput*>	mKeyInputs[PLAYER_CAP];
 	//create a network-ball class instead of having multiple arrays here.
-	CommandHandler		mCommandHandlers[PLAYER_CAP];
-	D3DXVECTOR3 		mStartPositions[PLAYER_CAP];
-	D3DXVECTOR3			mForwardVectors[PLAYER_CAP];
-	D3DXVECTOR3			mStartForwardVectors[PLAYER_CAP];
-	float				mBallHealth[PLAYER_CAP];
-	TEAM				mTeams[PLAYER_CAP];
-	float				mExecTime[PLAYER_CAP];
+	NetworkBall**		mNetBalls;
 	float				mLatency;
 	bool				mIsRunning;
 
@@ -49,32 +41,12 @@ public:
 	virtual		~GameNetwork();
 	void		SetLatency(float latency){this->mLatency = latency;}
 	float		GetLatency() const {return this->mLatency;}
-	void		AddMovementPowerBall(PowerBall* PowerBall);
+	//void		AddMovementPowerBall(PowerBall* PowerBall);
 	D3DXVECTOR3 		CorrectPosition();
 
 	ServerInfo  GetServerInfo() const { return this->mServer; }
 
-	void		SetTeam(TEAM team, int clientIndex){this->mTeams[clientIndex] = team;}
-	TEAM		GetTeam(int clientIndex) const {return this->mTeams[clientIndex];}
-	void		SetBallHealth(float hp, int clientIndex) { this->mBallHealth[clientIndex] = hp; }
-	float		GetBallHealth(int clientIndex) const { return this->mBallHealth[clientIndex]; }
-
-	void SetServerExecTime(const float time){this->mExecTime[0] = time;}
-	void SetExecTime(const float time, const int index){this->mExecTime[index] = time;}
-	float GetServerExecTime() const {return this->mExecTime[0];}
-	float GetExecTime(const int index) const {return this->mExecTime[index];}
-	
-	/*! Returns the start position on the map of the player with specified index. */
-	D3DXVECTOR3 GetStartPos(const int index) const {return this->mStartPositions[index];}
-
-	/*! Returns the start forward vectors for the ball with the specified index. */
-	D3DXVECTOR3 GetStartForwardVector(const int index) const {return this->mStartForwardVectors[index];}
-
-	/*! Returns the position of the player with specified index. */
-	D3DXVECTOR3 GetPos(const int index) const { return this->mPos[index]; }
-	
-	/*! Returns the velocity of the player with specified index. */
-	D3DXVECTOR3 GetVel(const int index) const { return this->mVel[index]; }
+	NetworkBall*	GetBall(int index) const { return this->mNetBalls[index]; }
 
 	/*! Returns the position of the flag with specified index. */
 	D3DXVECTOR3 GetFlagPos(const int index) const { return this->mFlagPos[index]; }
@@ -85,27 +57,9 @@ public:
 	/*! Returns the number of players on the LAN. */
 	int			GetNumPlayers() const {return this->mNumPlayers;}
 	
-	/*! Returns the forward vector of the player with specified index. */
-	D3DXVECTOR3 GetForwardVector(const int index) const { return this->mForwardVectors[index]; }
-
-	/*! Sets the position of the player with specified index. */
-	void		SetPos(const D3DXVECTOR3 pos, const int index);
-
-	/*! Sets the startposition of the player with specified index. */
-	void		SetStartPos(const D3DXVECTOR3 pos, const int index);
-	
 	/*! Sets the startpositions of the players (player index follows array order). */
 	void		SetStartPosistions(const D3DXVECTOR3 pos[], const int size);
 
-	/*! Sets the velocity of the player with specified index. */
-	void		SetVel(const D3DXVECTOR3 vel, const int index);
-
-	/*! Sets the forwardVectors of the player with specified index. */
-	void		SetForwardVector(const D3DXVECTOR3 forward, const int index);
-
-	/*! Sets the start forward vector  of the player with specified index. */
-	void		SetStartForwardVector(const D3DXVECTOR3 forward, const int index);
-	
 	/*! Sets the start foreard vector of the players (player index follows array order). */
 	void		SetStartForwardVectors(const D3DXVECTOR3 forward[], const int size);
 
@@ -120,19 +74,6 @@ public:
 
 	/*! Sets the index of this player. */
 	void		SetIndex(int n) { this->mIndex = n;}
-
-	/*! For client: Sets the key to down/up which will be sent to server. */
-	void		AddKeyInput(const int index, char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward);
-
-	/*! For client: Sets the key to down/up which will be sent to server. */
-	void		ResetKeyInput(const int index, const char key);
-
-	/*! Returns true if the client is pressing the specified key. */
-	float 		IsKeyPressed(const char key, const int index) const;
-	
-	/*! Returns true if the client is pressing the specified key. */
-	Command* 	GetNextCommand(const int index);
-	void		PopCommand(const int index);
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the PowerBalls. */
 	bool		UpdatePowerBall(PowerBall** PowerBalls, int &numPowerBalls, float dt);
