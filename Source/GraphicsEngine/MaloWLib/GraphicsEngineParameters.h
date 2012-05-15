@@ -69,6 +69,27 @@ public:
 		out.close();
 	}
 
+
+	void SaveToFile(string file, int winWidth, int winHeight, int shadowMapQual, int FXAAQual )
+	{
+		ofstream out;
+		out.open(file);
+		if(!out)
+		{
+			MaloW::Debug("Failed to save EngineParameters from " + file);
+			return;
+		}
+
+		out << winWidth << endl;
+		out << winHeight << endl;
+		out << shadowMapQual << endl;
+		out << FXAAQual << endl;
+
+		out.close();
+	}
+
+
+
 	virtual ~GraphicsEngineParams() { }
 };
 

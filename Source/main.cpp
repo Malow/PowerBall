@@ -14,19 +14,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 
 	MaloW::ClearDebug();
 	
-	GraphicsEngineParams params;
-	/*params.windowWidth = 1600;
-	params.windowHeight = 900;
-	params.FXAAQuality = 3;			// 0 - 4 
-	params.ShadowMapSettings = 0;	// 0 - 10 (works with higher but VERY consuming)
-	params.CamType = TRD;*/
 	
-
-
+	GraphicsEngineParams params;
 	// RunAgain for changing resolution etc.
 	bool RunAgain = true;
 	/*while(RunAgain)
 	{*/
+		
 		params.LoadFromeFile("config.cfg");
 		/*	Structure of cfg file:
 		windowWidth
@@ -74,16 +68,16 @@ void test()
 	StaticMesh* bth = eng->CreateStaticMesh("Media/bth.obj", D3DXVECTOR3(5, 20, 15));
 	
 	AnimatedMesh* flag = eng->CreateAnimatedMesh("Media/FlagRed.ani",  D3DXVECTOR3(8, 15, 8));
-	//flag->LoopSeamless();
+	flag->LoopSeamless();
 
-	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(15, 15, 8));
-	//flagb->LoopSeamless();
+	AnimatedMesh* flagb = eng->CreateAnimatedMesh("Media/FlagBlue.ani",  D3DXVECTOR3(10, 15, 8));
+	flagb->LoopSeamless();
 	
-	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(8, 15, 8));
-	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(10, 15, 8));
-	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(12, 15, 8));
-	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(14, 15, 8));
-	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag1 = eng->CreateStaticMesh("Media/FlagBlue1.obj", D3DXVECTOR3(12, 15, 8));
+	StaticMesh* flag2 = eng->CreateStaticMesh("Media/FlagBlue2.obj", D3DXVECTOR3(14, 15, 8));
+	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(16, 15, 8));
+	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(18, 15, 8));
+	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
 
 	bth->Scale(0.1f);

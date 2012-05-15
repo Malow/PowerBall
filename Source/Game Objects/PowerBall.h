@@ -26,6 +26,7 @@ class PowerBall : public GameObject
 			Vector3		mSumAddedForce;
 			Vector3		mTempPosition;
 			Vector3		mVelocity;
+			Vector3		mPreviousVelocity;
 			bool		mSteering;
 			Spell**		mSpells;
 			int			mNrOfSpells;
@@ -255,16 +256,28 @@ class PowerBall : public GameObject
 			void AddForce(const Vector3 &force) { this->mSumAddedForce += force * this->mForcePress; }
 
 			/*! Adds a force to this ball in forward direction. */
-			void AddForceForwardDirection(float dt) { this->AddForce(this->mForward * dt); }
+			void AddForceForwardDirection(float dt) { 
+														if(this->mHasContact)
+															this->AddForce(this->mForward * dt); 
+													}
 
 			/*! Adds a force to this ball in opposite to the forward vector. */
-			void AddForceOppositeForwardDirection(float dt) { this->AddForce(this->mForward * (-dt)); }
+			void AddForceOppositeForwardDirection(float dt) {
+																if(this->mHasContact)
+																	this->AddForce(this->mForward * (-dt)); 
+															}
 
 			/*! Adds a force to this ball in left direction of forward vector. */
-			void AddForceLeftOfForwardDirection(float dt) { this->AddForce(this->mForward.GetRoteted(-PI/2.0f) * dt); }
+			void AddForceLeftOfForwardDirection(float dt) { 
+																if(this->mHasContact)
+																	this->AddForce(this->mForward.GetRoteted(-PI/2.0f) * dt); 
+														  }
 	
 			/*! Adds a force to this ball in right direction of forward vector. */
-			void AddForceRightOfForwardDirection(float dt) { this->AddForce(this->mForward.GetRoteted(PI/2.0f) * dt); }
+			void AddForceRightOfForwardDirection(float dt) { 
+																if(this->mHasContact)
+																	this->AddForce(this->mForward.GetRoteted(PI/2.0f) * dt); 
+														   }
 
 			/*! Adds a spell to this ball. Returns true if successful (not full spell array) */
 			bool AddSpell(Spell* spell);
