@@ -421,6 +421,7 @@ void PowerBall::collisionSphereResponse(PowerBall* b1)
 	//Vector3 nColl = this->GetPositionVector3() - b1->GetPositionVector3();
 	Vector3 nColl = this->GetTempPosition() - b1->GetTempPosition();
 	// for easy projecting of vector, no div by |n|^2 in proj formula
+	Vector3 tempa = nColl;
 	nColl.normalize();
 
 	// savning the important stuff for easy acc
@@ -445,8 +446,9 @@ void PowerBall::collisionSphereResponse(PowerBall* b1)
 	float e2 = b1->mRestitution;
 	float e = (e1 + e2)/2.0f;
 
-	if((abs(v1x.GetLength()-v2x.GetLength()) > 0.6f) && this->mSound)
+	if(((v1x-v2x).GetLength() > 0.6f) && this->mSound)
 		this->mCollisionWithBall->Play();
+	
 
 	/*
 	this->mVelocity = Vector3( v1x*(m1-m2)/(mSum) + v2x*(2*m2)/(mSum) + v1y );
