@@ -57,7 +57,7 @@ public:
 	D3DXVECTOR3 GetScaling() const { return this->scale; }
 
 	D3DXMATRIX GetWorldMatrix() { return this->worldMatrix; }
-
+	void ResetRotationAndScale();
 	/* ! Is used internally when needed, but can be used from the outside for debugging. */
 	void RecreateWorldMatrix();
 

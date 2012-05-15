@@ -6,19 +6,23 @@ Maze2::Maze2()
 	this->mIGM = NULL;
 	this->mBalls = NULL;
 	this->mPlatform = NULL;
+	this->mBox = NULL;
 	this->mNumberOfPlayers = -1;
 	this->mNumberOfRounds = -1;
 	this->mGameMode = -1;
 	this->mTimeElapsed = 0.0f;
+	this->mText = this->mGe->CreateText("", D3DXVECTOR2(700,700),2.0f,"Media/Fonts/1");
 }
 
 Maze2::Maze2(GraphicsEngine* ge)
 {
 	this->mGe = ge;
+	this->mBox = NULL;
 	this->mNumberOfPlayers = 1;
 	this->mNumberOfRounds = 1;
 	this->mGameMode = CREDITS2;
 	this->mTimeElapsed = 0.0f;
+	this->mText = this->mGe->CreateText("", D3DXVECTOR2(700,700),2.0f,"Media/Fonts/1");
 }
 
 Maze2::~Maze2()
@@ -27,6 +31,8 @@ Maze2::~Maze2()
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
+	SAFE_DELETE(this->mBox);
+	mGe->DeleteText(this->mText);
 }
 
 void Maze2::Initialize()
@@ -44,6 +50,7 @@ void Maze2::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Map("Media/MazeMap.obj", centerPlatform);
+		this->mBox = new Map("Media/MazeMapFrame.obj", centerPlatform);
 		
 		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
@@ -52,9 +59,10 @@ void Maze2::Initialize()
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mPlatform->SetRestition(0.2f);
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
-		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.5f,24,-13));
+		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.5f,27,-13));
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();
+		this->mBalls[0]->SetAcceleration(this->mBalls[0]->GetAcceleration()*3.0f);
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
 		/*
 		if(mGe->GetEngineParameters().CamType == TRD)
@@ -91,7 +99,8 @@ void Maze2::Play()
 		this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
 		this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
 		diff = mGe->Update();
-	
+		float respownAfterDeathCounter = 0.0f;
+		float resetMazeCounter = 0.0f;
 		while(running)
 		{
 		
@@ -108,6 +117,7 @@ void Maze2::Play()
 				this->mPlatform->RotateZ(diff);
 			if(mGe->GetKeyListener()->IsPressed('D'))
 				this->mPlatform->RotateZ(-diff);
+			
 			if(mGe->GetKeyListener()->IsClicked(2))
 				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
 			// cheating is gooood!!!
@@ -121,6 +131,7 @@ void Maze2::Play()
 				mBalls[0]->AddForceRightOfForwardDirection(diff);	
 			if(mGe->GetKeyListener()->IsClicked(2))
 				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+			mBalls[0]->UpdateBallParentMode(this->mPlatform);
 			mBalls[0]->Update(diff);
 			Vector3 normalPlane;
 			if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
@@ -151,6 +162,23 @@ void Maze2::Play()
 			//s = "Distance to flag: " +  MaloW::convertNrToString(floor(10.0f*dist)/10.0f);
 			if(this->checkWinConditions(diff))
 				running = false;
+			if(this->checkRespownConditions())
+			{
+				respownAfterDeathCounter += diff*0.001f;
+				resetMazeCounter += diff*0.001f;
+				if(respownAfterDeathCounter > 3.0f)
+				{
+					this->ResetMaze();
+					respownAfterDeathCounter = 0.0f;
+				}
+				if(resetMazeCounter > 4.0f)
+				{
+					this->mBalls[0]->SetToStartPosition();
+					respownAfterDeathCounter = 0.0f;
+					resetMazeCounter = 0.0f;
+				}
+			}
+			
 			
 		}
 			mGe->DeleteText(hudR1);
@@ -186,4 +214,33 @@ bool Maze2::checkWinConditions(float dt)
 		return true;
 	}
 	return false;
+}
+
+bool Maze2::checkRespownConditions()
+{
+		
+		Vector3 pos = this->mPlatform->GetMesh()->GetPosition();
+		D3DXMATRIX quat;
+		D3DXMatrixRotationQuaternion(&quat, &this->mPlatform->GetMesh()->GetRotation()); 
+	
+		Matrix4 rotate(quat);
+		rotate.TransposeThis();
+						
+		Vector3 posBall = this->mBalls[0]->GetMesh()->GetPosition();
+		
+		Vector3 newCoord = rotate.GetInverse() * (posBall - pos - Vector3(0,5.0f,0));
+		/*
+		string s = MaloW::convertNrToString(newCoord.y);
+		this->mText->SetText(s);
+		*/
+		if(newCoord.y < -6.0f)
+			return true;
+		else
+			return false;
+}
+
+void Maze2::ResetMaze()
+{
+	this->mPlatform->GetMesh()->ResetRotationAndScale();
+	this->mPlatform->ResetXZAngles();
 }

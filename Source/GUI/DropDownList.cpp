@@ -111,7 +111,7 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 				returnEvent = temp->CheckCollision(mouseX, mouseY, mousePressed, ge);
 				if(returnEvent != NULL)
 				{
-					/*if(i != 0)
+					if(i != 0)
 					{
 						D3DXVECTOR2 firstElementPos = this->mElements[0]->GetImage()->GetPosition();
 						D3DXVECTOR2 newElementPos = this->mElements[i]->GetImage()->GetPosition();
@@ -125,7 +125,7 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 						Element* temp1 = this->mElements[0];
 						this->mElements[0] = this->mElements[i];
 						this->mElements[i] = temp1;
-					}*/
+					}
 					this->mDropActive = false;
 					this->RemoveFromRenderer(ge);
 					this->AddToRenderer(ge);

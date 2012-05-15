@@ -6,6 +6,7 @@ Maze::Maze()
 	this->mIGM = NULL;
 	this->mBalls = NULL;
 	this->mPlatform = NULL;
+	this->mBox = NULL;
 	this->mNumberOfPlayers = -1;
 	this->mNumberOfRounds = -1;
 	this->mGameMode = -1;
@@ -18,6 +19,7 @@ Maze::Maze(GraphicsEngine* ge)
 	this->mNumberOfPlayers = 1;
 	this->mNumberOfRounds = 1;
 	this->mGameMode = CREDITS;
+	this->mBox = NULL;
 	this->mTimeElapsed = 0.0f;
 }
 
@@ -27,6 +29,7 @@ Maze::~Maze()
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
+	SAFE_DELETE(this->mBox);
 }
 
 void Maze::Initialize()
@@ -44,6 +47,7 @@ void Maze::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Map("Media/MazeMap.obj", centerPlatform);
+		this->mBox = new Map("Media/MazeMapFrame.obj", centerPlatform);
 		this->mPlatform->SetRotate(true);
 		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
@@ -52,7 +56,7 @@ void Maze::Initialize()
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mPlatform->SetRestition(0.2f);
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
-		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.5f,24,-13));
+		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.5f,27,-13));
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
@@ -93,7 +97,9 @@ void Maze::Play()
 		targetZ = targetZ*(PI/180.0f);
 		this->mPlatform->SetTargetAngleX(targetX);
 		this->mPlatform->SetTargetAngleZ(targetZ);
-		while(running)
+		float respownAfterDeathCounter = 0.0f;
+		float resetMazeCounter = 0.0f;
+		while(running && this->mGe->isRunning())
 		{
 		
 			diff = mGe->Update();
@@ -124,20 +130,37 @@ void Maze::Play()
 				mBalls[0]->AddForceRightOfForwardDirection(diff);	
 			if(mGe->GetKeyListener()->IsClicked(2))
 				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
+			mBalls[0]->UpdateBallParentMode(this->mPlatform);
 			mBalls[0]->Update(diff);
 			Vector3 normalPlane;
 			if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
 					this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 			mBalls[0]->UpdatePost();
 			mPlatform->Update(diff);
-			if(!this->mGe->isRunning())
-				running = false;
-			if(!mBalls[0]->IsAlive())
-				running = false;		
+			
+				
 
 			if(this->checkWinConditions(diff))
 				running = false;
 
+			if(this->checkRespownConditions())
+			{
+				respownAfterDeathCounter += diff*0.001f;
+				resetMazeCounter += diff*0.001f;
+				if(respownAfterDeathCounter > 3.0f)
+				{
+					this->mPlatform->SetRotate(false);
+					this->ResetMaze();
+					respownAfterDeathCounter = 0.0f;
+				}
+				if(resetMazeCounter > 4.0f)
+				{
+					this->mPlatform->SetRotate(true);
+					this->mBalls[0]->SetToStartPosition();
+					respownAfterDeathCounter = 0.0f;
+					resetMazeCounter = 0.0f;
+				}
+			}
 
 			if(hudR1->GetPosition().y + diff * creditSpeed > windowHeight)
 				hudR1->SetPosition(D3DXVECTOR2(hudR1->GetPosition().x, 0));
@@ -197,4 +220,33 @@ bool Maze::checkWinConditions(float dt)
 		return true;
 	}
 	return false;
+}
+
+bool Maze::checkRespownConditions()
+{
+		
+		Vector3 pos = this->mPlatform->GetMesh()->GetPosition();
+		D3DXMATRIX quat;
+		D3DXMatrixRotationQuaternion(&quat, &this->mPlatform->GetMesh()->GetRotation()); 
+	
+		Matrix4 rotate(quat);
+		rotate.TransposeThis();
+						
+		Vector3 posBall = this->mBalls[0]->GetMesh()->GetPosition();
+		
+		Vector3 newCoord = rotate.GetInverse() * (posBall - pos - Vector3(0,5.0f,0));
+		/*
+		string s = MaloW::convertNrToString(newCoord.y);
+		this->mText->SetText(s);
+		*/
+		if(newCoord.y < -6.0f)
+			return true;
+		else
+			return false;
+}
+
+void Maze::ResetMaze()
+{
+	this->mPlatform->GetMesh()->ResetRotationAndScale();
+	this->mPlatform->ResetXZAngles();
 }

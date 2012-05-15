@@ -40,6 +40,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
 	this->mRoundsWon	 = 0;
 	this->mWinTimerActivated = false;
+	this->mLastRotation.LoadIdentity();
 	this->mWinTimer = 0.0f;
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam	= 5;
@@ -62,7 +63,6 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mSound		  = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
-	file.open ("Verts.txt", ios::out );
 	/*
 	this->mMaxNrOfItems = 6;
 	this->mNrOfItems = 0;
@@ -99,7 +99,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 }
 PowerBall::~PowerBall()
 {
-	file.close();
+
 	GetGraphicsEngine()->DeleteStaticMesh(this->mMesh);
 	this->mFlag = NULL;
 	if(GetGraphicsEngine()->GetEngineParameters().CamType ==  TRD)
@@ -186,7 +186,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	Vector3 newVelocity = this->mVelocity + resAcc * newdt;
 	Vector3 controlledMovedVelocity = newVelocity;
 	controlledMovedVelocity.y = 0.0f;
-	file <<"Velocity: "<< controlledMovedVelocity.GetLength() <<endl;
+
 	if(controlledMovedVelocity.GetLength() > this->mMaxVelocity)
 	{
 		resAcc.x = 0;
@@ -202,7 +202,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	}
 	controlledMovedVelocity = this->mVelocity;
 	controlledMovedVelocity.y = 0;
-	file <<"Velocity Changed to: "<< controlledMovedVelocity.GetLength() <<endl;
+
 	/*
 	if (this->mVelocity.GetLength() > this->mMaxVelocity )
 		this->mVelocity = oldVelocity;
@@ -230,9 +230,12 @@ void PowerBall::Update(const float dt, bool clientBall)
 		{
 			if(!clientBall)
 			{
+				/*
 				D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
 				::D3DXVec3Normalize(&dir, &dir);
-				this->mForward = dir;
+				*/
+
+				this->mForward = this->mStartForwardVector;
 				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);
 			}
 			this->mLivesLeft--;
@@ -242,6 +245,39 @@ void PowerBall::Update(const float dt, bool clientBall)
 			this->mRespawnTimeLeft = this->mRespawnTime;
 		}
 	}
+}
+
+void PowerBall::UpdateBallParentMode(Map* map)
+{
+		
+		Vector3 scalingMesh = Vector3(1,1,1);
+		Vector3 pos = map->GetMesh()->GetPosition();
+		D3DXMATRIX quat;
+		D3DXMatrixRotationQuaternion(&quat, &map->GetMesh()->GetRotation()); 
+		
+		Matrix4 rotate(quat);
+		rotate.TransposeThis();
+
+		Matrix4 scaling;
+		scaling.SetScale(scalingMesh);
+
+		Matrix4 translate;
+		translate.SetTranslate(pos);
+	
+				
+		Matrix4 world = translate*rotate*scaling;
+		Vector3 posBall = this->mMesh->GetPosition();
+		
+		/* if we move the platform we can also use world, but this way
+		   is simpler and we use the Transpose to get the rotation matrix inverse. */
+
+		Matrix4 newRotation = rotate * this->mLastRotation.GetTranspose(); 
+		Vector3 newPosBall = newRotation * (posBall - pos);
+		newPosBall += pos;
+		this->SetPosition(newPosBall.GetD3DVec());
+		this->SetTempPosition(newPosBall.GetD3DVec());
+		this->mLastRotation = rotate;
+
 }
 
 void PowerBall::UpdatePost()
@@ -616,7 +652,7 @@ bool PowerBall::collisionWithPlatformSimple(Map* p, Vector3 &normalPlane)
 	if(firstHit)
 	{
 		// for checking if the ball are in the air not turned on at the moment, 
-		float eps = 0.001f;
+		float eps = 0.5f; //0.001
 		if( (lengthProjN < (this->mRadius + eps)) && (lengthProjN > (this->mRadius - eps)) )
 		{
 			this->mNormalContact = normalStore;
@@ -721,7 +757,12 @@ void PowerBall::collisionPlatformResponse(Map* p, Vector3 normalPlane, float dt)
 	//float e = this->mRestitution;
 	float e = p->GetRestitution();
 	float newdt = dt*0.001f;
-	v1y -= v1y*pow(this->mFriction, 2)*newdt;
+	//v1y -= v1y*pow(this->mFriction, 2)*newdt;
+	if( (v1y.GetLength() < 2.0f) && (v1y.GetLength() > 0.0f) )
+		v1y -= v1y*this->mFriction*newdt;
+	if( v1y.GetLength() < 0.1f && (v1y.GetLength() > 0.0f) )
+		v1y *= this->mFriction*newdt;
+		
 	
 
 
@@ -771,4 +812,17 @@ bool PowerBall::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, V
 		return false;
 	t = f*(e2.GetDotProduct(q));
 	return true;
+}
+
+void PowerBall::SetTeamColor(int team)
+{
+	 this->mTeamColor = team; 
+	 if(team == TEAM::BLUETEAM)
+		 this->mMesh->SetSpecialColor(COLOR::BLUE_COLOR);
+	 else if(team == TEAM::REDTEAM)
+		 this->mMesh->SetSpecialColor(COLOR::RED_COLOR);
+	 else
+	 {
+
+	 }
 }

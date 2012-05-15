@@ -11,6 +11,8 @@ KingOfTheHill::KingOfTheHill()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
+		this->mChooseTeamMenu = NULL;
+		this->mTeam = TEAM::NOTEAM;
 }
 
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
@@ -22,7 +24,8 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mNet = net;
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
-	
+
+		this->mChooseTeamMenu = NULL;
 }
 
 KingOfTheHill::~KingOfTheHill()
@@ -32,6 +35,8 @@ KingOfTheHill::~KingOfTheHill()
 			this->mGe->DeleteLight(this->mLights[i]);
 		}
 		SAFE_DELETE(this->mIGM);
+
+		SAFE_DELETE(this->mChooseTeamMenu);
 }
 
 void KingOfTheHill::Initialize()
@@ -62,7 +67,7 @@ void KingOfTheHill::Initialize()
 			forwardVectors[i] = tempN;
 		}
 		*/
-		this->mNet->SetForwardVectors(forwardVectors, 4);
+		this->mNet->SetStartForwardVectors(forwardVectors, 4);
 		
 		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
@@ -90,6 +95,7 @@ void KingOfTheHill::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		this->mIGM	= new InGameMenu(this->mGe);
 		
+		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 }
 
 void KingOfTheHill::Intro()
@@ -109,7 +115,9 @@ void KingOfTheHill::Play()
 		bool roundsLeft = true;
 		int roundsPlayed = 0;
 
-		
+		//choose team before starting the game
+		this->mTeam = this->mChooseTeamMenu->Run();
+
 		while(roundsLeft && this->mGe->isRunning())
 		{
 			this->PlayRound(roundsLeft, zoomInPressed, zoomOutPressed); 
@@ -532,11 +540,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 					{
 						this->mBalls[i]->ResetTime();
 						this->mBalls[i]->SetToStartPosition();
-						//this->mBalls[i]->SetForwardVector(this->mNet->GetForwardVector(i));
+						this->mBalls[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
 						this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 						Vector3 vel = Vector3(0,0,0);
 						this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
-						//this->mNet->SetForwardVector(
+						this->mNet->SetForwardVector(this->mNet->GetStartForwardVector(i), i);
 						this->mPlatform->ResetHotZone();
 					}
 					returnValue = true;
@@ -551,9 +559,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 				{
 					this->mBalls[i]->ResetTime();
 					this->mBalls[i]->SetToStartPosition();
+					this->mBalls[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
 					this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
 					Vector3 vel = Vector3(0,0,0);
 					this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
+					this->mNet->SetForwardVector(this->mNet->GetStartForwardVector(i), i);
 					this->mPlatform->ResetHotZone();
 				}			
 				returnValue = true;
@@ -583,8 +593,11 @@ void KingOfTheHill::AddBall()
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
 		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetStartPos(i));
-		temp[i]->SetForwardVector(this->mNet->GetForwardVector(i));
-		temp[i]->SetTeamColor(TEAM::BLUETEAM);
+		temp[i]->SetForwardVector(this->mNet->GetStartForwardVector(i));
+		temp[i]->SetStartForwardVector(this->mNet->GetStartForwardVector(i));
+		if(this->mNet->GetIndex() == i)
+			temp[i]->SetTeamColor(this->mTeam);
+		
 	}
 	delete[] this->mBalls;
 	this->mBalls = temp;

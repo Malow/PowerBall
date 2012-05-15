@@ -36,6 +36,7 @@ TextBox::TextBox(float x, float y, float z, string textureName, float width, flo
 	this->mPressed = false;
 	this->mPressedOutside = false;
 	this->mTextSize = textSize;
+	this->mPointText = NULL;
 }
 TextBox::TextBox(float x, float y, float z, string textureName, float width, float height, string text, string name, float textSize, int maxNrOfChars, int allowedKeys, int from, int to) : Element(x, y, z, textureName, width, height)
 {

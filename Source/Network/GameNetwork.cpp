@@ -38,6 +38,19 @@ void GameNetwork::SetForwardVectors(const D3DXVECTOR3 forward[], const int size)
 	}
 }
 
+void GameNetwork::SetStartForwardVector(const D3DXVECTOR3 forward, const int index)
+{
+	this->mStartForwardVectors[index] = forward;
+}
+
+void GameNetwork::SetStartForwardVectors(const D3DXVECTOR3 forward[], const int size)
+{
+	for(int i = 0; i < size; i++)
+	{
+		this->mStartForwardVectors[i] = forward[i];
+	}
+}
+
 void GameNetwork::SetPos(const D3DXVECTOR3 pos, const int index)
 {
 	this->mPos[index] = pos;

@@ -140,6 +140,13 @@ Matrix4 Matrix4::GetInverse() const
 	return inverse;
 }
 
+Matrix4 Matrix4::GetTranspose() const
+{
+	Matrix4 transpose = *this;
+	transpose.TransposeThis();
+	return transpose;
+}
+
 D3DXMATRIX Matrix4::GetD3DXMatrix() const
 {
 	// also transposes it
@@ -184,6 +191,29 @@ void Matrix4::SetScale(float xS, float yS, float zS)
 	this->mData[13] = 0.0f;
 	this->mData[14] = 0.0f;
 	this->mData[15] = 1.0f;
+}
+
+void Matrix4::LoadIdentity() 
+{
+	this->mData[0] = 1.0f;
+	this->mData[1] = 0.0f;
+	this->mData[2] = 0.0f;
+	this->mData[3] = 0.0f;
+
+	this->mData[4] = 0.0f;
+	this->mData[5] = 1.0f;
+	this->mData[6] = 0.0f;
+	this->mData[7] = 0.0f;
+
+	this->mData[8] = 0.0f;
+	this->mData[9] = 0.0f;
+	this->mData[10] = 1.0f;
+	this->mData[11] = 0.0f;
+
+	this->mData[12] = 0.0f;
+	this->mData[13] = 0.0f;
+	this->mData[14] = 0.0f;
+	this->mData[15] = 0.0f;
 }
 
 void Matrix4::TransposeThis()

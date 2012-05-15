@@ -50,6 +50,7 @@ private:
 	int mSubSet;
 
 	bool mRestart;
+	bool mNeedRestart;
 	bool mRunning;
 
 	GraphicsEngine* mGe;

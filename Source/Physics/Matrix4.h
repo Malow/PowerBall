@@ -27,8 +27,10 @@ public:
 	float GetDeterminant() const;
 	Matrix4 GetAdjoint() const;
 	Matrix4 GetInverse() const;
+	Matrix4 GetTranspose() const;
 	D3DXMATRIX GetD3DXMatrix() const;
 	void TransposeThis();
+	void LoadIdentity();
 	void SetScale(float xS, float yS, float zS);
 	void SetScale(Vector3 scale);
 	void SetRotationX(float angleX);
