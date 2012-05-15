@@ -16,6 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	
 	GraphicsEngineParams params;
 	params.LoadFromeFile("config.cfg");
+	//params.CamType = FPS;
 	/*	Structure of cfg file:
 	windowWidth
 	windowHeight
@@ -72,6 +73,7 @@ void test()
 	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(18, 15, 8));
 	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
+	//StaticMesh* wlmap = eng->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(100, 4, 8));
 
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
