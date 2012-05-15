@@ -123,12 +123,16 @@ void CaptureTheFlag::Initialize()
 		
 
 		this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
-		this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
-		this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 50, 20));
+		this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -25)); 
+		this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 50, 25));
 		this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(10, 50, 0));
 		this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-10, 50, 0));
 		for(int i = 0; i < 5; i++)
+		{
 			this->mLights[i]->SetIntensity(30.0f);
+			this->mLights[i]->SetLookAt(D3DXVECTOR3(0,10,0));
+		}
+
 		this->mIGM	= new InGameMenu(this->mGe);
 		
 }

@@ -109,7 +109,7 @@ D3DXMATRIX Light::GetViewProjMatrix()
 	D3DXMATRIX LightView;
 	D3DXMatrixLookAtLH(&LightView, &this->pos, &this->lookAt, &this->up);
 	D3DXMATRIX LightProj;
-	D3DXMatrixPerspectiveFovLH(&LightProj, (float)D3DX_PI * 0.35f, 1, 5.0f, 100.0f);	//////////////////////
+	D3DXMatrixPerspectiveFovLH(&LightProj, (float)D3DX_PI * 0.55f, 1, 5.0f, 100.0f);	//////////////////////
 	this->ViewProj = LightView * LightProj;
 	return this->ViewProj; 
 }

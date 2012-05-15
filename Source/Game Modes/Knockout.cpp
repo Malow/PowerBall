@@ -36,13 +36,16 @@ void Knockout::Initialize()
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
 	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 	mGe->GetCamera()->LookAt(centerPlatform);	
-	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
-	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
-	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 50, 20));
-	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(10, 50, 0));
-	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-10, 50, 0));
+	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 30, 0));
+	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 30, -20)); 
+	this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 30, 20));
+	this->mLights[3] = mGe->CreateLight(D3DXVECTOR3(10, 30, 0));
+	this->mLights[4] = mGe->CreateLight(D3DXVECTOR3(-10, 30, 0));
 	for(int i = 0; i < 5; i++)
-		this->mLights[i]->SetIntensity(30.0f);
+	{
+		this->mLights[i]->SetIntensity(20.0f);
+		this->mLights[i]->SetLookAt(D3DXVECTOR3(0,10,0));
+	}
 	this->mIGM	= new InGameMenu(this->mGe);
 	this->mPlatform		= new Map("Media/Cylinder.obj", centerPlatform);
 	this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
