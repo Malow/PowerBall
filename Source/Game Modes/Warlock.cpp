@@ -38,7 +38,7 @@ Warlock::~Warlock()
 
 void Warlock::Initialize()
 {
-		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
+		D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,4,0);
 		mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
 		mGe->GetCamera()->LookAt(centerPlatform);	
 		this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
@@ -67,8 +67,8 @@ void Warlock::Initialize()
 			forwardVectors[i] = tempN;
 		}
 		this->mNet->SetStartForwardVectors(forwardVectors, 4);
-		this->mPlatform		= new Map("Media/Cylinder.obj", centerPlatform);
-		this->mPlatform->SetScale(Vector3(5,5,5));
+		this->mPlatform		= new Map("Media/WarlockMap.obj", centerPlatform);
+		
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
 		this->mPlatform->SetShrinkValue(0.0f);
 		/*

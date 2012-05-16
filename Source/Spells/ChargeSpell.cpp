@@ -81,6 +81,7 @@ void ChargeSpell::UpdateSpecial(float dt)
 				this->mTimeHoldButton = 0.5*this->mMaxChargingTime;
 			/* change back to old behaviour */
 			this->mPowerBall->SetAcceleration(this->mBackup.acceleration);
+			this->mPowerBall->SetSteering(true);
 			/* setting the Camera to follow the position changes again. */
 			((TRDCamera*)GetGraphicsEngine()->GetCamera())->enablePositionChanges();
 			this->mChargingDone = true;
@@ -125,6 +126,10 @@ void ChargeSpell::Use()
 		
 			/* new behaviour for ball */
 			this->mBackup.normalContact = this->mPowerBall->GetNormalContact();
+			
+			/*  need to be done otherwise the ball will jump to the side if we have speed at that direction. */
+			this->mPowerBall->SetVelocity(Vector3(0,0,0));	
+			this->mPowerBall->SetSteering(false);
 
 			/* faster "gravity" speed  = more jumpy */
 			Vector3 acc = this->mPowerBall->GetAcceleration();

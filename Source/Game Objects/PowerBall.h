@@ -257,25 +257,25 @@ class PowerBall : public GameObject
 
 			/*! Adds a force to this ball in forward direction. */
 			void AddForceForwardDirection(float dt) { 
-														if(this->mHasContact)
+														if(this->mHasContact && this->mSteering)
 															this->AddForce(this->mForward * dt); 
 													}
 
 			/*! Adds a force to this ball in opposite to the forward vector. */
 			void AddForceOppositeForwardDirection(float dt) {
-																if(this->mHasContact)
+																if(this->mHasContact && this->mSteering)
 																	this->AddForce(this->mForward * (-dt)); 
 															}
 
 			/*! Adds a force to this ball in left direction of forward vector. */
 			void AddForceLeftOfForwardDirection(float dt) { 
-																if(this->mHasContact)
+																if(this->mHasContact && this->mSteering)
 																	this->AddForce(this->mForward.GetRoteted(-PI/2.0f) * dt); 
 														  }
 	
 			/*! Adds a force to this ball in right direction of forward vector. */
 			void AddForceRightOfForwardDirection(float dt) { 
-																if(this->mHasContact)
+																if(this->mHasContact && this->mSteering)
 																	this->AddForce(this->mForward.GetRoteted(PI/2.0f) * dt); 
 														   }
 
