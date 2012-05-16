@@ -12,6 +12,7 @@ KingOfTheHill::KingOfTheHill()
 		this->mTimeElapsed = 0.0f;
 
 		this->mChooseTeamMenu = NULL;
+		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
 }
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
@@ -26,6 +27,7 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mTimeElapsed = 0.0f;
 
 		this->mChooseTeamMenu = NULL;
+		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
 }
 
@@ -38,6 +40,8 @@ KingOfTheHill::~KingOfTheHill()
 		SAFE_DELETE(this->mIGM);
 
 		SAFE_DELETE(this->mChooseTeamMenu);
+
+		
 
 		mGe->DeleteText(this->mHud[0]);
 		mGe->DeleteText(this->mHud[1]);
@@ -111,6 +115,9 @@ void KingOfTheHill::Initialize()
 		
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
+		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
+		this->mTotalTimeCapture->SetOpacity(0.0f);
+
 		/* Set hud */
 		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,750),1.0f,"Media/Fonts/1");
@@ -130,6 +137,29 @@ void KingOfTheHill::Intro()
 void KingOfTheHill::PlaySpecific()
 {	
 		GameMode::PlayLan();
+		/* 
+		*  or run it the way down below. 
+		*  
+		bool zoomOutPressed = false;
+		bool zoomInPressed = false;
+		this->mNet->Start(this->mServerInfo);
+		this->mGe->Update();
+		bool roundsLeft = true;
+		int roundsPlayed = 0;
+
+		//choose team before starting the game
+		this->mTeam = this->mChooseTeamMenu->Run();
+		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+		//set full visibility for the total time captured images**
+		this->mTotalTimeCapture->SetOpacity(1.0f);
+		while(roundsLeft && this->mGe->isRunning())
+		{
+			this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
+			roundsPlayed++;;
+			if(roundsPlayed == this->mNumberOfRounds)
+				roundsLeft = false;
+		}
+		*/
 }
 
 
@@ -210,6 +240,10 @@ bool KingOfTheHill::checkWinConditions(float dt)
 			for(int i = 0; i<numberInHotZone; i++)
 			{
 				ballIndex = arrayIndexs[i];
+				float time = this->mBalls[ballIndex]->GetTimeInHotZone();
+				float time2 = this->mPlatform->GetTimeInHotZoneContinuously();
+				float time3 = this->mPlatform->GetMaxTimeInHotZone();
+				float time4 = this->mPlatform->GetMaxTimeInHotZoneContinuously();
 				if(this->mBalls[ballIndex]->GetTimeInHotZone() >= this->mPlatform->GetMaxTimeInHotZone())
 				{
 					/* here the round is over. */

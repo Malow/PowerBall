@@ -17,7 +17,7 @@
 class KingOfTheHill : public GameMode
 {
 	private:
-		
+			Image*			mTotalTimeCapture;
 
 	public:
 			KingOfTheHill();

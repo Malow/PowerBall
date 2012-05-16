@@ -29,19 +29,37 @@ GameHandler::~GameHandler()
 bool GameHandler::CreateGame(int gameMode, ServerInfo server)
 {
 	if(gameMode == CTF)
+	{
 		this->CreateCaptureTheFlag(server);
+		return true;
+	}
 	if(gameMode == KOTH)
+	{
 		this->CreateKingOfTheHill(server);
+		return true;
+	}
 	if(gameMode == WARLOCK)
+	{
 		this->CreateWarlockGame(server);
+		return true;
+	}
 	if(gameMode == CREDITS)
+	{
 		this->CreateMazeGame();
+		return true;
+	}
 	if(gameMode == CREDITS2)
+	{
 		this->CreateMazeGame2();
+		return true;
+	}
 	if(gameMode == DM)
+	{
 		this->CreateKnockoutGame(2, 3);
+		return true;
+	}
 	
-	return true;
+	return false;
 }
 bool GameHandler::CreateKnockoutGame(int numberOfPlayers, int numberOfRounds)
 {
