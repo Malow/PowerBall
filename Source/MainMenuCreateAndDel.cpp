@@ -8,7 +8,7 @@ void MainMenu::CreateCircleMenu()
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
-
+	
 	/* Create the first menu*/
 	Element* tempElement = new GUIPicture((dx * (317.0f / 1440))+(offSet), windowHeight * 0.125f, 1, 
 		"Media/MainMenu_Circle/mainmenu.png", (windowWidth * 0.56f) - offSet, windowHeight * 0.745f);
@@ -281,7 +281,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-
+	
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
 	/*
