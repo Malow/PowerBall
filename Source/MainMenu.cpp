@@ -346,8 +346,10 @@ bool MainMenu::Run()
 					{
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
-						this->mSubSet = OPTIONS_LAN_SUBCTF;
 						this->mCurrentSet = OPTIONS_LAN;
+						GUIEvent* temp = this->mSets[this->mCurrentSet].GetEventFromDropDown("GameMode");
+						this->mSubSet = ((ChangeSubSetEvent*)temp)->GetSet();
+						
 
 						float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 						float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;

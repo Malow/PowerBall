@@ -74,6 +74,7 @@ void test()
 	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
 	//StaticMesh* wlmap = eng->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(100, 4, 8));
+	//StaticMesh* hb = eng->CreateStaticMesh("Media/HardenedBall.obj", D3DXVECTOR3(12, 15, 12));
 
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
@@ -127,6 +128,8 @@ void test()
 	while(eng->isRunning() && go)	// Returns true as long as ESC hasnt been pressed, if it's pressed the game engine will shut down itself (to be changed)
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
+
+		text->SetText("Distance to Lava: " + MaloW::convertNrToString(eng->GetCamera()->getPosition().y - eng->GetLavaHeightAt(eng->GetCamera()->getPosition().x, eng->GetCamera()->getPosition().z)));
 
 		//testBall->Rotate(D3DXVECTOR3(2*PI, 0, 0) * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
 		testBall->RotateAxis(D3DXVECTOR3(2, 0, 0),  2* PI * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.

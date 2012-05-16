@@ -139,6 +139,8 @@ public:
 
 	void CreateSmokeEffect() { this->dx->CreateSmokeEffect(); }
 
+	float GetLavaHeightAt(float x, float z) { return this->dx->GetLavaHeightAt(x, z); }
+
 	virtual void Life();
 };
 

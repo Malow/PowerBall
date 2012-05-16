@@ -247,6 +247,8 @@ public:
 	void SetCamera(Camera* cam) { this->camera = cam; }
 	Camera* GetCamera() const { return this->camera; }
 
+	float GetLavaHeightAt(float x, float z);
+
 	int GetTriangleCount() { return this->TriangleCount; }
 };
 
