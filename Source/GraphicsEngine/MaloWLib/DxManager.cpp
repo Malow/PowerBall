@@ -513,3 +513,18 @@ void DxManager::CreateSkyBox(string texture)
 
 	this->skybox = sb;
 }
+
+float DxManager::GetLavaHeightAt(float x, float z) 
+{ 
+	float L = 10.0f;
+	float H = 15.0f;
+
+	float timer = this->TimerAnimation * 0.001f;
+
+	float bias = sin(timer * 0.2f) * sin(x * 0.2f) * sin(z * 0.2f);
+	D3DXVECTOR3 temp = this->camera->getPosition() - D3DXVECTOR3(x, L, z);
+	bias *= 1.2f - (D3DXVec3Length(&temp) / 100.0f);
+
+	float lavaHeight = L - bias;
+	return lavaHeight;
+}

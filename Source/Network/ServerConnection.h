@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include "ServerInfo.h"
 #include "MsgHandler.h"
-#include <winsock2.h>
+//#include <winsock2.h>
 
 #pragma comment(lib, "WS2_32.lib")
 #define BUFFER_SIZE 1024
