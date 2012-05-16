@@ -12,13 +12,14 @@
 #include "..\Game Modes\GameMode.h"
 #include "..\Network\GameNetwork.h"
 #include "ChooseTeamMenu.h"
-#include "..\GUI\SliderBar.h"
+
 
 class KingOfTheHill : public GameMode
 {
 	private:
 		ChooseTeamMenu* mChooseTeamMenu;
 		int				mTeam;
+		Image*			mTotalTimeCapture;
 
 	public:
 			KingOfTheHill();

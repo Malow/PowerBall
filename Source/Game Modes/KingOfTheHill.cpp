@@ -13,6 +13,7 @@ KingOfTheHill::KingOfTheHill()
 
 		this->mChooseTeamMenu = NULL;
 		this->mTeam = TEAM::NOTEAM;
+		this->mTotalTimeCapture = NULL;
 }
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
@@ -26,6 +27,7 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mTimeElapsed = 0.0f;
 
 		this->mChooseTeamMenu = NULL;
+		this->mTotalTimeCapture = NULL;
 }
 
 KingOfTheHill::~KingOfTheHill()
@@ -100,6 +102,8 @@ void KingOfTheHill::Initialize()
 		this->mIGM	= new InGameMenu(this->mGe);
 		
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
+		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
+		this->mTotalTimeCapture->SetOpacity(0.0f);
 }
 
 void KingOfTheHill::Intro()
@@ -121,11 +125,11 @@ void KingOfTheHill::Play()
 
 		//choose team before starting the game
 		this->mTeam = this->mChooseTeamMenu->Run();
-		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
 		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+		//set full visibility for the total time captured images**
+		this->mTotalTimeCapture->SetOpacity(1.0f);
 		while(roundsLeft && this->mGe->isRunning())
 		{
-
 			this->PlayRound(roundsLeft, zoomInPressed, zoomOutPressed); 
 			roundsPlayed++;;
 			if(roundsPlayed == this->mNumberOfRounds)
@@ -481,6 +485,7 @@ void KingOfTheHill::PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomO
 				if(this->mTimeElapsed > 600.0f)
 					running = false;
 		}
+		this->mTotalTimeCapture->SetOpacity(0.0f);
 		mGe->DeleteText(hudR1);
 		mGe->DeleteText(hudR20);
 		mGe->DeleteText(hudR21);
