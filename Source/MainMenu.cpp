@@ -18,7 +18,7 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	this->mGe = ge;
 	this->mGh = new GameHandler(ge);
 	
-	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/america_fuck_yeah.mp3", true);
+	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/George_Ellinas_-_Pulse_(George_Ellinas_remix).mp3", true);
 	BackgroundSong::mSong->SetVolume(0.05f);
 	BackgroundSong::mMouseClick = this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
 	BackgroundSong::mMouseClick->SetVolume(0.05f);
@@ -146,7 +146,8 @@ bool MainMenu::Run()
 						int lifes = -1;
 						int rounds = -1; 
 						int flags = -1;
-						int secondsToWin = -1;
+						int continuously = -1;
+						int accumulated = -1;
 						string serverName = "PowerBall server";
 
 						/* Getting some needed info to start a server*/
@@ -160,9 +161,10 @@ bool MainMenu::Run()
 						}
 						else if(GameMode->GetGameMode() == KOTH)
 						{
-							secondsToWin = atoi(this->mSets[this->mSubSet].GetTextFromField("SecondsToWin").c_str());
+							continuously = atoi(this->mSets[this->mSubSet].GetTextFromField("Continuously").c_str());
+							accumulated = atoi(this->mSets[this->mSubSet].GetTextFromField("Accumulated").c_str());
 							rounds = atoi(this->mSets[this->mSubSet].GetTextFromField("Rounds").c_str());
-							gmi = new KOTHInfo(rounds, 2, secondsToWin, secondsToWin);
+							gmi = new KOTHInfo(rounds, 2, continuously, accumulated);
 						}
 						else if(GameMode->GetGameMode() == WARLOCK)
 						{

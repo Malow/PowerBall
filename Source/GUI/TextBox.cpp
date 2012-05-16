@@ -66,7 +66,7 @@ TextBox::~TextBox()
 bool TextBox::AddToRenderer(GraphicsEngine* ge)
 {
 	Element::AddToRenderer(ge);
-	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x + 3.0f, this->GetPositionD3D().y-0.5f), mTextSize, "Media/Fonts/1");
+	this->mPointText = ge->CreateText(this->mText, D3DXVECTOR2(this->GetPositionD3D().x + 3.0f, this->GetPositionD3D().y-1.0f), mTextSize, "Media/Fonts/1");
 
 	return true;
 }
