@@ -17,13 +17,12 @@ private:
 	D3DXVECTOR3			mStartForwardVector;
 	D3DXVECTOR3			mVel;
 	PlayerHistory*		mPlayerHistory;
-	CommandHandler		mCommandHandler;
+	CommandHandler*		mCommandHandler;
 	float				mHP;
 	TEAM				mTeam;
 	float				mExecTime;
 
 public:
-	bool		mIsServer;
 				NetworkBall();
 	virtual		~NetworkBall();
 
@@ -40,6 +39,7 @@ public:
 	void		SetExecTime(const float time){this->mExecTime = time;}
 	float		GetExecTime() const { return this->mExecTime; }
 
+	void		ClearCommands() { this->mCommandHandler->Clear(); }
 	PlayerHistory* GetPlayerHistory() { return this->mPlayerHistory; }
 	//CommandHandler& GetCommandHandler() { return this->
 
@@ -74,7 +74,7 @@ public:
 	void		SetStartForwardVector(const D3DXVECTOR3 forward) { this->mStartForwardVector = forward; }
 
 	/*! For client: Sets the key to down/up which will be sent to server. */
-	void		AddKeyInput(char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward);
+	void		AddKeyInput(char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward, bool countUp = true);
 
 	/*! For client: Sets the key to down/up which will be sent to server. */
 	void		ResetKeyInput(const char key);

@@ -33,6 +33,7 @@ CaptureTheFlag::~CaptureTheFlag()
 			this->mGe->DeleteLight(this->mLights[i]);
 		}
 		SAFE_DELETE(this->mIGM);
+		SAFE_DELETE(this->mChooseTeamMenu);
 		SAFE_DELETE(this->mFriendlyFlag);
 		SAFE_DELETE(this->mEnemyFlag);
 }
@@ -137,6 +138,7 @@ void CaptureTheFlag::Initialize()
 		}
 
 		this->mIGM	= new InGameMenu(this->mGe);
+		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		
 }
 
@@ -148,183 +150,9 @@ void CaptureTheFlag::Intro()
 		mGe->DeleteText(intro);
 }
 
-void CaptureTheFlag::Play()
+void CaptureTheFlag::PlaySpecific()
 {	
-		bool running = true;
-		bool zoomOutPressed = false;
-		bool zoomInPressed = false;
-		bool quitByMenu = false;
-		this->mNet->Start(this->mServerInfo);
-		this->mGe->Update();
-		int numAlivePlayers = 0;
-		float CaptureTheFlagTimer = 0;
-		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
-		string s;
-
-		//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
-
-	
-		LARGE_INTEGER oldTick = LARGE_INTEGER();
-		LARGE_INTEGER now =  LARGE_INTEGER();
-
-
-		while(running)
-		{
-			float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
-
-			if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-				running = this->mIGM->Run();
-		
-			QueryPerformanceCounter(&now);
-			LARGE_INTEGER proc_freq;
-			::QueryPerformanceFrequency(&proc_freq);
-			double frequency = proc_freq.QuadPart;
-
-			//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
-			QueryPerformanceCounter(&oldTick);
-			for(int i = 0; i < this->mNumberOfPlayers; i++)
-			{
-				if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
-					this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
-			}
-
-			if(this->mNet->IsServer())
-			{
-
-				// will be moved to phisics simulation class
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
-					if(i != this->mNet->GetIndex())
-					{
-						this->HandleClientKeyInputs(i, diff);
-						this->mBalls[i]->Update(diff, true);
-					}
-					else
-					{
-						this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
-						this->mBalls[i]->Update(diff, false);
-					}	
-	
-				}
-			
-				
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
-					PowerBall* b1 = this->mBalls[i];
-					for(int j = i+1; j < this->mNumberOfPlayers; j++)
-					{
-						PowerBall* b2 = this->mBalls[j];
-						if(b1->collisionWithSphereSimple(b2))
-							b1->collisionSphereResponse(b2);
-
-					}
-					Vector3 normalPlane;
-					if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-						b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-				}
-
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
-					this->mBalls[i]->UpdatePost();
-				}
-
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
-					this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
-					Vector3 vel = this->mBalls[i]->GetVelocity();
-					this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
-				}
-			}
-			else //is client
-			{
-				for(int i = 0; i < this->mNumberOfPlayers; i++)
-				{
-					if(this->mNet->GetIndex() != i)
-					{
-						D3DXVECTOR3 rotVector = this->mNet->GetBall(i)->GetPos() - this->mBalls[i]->GetPosition();
-						this->mBalls[i]->SetPosition(this->mNet->GetBall(i)->GetPos());
-						this->mBalls[i]->SetTempPosition(this->mNet->GetBall(i)->GetPos());
-						this->mBalls[i]->SetVelocity(this->mNet->GetBall(i)->GetVel());
-						this->mBalls[i]->Rotate(rotVector);
-					}
-				}
-				if(this->mNet->GetIndex() < this->mNumberOfPlayers)
-				{
-					int i = this->mNet->GetIndex();
-
-					this->SendKeyInputs(i, diff);
-					this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
-				
-
-					this->mBalls[i]->Update(diff);
-
-
-					for(int c = 0; c < this->mNumberOfPlayers; c++)
-					{
-						PowerBall* b1 = this->mBalls[c];
-						for(int j = c+1; j < this->mNumberOfPlayers; j++)
-						{
-							PowerBall* b2 = this->mBalls[j];
-							if(b1->collisionWithSphereSimple(b2))
-								b1->collisionSphereResponse(b2);
-
-						}
-					}
-
-					Vector3 normalPlane;
-					if(this->mBalls[i]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-						this->mBalls[i]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-
-
-					this->mBalls[i]->UpdatePost();
-				
-
-					this->mNet->GetBall(i)->AddMovementPowerBall(this->mBalls[i]);
-
-				}
-			}
-
-
-			for(int i = 0; i < this->mNumberOfPlayers; i++)
-			{
-				if(this->mBalls[i]->IsAlive())
-					numAlivePlayers += 1;
-			}
-			mPlatform->Update(diff);
-
-		
-			if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, diff))
-				running = false;
-
-			if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
-			{
-				this->AddBall();
-				numAlivePlayers++;
-			}
-
-			if(this->mNet->IsServer())
-			if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
-			{
-				running = false;
-			}
-			if(!this->mGe->isRunning())
-				running = false;
-			float tmp = (600.0f - this->mTimeElapsed);
-			tmp = floor(tmp * 10.0f) / 10.0f;
-			s = "Timer: " + MaloW::convertNrToString(tmp);
-			hudR1->SetText(s);
-			if(this->mNet->IsServer())
-			if(this->checkWinConditions(diff))
-				running = false;
-			float newdt = diff/1000.0f;
-			/* will be implemented when we have the rules, for now just play around in 600 seconds then gameover */
-			this->mTimeElapsed += newdt;
-			if(this->mTimeElapsed > 600.0f)
-				running = false;
-			
-		}
-		mGe->DeleteText(hudR1);
-		this->mNet->Close();
+		GameMode::PlayLan();
 }
 
 void CaptureTheFlag::ShowStats()
@@ -411,5 +239,10 @@ void CaptureTheFlag::AddBall()
 		mGe->GetCamera()->LookAt(D3DXVECTOR3(0,10,0));
 	}
 
+
+}
+
+void CaptureTheFlag::ShowHud()
+{
 
 }

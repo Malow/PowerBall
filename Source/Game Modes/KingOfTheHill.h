@@ -14,6 +14,7 @@
 #include "ChooseTeamMenu.h"
 
 
+
 class KingOfTheHill : public GameMode
 {
 	private:
@@ -27,11 +28,11 @@ class KingOfTheHill : public GameMode
 			virtual ~KingOfTheHill();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void Play();
-			void PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
+			virtual void PlaySpecific();
 			virtual void ShowStats();
+			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
-			void AddBall();
+			virtual void AddBall();
 
 	
 };

@@ -52,6 +52,7 @@ public:
 	void		SendServerData();
 	void		JoinTeam(TEAM id);
 
+	void		PlayerReconnect(int index);
 	//lobby
 	void		SendIdentifyYourself();
 	void		SendPlayerInfos();

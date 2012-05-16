@@ -212,7 +212,7 @@ void MsgHandler::ReceiveClientData(char* buf, int &offset, int index)
 		}
 		float duration = this->GetFromBufferF(buf, offset);
 		D3DXVECTOR3 forward = this->GetFromBufferD(buf, offset);
-		this->mNet->GetBall(index)->AddKeyInput(keys, numKeys, duration, forward);
+		this->mNet->GetBall(index)->AddKeyInput(keys, numKeys, duration, forward, false);
 	}
 	offset += sizeof(SEGMENT_END);
 }
@@ -262,6 +262,11 @@ void MsgHandler::ReceiveTeamChange(char* buf, int &offset, int index)
 	this->mNet->GetBall(index)->SetTeam(team);
 }
 
+void MsgHandler::PlayerReconnect(int index)
+{ 
+	this->mNet->GetBall(index)->SetExecTime(0.0f); 
+	this->mNet->GetBall(index)->ClearCommands();
+}
 
 void MsgHandler::AddToBuffer(char* bufOut, int &offsetOut, float in)
 {
