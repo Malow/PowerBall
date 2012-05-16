@@ -321,6 +321,18 @@ void CaptureTheFlag::Play()
 			this->mTimeElapsed += newdt;
 			if(this->mTimeElapsed > 600.0f)
 				running = false;
+
+			//update flags
+			if(this->mNet->IsServer())
+			{
+				this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
+				this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
+			}
+			else
+			{
+				this->mFriendlyFlag->SetPosition(this->mNet->GetFlagPos(1));
+				this->mEnemyFlag->SetPosition(this->mNet->GetFlagPos(0));
+			}
 			
 		}
 		mGe->DeleteText(hudR1);
@@ -378,8 +390,6 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 			}
 		}
 	}
-	this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
-	this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
 	return false;
 }
 

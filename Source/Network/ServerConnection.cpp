@@ -147,6 +147,7 @@ void ServerConnection::Connect(ServerInfo server)
 	while(recvBytes <= 0)
 	{
 		recvBytes = recvfrom(this->mServerSocket->sock, buf, sizeof(buf), 0, (sockaddr*)&from, &fromLength );
+		int a = ::WSAGetLastError();
 	}
 	this->mServerSocket->adress = from;
 	//bind(this->mServerSocket->sock, (const sockaddr*)&from, sizeof(from));
@@ -187,8 +188,8 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 					if(inet_ntoa(from.sin_addr) == inet_ntoa(sc->mClientSocket[i]->adress.sin_addr))
 					{
 						//reconnection from client
-						//reconnectedClient = true;
-						//client = sc->mClientSocket[i];
+						reconnectedClient = true;
+						client = sc->mClientSocket[i];
 					}
 				}
 				if(!reconnectedClient && sc->GetNumConnections() < sc->mCurrentServer.GetMaxNumPlayers())
@@ -217,8 +218,34 @@ DWORD WINAPI ServerConnection::ListenForClient(void* param)
 				}
 				else if (reconnectedClient)
 				{
+					client->running = false;
+					//char buffer[10] = "START";
+					
+					//sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&client->adress, sizeof(sockaddr_in));
+
+					
+					SOCKET sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
+					sockaddr_in newSockAdress = from;
+					newSockAdress.sin_family = AF_INET;
+					newSockAdress.sin_port =  client->adress.sin_port;
+
+					bind(sock, (const sockaddr*)&newSockAdress, sizeof(sockaddr_in));
+
+					DWORD nonBlocking = 1;
+					ioctlsocket(sock, FIONBIO, &nonBlocking);
+					
+					int index = client->index;
+					delete client;
+					client = new Connection(sock);
+					sc->mClientSocket[index - 1] = client;
+			
 					char buffer[10] = "START";
 					sendto( client->sock, buffer, sizeof(buffer), 0, (sockaddr*)&from, sizeof(sockaddr_in));
+
+					client->adress = from;
+					client->index = index;
+					client->handle = CreateThread(0, 0, &Communicate, (void*) client, 0, 0);
+					MsgHandler::GetInstance().PlayerReconnect(index);
 				}
 				else
 				{

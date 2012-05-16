@@ -151,8 +151,9 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 		//shadow->SetPosition(this->mPos[this->mIndex]);
 		static float ping_counter = 0.0f;
 		ping_counter++;
-		if(ping_counter > 1000.0f)
+		if(ping_counter > 10000.0f)
 		{
+			//if no answer, then client dc
 			ping_counter = 0.0f;
 			MsgHandler::GetInstance().Ping(0);
 		}
@@ -241,8 +242,6 @@ void GameNetwork::Start(ServerInfo server)
 	{
 		this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
 		this->mNetBalls[i]->SetHP(((WARLOCKInfo*)server.GetGameModeInfo())->GetStartHealth());
-		if(this->mServer.GetIP() == "")
-			this->mNetBalls[i]->mIsServer = true;
 	}
 	
 	if(this->mServer.GetIP() == "")

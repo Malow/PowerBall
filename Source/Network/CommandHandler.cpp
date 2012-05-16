@@ -42,14 +42,14 @@ void CommandHandler::Push(char inputs[], int numInputs, float duration, D3DXVECT
 	}
 	this->mNumCommands++;
 }
-Command* CommandHandler::Front()
+Command* CommandHandler::Front() const
 {
 	Command* temp = NULL;
 	if(this->mNumCommands > 0)
 		temp = this->mStart;
 	return temp;
 }
-Command* CommandHandler::Back()
+Command* CommandHandler::Back() const
 {
 	Command* temp = NULL;
 	if(this->mNumCommands > 0)
@@ -64,6 +64,7 @@ void CommandHandler::Clear()
 		delete this->mStart;
 		this->mStart  = temp;
 	}
-	this->mStart	= NULL;
-	this->mEnd		= NULL;
+	this->mStart		= NULL;
+	this->mEnd			= NULL;
+	this->mNumCommands	= 0;
 }
