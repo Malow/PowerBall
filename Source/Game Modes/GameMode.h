@@ -32,6 +32,7 @@ class GameMode
 			ChooseTeamMenu* mChooseTeamMenu;
 			int				mTeam;
 			Text* mHud[SIZE_HUD];
+			bool			mQuitByMenu;
 			
 	public:
 			GameMode();
@@ -45,7 +46,6 @@ class GameMode
 			virtual void AddBall();
 
 	protected:
-			void InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu);
 			void ClientKeyPress(float diff, const int index, char key); 
 			void InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
 			void SendKeyInputs(const int clientIndex, float diff);

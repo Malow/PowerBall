@@ -11,6 +11,7 @@ GameMode::GameMode()
 	this->mNumberOfRounds = -1;
 	this->mGameMode = -1;
 	this->mTimeElapsed = 0.0f;
+	this->mQuitByMenu = false;
 }
 
 GameMode::~GameMode()
@@ -52,77 +53,7 @@ void GameMode::PlayLan()
 		this->mNet->Close();
 }
 
-void GameMode::InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu )
-{
-	if(mGe->GetEngineParameters().CamType == RTS)
-		{
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForce(Vector3(- diff,0,0));	
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				mBalls[0]->AddForce(Vector3(diff,0,0));
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForce(Vector3(0,0,diff));	
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForce(Vector3(0,0,-diff));
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-		}
-		else if(mGe->GetEngineParameters().CamType == TRD)
-		{
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForceForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForceOppositeForwardDirection(diff);
-			if(mGe->GetKeyListener()->IsPressed('Q'))
-				mBalls[0]->RotateForwardLeft(diff);
-			if(mGe->GetKeyListener()->IsPressed('E'))
-				mBalls[0]->RotateForwardRight(diff);
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				mBalls[0]->AddForceRightOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('1'))
-				mBalls[0]->UseSpell(1);
-			if(mGe->GetKeyListener()->IsPressed('2'))
-				mBalls[0]->UseSpell(2);
-			if(mGe->GetKeyListener()->IsPressed('3'))
-				mBalls[0]->UseSpell(3);
-			if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
-			{
-				mBalls[0]->ZoomOut();
-				zoomOutPressed = true;
-			}
-			else if(!mGe->GetKeyListener()->IsPressed('Z'))
-				zoomOutPressed = false;
-			if(mGe->GetKeyListener()->IsPressed('C') && !zoomInPressed)
-			{
-				mBalls[0]->ZoomIn();
-				zoomInPressed = true;
-			}
-			else if(!mGe->GetKeyListener()->IsPressed('C'))
-				zoomInPressed = false;
-		}
-		
 
-		// move ball 2
-		if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
-			mBalls[1]->AddForce(Vector3(-diff,0,0));	
-		if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
-			mBalls[1]->AddForce(Vector3(diff,0,0));
-		if(mGe->GetKeyListener()->IsPressed(VK_UP))
-			mBalls[1]->AddForce(Vector3(0,0,diff));	
-		if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
-			mBalls[1]->AddForce(Vector3(0,0,-diff));
-
-		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-		{
-			roundsLeft = running = this->mIGM->Run();
-			quitByMenu = !running;
-		}
-
-}
 
 
 void GameMode::ClientKeyPress(float diff, const int index, char key)

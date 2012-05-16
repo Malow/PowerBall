@@ -12,16 +12,18 @@ NetworkBall::NetworkBall()
 	this->mTeam					= TEAM::NOTEAM;
 	this->mHP					= 0.0f;
 	this->mPlayerHistory		= new PlayerHistory();
-	this->mIsServer				= false;
+	this->mCommandHandler		= new CommandHandler();
 }
 NetworkBall::~NetworkBall()
 {
 	delete this->mPlayerHistory;
+	delete this->mCommandHandler;
 }
 
-void NetworkBall::AddKeyInput(char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward)
+void NetworkBall::AddKeyInput(char keys[], const int numKeys, const float dt, D3DXVECTOR3 forward, bool countUp)
 {
-	if(!this->mIsServer)
+	
+	if(countUp)
 	{
 		static char previousKeys[5] = {0};
 		static D3DXVECTOR3 prevForward(0,0,0);
@@ -33,13 +35,13 @@ void NetworkBall::AddKeyInput(char keys[], const int numKeys, const float dt, D3
 			if(previousKeys[i] != keys[i])
 				same = false;
 		}
-		if(!same || this->mCommandHandler.Empty())
+		if(!same || this->mCommandHandler->Empty())
 		{
-			this->mCommandHandler.Push(keys, numKeys, dt, forward);
+			this->mCommandHandler->Push(keys, numKeys, dt, forward);
 		}
 		else
 		{
-			Command* command = this->mCommandHandler.Back();
+			Command* command = this->mCommandHandler->Back();
 			command->ModifyDuration(dt);
 		}
 	
@@ -49,18 +51,17 @@ void NetworkBall::AddKeyInput(char keys[], const int numKeys, const float dt, D3
 			previousKeys[i] = keys[i];
 
 		prevForward = forward;
-
 		this->mExecTime += dt;
 	}
-	else this->mCommandHandler.Push(keys, numKeys, dt, forward);
+	else this->mCommandHandler->Push(keys, numKeys, dt, forward);
 }
 Command* NetworkBall::GetNextCommand() 
 {
-	return this->mCommandHandler.Front();
+	return this->mCommandHandler->Front();
 }
 void NetworkBall::PopCommand()
 {
-	this->mCommandHandler.Pop();
+	this->mCommandHandler->Pop();
 }
 void NetworkBall::AddMovementPowerBall(PowerBall* PowerBall)
 {

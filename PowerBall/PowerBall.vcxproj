@@ -63,6 +63,7 @@
     <ClCompile Include="..\Source\GraphicsEngine\StaticMesh.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\Text.cpp" />
     <ClCompile Include="..\Source\GraphicsEngine\TextureManager.cpp" />
+    <ClCompile Include="..\Source\GUI\ActionBar.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeOptionEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeSubSetEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ChangeResEvent.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="..\Source\GraphicsEngine\StaticMesh.h" />
     <ClInclude Include="..\Source\GraphicsEngine\Text.h" />
     <ClInclude Include="..\Source\GraphicsEngine\TextureManager.h" />
+    <ClInclude Include="..\Source\GUI\ActionBar.h" />
     <ClInclude Include="..\Source\GUI\ChangeOptionEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeSubSetEvent.h" />
     <ClInclude Include="..\Source\GUI\ChangeResEvent.h" />

@@ -26,5 +26,4 @@ void Command::SetInputs(char inputs[], int numInputs)
 	this->mNumInputs = numInputs;
 	for(int i = 0; i < numInputs; i++)
 		this->mInputs[i] = inputs[i];
-	this->mNext			= NULL;
 }

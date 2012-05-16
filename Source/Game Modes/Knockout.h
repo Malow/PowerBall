@@ -17,6 +17,8 @@ class Knockout : public GameMode
 			bool mWinnerActivated;
 			int mRoundsPlayed;
 			int mIndexBallLeft;
+			void PlayRound(bool& roundsLeft);
+			void InputKnockout(float diff, bool& running, bool& roundsLeft);
 	public:
 			Knockout();
 			Knockout(GraphicsEngine* ge, int numberOfPlayers, int numberOfRounds);
@@ -27,5 +29,6 @@ class Knockout : public GameMode
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
+			
 
 };

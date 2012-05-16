@@ -13,6 +13,7 @@ KingOfTheHill::KingOfTheHill()
 
 		this->mChooseTeamMenu = NULL;
 		this->mTeam = TEAM::NOTEAM;
+		this->mTotalTimeCapture = NULL;
 }
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
@@ -26,6 +27,7 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mTimeElapsed = 0.0f;
 
 		this->mChooseTeamMenu = NULL;
+		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
 }
 
@@ -111,12 +113,17 @@ void KingOfTheHill::Initialize()
 		
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
+		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
+		this->mTotalTimeCapture->SetOpacity(0.0f);
+
+
 		/* Set hud */
 		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,750),1.0f,"Media/Fonts/1");
 		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(10,790),1.0f,"Media/Fonts/1");
 		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(800,20),1.0f,"Media/Fonts/1");
 		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(1000,20),1.0f,"Media/Fonts/1");
+
 }
 
 void KingOfTheHill::Intro()
@@ -127,15 +134,251 @@ void KingOfTheHill::Intro()
 		mGe->DeleteText(intro);
 }
 
+
 void KingOfTheHill::PlaySpecific()
 {	
+
+		bool zoomOutPressed = false;
+		bool zoomInPressed = false;
+		this->mNet->Start(this->mServerInfo);
+		this->mGe->Update();
+		bool roundsLeft = true;
+		int roundsPlayed = 0;
+
+		//choose team before starting the game
+		this->mTeam = this->mChooseTeamMenu->Run();
+		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+		//set full visibility for the total time captured images**
+		this->mTotalTimeCapture->SetOpacity(1.0f);
+		while(roundsLeft && this->mGe->isRunning())
+		{
+			this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
+			roundsPlayed++;;
+			if(roundsPlayed == this->mNumberOfRounds)
+				roundsLeft = false;
+		}
+		
+		/*
+		bool running = true;
+		bool quitByMenu = false;
+		int numAlivePlayers = 0;
+		float KingOfTheHillTimer = 0;
+		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
+		string s;
+		Text* hudR20 = mGe->CreateText("",D3DXVECTOR2(10,750),1.0f,"Media/Fonts/1");
+		Text* hudR21 = mGe->CreateText("",D3DXVECTOR2(10,790),1.0f,"Media/Fonts/1");
+		LARGE_INTEGER oldTick = LARGE_INTEGER();
+		LARGE_INTEGER now =  LARGE_INTEGER();
+		while(running)
+		{
+				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
+
+				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+					running = this->mIGM->Run();
+		
+				QueryPerformanceCounter(&now);
+				LARGE_INTEGER proc_freq;
+				::QueryPerformanceFrequency(&proc_freq);
+				double frequency = proc_freq.QuadPart;
+
+				//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
+				QueryPerformanceCounter(&oldTick);
+
+				if(this->mNet->IsServer())
+				{
+
+					// will be moved to phisics simulation class
+					for(int i = 0; i < this->mNumberOfPlayers; i++)
+					{
+						if(i != this->mNet->GetIndex())
+						{
+							this->HandleClientKeyInputs(i, diff);
+						}
+						else
+						{
+							this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
+						}	
+
+						PowerBall* b1 = this->mBalls[i];
+						for(int j = i+1; j < this->mNumberOfPlayers; j++)
+						{
+							PowerBall* b2 = this->mBalls[j];
+							if(b1->collisionWithSphereSimple(b2))
+								b1->collisionSphereResponse(b2);
+
+						}
+						Vector3 normalPlane;
+						if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+							b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+						//for(int i = 0; i < this->mNumberOfPlayers; i++)
+							//this->mBalls[i]->UpdatePost();
+	
+					}
+					for(int i = 0; i < this->mNumberOfPlayers; i++)
+					{					
+						this->mBalls[i]->UpdatePost();
+						bool clientBall = true;
+						if(i == this->mNet->GetIndex())
+							clientBall = false;
+
+						this->mBalls[i]->Update(diff, clientBall); //split up due to the balls affecting each other, so cant send final position until all balls updated
+						clientBall = true;
+
+					}
+
+					for(int i = 0; i < this->mNumberOfPlayers; i++)
+					{
+						this->mNet->SetPos(this->mBalls[i]->GetPosition(), i);
+						Vector3 vel = this->mBalls[i]->GetVelocity();
+						this->mNet->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z),  i);
+					}
+				}
+				else //is client
+				{
+					for(int i = 0; i < this->mNumberOfPlayers; i++)
+					{
+						if(this->mNet->GetIndex() != i)
+						{
+							D3DXVECTOR3 rotVector = this->mNet->GetPos(i) - this->mBalls[i]->GetPosition();
+							this->mBalls[i]->SetPosition(this->mNet->GetPos(i));
+							this->mBalls[i]->Rotate(rotVector);
+						}
+					}
+					if(this->mNet->GetIndex() < this->mNumberOfPlayers)
+					{
+						int i = this->mNet->GetIndex();
+
+						this->SendKeyInputs(i, diff);
+						this->InputKeysPressedSelf(diff, i, zoomOutPressed, zoomInPressed, running, quitByMenu);
+				
+						for(int c = 0; c < this->mNumberOfPlayers; c++)
+						{
+							PowerBall* b1 = this->mBalls[c];
+							for(int j = c+1; j < this->mNumberOfPlayers; j++)
+							{
+								PowerBall* b2 = this->mBalls[j];
+								if(b1->collisionWithSphereSimple(b2))
+									b1->collisionSphereResponse(b2);
+
+							}
+						}
+
+						Vector3 normalPlane;
+						if(this->mBalls[i]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+							this->mBalls[i]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+
+						this->mBalls[i]->UpdatePost();
+
+						this->mBalls[i]->Update(diff);
+				
+
+						this->mNet->AddMovementPowerBall(this->mBalls[i]);
+
+					}
+				}
+
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->IsAlive())
+						numAlivePlayers += 1;
+				}
+				mPlatform->Update(diff);
+
+		
+				if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, diff))
+					running = false;
+
+				if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
+				{
+					this->AddBall();
+					numAlivePlayers++;
+				}
+
+				if(this->mNet->IsServer())
+				if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
+				{
+					running = false;
+				}
+				if(!this->mGe->isRunning())
+					running = false;
+				float tmp = (600.0f - this->mTimeElapsed);
+				tmp = floor(tmp * 10.0f) / 10.0f;
+				s = "Timer: " + MaloW::convertNrToString(tmp);
+				hudR1->SetText(s);
+				Vector3 n = this->mBalls[0]->GetNormalContact();
+				string t = " x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
+				if(this->mBalls[0]->GetHasContact())
+					s = "Contact: True";
+			
+				else
+					s = "Contact: False";
+			
+				hudR20->SetText(s);
+				s =  "Normal: " + t;
+				hudR21->SetText(s);
+				if(this->checkWinConditionsTeam(diff))
+					running = false;
+				float newdt = diff/1000.0f;
+				
+				this->mTimeElapsed += newdt;
+				if(this->mTimeElapsed > 600.0f)
+					running = false;
+		}
+		mGe->DeleteText(hudR1);
+		mGe->DeleteText(hudR20);
+		mGe->DeleteText(hudR21);
+		*/
+		this->mNet->Close();
+
 		GameMode::PlayLan();
+
 }
 
 
 void KingOfTheHill::ShowStats()
 {
 
+	/*
+				if(this->mNet->IsServer())
+				if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
+				{
+					running = false;
+				}
+				
+				float tmp = (600.0f - this->mTimeElapsed);
+				tmp = floor(tmp * 10.0f) / 10.0f;
+				s = "Timer: " + MaloW::convertNrToString(tmp);
+				hudR1->SetText(s);
+				Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetNormalContact();
+				string t = " x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
+				if(this->mBalls[this->mNet->GetIndex()]->GetHasContact())
+					s = "Contact: True";
+			
+				else
+					s = "Contact: False";
+			
+				hudR20->SetText(s);
+				s =  "Normal: " + t;
+				hudR21->SetText(s);
+				s = "T1: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetTimeInHotZone())/10.0f);
+				hudR30->SetText(s);
+				s = "T2: " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetTimeInHotZoneContinuously())/10.0f);
+				hudR31->SetText(s);
+				if(this->checkWinConditions(diff))
+					running = false;
+				float newdt = diff/1000.0f;
+				
+				this->mTimeElapsed += newdt;
+				if(this->mTimeElapsed > 600.0f)
+					running = false;
+		}
+		this->mTotalTimeCapture->SetOpacity(0.0f);
+		mGe->DeleteText(hudR1);
+		mGe->DeleteText(hudR20);
+		mGe->DeleteText(hudR21);
+		mGe->DeleteText(hudR30);
+		mGe->DeleteText(hudR31);
+		*/
 }
 
 void KingOfTheHill::ShowHud()

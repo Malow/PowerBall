@@ -15,8 +15,8 @@ public:
 
 	void		Pop();
 	void		Push(char inputs[], int numInputs, float duration, D3DXVECTOR3 forward);
-	Command*	Front();
-	Command*	Back();
+	Command*	Front() const;
+	Command*	Back() const;
 	void		Clear();
 	bool		Empty() { return (this->mNumCommands == 0); }
 };

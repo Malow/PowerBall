@@ -11,13 +11,16 @@
 
 #include "..\Game Modes\GameMode.h"
 #include "..\Network\GameNetwork.h"
-#include "..\GUI\SliderBar.h"
+#include "ChooseTeamMenu.h"
+
 
 
 class KingOfTheHill : public GameMode
 {
 	private:
-		
+		ChooseTeamMenu* mChooseTeamMenu;
+		int				mTeam;
+		Image*			mTotalTimeCapture;
 
 	public:
 			KingOfTheHill();
@@ -26,7 +29,6 @@ class KingOfTheHill : public GameMode
 			virtual void Initialize();
 			virtual void Intro();
 			virtual void PlaySpecific();
-			void PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);

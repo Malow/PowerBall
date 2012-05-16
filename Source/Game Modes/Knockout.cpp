@@ -67,7 +67,7 @@ void Knockout::Initialize()
 	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,60),1.0f,"Media/Fonts/1");
 	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,100),1.0f,"Media/Fonts/1");
 	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(300,150),4.0f,"Media/Fonts/1");
-	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(250,150),4.0f,"Media/Fonts/1");
+	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(250,150),2.0f,"Media/Fonts/1");
 	this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
 }
 
@@ -81,61 +81,19 @@ void Knockout::Intro()
 
 void Knockout::PlaySpecific()
 {	
-	this->mRoundsPlayed = 0;
-	this->mIndexBallLeft = -1;
-	bool running = true;
-	bool zoomOutPressed = false;
-	bool zoomInPressed = false;
 	
-	
-	string s;
-	this->mWinnerActivated = false;
 	bool roundsLeft = true;
-	float diff;
-	bool quitByMenu = false;
+	this->mRoundsPlayed = 0;
+	this->mGe->Update();
+	this->mIndexBallLeft = -1;
+	this->mWinnerActivated = false;
 	
-	while(roundsLeft)
+	while(roundsLeft && this->mGe->isRunning())
 	{
 		
+		this->PlayRound(roundsLeft); 
 		this->mRoundsPlayed++;
-		while(running)
-		{
-			
-			diff = mGe->Update();	
-			
-			this->InputKnockout(diff,zoomOutPressed,zoomInPressed, running, roundsLeft, quitByMenu);
-			
-			for(int i = 0; i < this->mNumberOfPlayers; i++)
-				this->mBalls[i]->Update(diff);
-			for(int i = 0; i < this->mNumberOfPlayers; i++)
-			{
-				PowerBall* b1 = this->mBalls[i];
-				for(int j = i+1; j < this->mNumberOfPlayers; j++)
-				{
-					PowerBall* b2 = this->mBalls[j];
-					if(b1->collisionWithSphereSimple(b2))
-						b1->collisionSphereResponse(b2);
-				}
-				
-				Vector3 normalPlane;
-				if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-					b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-				
-			}
-			for(int i = 0; i<this->mNumberOfPlayers;i++)
-			{
-				this->mBalls[i]->UpdatePost();
-			}
-			mPlatform->Update(diff);
-			if(!this->mGe->isRunning())
-			{
-				roundsLeft = running = false;
-				quitByMenu = !running;
-			}
-			this->ShowHud();
-			if(this->checkWinConditions(diff))
-				running = false;
-		}
+
 		if(this->mRoundsPlayed == this->mNumberOfRounds)
 			roundsLeft = false;
 		else
@@ -143,11 +101,18 @@ void Knockout::PlaySpecific()
 			this->mPlatform->Reset();
 			for(int i = 0; i<this->mNumberOfPlayers;i++)
 				this->mBalls[i]->SetToStartPosition();
-			running = true;
 		}
 	}
 
-	if(!quitByMenu && this->mNumberOfRounds > 0)
+	
+	
+	
+}
+
+void Knockout::ShowStats()
+{
+	float diff = mGe->Update();
+	if(!this->mQuitByMenu && this->mNumberOfRounds > 0)
 	{
 		int indexWinner = -1;
 		int bestResault = 0;
@@ -186,12 +151,6 @@ void Knockout::PlaySpecific()
 			mGe->DeleteText(winner);
 		}
 	}
-	
-}
-
-void Knockout::ShowStats()
-{
-
 }
 
 bool Knockout::checkWinConditions(float dt)
@@ -262,6 +221,75 @@ void Knockout::ShowHud()
 	this->mHud[0]->SetText(s);
 	s = "Player 2: " + this->mBalls[1]->GetRoundsWonStr();
 	this->mHud[1]->SetText(s);
-	s = "Round: " + MaloW::convertNrToString(this->mRoundsPlayed) + " of " + MaloW::convertNrToString(this->mNumberOfRounds);
+	s = "Round: " + MaloW::convertNrToString(this->mRoundsPlayed+1) + " of " + MaloW::convertNrToString(this->mNumberOfRounds);
 	this->mHud[2]->SetText(s);
+}
+
+void Knockout::PlayRound(bool& roundsLeft)
+{
+	float diff;
+	bool running = true;
+	while(running)
+	{
+		diff = mGe->Update();	
+		this->InputKnockout(diff, running, roundsLeft);
+		for(int i = 0; i < this->mNumberOfPlayers; i++)
+			this->mBalls[i]->Update(diff);
+		for(int i = 0; i < this->mNumberOfPlayers; i++)
+		{
+			PowerBall* b1 = this->mBalls[i];
+			for(int j = i+1; j < this->mNumberOfPlayers; j++)
+			{
+				PowerBall* b2 = this->mBalls[j];
+				if(b1->collisionWithSphereSimple(b2))
+					b1->collisionSphereResponse(b2);
+			}
+			Vector3 normalPlane;
+			if(b1->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+				b1->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
+				
+		}
+		for(int i = 0; i<this->mNumberOfPlayers;i++)
+		{
+			this->mBalls[i]->UpdatePost();
+		}
+		mPlatform->Update(diff);
+		if(!this->mGe->isRunning())
+		{
+			roundsLeft = running = false;
+			this->mQuitByMenu = !running;
+		}
+		this->ShowHud();
+		if(this->checkWinConditions(diff))
+			running = false;
+	}
+}
+
+void Knockout::InputKnockout(float diff, bool& running, bool& roundsLeft)
+{
+	// move ball 1
+	if(mGe->GetKeyListener()->IsPressed('W'))
+		mBalls[0]->AddForceForwardDirection(diff);	
+	if(mGe->GetKeyListener()->IsPressed('S'))
+		mBalls[0]->AddForceOppositeForwardDirection(diff);
+	if(mGe->GetKeyListener()->IsPressed('A'))
+		mBalls[0]->AddForceLeftOfForwardDirection(diff);	
+	if(mGe->GetKeyListener()->IsPressed('D'))
+		mBalls[0]->AddForceRightOfForwardDirection(diff);	
+	
+	// move ball 2
+	if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
+		mBalls[1]->AddForceLeftOfForwardDirection(diff);	
+	if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
+		mBalls[1]->AddForceRightOfForwardDirection(diff);	
+	if(mGe->GetKeyListener()->IsPressed(VK_UP))
+		mBalls[1]->AddForceForwardDirection(diff);	
+	if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
+		mBalls[1]->AddForceOppositeForwardDirection(diff);
+
+	if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+	{
+		roundsLeft = running = this->mIGM->Run();
+		this->mQuitByMenu = !running;
+	}
 }
