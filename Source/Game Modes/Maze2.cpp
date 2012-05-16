@@ -32,6 +32,8 @@ Maze2::~Maze2()
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
 	SAFE_DELETE(this->mBox);
+	for(int i = 0; i<10; i++)
+		mGe->DeleteText(this->mHud[i]);
 }
 
 void Maze2::Initialize()
@@ -63,6 +65,18 @@ void Maze2::Initialize()
 		this->mBalls[0]->SetKnockoutMode();
 		this->mBalls[0]->SetAcceleration(this->mBalls[0]->GetAcceleration()*3.0f);
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
+		
+		/* Set hud */
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,180),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(20,500),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(20,540),1.0f,"Media/Fonts/1");
+		this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(20,580),1.0f,"Media/Fonts/1");
+		this->mHud[6] = mGe->CreateText("",D3DXVECTOR2(20,620),1.0f,"Media/Fonts/1");
+		this->mHud[7] = mGe->CreateText("",D3DXVECTOR2(20,660),1.0f,"Media/Fonts/1");
+		this->mHud[8] = mGe->CreateText("",D3DXVECTOR2(20,700),1.0f,"Media/Fonts/1");
+		this->mHud[9] = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
 		/*
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
@@ -77,24 +91,15 @@ void Maze2::Intro()
 		mGe->DeleteText(intro);
 }
 
-void Maze2::Play()
+void Maze2::PlaySpecific()
 {	
 		bool running = true;
 		this->mGameMode = CREDITS2;
 		float diff;
-		Text* hudR1 = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
-		Text* hudR2 = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
-		Text* hudR3 = mGe->CreateText("",D3DXVECTOR2(20,180),1.0f,"Media/Fonts/1");
-		Text* hudR4 = mGe->CreateText("",D3DXVECTOR2(20,500),1.0f,"Media/Fonts/1");
-		Text* hudR5 = mGe->CreateText("",D3DXVECTOR2(20,540),1.0f,"Media/Fonts/1");
-		Text* hudR6 = mGe->CreateText("",D3DXVECTOR2(20,580),1.0f,"Media/Fonts/1");
-		Text* hudR7 = mGe->CreateText("",D3DXVECTOR2(20,620),1.0f,"Media/Fonts/1");
-		Text* hudR8 = mGe->CreateText("",D3DXVECTOR2(20,660),1.0f,"Media/Fonts/1");
-		Text* hudR9 = mGe->CreateText("",D3DXVECTOR2(20,700),1.0f,"Media/Fonts/1");
-		Text* hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),2.0f,"Media/Fonts/1");
+		
 		string s;
 		s = "Credits: OldStyle";
-		hudR1->SetText(s);
+		this->mHud[0]->SetText(s);
 		this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
 		this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
 		diff = mGe->Update();
@@ -143,19 +148,19 @@ void Maze2::Play()
 		
 		
 			s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetAngleX()*(180.0f/PI))/10.0f);
-			hudR2->SetText(s);
+			this->mHud[1]->SetText(s);
 			s = "Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetAngleZ()*(180.0f/PI))/10.0f);
-			hudR3->SetText(s);
+			this->mHud[2]->SetText(s);
 		
 		
 			s = "Position ball:";
-			hudR4->SetText(s);
+			this->mHud[3]->SetText(s);
 			s = "X = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetPosition().z)/10.0f);
-			hudR5->SetText(s);
+			this->mHud[4]->SetText(s);
 			s = "Position hotzone flag: ";
-			hudR6->SetText(s);
+			this->mHud[5]->SetText(s);
 			s =  "X = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().x)/10.0f) + " Y = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().y)/10.0f) + " Z = " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetHotZonePosition().z)/10.0f);
-			hudR7->SetText(s);
+			this->mHud[6]->SetText(s);
 			//Vector3 distVec = this->mPlatform->GetHotZonePosition() - this-mBalls[0]->GetPositionVector3();
 			//float dist = distVec.GetLength();
 			//s = "Distance to flag: " +  MaloW::convertNrToString(floor(10.0f*dist)/10.0f);
@@ -180,21 +185,17 @@ void Maze2::Play()
 			
 			
 		}
-			mGe->DeleteText(hudR1);
-			mGe->DeleteText(hudR2);
-			mGe->DeleteText(hudR3);
-			mGe->DeleteText(hudR4);
-			mGe->DeleteText(hudR5);
-			mGe->DeleteText(hudR6);
-			mGe->DeleteText(hudR7);
-			mGe->DeleteText(hudR8);
-
 	
 }
 
 void Maze2::ShowStats()
 {
 	mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,1,0));
+}
+
+void Maze2::ShowHud()
+{
+
 }
 
 bool Maze2::checkWinConditions(float dt)
@@ -229,8 +230,6 @@ bool Maze2::checkRespownConditions()
 		
 		Vector3 newCoord = rotate.GetInverse() * (posBall - pos - Vector3(0,5.0f,0));
 		
-		string s = MaloW::convertNrToString(newCoord.y);
-		this->mText->SetText(s);
 		
 		if(newCoord.y < -6.0f)
 			return true;
@@ -243,3 +242,4 @@ void Maze2::ResetMaze()
 	this->mPlatform->GetMesh()->ResetRotationAndScale();
 	this->mPlatform->ResetXZAngles();
 }
+

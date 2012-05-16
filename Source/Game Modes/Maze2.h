@@ -22,9 +22,10 @@ class Maze2 : public GameMode
 			virtual ~Maze2();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void Play();
+			virtual void PlaySpecific();
 			virtual void ShowStats();
 			virtual bool checkWinConditions(float dt);
+			virtual void ShowHud();
 			bool checkRespownConditions();
 			void ResetMaze();
 };

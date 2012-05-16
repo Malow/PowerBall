@@ -62,6 +62,7 @@ class AnimatedMesh : public Mesh
 
 		/*! Returns the 2 keyframes to interpolate with value t[0,1] through the parameters depending on the current time. */
 		/*!	Note that currentTime is expected to be in milliseconds. Returns NULL if there's no keyframes loaded. */
+		/*! Also note that this function can most likely be optimized. */
 		void GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t);
 
 		/* ! Returns the strips of the second mesh currently being used. */

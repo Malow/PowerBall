@@ -84,7 +84,7 @@ bool GameHandler::Start()
 {
 	this->mGameMode->Initialize();
 	this->mGameMode->Intro();
-	this->mGameMode->Play();
+	this->mGameMode->PlaySpecific();
 	this->mGameMode->ShowStats();
 	this->DeleteCreatedGame();
 	SAFE_DELETE(this->mNet);

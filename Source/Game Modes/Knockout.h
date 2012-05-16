@@ -14,14 +14,18 @@
 class Knockout : public GameMode
 {
 	private:
-
+			bool mWinnerActivated;
+			int mRoundsPlayed;
+			int mIndexBallLeft;
 	public:
 			Knockout();
 			Knockout(GraphicsEngine* ge, int numberOfPlayers, int numberOfRounds);
 			virtual ~Knockout();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void Play();
+			virtual void PlaySpecific();
 			virtual void ShowStats();
+			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
+
 };

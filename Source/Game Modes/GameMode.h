@@ -12,7 +12,9 @@
 #include "..\Game Objects\PowerBall.h"
 #include "..\InGameMenu.h"
 #include "..\Network\GameNetwork.h"
+#include "ChooseTeamMenu.h"
 
+#define SIZE_HUD 20
 class GameMode
 {
 	protected:
@@ -27,14 +29,20 @@ class GameMode
 			int				mNumberOfRounds;
 			Light*			mLights[5];
 			float			mTimeElapsed;
+			ChooseTeamMenu* mChooseTeamMenu;
+			int				mTeam;
+			Text* mHud[SIZE_HUD];
+			
 	public:
 			GameMode();
 			virtual ~GameMode();
 			virtual void Initialize() = 0;
 			virtual void Intro() = 0;
-			virtual void Play() = 0;
+			virtual void PlaySpecific() = 0;
 			virtual void ShowStats() = 0;
+			virtual void ShowHud() = 0;
 			virtual bool checkWinConditions(float dt) = 0;
+			virtual void AddBall();
 
 	protected:
 			void InputKnockout(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& roundsLeft, bool& quitByMenu);
@@ -42,5 +50,8 @@ class GameMode
 			void InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
 			void SendKeyInputs(const int clientIndex, float diff);
 			void HandleClientKeyInputs(const int clientIndex, float diff);
-			
+			void IsServer(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
+			void IsClient(float diff, bool& zoomOutPressed, bool& zoomInPressed, bool& running, bool& quitByMenu);
+			void PlayLan();
+			void PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
 };
