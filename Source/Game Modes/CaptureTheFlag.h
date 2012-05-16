@@ -25,10 +25,11 @@ class CaptureTheFlag : public GameMode
 			virtual ~CaptureTheFlag();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void Play();
+			virtual void PlaySpecific();
 			virtual void ShowStats();
+			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
-			void AddBall();
+			virtual void AddBall();
 
 	
 };

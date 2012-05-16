@@ -27,6 +27,8 @@ Maze::~Maze()
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
+	for(int i = 0;i<5;i++) 
+		mGe->DeleteText(this->mHud[i]);
 }
 
 void Maze::Initialize()
@@ -56,10 +58,23 @@ void Maze::Initialize()
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
+		
+		/* Set hud */
+		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+		
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(windowWidth-800,0),2.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(windowWidth-850,60),2.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(windowWidth-775,120),2.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(windowWidth-700,180),2.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(windowWidth-785,240),2.0f,"Media/Fonts/1");
+		
+
 		/*
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 		*/
+
 }
 
 void Maze::Intro()
@@ -70,21 +85,20 @@ void Maze::Intro()
 	mGe->DeleteText(intro);
 }
 
-void Maze::Play()
+void Maze::PlaySpecific()
 {	
+		this->mHud[0]->SetText("Rikard Johansson");
+		this->mHud[1]->SetText("Marcus Lowegren");
+		this->mHud[2]->SetText("Markus Tillman");
+		this->mHud[3]->SetText("Didrik Axelsson");
+		this->mHud[4]->SetText("Jerry Rahmqvist");
+		float creditSpeed = 0.05f;
 		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-		float creditSpeed = 0.05f;
-
-
 		bool running = true;
 		this->mGameMode = CREDITS;
 		float diff;
-		Text* hudR1 = mGe->CreateText("Rikard Johansson",D3DXVECTOR2(windowWidth-800,0),2.0f,"Media/Fonts/1");
-		Text* hudR2 = mGe->CreateText("Marcus Lowegren",D3DXVECTOR2(windowWidth-850,60),2.0f,"Media/Fonts/1");
-		Text* hudR3 = mGe->CreateText("Markus Tillman",D3DXVECTOR2(windowWidth-775,120),2.0f,"Media/Fonts/1");
-		Text* hudR4 = mGe->CreateText("Didrik Axelsson",D3DXVECTOR2(windowWidth-700,180),2.0f,"Media/Fonts/1");
-		Text* hudR5 = mGe->CreateText("Jerry Rahmqvist",D3DXVECTOR2(windowWidth-785,240),2.0f,"Media/Fonts/1");
+		
 		diff = mGe->Update();
 		srand ( time(NULL) );
 		float targetX = -10 + rand() % 21; // random angle [-10, 10] in x-axis
@@ -93,7 +107,7 @@ void Maze::Play()
 		targetZ = targetZ*(PI/180.0f);
 		this->mPlatform->SetTargetAngleX(targetX);
 		this->mPlatform->SetTargetAngleZ(targetZ);
-		while(running)
+		while(running && mGe->isRunning())
 		{
 		
 			diff = mGe->Update();
@@ -130,8 +144,7 @@ void Maze::Play()
 					this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
 			mBalls[0]->UpdatePost();
 			mPlatform->Update(diff);
-			if(!this->mGe->isRunning())
-				running = false;
+			
 			if(!mBalls[0]->IsAlive())
 				running = false;		
 
@@ -139,41 +152,32 @@ void Maze::Play()
 				running = false;
 
 
-			if(hudR1->GetPosition().y + diff * creditSpeed > windowHeight)
-				hudR1->SetPosition(D3DXVECTOR2(hudR1->GetPosition().x, 0));
+			if(this->mHud[0]->GetPosition().y + diff * creditSpeed > windowHeight)
+				this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, 0));
 			else
-				hudR1->SetPosition(D3DXVECTOR2(hudR1->GetPosition().x, hudR1->GetPosition().y + diff * creditSpeed));
+				this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, this->mHud[0]->GetPosition().y + diff * creditSpeed));
 
-			if(hudR2->GetPosition().y + diff * creditSpeed > windowHeight)
-				hudR2->SetPosition(D3DXVECTOR2(hudR2->GetPosition().x, 0));
+			if(this->mHud[1]->GetPosition().y + diff * creditSpeed > windowHeight)
+				this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, 0));
 			else
-				hudR2->SetPosition(D3DXVECTOR2(hudR2->GetPosition().x, hudR2->GetPosition().y + diff * creditSpeed));
+				this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, this->mHud[1]->GetPosition().y + diff * creditSpeed));
 
-			if(hudR3->GetPosition().y + diff * creditSpeed > windowHeight)
-				hudR3->SetPosition(D3DXVECTOR2(hudR3->GetPosition().x, 0));
+			if(this->mHud[2]->GetPosition().y + diff * creditSpeed > windowHeight)
+				this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, 0));
 			else
-				hudR3->SetPosition(D3DXVECTOR2(hudR3->GetPosition().x, hudR3->GetPosition().y + diff * creditSpeed));
+				this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, this->mHud[2]->GetPosition().y + diff * creditSpeed));
 
-			if(hudR4->GetPosition().y + diff * creditSpeed > windowHeight)
-				hudR4->SetPosition(D3DXVECTOR2(hudR4->GetPosition().x, 0));
+			if(this->mHud[3]->GetPosition().y + diff * creditSpeed > windowHeight)
+				this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, 0));
 			else
-				hudR4->SetPosition(D3DXVECTOR2(hudR4->GetPosition().x, hudR4->GetPosition().y + diff * creditSpeed));
+				this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, this->mHud[3]->GetPosition().y + diff * creditSpeed));
 
-			if(hudR5->GetPosition().y + diff * creditSpeed > windowHeight)
-				hudR5->SetPosition(D3DXVECTOR2(hudR5->GetPosition().x, 0));
+			if(this->mHud[4]->GetPosition().y + diff * creditSpeed > windowHeight)
+				this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, 0));
 			else
-				hudR5->SetPosition(D3DXVECTOR2(hudR5->GetPosition().x, hudR5->GetPosition().y + diff * creditSpeed));
+				this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, this->mHud[4]->GetPosition().y + diff * creditSpeed));
 		}
-		hudR1->SetText("");
-		hudR2->SetText("");
-		hudR3->SetText("");
-		hudR4->SetText("");
-		hudR5->SetText("");
-		mGe->DeleteText(hudR1);
-		mGe->DeleteText(hudR2);
-		mGe->DeleteText(hudR3);
-		mGe->DeleteText(hudR4);
-		mGe->DeleteText(hudR5);
+		
 }
 
 void Maze::ShowStats()
@@ -183,18 +187,23 @@ void Maze::ShowStats()
 
 bool Maze::checkWinConditions(float dt)
 {
-	Text* hudR10 = NULL;
+	Text* hud10 = NULL;
 	string s;
 	if(this->mPlatform->IsInHotZone(this->mBalls[0]->GetPositionVector3(), this->mBalls[0]->GetRadius()))
 	{
-		hudR10 = mGe->CreateText("",D3DXVECTOR2(200,400),1.0f,"Media/Fonts/1");
+		hud10 = mGe->CreateText("",D3DXVECTOR2(200,400),1.0f,"Media/Fonts/1");
 		s = "Mission Accomplished:";
-		hudR10->SetText(s);
+		hud10->SetText(s);
 		while(dt < 4000)
 			dt += mGe->Update();
-		hudR10->SetText("");
-		mGe->DeleteText(hudR10);
+		hud10->SetText("");
+		mGe->DeleteText(hud10);
 		return true;
 	}
 	return false;
+}
+
+void Maze::ShowHud()
+{
+
 }
