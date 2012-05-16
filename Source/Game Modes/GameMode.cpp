@@ -152,7 +152,7 @@ void GameMode::ClientKeyPress(float diff, const int index, char key)
 		mBalls[index]->UseSpell(3);
 	if(key == '4')
 		mBalls[index]->UseSpell(4);
-	if(key == '5')
+	if(key == VK_SPACE)
 		mBalls[index]->UseSpell(5);
 	//if(key == VK_SPACE)
 		//mBalls[index]->AddForce(Vector3(0, diff,0));
@@ -183,7 +183,7 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 			mBalls[index]->UseSpell(3);
 		if(mGe->GetKeyListener()->IsPressed('4'))
 			mBalls[index]->UseSpell(4);
-		if(mGe->GetKeyListener()->IsPressed('5'))
+		if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
 			mBalls[index]->UseSpell(5);
 		if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
 		{
@@ -215,7 +215,7 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 void GameMode::SendKeyInputs(const int clientIndex, float diff)
 {
 	char keyDowns[5] = {0};
-	char keysToCheck[12] = {'A', 'D', 'W', 'S', 'Q', 'E', VK_SPACE, '1', '2', '3', '4', '5'};
+	char keysToCheck[12] = {'A', 'D', 'W', 'S', 'Q', 'E', VK_SPACE, '1', '2', '3', '4', VK_SPACE};
 	int numKeys = 0;
 	for(int i = 0; i < 12; i++)
 	{
