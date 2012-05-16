@@ -525,6 +525,6 @@ float DxManager::GetLavaHeightAt(float x, float z)
 	D3DXVECTOR3 temp = this->camera->getPosition() - D3DXVECTOR3(x, L, z);
 	bias *= 1.2f - (D3DXVec3Length(&temp) / 100.0f);
 
-	float lavaHeight = L - bias;
+	float lavaHeight = L + bias;
 	return lavaHeight;
 }

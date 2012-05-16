@@ -16,7 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	
 	GraphicsEngineParams params;
 	params.LoadFromeFile("config.cfg");
-	//params.CamType = FPS;
+	params.CamType = FPS;
 	/*	Structure of cfg file:
 	windowWidth
 	windowHeight
@@ -29,7 +29,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 
-	//test();	// Instead of ifndef lol
+	test();	// Instead of ifndef lol
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu* mm = new MainMenu(ge);
@@ -128,7 +128,7 @@ void test()
 	{
 		float diff = eng->Update();	// Updates camera etc, does NOT render the frame, another process is doing that, so diff should be very low.
 
-		text->SetText("Distance to Lava: " + MaloW::convertNrToString(eng->GetCamera()->getPosition().y - eng->GetLavaHeightAt(eng->GetCamera()->getPosition().x, eng->GetCamera()->getPosition().y)));
+		text->SetText("Distance to Lava: " + MaloW::convertNrToString(eng->GetCamera()->getPosition().y - eng->GetLavaHeightAt(eng->GetCamera()->getPosition().x, eng->GetCamera()->getPosition().z)));
 
 		//testBall->Rotate(D3DXVECTOR3(2*PI, 0, 0) * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
 		testBall->RotateAxis(D3DXVECTOR3(2, 0, 0),  2* PI * (diff/1000.0f)); // Divide diff by 1000 to get seconds since diff is in milliseconds.
