@@ -70,9 +70,11 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 
 				//compute interpolation value t
 				int newTimeTwo = (*two)->time - (*one)->time; //can also be seen as the time between keyframe one & two. (new time for keyframe one is 0.)
+				//if this time is negative, then we're at the end of the looping, and therefore have to compute the time
+				//between the first and second keyframes. (newTimeTwo = time of two = too long, t won't become [0,1])
 				if(newTimeTwo < 0)
 				{
-					newTimeTwo *= -1;
+					newTimeTwo = this->mKeyFrames->get(1)->time;
 				}
 				int newCurrentTimeMillis = currentPlayTimeMillis - (*one)->time;
 				//convert to range [0,1]

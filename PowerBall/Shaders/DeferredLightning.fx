@@ -236,30 +236,31 @@ float4 PSScene(PSSceneIn input) : SV_Target
 	*/
 	
 	//temp:
-	//todo: if player is on red team, reduce redness and increase blueness**
+	//ev. todo: if player is on red team, reduce redness and increase blueness**
 	
 	
-	float TeamColor = Texture.Sample(linearSampler, input.tex).w;
+	uint TeamColor = (uint)Texture.Sample(linearSampler, input.tex).w;
 	//Exlude skybox
 	if(NormsAndDepth.w < 1.00001f)
 	{
 		//Exclude nullColor
-		if((uint)TeamColor != 0)
+		if(TeamColor != 0)
 		{
-			switch((uint)TeamColor)
+			switch(TeamColor)
 			{
-				case 1: (finalColor += WHITE) * 0.5f; break;
-				case 2: (finalColor += BLACK) * 0.5f; break;
-				case 3: (finalColor += RED) * 0.5f; break;
-				case 4: (finalColor += GREEN) * 0.5f; break;
-				case 5: (finalColor += BLUE) * 0.5f; break;
-				case 6: (finalColor += YELLOW) * 0.5f; break;
-				case 7: (finalColor += CYAN) * 0.5f; break;
-				case 8: (finalColor += MAGENTA) * 0.5f; break;
+				case 1: finalColor.xyz += (WHITE.xyz * 0.2f); break;
+				case 2: finalColor.xyz += (BLACK.xyz * 0.2f); break;
+				case 3: finalColor.xyz += (RED.xyz * 0.2f); break;
+				case 4: finalColor.xyz += (GREEN.xyz * 0.2f); break;
+				case 5: finalColor.xyz += (BLUE.xyz * 0.2f); break;
+				case 6: finalColor.xyz += (YELLOW.xyz * 0.2f); break;
+				case 7: finalColor.xyz += (CYAN.xyz * 0.2f); break;
+				case 8: finalColor.xyz += (MAGENTA.xyz * 0.2f); break;
 			}
+			finalColor.xyz *= (5.0f / 6.0f);
 		}
 	}
-	
+
 	
 	//finalColor = SSAO(input.tex, NormalAndDepth, Position);
 
