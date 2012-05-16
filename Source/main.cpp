@@ -16,7 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	
 	GraphicsEngineParams params;
 	params.LoadFromeFile("config.cfg");
-	params.CamType = FPS;
+	//params.CamType = FPS;
 	/*	Structure of cfg file:
 	windowWidth
 	windowHeight
@@ -29,7 +29,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	gfxeng::eng = ge; // Set the global eng to our engine so that GetGraphicsEngine(); can work.
 	ge->CreateSkyBox("Media/skymap.dds");
 
-	test();	// Instead of ifndef lol
+	//test();	// Instead of ifndef lol
 
 	// Create the MainMenu and send the graphics engine, and then run Run();
 	MainMenu* mm = new MainMenu(ge);
@@ -74,6 +74,7 @@ void test()
 	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
 	
 	//StaticMesh* wlmap = eng->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(100, 4, 8));
+	//StaticMesh* hb = eng->CreateStaticMesh("Media/HardenedBall.obj", D3DXVECTOR3(12, 15, 12));
 
 	bth->Scale(0.1f);
 	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
