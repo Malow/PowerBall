@@ -79,7 +79,7 @@ void ProgressBar::SetPercentOfProgressBarColor1(float percentageX)
 	if(percentageX <= 100.0f && percentageX >= 0.0f)
 	{
 		float scale = percentageX*0.01f*this->mFullX;
-		this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
+		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
 		float newPercentage = this->mProcentBoarderX*(this->mFullBarX/scale);
 		float newFullBar = scale*(1.0f -2.0f*newPercentage);
 		if( newFullBar >= 0)
@@ -94,7 +94,7 @@ void ProgressBar::SetPercentOfProgressBarColor2(float percentageX)
 	if(percentageX <= 100.0f && percentageX >= 0.0f)
 	{
 		float scale = percentageX*0.01f*this->mFullX;
-		this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
+		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
 		float newPercentage = this->mProcentBoarderX*(this->mFullBarX/scale);
 		float newFullBar = scale*(1.0f -2.0f*newPercentage);
 		this->mBarColor1->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));

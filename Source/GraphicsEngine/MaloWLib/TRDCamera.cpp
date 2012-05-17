@@ -84,6 +84,8 @@ void TRDCamera::updateSpecific(float delta)
 		{
 			D3DXVECTOR3 forwardBall = this->mPowerBallToFollow->GetForwardVector().GetD3DVec();
 			this->mTargetVector = (D3DXVECTOR3(0,-1,0) + forwardBall)*this->mPowerBallToFollow->GetDistanceToCam();
+			this->mOldDistanceBall.x = this->mPowerBallToFollow->GetPosition().x;
+			this->mOldDistanceBall.z = this->mPowerBallToFollow->GetPosition().z;
 			this->pos = this->mOldDistanceBall - this->mTargetVector;
 			this->forward = this->NormalizeVector(this->mTargetVector);
 		}

@@ -333,11 +333,11 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 	tempElement = new TextBox(dx * (1000.0f / 1200.0f) + offSet, windowHeight * (140.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
-		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "Continuously", 0.80f, 2, NR);
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "10", "Continuously", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 	tempElement = new TextBox(dx * (1015.0f / 1200.0f) + offSet, windowHeight * (197.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
-		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "10", "Accumulated", 0.80f, 2, NR);
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "Accumulated", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (200.0f / 900.0f), 1, "Media/Menus/Rounds.png",

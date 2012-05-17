@@ -299,7 +299,6 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 		while(running && this->mGe->isRunning())
 		{
 				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
-
 				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 					roundsLeft = running = this->mIGM->Run();
 		

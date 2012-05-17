@@ -173,7 +173,7 @@ bool Knockout::checkWinConditions(float dt)
 			this->mWinnerActivated = true;
 			this->mBalls[this->mIndexBallLeft]->ActivateWinTimer();
 		}
-		if(this->mBalls[this->mIndexBallLeft]->GetWinTimer() > 1.0f)
+		if(this->mBalls[this->mIndexBallLeft]->GetWinTimer() > 2.0f)
 		{
 			this->mBalls[this->mIndexBallLeft]->AddWonRound();
 			this->mBalls[this->mIndexBallLeft]->RestetWinTimer();

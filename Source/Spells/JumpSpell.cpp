@@ -37,8 +37,10 @@ void JumpSpell::UpdateSpecial(float dt)
 	Vector3 distance = this->mPowerBall->GetPositionVector3() - this->mJumpPosition;
 	Vector3 projectionNormalJump = this->mBackup.normalContact*(distance.GetDotProduct(this->mBackup.normalContact));
 	float length = projectionNormalJump.GetLength();
-	if(length >= 2.5f)
+	if(length >= 2.0f)
+	{
 		this->Restore();
+	}
 	if(this->mTimerCounterCoolDown > this->mTimeNeededToCoolDown)
 		Spell::Ready();
 	Spell::Update(dt);
@@ -56,7 +58,7 @@ void JumpSpell::Use()
 		Vector3 normal = this->mPowerBall->GetNormalContact();
 		this->mBackup.normalContact = normal;
 		/* the speed of the jump is a litle bit faster than the "gravity speed" */
-		normal = normal*(this->mBackup.acceleration.GetLength()*2.0f); 
+		normal = normal*(this->mBackup.acceleration.GetLength()*4.0f); 
 		this->mPowerBall->SetAcceleration(normal);
 		
 		/*	saving information to know when the ball has jumped far enough from the position 
