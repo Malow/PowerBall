@@ -50,6 +50,10 @@ class Spell
 		bool InUse() const { return this->mIsInUse; }
 		bool NeedCoolDown() const { return this->mNeedCoolDown; }
 		bool IsCharging() const { return this->mCharging; }
+		float GetTimeNeededToCoolDown() const { return this->mTimeNeededToCoolDown; }
+		float GetTimerCounterCoolDown() const { return this->mTimerCounterCoolDown; }
+		float GetTimerCounterInUse() const { return this->mTimerCounterInUse; }
+		float GetMaxTimeUse() const { return this->mMaxTimeUse; }
 		
 		
 		

@@ -14,6 +14,11 @@ KingOfTheHill::KingOfTheHill()
 		this->mChooseTeamMenu = NULL;
 		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
+		this->mProgressBar = NULL;
+		/*
+		this->mBackground = NULL;
+		this->mTimeLeft = NULL;
+		*/
 }
 KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
@@ -29,6 +34,11 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mChooseTeamMenu = NULL;
 		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
+		this->mProgressBar = NULL;
+		/*
+		this->mBackground = NULL;
+		this->mTimeLeft = NULL;
+		*/
 }
 
 KingOfTheHill::~KingOfTheHill()
@@ -40,7 +50,7 @@ KingOfTheHill::~KingOfTheHill()
 		SAFE_DELETE(this->mIGM);
 
 		SAFE_DELETE(this->mChooseTeamMenu);
-
+		SAFE_DELETE(this->mProgressBar);
 		
 
 		mGe->DeleteText(this->mHud[0]);
@@ -118,12 +128,21 @@ void KingOfTheHill::Initialize()
 		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
 		this->mTotalTimeCapture->SetOpacity(0.0f);
 
+		this->mProgressBar = new ProgressBar();
+		this->mProgressBar->SetPercentOfProgressBarColor1(0.0f);
+		this->mProgressBar->SetPercentOfProgressBarColor2(0.0f);
+		this->mBestBallInHotZone = -1;
+		this->mBestTime = -1;
+		
+		float width = GetGraphicsEngine()->GetEngineParameters().windowWidth;
+		float height = GetGraphicsEngine()->GetEngineParameters().windowHeight;
+
 		/* Set hud */
 		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
-		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,750),1.0f,"Media/Fonts/1");
-		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(10,790),1.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(800,20),1.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(1000,20),1.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,400),1.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(10,450),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2((width/2.0f) -100.0f,80),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2((width/2.0f)  + 40.0f,80),1.0f,"Media/Fonts/1");
 }
 
 void KingOfTheHill::Intro()
@@ -188,6 +207,43 @@ void KingOfTheHill::ShowHud()
 		this->mHud[3]->SetText(s);
 		s = "T2: " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetTimeInHotZoneContinuously())/10.0f);
 		this->mHud[4]->SetText(s);
+
+		float percentageContinuously = (this->mBalls[this->mNet->GetIndex()]->GetTimeInHotZone()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
+		float percentageAccumulated = (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
+		
+		float percentage = 0;
+		if( this->mBestBallInHotZone != -1)
+		{
+			float diffContinuously = this->mPlatform->GetMaxTimeInHotZoneContinuously() - this->mPlatform->GetTimeInHotZoneContinuously();
+			float diffAccumulated = this->mPlatform->GetMaxTimeInHotZone() - this->mBestTime;
+
+			if( diffAccumulated > diffContinuously)
+				percentage = 100.0f - (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
+			else
+				percentage = 100.0f - (this->mBestTime/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
+			
+			if( (this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
+			{
+				this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
+				//this->mProgressBar->SetPercentOfProgressBarColor2(0);
+			}
+			else if(this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == this->mBalls[this->mNet->GetIndex()]->GetTeamColor())
+			{
+				this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
+				//this->mProgressBar->SetPercentOfProgressBarColor2(0);
+			}
+			else
+			{
+				//this->mProgressBar->SetPercentOfProgressBarColor1(0);
+				this->mProgressBar->SetPercentOfProgressBarColor2(percentage);
+			}
+			
+		}
+		else
+		{
+			this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
+			this->mProgressBar->SetPercentOfProgressBarColor2(percentage);
+		}
 }
 
 bool KingOfTheHill::checkWinConditions(float dt)
@@ -240,10 +296,7 @@ bool KingOfTheHill::checkWinConditions(float dt)
 			for(int i = 0; i<numberInHotZone; i++)
 			{
 				ballIndex = arrayIndexs[i];
-				float time = this->mBalls[ballIndex]->GetTimeInHotZone();
-				float time2 = this->mPlatform->GetTimeInHotZoneContinuously();
-				float time3 = this->mPlatform->GetMaxTimeInHotZone();
-				float time4 = this->mPlatform->GetMaxTimeInHotZoneContinuously();
+				
 				if(this->mBalls[ballIndex]->GetTimeInHotZone() >= this->mPlatform->GetMaxTimeInHotZone())
 				{
 					/* here the round is over. */
@@ -280,9 +333,28 @@ bool KingOfTheHill::checkWinConditions(float dt)
 				returnValue = true;
 			}
 
+			/* checking which ball that is the "best". */
+			int bestIndex = -1;
+			float bestTime = -1;
+			for(int i = 0; i<numberInHotZone; i++)
+			{
+				ballIndex = arrayIndexs[i];
+			
+				if(i == 0 || (this->mBalls[ballIndex]->GetTimeInHotZone() > bestTime) )
+				{
+					bestTime = this->mBalls[ballIndex]->GetTimeInHotZone();
+					bestIndex = i;
+				}
+
+			}
+			this->mBestBallInHotZone = bestIndex;
+			this->mBestTime = bestTime;
+
 		}
 		else
 		{
+			this->mBestBallInHotZone = -1;
+			this->mBestTime = -1;
 			this->mPlatform->ResetHotZone();
 			returnValue = false;
 		}

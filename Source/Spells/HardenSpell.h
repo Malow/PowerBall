@@ -6,12 +6,13 @@
 * 
 **/
 #include "..\Spells\Spell.h"
-
+#include "..\GraphicsEngine\StaticMesh.h"
 
 class HardenSpell : public Spell
 {
 private:
 	backup mBackup;
+	StaticMesh* mHardenMesh;
 public:
 	HardenSpell();
 	//HardenSpell(Ball* ball);
@@ -21,4 +22,5 @@ public:
 	virtual void Use();
 	virtual void Restore();
 	virtual void InformCollision() { }
+
 };

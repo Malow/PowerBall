@@ -39,6 +39,7 @@ void GameMode::PlayLan()
 			this->mTeam = this->mChooseTeamMenu->Run();
 		else
 			this->mTeam = TEAM::NOTEAM;
+		this->mTeam = this->mChooseTeamMenu->Run();
 		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
 		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
 		while(roundsLeft && this->mGe->isRunning())

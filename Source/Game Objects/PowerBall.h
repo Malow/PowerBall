@@ -17,6 +17,7 @@ class Map;
 class PowerBall : public GameObject
 {
 	private:
+			float		mHealth;
 			float		mMass;
 			float		mRestitution;
 			float		mRadius;
@@ -50,7 +51,7 @@ class PowerBall : public GameObject
 			float		mRespawnTime;
 			float		mRespawnTimeLeft;
 			float		mTimeInHotZone;
-			float		mTeamColor;
+			int			mTeamColor;
 			/* SoundEffects */
 			bool			mSound;
 			SoundEffect*	mCollisionWithWall;
@@ -150,6 +151,9 @@ class PowerBall : public GameObject
 			/*! Returns the start forward vector. */
 			Vector3 GetStartForwardVector() const { return this->mStartForwardVector; }
 
+			/*! Returns the health of the ball. */
+			float GetHealth() const { return this->mHealth; }
+			
 			/*! Adds a item to the ball*/
 			void AddFlag(FlagCTF* item){ this->mFlag = item; }
 
@@ -162,10 +166,15 @@ class PowerBall : public GameObject
 			/*! Restet time for win timer. */
 			void RestetWinTimer() { this->mWinTimer = 0.0f; this->mWinTimerActivated = false;};
 	
-	
+			
 			//Set-Functions
-	
-			/*! Returns the balls radius. */
+			
+			/*! Sets the health of the ball. */
+			void SetHealth(float health) { if( health <= 100 && health >= 0)
+												this->mHealth = health; 
+										 }
+
+			/*! Sets the balls radius. */
 			void SetRadius(float radius) { this->mRadius = radius; } 
 
 			/*! Set position to StartPosition- */

@@ -30,6 +30,7 @@ std::string OurItoa(int n)
 #define Y_LEVEL_BOUNDARY 10
 PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 {
+	this->mHealth		 = 100;
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
 	this->mVelocity		 = Vector3(0,0,0);
@@ -223,8 +224,10 @@ void PowerBall::Update(const float dt, bool clientBall)
 	//*this->mPos = this->mMesh->GetPosition();
 	//*this->mFor = this->mForward.GetD3DVec();
 	
-	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode)
+	
+	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode) 
 	{
+		
 		if(this->mFlag != NULL)
 		{
 			this->mFlag->Reset();
@@ -835,6 +838,6 @@ void PowerBall::SetTeamColor(int team)
 		 this->mMesh->SetSpecialColor(COLOR::RED_COLOR);
 	 else
 	 {
-
+		 
 	 }
 }

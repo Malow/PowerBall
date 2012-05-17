@@ -8,7 +8,7 @@ JumpSpell::JumpSpell()
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
 	this->mTimerCounterInUse = 0.0f;
-	this->mMaxTimeUse = 0.0f;
+	this->mMaxTimeUse = 0.1f;
 	this->mIsInUse = false;
 	this->mCharging = false;
 }
@@ -22,7 +22,7 @@ JumpSpell::JumpSpell(PowerBall* ball)
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
 	this->mTimerCounterInUse = 0.0f;
-	this->mMaxTimeUse = 0.0f;
+	this->mMaxTimeUse = 0.1f;
 	this->mIsInUse = false;
 }
 

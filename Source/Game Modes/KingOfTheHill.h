@@ -12,12 +12,21 @@
 #include "..\Game Modes\GameMode.h"
 #include "..\Network\GameNetwork.h"
 #include "..\GUI\SliderBar.h"
-
+#include "..\GUI\ProgressBar.h"
 
 class KingOfTheHill : public GameMode
 {
 	private:
+			/*
+			Image*			mBackground;
+			Image*			mTimeLeft;
+			*/
 			Image*			mTotalTimeCapture;
+			ProgressBar* mProgressBar;
+			
+			int mBestBallInHotZone;
+			float mBestTime;
+
 
 	public:
 			KingOfTheHill();

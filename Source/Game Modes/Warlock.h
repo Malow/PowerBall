@@ -17,12 +17,13 @@
 #include "..\Spells\HardenSpell.h"
 #include "..\Spells\InvisibilitySpell.h"
 #include "..\Spells\JumpSpell.h"
+#include "..\GUI\ProgressBar.h"
 
 class Warlock : public GameMode
 {
 	private:
-			
-			
+			ProgressBar** mProgressBars;
+
 	public:
 			Warlock();
 			Warlock(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);
