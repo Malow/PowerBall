@@ -160,6 +160,18 @@ void Warlock::ShowStats()
 bool Warlock::checkWinConditions(float dt)
 {
 		float newdt = dt/1000.0f;
+		Vector3 pos;
+		Vector3 posLav;
+		float distance = -1;
+		for(int i = 0; i<this->mNumberOfPlayers; i++)
+		{
+			pos = this->mBalls[i]->GetPositionVector3();
+			posLav = Vector3(pos.x,this->mGe->GetLavaHeightAt(pos.x, pos.z), pos.z);
+			distance = (pos - posLav).GetLength();
+			if(distance < this->mBalls[i]->GetRadius())
+				this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt); // minus 4 hp per sec.
+		}
+
 		/* will be implemented when we have the rules, for now just play around in 600 seconds then gameover */
 		this->mTimeElapsed += newdt;
 		if(this->mTimeElapsed > 600.0f)
