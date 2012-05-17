@@ -325,22 +325,26 @@ void MainMenu::CreateOnlineAndLanMenu()
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-
+		
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);*/
 	
-	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Seconds_To_Win.png",
-		dx * (375.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
+	tempElement = new GUIPicture(offSet, 0, 1, "Media/OnlineAndLanMenu/timermenu.png",
+		dx, windowHeight);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (1080.0f / 1200.0f) + offSet, windowHeight * (79.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
-		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "SecondsToWin", 0.80f, 2, NR);
+	tempElement = new TextBox(dx * (1000.0f / 1200.0f) + offSet, windowHeight * (140.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "Continuously", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new GUIPicture(dx * (710.0f / 1200.0f) + offSet, windowHeight * (140.0f / 900.0f), 1, "Media/Menus/Rounds.png",
+	tempElement = new TextBox(dx * (1015.0f / 1200.0f) + offSet, windowHeight * (197.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "10", "Accumulated", 0.80f, 2, NR);
+	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
+
+	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (200.0f / 900.0f), 1, "Media/Menus/Rounds.png",
 		dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (900.0f / 1200.0f) + offSet, windowHeight * (139.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (199.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
 		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
