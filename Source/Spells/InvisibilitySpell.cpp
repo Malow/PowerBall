@@ -38,6 +38,18 @@ InvisibilitySpell::InvisibilitySpell(PowerBall* ball)
 	this->mIsInUse = false;
 }
 
+InvisibilitySpell::InvisibilitySpell(SoundEffect* soundEffect) 
+	: Spell(soundEffect)
+{
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 30.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 5.0f;
+	this->mIsInUse = false;
+}
+
 InvisibilitySpell::~InvisibilitySpell()
 {
 	
@@ -68,6 +80,12 @@ void InvisibilitySpell::Use()
 		this->mPowerBall->SetMass(this->mPowerBall->GetMass());
 
 		this->mIsInUse = true;
+
+		//play sound effect, if any
+		if(this->mSoundEffect)
+		{
+			this->mSoundEffect->Play();
+		}
 	}
 
 }

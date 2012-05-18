@@ -16,6 +16,7 @@ public:
 	InvisibilitySpell();
 //	InvisibilitySpell(Ball* ball);
 	InvisibilitySpell(PowerBall* ball);
+	InvisibilitySpell(SoundEffect* soundEffect);
 	virtual ~InvisibilitySpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();
