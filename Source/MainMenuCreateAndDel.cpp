@@ -69,7 +69,7 @@ void MainMenu::CreateOptionsMenu()
 	float dx = (windowHeight * 4.0f) / 3.0f;
 	float offSet = (windowWidth - dx) / 2.0f;
 	
-	/* Adding the buttons for the options menu*/
+	/*Adding the buttons for the options menu*/
 	Element* tempElement = new GUIPicture(offSet, 0, 1, "Media/OptionsMenu/optionsmenu.png", dx, windowHeight);
 	this->mSets[OPTIONS].AddElement(tempElement);
 
@@ -116,7 +116,7 @@ void MainMenu::CreateOptionsMenu()
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
 	float dropX = dx * (385.0f / 1200.0f) + offSet, dropY = windowHeight * (125.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", dx * (300.0f / 1200.0f), windowHeight * (25.0f / 900.0f), "GameMode");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	
 	if(windowWidth == 1920.0f && windowHeight == 1080.0f)
@@ -272,7 +272,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 	
 	float dropX = dx * (50.0f / 1200.0f) + offSet, dropY = windowHeight * (140.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", dx * (300.0f / 1200.0f), windowHeight * (25.0f / 900.0f), "GameMode");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	
 	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
