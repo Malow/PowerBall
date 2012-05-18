@@ -385,11 +385,18 @@ void DxManager::RenderText()
 		this->Shader_Text->SetFloat("windowHeight", this->params.windowHeight);
 		
 		// Im only using ASCI 30 - 100, to reduce data sent I only send those 70 as 0-70. Therefor the t = 30 and t - 30
-		for(int t = 30; t < 100; t++)
+		static bool once = true;
+		if(once)
 		{
-			this->Shader_Text->SetFloatAtIndex(t - 30, "charTex", (float)(int)txt->GetFont()->charTexCoords[t]);
-			this->Shader_Text->SetFloatAtIndex(t - 30, "charWidth", (float)(int)txt->GetFont()->charWidth[t]);
+			for(int t = 30; t < 100; t++)
+			{
+				this->Shader_Text->SetFloatAtIndex(t - 30, "charTex", (float)(int)txt->GetFont()->charTexCoords[t]);
+				this->Shader_Text->SetFloatAtIndex(t - 30, "charWidth", (float)(int)txt->GetFont()->charWidth[t]);
+			}
+			once = false;
 		}
+
+
 		this->Shader_Text->SetResource("tex2D", txt->GetFont()->texture);
 
 
