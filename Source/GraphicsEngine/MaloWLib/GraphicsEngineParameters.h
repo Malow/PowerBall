@@ -16,6 +16,7 @@ class GraphicsEngineParams
 public:
 	static int windowWidth;
 	static int windowHeight;
+	static bool Maximized;
 	static int ShadowMapSettings;
 	static int FXAAQuality;
 	static CameraType CamType;
@@ -43,6 +44,8 @@ public:
 		getline(in, line);
 		this->windowHeight = atoi(line.c_str());
 		getline(in, line);
+		this->Maximized = atoi(line.c_str());
+		getline(in, line);
 		this->ShadowMapSettings = atoi(line.c_str());
 		getline(in, line);
 		this->FXAAQuality = atoi(line.c_str());
@@ -57,12 +60,13 @@ public:
 		out.open(file);
 		if(!out)
 		{
-			MaloW::Debug("Failed to save EngineParameters from " + file);
+			MaloW::Debug("Failed to save EngineParameters to " + file);
 			return;
 		}
 
 		out << this->windowWidth << endl;
 		out << this->windowHeight << endl;
+		out << this->Maximized << endl;
 		out << this->ShadowMapSettings << endl;
 		out << this->FXAAQuality << endl;
 
