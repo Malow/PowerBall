@@ -23,6 +23,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	ShadowMapQuality
 	FXAAQuality
 	*/
+	GameOptions GameParams;
+	GameParams.LoadFromeFile("GameSettings.cfg");
+	/*
+	masterVolume
+	songVolume //Funkar dock inte
+	effectVolume //Funkar dock inte
+	*/
 
 	// Create the graphics engine
 	GraphicsEngine* ge = new GraphicsEngine(params, hInstance, nCmdShow);

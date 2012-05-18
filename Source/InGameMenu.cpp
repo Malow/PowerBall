@@ -178,7 +178,7 @@ bool InGameMenu::Run()
 				if(tempEventSet == IGNOPTIONS_SOUND)
 				{
 					CheckBox* temp = this->mSets[IGNOPTIONS_SOUND].GetCheckBox("Sound");
-					temp->SetChecked(BackgroundSong::mPlaying);
+					temp->SetChecked(GameOptions::isPlaying);
 				}
 				int set = tempReturnEvent->GetSet();
 				this->mSubSet = set;
@@ -194,13 +194,13 @@ bool InGameMenu::Run()
 				{
 					if(tempReturnEvent->GetValue() == "true")
 					{
-						BackgroundSong::mSong->Unmute();
-						BackgroundSong::mPlaying = true;
+						GameOptions::songPlaying->Unmute();
+						GameOptions::isPlaying = true;
 					}
 					else
 					{
-						BackgroundSong::mSong->Mute();
-						BackgroundSong::mPlaying = false;
+						GameOptions::songPlaying->Mute();
+						GameOptions::isPlaying = false;
 					}
 				}
 			}

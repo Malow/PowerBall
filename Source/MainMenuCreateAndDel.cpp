@@ -92,12 +92,6 @@ void MainMenu::CreateOptionsMenu()
 		"Media/OptionsMenu/clickbasic.png", "Media/OptionsMenu/mouseoverbasic.png", dx * (370.0f / 1200) + offSet, windowHeight * (26.0f / 900), 
 		dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS].AddElement(tempElement);
-	
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("Apply", "true"),
-		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
-	this->mSets[OPTIONS].AddElement(tempElement);
-	
-
 	/*
 	* Subset code start here
 	*/
@@ -109,7 +103,6 @@ void MainMenu::CreateOptionsMenu()
 	tempElement = new CheckBox(dx * (530.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png",dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Sound", "true"), "Sound");
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
-
 	/*Graphic*/
 
 	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionsresolution.png", dx, windowHeight);
@@ -183,6 +176,10 @@ void MainMenu::CreateOptionsMenu()
 
 	tempElement = new GUIPicture(offSet + dx * (660.0f / 1200.0f), windowHeight * (200.0f / 900.0f),0, "Media/OptionsMenu/0-6.png", 
 		dx * (53.0f / 1200.0f), windowHeight * (22.0f / 900.0f));
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("Apply", "true"),
+		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
 	tempElement = NULL;
@@ -388,9 +385,9 @@ void MainMenu::CreateScene()
 	this->mBall2 = this->mGe->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(0,14.71f,-5));
 
 	this->mPlatform = this->mGe->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(0,10,0));
-	this->mKoth = this->mGe->CreateStaticMesh("Media/KOTHMap1.obj", D3DXVECTOR3(40,5,0));
-	this->mCtf = this->mGe->CreateStaticMesh("Media/CTFMap1.obj", D3DXVECTOR3(-40,5,0));
-
+	this->mKoth = this->mGe->CreateStaticMesh("Media/KOTHMap1.obj", D3DXVECTOR3(40,5,-40));
+	this->mCtf = this->mGe->CreateStaticMesh("Media/CTFMap1.obj", D3DXVECTOR3(-40,5,-40));
+	this->mWarlock = this->mGe->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(0,4,80));
 
 	this->mLight1 = this->mGe->CreateLight(D3DXVECTOR3(0, 50.0f, -20));
 	this->mLight1->SetIntensity(50.0f);
@@ -417,6 +414,8 @@ void MainMenu::DeleteScene()
 	this->mKoth = NULL;
 	this->mGe->DeleteStaticMesh(this->mCtf);
 	this->mCtf = NULL;
+	this->mGe->DeleteStaticMesh(this->mWarlock);
+	this->mWarlock = NULL;
 
 	SAFE_DELETE(this->mCamRec);
 }
