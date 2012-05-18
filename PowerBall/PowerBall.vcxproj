@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\ChooseTeamMenu.cpp" />
+    <ClCompile Include="..\Source\EndGameMenu.cpp" />
     <ClCompile Include="..\Source\Game Modes\CaptureTheFlag.cpp" />
     <ClCompile Include="..\Source\Game Modes\GameMode.cpp" />
     <ClCompile Include="..\Source\Game Modes\KingOfTheHill.cpp" />
@@ -109,10 +110,11 @@
     <ClCompile Include="..\Source\Spells\JumpSpell.cpp" />
     <ClCompile Include="..\Source\Spells\Spell.cpp" />
     <ClCompile Include="..\Source\Spells\SprintSpell.cpp" />
-    <ClCompile Include="..\Source\SystemReqResart.cpp" />
+    <ClCompile Include="..\Source\SystemReqRestart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\ChooseTeamMenu.h" />
+    <ClInclude Include="..\Source\EndGameMenu.h" />
     <ClInclude Include="..\Source\Game Modes\CaptureTheFlag.h" />
     <ClInclude Include="..\Source\Game Modes\GameMode.h" />
     <ClInclude Include="..\Source\Game Modes\KingOfTheHill.h" />
@@ -210,7 +212,7 @@
     <ClInclude Include="..\Source\Spells\Spell.h" />
     <ClInclude Include="..\Source\Spells\SprintSpell.h" />
     <ClInclude Include="..\Source\stdafx.h" />
-    <ClInclude Include="..\Source\SystemReqResart.h" />
+    <ClInclude Include="..\Source\SystemReqRestart.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx" />

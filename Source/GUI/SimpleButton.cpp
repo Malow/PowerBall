@@ -101,7 +101,7 @@ GUIEvent* SimpleButton::CheckCollision(float mouseX, float mouseY, bool mousePre
 					ge->DeleteImage(this->mPressedImage);
 					this->mPressedImage = NULL;
 				}
-				BackgroundSong::mMouseClick->Play();
+				GameOptions::mouseClick->Play();
 				return this->GetEvent();
 			}
 			else

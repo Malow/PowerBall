@@ -22,7 +22,7 @@
 #include "Game Objects\PowerBall.h"
 #include "Game Objects\Map.h"
 #include "GameOptions.h"
-#include "SystemReqResart.h"
+#include "SystemReqRestart.h"
 
 enum MENU {NOMENU,
 	BACKGROUND,
@@ -79,6 +79,7 @@ private:
 	StaticMesh* mPlatform;
 	StaticMesh* mKoth;
 	StaticMesh* mCtf;
+	StaticMesh* mWarlock;
 	CamRecording* mCamRec;
 	Light* mLight1;
 	Light* mLight2;
