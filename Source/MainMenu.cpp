@@ -26,7 +26,7 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 	//tempSoundEngine->SetSongVolume(gameParams.songVolume);
 	//tempSoundEngine->SetSoundEffectVolume(gameParams.effectVolume);
 	
-	gameParams.mouseClick = tempSoundEngine->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3", false);
+	gameParams.mouseClick = tempSoundEngine->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu3.mp3", false);
 
 	gameParams.songPlaying = tempSoundEngine->LoadSong("Media/Sounds/Songs/George_Ellinas_-_Pulse_(George_Ellinas_remix).mp3", true);
 	this->Initialize();

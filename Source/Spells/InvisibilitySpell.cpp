@@ -38,8 +38,7 @@ InvisibilitySpell::InvisibilitySpell(PowerBall* ball)
 	this->mIsInUse = false;
 }
 
-InvisibilitySpell::InvisibilitySpell(SoundEffect* soundEffect) 
-	: Spell(soundEffect)
+InvisibilitySpell::InvisibilitySpell(SoundEffect* soundEffect) : Spell(soundEffect)
 {
 	this->mPowerBall = NULL;
 	this->mTimeNeededToCoolDown = 30.0f;

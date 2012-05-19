@@ -16,6 +16,7 @@ public:
 	SprintSpell();
 	//SprintSpell(Ball* ball);
 	SprintSpell(PowerBall* ball);
+	SprintSpell(SoundEffect* soundEffect);
 	virtual ~SprintSpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();
