@@ -29,7 +29,6 @@ void GameMode::PlayLan()
 {
 		bool zoomOutPressed = false;
 		bool zoomInPressed = false;
-		this->mNet->Start(this->mServerInfo);
 		this->mGe->Update();
 		bool roundsLeft = true;
 		int roundsPlayed = 0;
@@ -77,15 +76,35 @@ void GameMode::ClientKeyPress(float diff, const int index, char key)
 	if(key == 'E')
 		mBalls[index]->RotateForwardRight(diff);
 	if(key == '1')
+	{
+		if(mBalls[index]->GetSpells()[0]->ReadyToBeCast())
+			MsgHandler::GetInstance().SendCastSpell(index, 1);
 		mBalls[index]->UseSpell(1);
+	}
 	if(key == '2')
+	{
+		if(mBalls[index]->GetSpells()[1]->ReadyToBeCast())
+			MsgHandler::GetInstance().SendCastSpell(index, 2);
 		mBalls[index]->UseSpell(2);
+	}
 	if(key == '3')
+	{
+		if(mBalls[index]->GetSpells()[2]->ReadyToBeCast())
+			MsgHandler::GetInstance().SendCastSpell(index, 3);
 		mBalls[index]->UseSpell(3);
+	}
 	if(key == '4')
+	{
+		if(mBalls[index]->GetSpells()[3]->ReadyToBeCast())
+			MsgHandler::GetInstance().SendCastSpell(index, 4);
 		mBalls[index]->UseSpell(4);
+	}
 	if(key == VK_SPACE)
+	{
+		if(mBalls[index]->GetSpells()[4]->ReadyToBeCast())
+			MsgHandler::GetInstance().SendCastSpell(index, 5);
 		mBalls[index]->UseSpell(5);
+	}
 	//if(key == VK_SPACE)
 		//mBalls[index]->AddForce(Vector3(0, diff,0));
 	
@@ -108,15 +127,35 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 		if(mGe->GetKeyListener()->IsPressed('D'))
 			mBalls[index]->AddForceRightOfForwardDirection(diff);	
 		if(mGe->GetKeyListener()->IsPressed('1'))
+		{
+			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[0]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 1);
 			mBalls[index]->UseSpell(1);
+		}
 		if(mGe->GetKeyListener()->IsPressed('2'))
+		{
+			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[1]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 2);
 			mBalls[index]->UseSpell(2);
+		}
 		if(mGe->GetKeyListener()->IsPressed('3'))
+		{
+			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[2]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 3);
 			mBalls[index]->UseSpell(3);
+		}
 		if(mGe->GetKeyListener()->IsPressed('4'))
+		{
+			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[3]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 4);
 			mBalls[index]->UseSpell(4);
+		}
 		if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+		{
+			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[4]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 5);
 			mBalls[index]->UseSpell(5);
+		}
 		if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
 		{
 			mBalls[index]->ZoomOut();
@@ -261,6 +300,17 @@ void GameMode::IsClient(float diff, bool& zoomOutPressed, bool& zoomInPressed, b
 			D3DXVECTOR3 rotVector = this->mNet->GetBall(i)->GetPos() - this->mBalls[i]->GetPosition();
 			this->mBalls[i]->SetPosition(this->mNet->GetBall(i)->GetPos());
 			this->mBalls[i]->Rotate(rotVector);
+
+			if(this->mNet->GetBall(i)->GetNumCommands() > 0)
+			{
+				this->mBalls[i]->UseSpell((int)this->mNet->GetBall(i)->GetNextCommand()->GetInput(0));
+				this->mNet->GetBall(i)->PopCommand();
+			}
+				
+			for(int c = 0; c < this->mBalls[i]->GetNrOfSpells(); c++)
+				this->mBalls[i]->GetSpells()[c]->UpdateSpecial(diff * 0.001f);
+			
+
 		}
 	}
 	if(this->mNet->GetIndex() < this->mNumberOfPlayers)
@@ -295,9 +345,11 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 		bool quitByMenu = false;
 		int numAlivePlayers = 0;
 		LARGE_INTEGER oldTick = LARGE_INTEGER();
+		QueryPerformanceCounter(&oldTick);
 		LARGE_INTEGER now =  LARGE_INTEGER();
 		while(running && this->mGe->isRunning())
 		{
+
 				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
 				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 					roundsLeft = running = this->mIGM->Run();
@@ -307,8 +359,10 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				::QueryPerformanceFrequency(&proc_freq);
 				double frequency = proc_freq.QuadPart;
 
-				//diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
+				diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
 				QueryPerformanceCounter(&oldTick);
+				
+
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
 					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.

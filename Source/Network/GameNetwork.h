@@ -1,26 +1,27 @@
 #pragma once
 
 #include "..\stdafx.h"
-#include "ServerConnection.h"
+#include "NetworkHandler.h"
 #include "..\Game Objects\PowerBall.h"
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
 #include "CommandHandler.h"
 #include "NetworkBall.h"
+#include "OnlineHandler.h"
 using namespace std;
 #define PLAYER_CAP 10
-#define FLOAT_EPSILON 0.01f //used for ignoring very tiny movements
-#define INTERPOS_MIN .3f //if the position difference (vector length) is lesser than this -> sets local position to network position
-#define INTERPOS_MAX 10.0f //if the position difference (vector length) is greater than this -> sets local position to network position
+#define FLOAT_EPSILON 0.001f //used for ignoring very tiny movements
+#define INTERPOS_MIN 0.01f //if the position difference (vector length) is lesser than this -> sets local position to network position
+#define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
 #define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
-#define SERVER_SEND_MS 25.0f //MAX 1 PACKET PER XX MILLISECONDS
-#define CLIENT_SEND_MS 50.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define SERVER_SEND_MS 5.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define CLIENT_SEND_MS 10.0f //MAX 1 PACKET PER XX MILLISECONDS
 
 class GameNetwork
 {
 private:
 	ServerInfo			mServer;
-	ServerConnection*	mConn;
+	NetworkHandler*	mConn;
 	D3DXVECTOR3*		mFlagPos;
 	int					mIndex;
 	int					mNumPlayers;
@@ -29,21 +30,27 @@ private:
 	NetworkBall**		mNetBalls;
 	float				mLatency;
 	bool				mIsRunning;
+	OnlineHandler*		mOnlineHandler;
+	bool				mOnline;
+	int					mDropPlayerIndex;
 
 	/*! Updates the client side, (updates LAN - variables). */
 	bool				ClientUpdate();
 
 	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
-
+	
+	void				DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, int index);
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
+	void		DropPlayer(int index) { if(index > 0 && index < this->mNumPlayers) mDropPlayerIndex = index; }
 	void		SetLatency(float latency){this->mLatency = latency;}
 	float		GetLatency() const {return this->mLatency;}
+	ServerInfo	ConnectTo(string ip);
 	//void		AddMovementPowerBall(PowerBall* PowerBall);
 	D3DXVECTOR3 		CorrectPosition();
-
+	void			ProcessAllMsgs() { this->mConn->ProcessMSGs(); }
 	ServerInfo  GetServerInfo() const { return this->mServer; }
 
 	NetworkBall*	GetBall(int index) const { return this->mNetBalls[index]; }
@@ -80,6 +87,9 @@ public:
 
 	/*! Starts the game network. */
 	void		Start(ServerInfo server);
+
+	/*! Starts the game network. */
+	void		GoOnline(string accName, string accPass);
 
 	/*! Returns true if you is the host. */
 	bool		IsServer() const {return this->mConn->IsServer();}

@@ -91,10 +91,13 @@
     <ClCompile Include="..\Source\MaloWLib\TCBSpline.cpp" />
     <ClCompile Include="..\Source\Network\Command.cpp" />
     <ClCompile Include="..\Source\Network\CommandHandler.cpp" />
+    <ClCompile Include="..\Source\Network\Connection.cpp" />
     <ClCompile Include="..\Source\Network\GameModeInfo.cpp" />
     <ClCompile Include="..\Source\Network\GameNetwork.cpp" />
     <ClCompile Include="..\Source\Network\MsgHandler.cpp" />
     <ClCompile Include="..\Source\Network\NetworkBall.cpp" />
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp" />
+    <ClCompile Include="..\Source\Network\OnlineHandler.cpp" />
     <ClCompile Include="..\Source\Network\PlayerHistory.cpp" />
     <ClCompile Include="..\Source\Network\ServerConnection.cpp" />
     <ClCompile Include="..\Source\Network\ServerInfo.cpp" />
@@ -190,10 +193,13 @@
     <ClInclude Include="..\Source\Network\BufferFunctions.h" />
     <ClInclude Include="..\Source\Network\Command.h" />
     <ClInclude Include="..\Source\Network\CommandHandler.h" />
+    <ClInclude Include="..\Source\Network\Connection.h" />
     <ClInclude Include="..\Source\Network\GameModeInfo.h" />
     <ClInclude Include="..\Source\Network\GameNetwork.h" />
     <ClInclude Include="..\Source\Network\MsgHandler.h" />
     <ClInclude Include="..\Source\Network\NetworkBall.h" />
+    <ClInclude Include="..\Source\Network\NetworkHandler.h" />
+    <ClInclude Include="..\Source\Network\OnlineHandler.h" />
     <ClInclude Include="..\Source\Network\PlayerHistory.h" />
     <ClInclude Include="..\Source\Network\ServerConnection.h" />
     <ClInclude Include="..\Source\Network\ServerInfo.h" />

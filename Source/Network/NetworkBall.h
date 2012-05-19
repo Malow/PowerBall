@@ -1,13 +1,13 @@
 #pragma once
 
 #include "..\stdafx.h"
-#include "ServerConnection.h"
+#include "NetworkHandler.h"
 #include "..\Game Objects\PowerBall.h"
 #include "MsgHandler.h"
 #include "PlayerHistory.h"
 #include "CommandHandler.h"
 using namespace std;
-
+#define DROP_TIMER 8000.0f
 class NetworkBall
 {
 private:
@@ -21,15 +21,19 @@ private:
 	float				mHP;
 	TEAM				mTeam;
 	float				mExecTime;
+	float				mAliveTimer;
 
 public:
 				NetworkBall();
 	virtual		~NetworkBall();
-
+	
 	void		AddMovementPowerBall(PowerBall* PowerBall);
 	//D3DXVECTOR3 CorrectPosition(float serverExecTime);
-
-
+	int			GetNumCommands() const { return this->mCommandHandler->GetNumCommands(); }
+	void		ModifyAliveTime(float mod) { this->mAliveTimer += mod; }
+	void		SetAliveTime(float time) { this->mAliveTimer = time; }
+	float		GetAliveTime() const {return this->mAliveTimer;}
+	void		ResetAliveTime() { this->mAliveTimer = DROP_TIMER; }
 	void		SetTeam(TEAM team){this->mTeam = team;}
 	TEAM		GetTeam() const {return this->mTeam;}
 
@@ -38,7 +42,7 @@ public:
 
 	void		SetExecTime(const float time){this->mExecTime = time;}
 	float		GetExecTime() const { return this->mExecTime; }
-
+	void		Reset();
 	void		ClearCommands() { this->mCommandHandler->Clear(); }
 	PlayerHistory* GetPlayerHistory() { return this->mPlayerHistory; }
 	//CommandHandler& GetCommandHandler() { return this->

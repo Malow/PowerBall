@@ -13,7 +13,7 @@ static void AddToBuf(char* bufOut, int &offsetOut, string in)
 	{
 		AddToBuf(bufOut, offsetOut, in[i]);
 	}
-	AddToBuf(bufOut, offsetOut, ';');
+	AddToBuf(bufOut, offsetOut, ';'); //replace ';' with SEGMENT_ENd
 }
 
 static void AddToBuf(char* bufOut, int &offsetOut, float in)
@@ -21,6 +21,14 @@ static void AddToBuf(char* bufOut, int &offsetOut, float in)
 	memmove(bufOut + offsetOut, &in, sizeof (in));
 	offsetOut += sizeof (in);
 }
+
+static void AddToBuf(char* bufOut, int &offsetOut, int in)
+{
+	memmove(bufOut + offsetOut, &in, sizeof (in));
+	offsetOut += sizeof (in);
+}
+
+
 
 static char GetFromBufC(char* buf, int &offsetOut)
 {
@@ -34,6 +42,13 @@ static float GetFromBufferF(char* buf, int &offsetOut)
 	float out = 0.0f;
 	memmove(&out, &buf[offsetOut], sizeof (float));
 	offsetOut += sizeof (float);
+	return out;
+}
+static float GetFromBufferI(char* buf, int &offsetOut)
+{
+	int out = 0;
+	memmove(&out, &buf[offsetOut], sizeof (int));
+	offsetOut += sizeof (int);
 	return out;
 }
 static string GetFromBufS(char* buf, int &offsetOut)

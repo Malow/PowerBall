@@ -323,6 +323,15 @@
     <ClCompile Include="..\Source\GUI\ProgressBar.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -621,6 +630,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\ProgressBar.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\NetworkHandler.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\OnlineHandler.h">
+      <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Network\Connection.h">
+      <Filter>Game Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

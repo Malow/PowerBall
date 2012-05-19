@@ -3,14 +3,14 @@
 #include "..\stdafx.h"
 //class Lobby;
 class GameNetwork;
-class ServerConnection;
+class NetworkHandler;
 #define SEGMENT_END ';'
 class MsgHandler
 {
 private:
 	//Lobby*				mLobby;
 	GameNetwork*		mNet;
-	ServerConnection*	mConn;
+	NetworkHandler*	mConn;
 	LARGE_INTEGER		mOldTick;
 
 	MsgHandler() {};                               // Private constructor
@@ -42,14 +42,16 @@ public:
 		static MsgHandler singleton;
 		return singleton;
 	}
-	void		Set(GameNetwork* gn, ServerConnection* conn);//, Lobby* lobby = NULL);
+	void		Set(GameNetwork* gn, NetworkHandler* conn);//, Lobby* lobby = NULL);
 	void		ProcessMSG(char* buffer, int size, int index);
 
 	
 	void		Ping(int index);
 	void		SendClose();
+	void		SendClose(int index);
 	void		SendClientData();
 	void		SendServerData();
+	void		SendCastSpell(int casterIndex, int spellIndex);
 	void		JoinTeam(TEAM id);
 
 	void		PlayerReconnect(int index);
@@ -57,6 +59,7 @@ public:
 	void		SendIdentifyYourself();
 	void		SendPlayerInfos();
 	void		SendPlayerProfile();
+	void		SendDropPlayer(int index);
 
 
 private:
@@ -69,6 +72,8 @@ private:
 	void		ReceiveServerData(char* buf, int &offset);
 
 	void		ReceiveTeamChange(char* buf, int &offset, int index);
+	void		ReceiveCastSpell(char* buf, int &offset, int index);
+	void		ReceiveDropPlayer(char* buf, int &offset);
 
 	void		ReceiveIdentification(char* buf, int &offset, int index);
 	void		ReceivePlayerInfos(char* buf, int &offset);

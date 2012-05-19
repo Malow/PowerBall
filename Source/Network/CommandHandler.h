@@ -18,5 +18,6 @@ public:
 	Command*	Front() const;
 	Command*	Back() const;
 	void		Clear();
+	int			GetNumCommands() const { return this->mNumCommands; }
 	bool		Empty() { return (this->mNumCommands == 0); }
 };

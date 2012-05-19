@@ -3,22 +3,28 @@
 
 GameNetwork::GameNetwork()
 {
-	this->mConn			= new ServerConnection();
+	this->mConn			= new NetworkHandler();
+	this->mOnlineHandler  = new OnlineHandler();
 	this->mFlagPos		= new D3DXVECTOR3[2];
 	this->mIndex		= 0;
 	this->mNumPlayers	= 1;
 	this->mIsRunning	= true;
 	this->mLatency		= 50.0f;
 	this->mNetBalls		= new NetworkBall*[PLAYER_CAP];
+	this->mDropPlayerIndex = -1;
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
 		this->mNetBalls[i] = new NetworkBall();
 	}
 	MsgHandler::GetInstance().Set(this, this->mConn);
+
+	this->mOnline		= false;
+	//this->GoOnline("Puserball", "Passerball");
 }
 GameNetwork::~GameNetwork()
 {
 	SAFE_DELETE(this->mConn);
+	SAFE_DELETE(this->mOnlineHandler);
 	for(int i = 0; i < PLAYER_CAP; i++)
 	{
 		SAFE_DELETE(this->mNetBalls[i]);
@@ -130,7 +136,19 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				}
 			}
 			if(this->mConn->GetNumConnections() > 1)
+			{
 				this->ServerUpdate();
+				for(int i = 1; i < this->mNumPlayers; i++)
+				{
+					this->mNetBalls[i]->ModifyAliveTime(-dt);
+					if(this->mNetBalls[i]->GetAliveTime() <= 0.0f)
+					{
+						this->DropPlayer(PowerBalls, numPowerBalls, i);
+						MsgHandler::GetInstance().SendDropPlayer(i);
+						this->mConn->DropPlayer(i);
+					}
+				}
+			}
 		}
 	}
 	else //Is client
@@ -197,8 +215,8 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 
 			//NO iNTERPOLATION, MIGHT GET SPIKY. Smooth correction needs a bit more work.
 			//MODIFY VELOCITY TOO?
-			interpolationVector = mod;
-			if(D3DXVec3Length(&interpolationVector) > FLOAT_EPSILON)
+			/*interpolationVector = mod;
+			if(D3DXVec3Length(&interpolationVector) > FLOAT_EPSILON*10000)
 			{
 				//PowerBalls[this->mIndex]->AddForce(interpolationVector);
 				
@@ -209,10 +227,84 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				PowerBalls[this->mIndex]->Rotate(interpolationVector); //- : rotate other way :D
 				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
+			}*/
+			/*interpolationVector += mod;
+			float length = D3DXVec3Length(&interpolationVector);
+			if(length > INTERPOS_MIN && length < INTERPOS_MAX)//FLOAT_EPSILON)
+			{
+				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD);
+				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector * INTERPOS_MOD);
+				PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD );
+				PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); 
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector * INTERPOS_MOD); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				interpolationVector -= interpolationVector * INTERPOS_MOD;
 			}
+			else if(length >= INTERPOS_MAX)
+			{
+				PowerBalls[this->mIndex]->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+				PowerBalls[this->mIndex]->SetTempPosition(this->mNetBalls[this->mIndex]->GetPos());
+				PowerBalls[this->mIndex]->GetMesh()->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos()); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				
+				PowerBalls[this->mIndex]->Rotate(interpolationVector); 
+				interpolationVector = ::D3DXVECTOR3(0,0,0);
+			}
+			else if (length <= INTERPOS_MIN && length > FLOAT_EPSILON)
+			{
+				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector);
+				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector);
+				PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector);
+				PowerBalls[this->mIndex]->Rotate(interpolationVector); 
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector);
+				interpolationVector = ::D3DXVECTOR3(0,0,0);
+			}*/
+			interpolationVector += mod;
+			if(D3DXVec3Length(&interpolationVector) > 0.01f && D3DXVec3Length(&interpolationVector) < 5.0f)//FLOAT_EPSILON)
+			{
+				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD);
+				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector * INTERPOS_MOD);
+				PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD );
+				//PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); //- : rotate other way :D
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector * INTERPOS_MOD); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				interpolationVector -= interpolationVector * INTERPOS_MOD;
+			}
+			else 
+			{
+				D3DXVECTOR3 rot =  this->mNetBalls[this->mIndex]->GetPos() - PowerBalls[this->mIndex]->GetPosition();
+				PowerBalls[this->mIndex]->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+				PowerBalls[this->mIndex]->SetTempPosition(this->mNetBalls[this->mIndex]->GetPos());
+				PowerBalls[this->mIndex]->GetMesh()->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+				this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos()); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				
+				//PowerBalls[this->mIndex]->Rotate(rot); //- : rotate other way :D
+				interpolationVector = ::D3DXVECTOR3(0,0,0);
+			}
+
+		}
+		if(numPowerBalls > this->mNumPlayers)
+		{
+			this->DropPlayer(PowerBalls, numPowerBalls,  this->mDropPlayerIndex);
 		}
 	}
 	return this->mIsRunning;
+}
+void GameNetwork::DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, int index)
+{
+	if(index > 0 && index < this->mNumPlayers)
+	{
+		NetworkBall* temp = this->mNetBalls[index];
+		this->mNetBalls[index] = this->mNetBalls[--this->mNumPlayers];
+		::D3DXVECTOR3 startPos = this->mNetBalls[index]->GetStartPos();
+		::D3DXVECTOR3 startForward = this->mNetBalls[index]->GetStartForwardVector();
+		this->mNetBalls[index]->SetStartPos(temp->GetStartPos());
+		this->mNetBalls[index]->SetStartForwardVector(temp->GetStartForwardVector());
+		temp->SetStartPos(startPos);
+		temp->SetStartForwardVector(startForward);
+		temp->Reset();
+		this->mNetBalls[this->mNumPlayers] = temp;
+		delete PowerBalls[index];
+		PowerBalls[index] = PowerBalls[--numPowerBalls];
+	}
 }
 D3DXVECTOR3 GameNetwork::CorrectPosition()
 {
@@ -235,6 +327,19 @@ D3DXVECTOR3 GameNetwork::CorrectPosition()
 	}
 	return mod;
 }
+ServerInfo GameNetwork::ConnectTo(string ip)
+{
+	this->mServer = this->mConn->ConnectTo(ip);
+
+	for(int i = 0; i < PLAYER_CAP; i++)
+	{
+		this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
+		this->mNetBalls[i]->SetHP(((WARLOCKInfo*)this->mServer.GetGameModeInfo())->GetStartHealth());
+	}
+	this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetStartPos());
+
+	return this->mServer;
+}
 void GameNetwork::Start(ServerInfo server)
 {
 	this->mServer = server;
@@ -243,17 +348,45 @@ void GameNetwork::Start(ServerInfo server)
 		this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
 		this->mNetBalls[i]->SetHP(((WARLOCKInfo*)server.GetGameModeInfo())->GetStartHealth());
 	}
-	
-	if(this->mServer.GetIP() == "")
-	{
-		mConn->Host(server);
-	}
-	else 
-	{
-		mConn->Connect(server);
-	}
 	this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetStartPos());
+
+	if(!this->mOnline)
+	{
+
+		if(this->mServer.GetIP() == "")
+		{
+			mConn->Host(server);
+		}
+		else 
+		{
+			mConn->Connect(server);
+		}
+	}
+	else
+	{
+		if(server.GetID() == -1)
+		{
+			char create[1024] = "CREATE GAME";
+			int offset = 12;
+			server.GetBuffer(create, offset);
+			create[offset++] = 10;
+			this->mOnlineHandler->Send(create, offset);
+		}
+		else
+		{
+			char join[55] = "JOIN GAME";
+			int offset = 10;
+			AddToBuf(join, offset, server.GetID());
+			join[offset++] = 10;
+			this->mOnlineHandler->Send(join, offset);
+		}
+	}
 	
+}
+void GameNetwork::GoOnline(string accName, string accPass)
+{
+	this->mOnline = true;
+	this->mOnlineHandler->Connect(accName, accPass);
 }
 void GameNetwork::Close()
 {
@@ -266,5 +399,7 @@ void GameNetwork::Close()
 }
 vector<ServerInfo> GameNetwork::FindServers()
 {
-	return this->mConn->FindServers();
+	if(this->mOnline)
+		return this->mOnlineHandler->FindServers();
+	else return this->mConn->FindServers();
 }

@@ -10,12 +10,14 @@ private:
 	int				mMaxNumPlayers;
 	int				mGameMode;
 	string			mIP;
+	int				mPort;
+	int				mID;
 	GameModeInfo*	mGMI;
 public:
 	//constructors and destructors
 				ServerInfo();
 				ServerInfo(char* bufOut, int &offsetOut);
-				ServerInfo(string serverName, int numPlayers, int maxNumPlayers, int mGameMode, string ip, GameModeInfo* gmi);
+				ServerInfo(string serverName, int numPlayers, int maxNumPlayers, int mGameMode, string ip, int port, GameModeInfo* gmi);
 	virtual		~ServerInfo();
 
 	ServerInfo(const ServerInfo &source);
@@ -28,8 +30,12 @@ public:
 	string		GetServerName() {return this->mServerName;}
 	GameModeInfo* GetGameModeInfo() { return this->mGMI; }
 	void		GetBuffer(char* bufOut, int &offsetOut);
+	int			GetPort() {return this->mPort;}
+	int			GetID() const {return this->mID;}
 
 	
+	void		SetID(int id) {this->mID = id;}
+	int			SetPort(int port) {this->mPort = port;}
 	void		SetNumPlayers(int n) {this->mNumPlayers = n;}
 	void		SetMaxNumPlayers(int n) {this->mMaxNumPlayers = n;}
 	void		SetGameMode(int gm) {this->mGameMode = gm;}

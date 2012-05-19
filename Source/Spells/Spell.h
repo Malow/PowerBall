@@ -56,6 +56,6 @@ class Spell
 		float GetMaxTimeUse() const { return this->mMaxTimeUse; }
 		
 		
-		
+		bool ReadyToBeCast() { return (!this->mNeedCoolDown && !this->mIsInUse && !this->SpellInUse() && !this->mCharging); }
 
 };

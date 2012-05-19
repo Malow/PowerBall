@@ -183,12 +183,18 @@ bool MainMenu::Run()
 						if(servers.size() > 0)
 						{
 							//this->mGm->PlayLAN(servers[chosenServer]);
-							this->mGh->CreateGame(servers[chosenServer].GetGameMode(), servers[chosenServer]);
-							this->mGh->Start();
+							ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo(servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
+							if(tett.GetIP() != "")
+							{
+								this->mGh->CreateGame(servers[chosenServer].GetGameMode(), servers[chosenServer]);
+								this->mGh->Start();
+							}
+							else cout << "SERVER NOT FOUND";
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "", gmi);
+							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "", 10000, gmi);
+							this->mGh->GetLanPointer()->Start(host);
 							this->mGh->CreateGame(GameMode->GetGameMode(), host);
 							this->mGh->Start();
 

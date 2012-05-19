@@ -206,8 +206,16 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 			}
 		}
 	}
-	this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
-	this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
+	/*if(this->mNet->IsServer())
+	{*/
+		this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
+		this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
+	/*}
+	else
+	{
+		this->mFriendlyFlag->SetPosition(this->mNet->GetFlagPos(1));
+		this->mEnemyFlag->SetPosition(this->mNet->GetFlagPos(0));
+	}*/
 	return false;
 }
 
