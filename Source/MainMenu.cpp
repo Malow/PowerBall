@@ -1,12 +1,14 @@
 #include "MainMenu.h"
-SoundSong* BackgroundSong::mSong = NULL;
-bool BackgroundSong::mPlaying = false;
-SoundEffect* BackgroundSong::mMouseClick = NULL;
-SoundEngine* BackgroundSong::mSe = NULL;
+
+bool GameOptions::isPlaying = false;
+SoundSong* GameOptions::songPlaying = NULL;
+SoundEffect* GameOptions::mouseClick = NULL;
+float GameOptions::masterVolume = 0.05f;
+float GameOptions::songVolume = 0.05f;
+float GameOptions::effectVolume = 0.05f;
 
 MainMenu::MainMenu(GraphicsEngine* ge)
 {
-	BackgroundSong::mSe = ge->GetSoundEngine();
 	this->mNrOfSets = 30;
 	this->mSets = new GUISet[this->mNrOfSets]();
 	this->mRunning = true;
@@ -17,12 +19,16 @@ MainMenu::MainMenu(GraphicsEngine* ge)
 
 	this->mGe = ge;
 	this->mGh = new GameHandler(ge);
-	
-	BackgroundSong::mSong = this->mGe->GetSoundEngine()->LoadSong("Media/Sounds/Songs/George_Ellinas_-_Pulse_(George_Ellinas_remix).mp3", true);
-	BackgroundSong::mSong->SetVolume(0.05f);
-	BackgroundSong::mMouseClick = this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu.mp3");
-	BackgroundSong::mMouseClick->SetVolume(0.05f);
 
+	SoundEngine* tempSoundEngine = GetGraphicsEngine()->GetSoundEngine();
+	GameOptions gameParams;
+	tempSoundEngine->SetMasterVolume(gameParams.masterVolume);
+	//tempSoundEngine->SetSongVolume(gameParams.songVolume);
+	//tempSoundEngine->SetSoundEffectVolume(gameParams.effectVolume);
+	
+	gameParams.mouseClick = tempSoundEngine->LoadSoundEffect("Media/Sounds/SoundEffects/Mouse_Click_Menu3.mp3", false);
+
+	gameParams.songPlaying = tempSoundEngine->LoadSong("Media/Sounds/Songs/George_Ellinas_-_Pulse_(George_Ellinas_remix).mp3", true);
 	this->Initialize();
 }
 MainMenu::~MainMenu()
@@ -45,8 +51,6 @@ bool MainMenu::Initialize()
 	this->CreateOnlineAndLanMenu();
 
 	this->CreateScene();
-
-	mGe->LoadingScreen("Media/LoadingScreen/StartScreen.png", "", 0.0f, 1.0f, 1.0f, 1.0f);
 	
 	return true;
 }
@@ -70,8 +74,10 @@ void MainMenu::UpdateMousePosition()
 bool MainMenu::Run()
 {
 	this->mSets[MAINMENU].AddSetToRenderer(this->mGe);
-	BackgroundSong::mSong->Play();
-	BackgroundSong::mPlaying = true;
+	mGe->LoadingScreen("Media/LoadingScreen/StartScreen.png", "", 0.0f, 1.0f, 1.0f, 1.0f);
+
+	GameOptions::songPlaying->Play();
+	GameOptions::isPlaying = true;
 
 	bool IsClicked = false;
 
@@ -420,13 +426,13 @@ bool MainMenu::Run()
 					{
 						if(tempReturnEvent->GetValue() == "true")
 						{
-							BackgroundSong::mSong->Unmute();
-							BackgroundSong::mPlaying = true;
+							GameOptions::songPlaying->Unmute();
+							GameOptions::isPlaying = true;
 						}
 						else
 						{
-							BackgroundSong::mSong->Mute();
-							BackgroundSong::mPlaying = false;
+							GameOptions::songPlaying->Mute();
+							GameOptions::isPlaying = false;
 						}
 					}
 					if(tempReturnEvent->GetOption() == "Apply")
@@ -462,7 +468,7 @@ bool MainMenu::Run()
 					if(tempEventSet == OPTIONS_SOUND)
 					{
 						CheckBox* temp = this->mSets[OPTIONS_SOUND].GetCheckBox("Sound");
-						temp->SetChecked(BackgroundSong::mPlaying);
+						temp->SetChecked(GameOptions::isPlaying);
 					}
 					if(tempEventSet == OPTIONS_GRAPHICS)
 					{
@@ -505,7 +511,7 @@ bool MainMenu::Run()
 		{
 			if(this->mNeedRestart)
 			{
-				SystemReqResart* srr =  new SystemReqResart(this->mGe);
+				SystemReqRestart* srr =  new SystemReqRestart(this->mGe);
 				srr->Run();
 				delete srr;
 				this->mNeedRestart = false;

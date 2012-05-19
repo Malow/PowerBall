@@ -10,6 +10,16 @@ Spell::Spell()
 	this->mNeedCoolDown = false;
 	this->mCharging = false;
 	this->mKeyUp = true;
+	this->mSoundEffect = NULL;
+}
+Spell::Spell(SoundEffect* soundEffect)
+{
+	this->mPowerBall = NULL;
+	this->mIsInUse = false;
+	this->mNeedCoolDown = false;
+	this->mCharging = false;
+	this->mKeyUp = true;
+	this->mSoundEffect = soundEffect;
 }
 
 Spell::~Spell()

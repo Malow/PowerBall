@@ -20,8 +20,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 	/*	Structure of cfg file:
 	windowWidth
 	windowHeight
+	Maximized
 	ShadowMapQuality
 	FXAAQuality
+	*/
+
+	GameOptions GameParams;
+	GameParams.LoadFromeFile("GameSettings.cfg");
+	/*
+	masterVolume
+	songVolume //Funkar dock inte
+	effectVolume //Funkar dock inte
 	*/
 
 	// Create the graphics engine

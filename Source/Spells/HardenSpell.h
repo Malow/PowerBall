@@ -17,6 +17,7 @@ public:
 	HardenSpell();
 	//HardenSpell(Ball* ball);
 	HardenSpell(PowerBall* ball);
+	HardenSpell(SoundEffect* soundEffect);
 	virtual ~HardenSpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();

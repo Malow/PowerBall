@@ -70,13 +70,13 @@ GUIEvent* DropDownList::CheckCollision(float mouseX, float mouseY, bool mousePre
 			this->mPressed = false;
 			if(!this->mDropActive)
 			{
-				BackgroundSong::mMouseClick->Play();
+				GameOptions::mouseClick->Play();
 				this->mDropActive = true;
 				this->AddListToRenderer(ge);
 			}
 			else if(this->mDropActive)
 			{
-				BackgroundSong::mMouseClick->Play();
+				GameOptions::mouseClick->Play();
 				this->mDropActive = false;
 				this->RemoveListFromRenderer(ge);
 			}

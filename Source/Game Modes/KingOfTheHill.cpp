@@ -11,7 +11,6 @@ KingOfTheHill::KingOfTheHill()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
-		this->mChooseTeamMenu = NULL;
 		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
 		this->mProgressBar = NULL;
@@ -31,7 +30,6 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
 
-		this->mChooseTeamMenu = NULL;
 		this->mTotalTimeCapture = NULL;
 		this->mTeam = TEAM::NOTEAM;
 		this->mProgressBar = NULL;
@@ -49,7 +47,6 @@ KingOfTheHill::~KingOfTheHill()
 		}
 		SAFE_DELETE(this->mIGM);
 
-		SAFE_DELETE(this->mChooseTeamMenu);
 		SAFE_DELETE(this->mProgressBar);
 		
 
@@ -122,8 +119,6 @@ void KingOfTheHill::Initialize()
 		for(int i = 0; i < 5; i++)
 			this->mLights[i]->SetIntensity(30.0f);
 		this->mIGM	= new InGameMenu(this->mGe);
-		
-		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
 		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
 		this->mTotalTimeCapture->SetOpacity(0.0f);

@@ -46,6 +46,20 @@ ChargeSpell::ChargeSpell(PowerBall* ball)
 	this->mCharging = false;
 	this->mChargingDone = false;
 }
+ChargeSpell::ChargeSpell(SoundEffect* soundEffect) : Spell(soundEffect)
+{
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 1.0f;
+	this->mIsInUse = false;
+	this->mTimeHoldButton = 0.0f;
+	this->mMaxChargingTime = 3.0f;
+	this->mCharging = false;
+	this->mChargingDone = false;
+}
 
 
 
@@ -115,6 +129,12 @@ void ChargeSpell::Use()
 			this->mIsInUse = true;
 			this->mChargingDone = false;
 			this->mTimeHoldButton = 0.0f;
+
+			//play (release) sound, if any
+			if(this->mSoundEffect)
+			{
+				this->mSoundEffect->Play();
+			}
 		}
 		else
 		{
@@ -139,6 +159,8 @@ void ChargeSpell::Use()
 			/* setting the Camera to not follow the position changes, otherwise the cam will jump. */
 			((TRDCamera*)GetGraphicsEngine()->GetCamera())->disablePositionChanges();
 			
+			/* ball vs platform collision sound here */
+
 		}
 	}
 	

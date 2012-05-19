@@ -73,7 +73,7 @@ GUIEvent* CheckBox::CheckCollision(float mouseX, float mouseY, bool mousePressed
 			this->mPressed = false;
 			if(this->mOn == false)
 			{
-				BackgroundSong::mMouseClick->Play();
+				GameOptions::mouseClick->Play();
 				this->mOn = true;
 				D3DXVECTOR3 temp = this->GetPositionD3D();
 				if(this->mCheckedImage == NULL)
@@ -86,7 +86,7 @@ GUIEvent* CheckBox::CheckCollision(float mouseX, float mouseY, bool mousePressed
 			}
 			else if(this->mOn)
 			{
-				BackgroundSong::mMouseClick->Play();
+				GameOptions::mouseClick->Play();
 				this->mOn = false;
 				if(this->mCheckedImage != NULL)
 				{

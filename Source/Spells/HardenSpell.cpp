@@ -42,6 +42,18 @@ HardenSpell::HardenSpell(PowerBall* ball)
 	this->mHardenMesh = GetGraphicsEngine()->CreateStaticMesh("Media/HardenBall.obj", D3DXVECTOR3(300,300,3000));
 	
 }
+HardenSpell::HardenSpell(SoundEffect* soundEffect) : Spell(soundEffect)
+{
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 3.0f;
+	this->mIsInUse = false;
+	this->mHardenMesh = GetGraphicsEngine()->CreateStaticMesh("Media/HardenedBall.obj", D3DXVECTOR3(300,300,3000));
+	
+}
 
 HardenSpell::~HardenSpell()
 {
@@ -75,6 +87,12 @@ void HardenSpell::Use()
 		this->mPowerBall->SetVelocity(Vector3(0,0,0));
 
 		this->mIsInUse = true;
+
+		//play sound effect, if any
+		if(this->mSoundEffect)
+		{
+			this->mSoundEffect->Play();
+		}
 	}
 
 }

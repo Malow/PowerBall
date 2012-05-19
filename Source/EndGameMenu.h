@@ -10,10 +10,12 @@
 #include "stdafx.h"
 #include "GameOptions.h"
 
-enum SYSRESART {SRRMENU,
+enum ENDGAMEMENU {PLAYAGAIN,
+	QUITGAME,
+	EGMMENU
 };
 
-class SystemReqResart
+class EndGameMenu
 {
 private:
 	int mNrOfSets;
@@ -26,9 +28,9 @@ private:
 
 	bool Initialize();
 public:
-	SystemReqResart();
-	SystemReqResart(GraphicsEngine* ge);
-	virtual ~SystemReqResart();
+	EndGameMenu();
+	EndGameMenu(GraphicsEngine* ge);
+	virtual ~EndGameMenu();
 
 	/*! This function will start to draw the in game menu and will go back when you have picked a team is clicked*/
 	int Run();

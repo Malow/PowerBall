@@ -11,6 +11,7 @@ bool CursorControl::visable = true;
 
 int GraphicsEngineParams::windowWidth = 1024;
 int GraphicsEngineParams::windowHeight = 768;
+bool GraphicsEngineParams::Maximized = true;
 int GraphicsEngineParams::ShadowMapSettings = 0;
 int GraphicsEngineParams::FXAAQuality = 0;
 CameraType GraphicsEngineParams::CamType = TRD;
@@ -71,7 +72,18 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 	PAINTSTRUCT ps;
 	HDC hdc;
+
 	
+	/*
+	if((int)message == 534)
+		return 0;
+	if((int)message == 70)
+		return 0;
+	if((int)message == 71)
+		return 0;
+
+	MaloW::Debug(message);
+	*/
 	switch (message) 
 	{
 		case WM_KEYDOWN:
@@ -117,10 +129,21 @@ LRESULT CALLBACK GraphicsEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam,
 				kl->MouseUp(2);
 			break;
 
+			/*
+		case WM_SIZING:
+			break;
+		case WM_MOVING:
+			break;
+		case WM_ENTERSIZEMOVE:
+			break;
+		case WM_EXITSIZEMOVE:
+			break;
+			*/
+				
+
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
 	return 0;
 }
 
@@ -131,9 +154,9 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 	// Register class
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.style          = CS_HREDRAW | CS_VREDRAW;
+	wcex.style          = 0;//CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc    = this->WndProc;
-	wcex.cbClsExtra     = 0;
+	wcex.cbClsExtra     = 0;	
 	wcex.cbWndExtra     = 0;
 	wcex.hInstance      = this->hInstance;
 	wcex.hIcon          = 0;
@@ -145,14 +168,23 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 	if( !RegisterClassEx(&wcex) )
 		return E_FAIL;
 
+
 	// Create window
 	RECT rc = { 0, 0, this->parameters.windowWidth, this->parameters.windowHeight };
-	AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
-	
-
-	this->hWnd = CreateWindow("GraphicsEngine", "GraphicsEngine - Direct3D 11.0", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, this->hInstance, NULL);
+	if(this->parameters.Maximized)
+	{
+		
+		AdjustWindowRectEx(&rc, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP | WS_VISIBLE, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE);
+		this->hWnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_WINDOWEDGE, "GraphicsEngine", "GraphicsEngine - Direct3D 11.0", WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, this->hInstance, NULL);
+	}
+	else
+	{
+		AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
+		this->hWnd = CreateWindow("GraphicsEngine", "GraphicsEngine - Direct3D 11.0", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, this->hInstance, NULL);
+	}
 	if(!this->hWnd)
 		return E_FAIL;
+
 
 	ShowWindow(this->hWnd, nCmdShow);
 	MoveWindow(this->hWnd, 0, 0, rc.right - rc.left, rc.bottom - rc.top, false);
@@ -265,7 +297,7 @@ bool GraphicsEngine::DeleteText(Text* delText)
 float GraphicsEngine::Update()
 {
 	MSG msg = {0};
-	while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))		// changed from if to while, cuz I wanna clear the msg log because inputs are more important than FPS.
+	while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))		// changed from if to while, cuz I wanna clear the msg log because inputs are more important than updates.
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

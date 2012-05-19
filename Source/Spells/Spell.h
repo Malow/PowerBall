@@ -6,6 +6,7 @@
 * 
 **/
 #include "GraphicsEngine\MaloWLib\Vector.h"
+#include "..\SoundEffect.h"
 using namespace MaloW;
 
 //class Ball;
@@ -33,8 +34,10 @@ class Spell
 			float e;
 		};
 		bool mKeyUp;
+		SoundEffect* mSoundEffect;
 	public:
 		Spell();
+		Spell(SoundEffect* soundEffect);
 		virtual ~Spell();
 		void Update(float dt);
 		virtual void UpdateSpecial(float dt) = 0;
@@ -54,8 +57,9 @@ class Spell
 		float GetTimerCounterCoolDown() const { return this->mTimerCounterCoolDown; }
 		float GetTimerCounterInUse() const { return this->mTimerCounterInUse; }
 		float GetMaxTimeUse() const { return this->mMaxTimeUse; }
-		
-		
 		bool ReadyToBeCast() { return (!this->mNeedCoolDown && !this->mIsInUse && !this->SpellInUse() && !this->mCharging); }
+
+		/* Add a sound effect associated with the spell. */
+		void SetSoundEffect(SoundEffect* soundEffect) { this->mSoundEffect = soundEffect; }
 
 };

@@ -11,6 +11,7 @@ GameMode::GameMode()
 	this->mNumberOfRounds = -1;
 	this->mGameMode = -1;
 	this->mTimeElapsed = 0.0f;
+	this->mChooseTeamMenu = NULL;
 	this->mQuitByMenu = false;
 }
 
@@ -23,6 +24,7 @@ GameMode::~GameMode()
     }
 	SAFE_DELETE_ARRAY(this->mBalls);
 	//SAFE_DELETE(this->mNet);
+	SAFE_DELETE(this->mChooseTeamMenu);
 }
 
 void GameMode::PlayLan()
@@ -34,11 +36,11 @@ void GameMode::PlayLan()
 		int roundsPlayed = 0;
 
 		//choose team before starting the game
+		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		if(this->mGameMode != GAMEMODE::WARLOCK)
 			this->mTeam = this->mChooseTeamMenu->Run();
 		else
 			this->mTeam = TEAM::NOTEAM;
-		this->mTeam = this->mChooseTeamMenu->Run();
 		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
 		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
 		while(roundsLeft && this->mGe->isRunning())

@@ -403,10 +403,10 @@ void Warlock::AddBall()
 			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos());
 			temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 			temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
-			temp[i]->AddSpell(new ChargeSpell());
+			temp[i]->AddSpell(new ChargeSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Charge.mp3")));
 			temp[i]->AddSpell(new SprintSpell());
-			temp[i]->AddSpell(new HardenSpell());
-			temp[i]->AddSpell(new InvisibilitySpell());
+			temp[i]->AddSpell(new HardenSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Harden3.mp3")));
+			temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
 			temp[i]->AddSpell(new JumpSpell());
 		}
 		delete[] this->mBalls;

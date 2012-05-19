@@ -1,5 +1,5 @@
-#include "SystemReqResart.h"
-SystemReqResart::SystemReqResart()
+#include "SystemReqRestart.h"
+SystemReqRestart::SystemReqRestart()
 {
 	this->mNrOfSets = 0;
 	this->mCurrentSet = 0;
@@ -8,7 +8,7 @@ SystemReqResart::SystemReqResart()
 	this->mSets = NULL;
 	this->mGe = NULL;
 }
-SystemReqResart::SystemReqResart(GraphicsEngine* ge)
+SystemReqRestart::SystemReqRestart(GraphicsEngine* ge)
 {
 	this->mNrOfSets = 10;
 	this->mCurrentSet = SRRMENU;
@@ -19,11 +19,11 @@ SystemReqResart::SystemReqResart(GraphicsEngine* ge)
 
 	this->Initialize();
 }
-SystemReqResart::~SystemReqResart()
+SystemReqRestart::~SystemReqRestart()
 {
 	SAFE_DELETE_ARRAY(this->mSets);
 }
-bool SystemReqResart::Initialize()
+bool SystemReqRestart::Initialize()
 {
 	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
@@ -59,7 +59,7 @@ bool SystemReqResart::Initialize()
 
 	return true;
 }
-int SystemReqResart::Run()
+int SystemReqRestart::Run()
 {
 	this->mCurrentSet = SRRMENU;
 	this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);

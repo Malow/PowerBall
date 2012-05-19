@@ -311,9 +311,6 @@
     <ClCompile Include="..\Source\Network\GameModeInfo.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\SystemReqResart.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Network\NetworkBall.cpp">
       <Filter>Game Files\Network</Filter>
     </ClCompile>
@@ -323,14 +320,11 @@
     <ClCompile Include="..\Source\GUI\ProgressBar.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
-      <Filter>Game Files\Network</Filter>
+    <ClCompile Include="..\Source\EndGameMenu.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Network\Connection.cpp">
-      <Filter>Game Files\Network</Filter>
+    <ClCompile Include="..\Source\SystemReqRestart.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -619,9 +613,6 @@
     <ClInclude Include="..\Source\Network\BufferFunctions.h">
       <Filter>Game Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\SystemReqResart.h">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Network\NetworkBall.h">
       <Filter>Game Files\Network</Filter>
     </ClInclude>
@@ -630,6 +621,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\ProgressBar.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\EndGameMenu.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SystemReqRestart.cpp">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SystemReqRestart.h">
+      <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Network\NetworkHandler.h">
       <Filter>Game Files\Network</Filter>
@@ -640,6 +640,8 @@
     <ClInclude Include="..\Source\Network\Connection.h">
       <Filter>Game Files\Network</Filter>
     </ClInclude>
+
+
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">

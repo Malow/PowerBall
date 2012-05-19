@@ -37,7 +37,16 @@ SprintSpell::SprintSpell(PowerBall* ball)
 	this->mMaxTimeUse = 5.0f;
 	this->mIsInUse = false;
 }
-
+SprintSpell::SprintSpell(SoundEffect* soundEffect) : Spell(soundEffect)
+{
+	this->mPowerBall = NULL;
+	this->mTimeNeededToCoolDown = 20.0f;
+	this->mTimerCounterCoolDown = 0.0f;
+	this->mNeedCoolDown = false;
+	this->mTimerCounterInUse = 0.0f;
+	this->mMaxTimeUse = 5.0f;
+	this->mIsInUse = false;
+}
 SprintSpell::~SprintSpell()
 {
 	
@@ -65,6 +74,12 @@ void SprintSpell::Use()
 		this->mPowerBall->SetForcePressed(this->mPowerBall->GetForcePressed() * 2.0f);
 
 		this->mIsInUse = true;
+
+		//play sound, if any
+		if(this->mSoundEffect)
+		{
+			this->mSoundEffect->Play();
+		}
 	}
 
 }

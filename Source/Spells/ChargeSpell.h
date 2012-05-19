@@ -20,6 +20,7 @@ public:
 	ChargeSpell();
 	//ChargeSpell(Ball* ball);
 	ChargeSpell(PowerBall* ball);
+	ChargeSpell(SoundEffect* soundEffect);
 	virtual ~ChargeSpell();
 	virtual void UpdateSpecial(float dt);
 	virtual void Use();
