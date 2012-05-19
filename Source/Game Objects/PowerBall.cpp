@@ -63,6 +63,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mTimeInHotZone = 0.0f;
 	this->mTeamColor = TEAM::NOTEAM;
 	this->mSound		  = false;
+	this->mWarlockMode    = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
 	/*
@@ -70,8 +71,8 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mNrOfItems = 0;
 	*/
 	this->mFlag = NULL;
-	
 
+	
 	/*
 	*	Now it is working with deltaTime, the value above are in seconds and movement
 	*	are the ones that are used in directx api
@@ -99,6 +100,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	*
 	*/
 }
+
 PowerBall::~PowerBall()
 {
 
@@ -156,7 +158,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	Vector3 oldPosition = Vector3(temp);
 	Vector3 newPosition = oldPosition + mVelocity * newdt;
 
-	if(newPosition.y < Y_LEVEL_BOUNDARY && !this->mKnockoutMode)
+	if(newPosition.y < Y_LEVEL_BOUNDARY && !this->mKnockoutMode && !this->mWarlockMode)
 	{
 		this->mVelocity = Vector3(0,-2,0);
 		if(!clientBall)
@@ -247,10 +249,10 @@ void PowerBall::Update(const float dt, bool clientBall)
 				//::D3DXVec3Normalize(&dir, &dir);
 				
 
-				this->mForward = this->mStartForwardVector;
 				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);
 			}
 			this->mLivesLeft--;
+			this->mForward = this->mStartForwardVector;
 			this->mMesh->SetPosition(this->mStartPosition);
 			this->SetTempPosition(this->mStartPosition);
 			this->mVelocity = Vector3(0,0,0);

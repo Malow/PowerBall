@@ -408,6 +408,7 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new HardenSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Harden3.mp3")));
 			temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
 			temp[i]->AddSpell(new JumpSpell());
+			temp[i]->SetWarlockMode(true);
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;

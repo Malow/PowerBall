@@ -12,7 +12,6 @@
 #include "..\Game Objects\GameObject.h"
 #include "..\Game Objects\FlagCTF.h"
 #include "..\Spells\Spell.h"
-
 class Map;
 class PowerBall : public GameObject
 {
@@ -57,12 +56,14 @@ class PowerBall : public GameObject
 			SoundEffect*	mCollisionWithWall;
 			SoundEffect*	mCollisionWithBall;
 
+			bool	mWarlockMode;
+
 			
 	public:
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position);
 			virtual ~PowerBall();
 	
-
+			
 			/* Get - functions */
 	
 			/*! Returns the balls radius. */
@@ -173,7 +174,7 @@ class PowerBall : public GameObject
 			void SetHealth(float health) { if( health <= 100 && health >= 0)
 												this->mHealth = health; 
 										 }
-
+			void SetWarlockMode(bool value) { this->mWarlockMode = value; }
 			/*! Sets the balls radius. */
 			void SetRadius(float radius) { this->mRadius = radius; } 
 

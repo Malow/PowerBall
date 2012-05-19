@@ -259,12 +259,12 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}*/
 			interpolationVector += mod;
-			if(D3DXVec3Length(&interpolationVector) > 0.01f && D3DXVec3Length(&interpolationVector) < 5.0f)//FLOAT_EPSILON)
+			if(D3DXVec3Length(&interpolationVector) > INTERPOS_MIN && D3DXVec3Length(&interpolationVector) < INTERPOS_MAX)//FLOAT_EPSILON)
 			{
 				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD);
 				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector * INTERPOS_MOD);
 				PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD );
-				//PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); //- : rotate other way :D
+				PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); 
 				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector * INTERPOS_MOD); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				interpolationVector -= interpolationVector * INTERPOS_MOD;
 			}
@@ -276,7 +276,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				PowerBalls[this->mIndex]->GetMesh()->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
 				this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos()); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				
-				//PowerBalls[this->mIndex]->Rotate(rot); //- : rotate other way :D
+				PowerBalls[this->mIndex]->Rotate(rot); 
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}
 
