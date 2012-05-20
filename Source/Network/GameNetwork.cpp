@@ -258,28 +258,31 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector);
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}*/
-			interpolationVector += mod;
-			if(D3DXVec3Length(&interpolationVector) > INTERPOS_MIN && D3DXVec3Length(&interpolationVector) < INTERPOS_MAX)//FLOAT_EPSILON)
+			if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
 			{
-				PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD);
-				PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector * INTERPOS_MOD);
-				PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD );
-				PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); 
-				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector * INTERPOS_MOD); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
-				interpolationVector -= interpolationVector * INTERPOS_MOD;
-			}
-			else 
-			{
-				D3DXVECTOR3 rot =  this->mNetBalls[this->mIndex]->GetPos() - PowerBalls[this->mIndex]->GetPosition();
-				PowerBalls[this->mIndex]->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
-				PowerBalls[this->mIndex]->SetTempPosition(this->mNetBalls[this->mIndex]->GetPos());
-				PowerBalls[this->mIndex]->GetMesh()->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
-				this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos()); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+				interpolationVector += mod;
+				if(D3DXVec3Length(&interpolationVector) > INTERPOS_MIN && D3DXVec3Length(&interpolationVector) < INTERPOS_MAX)//FLOAT_EPSILON)
+				{
+					PowerBalls[this->mIndex]->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD);
+					PowerBalls[this->mIndex]->SetTempPosition(PowerBalls[this->mIndex]->GetTempPosition() + interpolationVector * INTERPOS_MOD);
+					PowerBalls[this->mIndex]->GetMesh()->SetPosition(PowerBalls[this->mIndex]->GetPosition() + interpolationVector * INTERPOS_MOD );
+					PowerBalls[this->mIndex]->Rotate(interpolationVector * INTERPOS_MOD); 
+					this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector * INTERPOS_MOD); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
+					interpolationVector -= interpolationVector * INTERPOS_MOD;
+				}
+				else 
+				{
+					D3DXVECTOR3 rot =  this->mNetBalls[this->mIndex]->GetPos() - PowerBalls[this->mIndex]->GetPosition();
+					PowerBalls[this->mIndex]->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+					PowerBalls[this->mIndex]->SetTempPosition(this->mNetBalls[this->mIndex]->GetPos());
+					PowerBalls[this->mIndex]->GetMesh()->SetPosition(this->mNetBalls[this->mIndex]->GetPos());
+					this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos()); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				
-				PowerBalls[this->mIndex]->Rotate(rot); 
-				interpolationVector = ::D3DXVECTOR3(0,0,0);
-			}
+					PowerBalls[this->mIndex]->Rotate(rot); 
+					interpolationVector = ::D3DXVECTOR3(0,0,0);
 
+				}
+			}
 		}
 		if(numPowerBalls > this->mNumPlayers)
 		{

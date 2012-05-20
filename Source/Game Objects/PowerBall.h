@@ -13,6 +13,7 @@
 #include "..\Game Objects\FlagCTF.h"
 #include "..\Spells\Spell.h"
 class Map;
+#define Y_LEVEL_BOUNDARY 10
 class PowerBall : public GameObject
 {
 	private:

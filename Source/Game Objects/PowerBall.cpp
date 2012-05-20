@@ -27,7 +27,6 @@ std::string OurItoa(int n)
 	return stream.str();
 }
 */
-#define Y_LEVEL_BOUNDARY 10
 PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 {
 	this->mHealth		 = 100;
@@ -228,7 +227,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	//*this->mFor = this->mForward.GetD3DVec();
 	
 	
-	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode) 
+	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode && !this->mWarlockMode) 
 	{
 		
 		if(this->mFlag != NULL)
