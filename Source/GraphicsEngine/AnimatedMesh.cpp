@@ -133,12 +133,44 @@ void AnimatedMesh::GetCurrentKeyFrames(KeyFrame** one, KeyFrame** two, float& t)
 }
 MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
 {
-	KeyFrame* one; //unused
+	KeyFrame* one; 
 	KeyFrame* two;
-	float t = 0.0f; //unused
+	KeyFrame* interpolated = new KeyFrame();
+	float t = 0.0f; 
 	this->GetCurrentKeyFrames(&one, &two, t);
 
-	return two->strips;
+	for(int i = 0; i < one->strips->size(); i++)
+	{
+		Vertex* oneVerts = one->strips->get(i)->getVerts(); //** samma vertiser **
+		Vertex* twoVerts = two->strips->get(i)->getVerts(); //** samma vertiser **
+		Vertex* interpolatedVerts = new Vertex[one->strips->get(i)->getNrOfVerts()];
+		
+		for(int j = 0; j < one->strips->get(i)->getNrOfVerts(); j++)
+		{
+			D3DXVECTOR3 posMorph;
+			D3DXVec3Lerp(&posMorph, &oneVerts[j].pos, &twoVerts[j].pos, t);
+			D3DXVECTOR2 texMorph;
+			D3DXVec2Lerp(&texMorph, &oneVerts[j].texCoord, &twoVerts[j].texCoord, t);
+			D3DXVECTOR3 normalMorph;
+			D3DXVec3Lerp(&normalMorph, &oneVerts[j].normal, &twoVerts[j].normal, t);
+			D3DXVECTOR3 colorMorph;
+			D3DXVec3Lerp(&colorMorph, &oneVerts[j].color, &twoVerts[j].color, t);
+			
+			interpolatedVerts[j].pos = posMorph;
+			interpolatedVerts[j].texCoord = texMorph;
+			interpolatedVerts[j].normal = normalMorph;
+			interpolatedVerts[j].color = colorMorph;
+		}
+		
+		//MeshStrip strip = new MeshStrip();
+		//strip.SetVerts(interpolatedVerts);
+		//interpolated->strips->add(&strip);
+		interpolated->strips->add(one->strips->get(i));
+		interpolated->strips->get(i)->SetVerts(interpolatedVerts);
+	}
+	
+	//return two->strips;
+	return interpolated->strips;
 }
 
 void AnimatedMesh::SetCurrentTime(float currentTime)

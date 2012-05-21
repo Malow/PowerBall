@@ -90,7 +90,17 @@ SamplerState PointClampSampler
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
-
+SamplerState AnisotropicClampSampler 
+{
+	Filter = ANISOTROPIC;
+	AddressU = Clamp;
+	AddressV = Clamp;
+	AddressW = Clamp;
+	MaxAnisotropy = 4;
+	ComparisonFunc = ALWAYS;
+	MaxLOD = 0.0f;
+	MinLOD = 0.0f;
+};
 //------------------------------------------------------------------------------------------------------
 //	RasterizerStates
 //------------------------------------------------------------------------------------------------------

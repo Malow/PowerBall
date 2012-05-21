@@ -247,29 +247,65 @@ void DxManager::RenderShadowMap()
 		Dx_DeviceContext->ClearDepthStencilView(this->lights[l]->GetShadowMapDSV(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 		for(int i = 0; i < this->objects.size(); i++)
 		{
-			MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
-			D3DXMATRIX wvp = this->objects[i]->GetWorldMatrix() * this->lights[l]->GetViewProjMatrix();
-			this->Shader_ShadowMap->SetMatrix("LightWVP", wvp);
-			for(int u = 0; u < strips->size(); u++)
+			if(!this->objects[i]->IsUsingInvisibility())
 			{
-				Object3D* obj = strips->get(u)->GetRenderObject();
-				Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
-				Buffer* verts = obj->GetVertBuff();
-				if(verts)
-					verts->Apply();
-				Shader_ShadowMap->SetBool("textured", false);
+				MaloW::Array<MeshStrip*>* strips = this->objects[i]->GetStrips();
+				D3DXMATRIX wvp = this->objects[i]->GetWorldMatrix() * this->lights[l]->GetViewProjMatrix();
+				this->Shader_ShadowMap->SetMatrix("LightWVP", wvp);
+				for(int u = 0; u < strips->size(); u++)
+				{
+					Object3D* obj = strips->get(u)->GetRenderObject();
+					Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
+					Buffer* verts = obj->GetVertBuff();
+					if(verts)
+						verts->Apply();
+					Shader_ShadowMap->SetBool("textured", false);
 
-				Buffer* inds = obj->GetIndsBuff();
-				if(inds)
-					inds->Apply();
+					Buffer* inds = obj->GetIndsBuff();
+					if(inds)
+						inds->Apply();
 
-				Shader_ShadowMap->Apply(0);
+					Shader_ShadowMap->Apply(0);
 
-				// draw
-				if(inds)
-					Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
-				else
-					Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
+					// draw
+					if(inds)
+						Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
+					else
+						Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
+				}
+			}
+		}
+
+		//animated meshes
+		for(int i = 0; i < this->animations.size(); i++)
+		{
+			if(!this->animations[i]->IsUsingInvisibility())
+			{
+				MaloW::Array<MeshStrip*>* strips = this->animations[i]->GetStrips(); //**
+
+				D3DXMATRIX wvp = this->animations[i]->GetWorldMatrix() * this->lights[l]->GetViewProjMatrix();
+				this->Shader_ShadowMap->SetMatrix("LightWVP", wvp);
+				for(int u = 0; u < strips->size(); u++)
+				{
+					Object3D* obj = strips->get(u)->GetRenderObject();
+					Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
+					Buffer* verts = obj->GetVertBuff();
+					if(verts)
+						verts->Apply();
+					Shader_ShadowMap->SetBool("textured", false);
+
+					Buffer* inds = obj->GetIndsBuff();
+					if(inds)
+						inds->Apply();
+
+					Shader_ShadowMap->Apply(0);
+
+					// draw
+					if(inds)
+						Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
+					else
+						Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
+				}
 			}
 		}
 		D3DXMATRIX vp = this->lights[l]->GetViewProjMatrix();
