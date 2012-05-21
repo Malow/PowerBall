@@ -168,7 +168,8 @@ class PowerBall : public GameObject
 			/*! Restet time for win timer. */
 			void RestetWinTimer() { this->mWinTimer = 0.0f; this->mWinTimerActivated = false;};
 	
-			
+			/*! Restet the parent rotation. */
+			void ResetParent() { Matrix4 temp; temp.LoadIdentity(); this->mLastRotation = temp; }
 			//Set-Functions
 			
 			/*! Sets the health of the ball. */

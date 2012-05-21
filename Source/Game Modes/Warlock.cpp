@@ -89,8 +89,9 @@ void Warlock::Initialize()
 			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[0]);
 			*/
 		this->mIGM	= new InGameMenu(this->mGe);
-		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		WARLOCKInfo* gmi = (WARLOCKInfo*)this->mServerInfo.GetGameModeInfo();
+		/* check if team is chooosen from serverinfo. */
+		//this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		this->mNumberOfRounds = gmi->GetNumRounds();
 
 		float width = GetGraphicsEngine()->GetEngineParameters().windowWidth;
@@ -409,6 +410,7 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
 			temp[i]->AddSpell(new JumpSpell());
 			temp[i]->SetWarlockMode(true);
+			temp[i]->SetSound(true);
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;

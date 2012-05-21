@@ -46,12 +46,12 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mForward		 = Vector3(0,0,1);
 	this->mDistanceCam	= 5;
 	this->mMaxVelocity	 = 15.0f; // 10.0f
-	this->mAcceleration	 = Vector3(0, -9.81f * 2, 0); // remove " * 2"
+	this->mAcceleration	 = Vector3(0, -9.81f , 0); // remove " * 2"
 	this->mDamping		 = 0.70f;//0.9995f; //0.995
 	this->mMass			 = 9;
 	this->mSumAddedForce = Vector3(0,0,0);
 	this->mRestitution   = 1.0f; //0.95f
-	this->mForcePress	 = 10.0f; // 180.0f
+	this->mForcePress	 = 180.0f; // 180.0f
 	this->mInTheAir		 = true;	// we are dropped from air
 	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
 	this->mKnockoutMode = false;

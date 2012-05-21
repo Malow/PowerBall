@@ -213,7 +213,7 @@ void Matrix4::LoadIdentity()
 	this->mData[12] = 0.0f;
 	this->mData[13] = 0.0f;
 	this->mData[14] = 0.0f;
-	this->mData[15] = 0.0f;
+	this->mData[15] = 1.0f;
 }
 
 void Matrix4::TransposeThis()
