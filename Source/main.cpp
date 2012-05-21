@@ -86,7 +86,8 @@ void test()
 	//StaticMesh* hb = eng->CreateStaticMesh("Media/HardenedBall.obj", D3DXVECTOR3(12, 15, 12));
 
 	bth->Scale(0.1f);
-	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 20, 15));
+	Light* testLight = eng->CreateLight(D3DXVECTOR3(15, 30, 15));
+	testLight->SetLookAt(testBall->GetPosition());
 	
 	//testBall->SetSpecialColor(RED_COLOR);
 	//testCylinder->SetSpecialColor(GREEN_COLOR);
