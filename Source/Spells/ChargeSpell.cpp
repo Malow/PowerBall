@@ -42,7 +42,7 @@ ChargeSpell::ChargeSpell(PowerBall* ball)
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 	this->mTimeHoldButton = 0.0f;
-	this->mMaxChargingTime = 3.0f;
+	this->mMaxChargingTime = 2.0f;
 	this->mCharging = false;
 	this->mChargingDone = false;
 }
@@ -56,7 +56,7 @@ ChargeSpell::ChargeSpell(SoundEffect* soundEffect) : Spell(soundEffect)
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 	this->mTimeHoldButton = 0.0f;
-	this->mMaxChargingTime = 3.0f;
+	this->mMaxChargingTime = 2.0f;
 	this->mCharging = false;
 	this->mChargingDone = false;
 }
@@ -76,7 +76,7 @@ void ChargeSpell::UpdateSpecial(float dt)
 		Vector3 direction = this->mPowerBall->GetForwardVector();
 		Vector3 rotateAround = normal.GetCrossProduct(direction);
 		rotateAround.normalize();
-		this->mPowerBall->GetMesh()->RotateAxis(rotateAround.GetD3DVec(), (PI/2)*this->mTimeHoldButton*this->mTimeHoldButton*dt);
+		this->mPowerBall->GetMesh()->RotateAxis(rotateAround.GetD3DVec(), (2.0f*PI)*this->mTimeHoldButton*this->mTimeHoldButton*dt);
 		
 		if(this->mTimeHoldButton <= this->mMaxChargingTime)
 		{
@@ -88,11 +88,11 @@ void ChargeSpell::UpdateSpecial(float dt)
 		Vector3 newPos = this->mPowerBall->GetPositionVector3() + this->mBackup.normalContact*dt;
 		this->mPowerBall->SetPosition(newPos);
 		
-		if(!GetGraphicsEngine()->GetKeyListener()->IsPressed('1'))
+		if(!GetGraphicsEngine()->GetKeyListener()->IsPressed('1') || this->mTimeHoldButton >= this->mMaxChargingTime )
 		{
 
 			if(this->mTimeHoldButton <= 1)
-				this->mTimeHoldButton = 0.5*this->mMaxChargingTime;
+				this->mTimeHoldButton = 0.5f*this->mMaxChargingTime;
 			/* change back to old behaviour */
 			this->mPowerBall->SetAcceleration(this->mBackup.acceleration);
 			this->mPowerBall->SetSteering(true);
