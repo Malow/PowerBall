@@ -100,6 +100,81 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	*/
 }
 
+PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMode)
+{
+	if( gameMode == GAMEMODE::DM)
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	else if( gameMode == GAMEMODE::CTF)
+	{
+		this->mRestitution   = 1.0f;
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	else if( gameMode == GAMEMODE::KOTH)
+	{
+		this->mRestitution   = 1.0f;
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	else if( gameMode == GAMEMODE::WARLOCK)
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f * 2.0f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	else
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	this->mHealth		 = 100;
+	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
+	this->mRadius		 = 1.0f;
+	this->mVelocity		 = Vector3(0,0,0);
+	this->mPreviousVelocity = Vector3(0,0,0);
+	this->mTempPosition = position;
+	this->mSteering      = true;
+	this->mNrOfSpells	 = 0;
+	this->mMaxNrOfSpells = 5;
+	this->mSpells		  = new Spell*[this->mMaxNrOfSpells];
+	this->mRoundsWon	 = 0;
+	this->mWinTimerActivated = false;
+	this->mLastRotation.LoadIdentity();
+	this->mWinTimer = 0.0f;
+	this->mForward		 = Vector3(0,0,1);
+	this->mDistanceCam	= 5;
+	this->mMaxVelocity	 = 15.0f; // 10.0f
+	
+	this->mDamping		 = 0.70f;//0.9995f; //0.995
+	this->mMass			 = 9;
+	this->mSumAddedForce = Vector3(0,0,0);
+	
+	
+	this->mInTheAir		 = true;	// we are dropped from air
+	this->mFriction		 = 0.9f;	// this is in the opposite direction to velocity, if this is 0, then no friction (only damping will decrese the speed)
+	this->mKnockoutMode = false;
+	this->mStartPosition = position;
+	this->mLivesLeft	 = 2;
+	this->mRespawnTime	 = 5.0f;
+	this->mRespawnTimeLeft	= this->mRespawnTime;
+	this->mTimeInHotZone = 0.0f;
+	this->mTeamColor = TEAM::NOTEAM;
+	this->mSound		  = false;
+	this->mWarlockMode    = false;
+	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
+	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	/*
+	this->mMaxNrOfItems = 6;
+	this->mNrOfItems = 0;
+	*/
+	this->mFlag = NULL;
+}
+
 PowerBall::~PowerBall()
 {
 
@@ -462,6 +537,29 @@ void PowerBall::collisionSphereResponse(PowerBall* b1)
 	this->mVelocity = Vector3( v1x*(m1-m2*e)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y );
 	b1->mVelocity = Vector3( v1x*((1+e)*m1)/(mSum) + v2x*(m2-m1*e)/(mSum) + v2y );
 
+	
+	/* calculating damage. */
+	if(this->mWarlockMode)
+	{
+		Vector3 ve1 = this->mVelocity;
+		Vector3 ve2 = b1->GetVelocity();
+		float v1Max = this->mMaxVelocity;
+		float v2Max = b1->GetMaxVelocity();
+		float v1 = ve1.GetLength();
+		float v2 = ve2.GetLength();
+		Vector3 relativeV = ve1 - ve2;
+		if( relativeV.GetLength() > 0.6f)
+		{
+			float sumV = v1 + v2;
+			float damage1 = v2/sumV;
+			float damage2 = v1/sumV;
+			this->mHealth -= damage1*10.0f*(v1/v1Max);
+			float health2 = b1->GetHealth();
+			health2 -= damage2*10.0f*(v1/v1Max);
+			b1->SetHealth(health2);
+		}
+	}
+	
 	/* informing the spells to the balls that it has been a collision */
 	for(int i = 0;i<this->mNrOfSpells;i++)
 		this->mSpells[i]->InformCollision();
@@ -781,7 +879,7 @@ void PowerBall::collisionPlatformResponse(Map* p, Vector3 normalPlane, float dt)
 			v1y *= this->mFriction*newdt;
 	}	
 	
-
+	
 
 	this->mVelocity = Vector3( v1x*(m1-e*m2)/(mSum) + v2x*((1+e)*m2)/(mSum) + v1y);
 	//this->mAcceleration = Vector3(0,0,0);

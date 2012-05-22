@@ -62,6 +62,7 @@ class PowerBall : public GameObject
 			
 	public:
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position);
+			PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMode);
 			virtual ~PowerBall();
 	
 			
