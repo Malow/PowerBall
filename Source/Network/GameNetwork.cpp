@@ -129,11 +129,13 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			if(this->mNumPlayers != this->mConn->GetNumConnections())
 			{
 				this->mNumPlayers = this->mConn->GetNumConnections();
+				/*
+				Here: Do w/e u want to happen when a new player joins the game.
 				for(int i = 0; i < this->mNumPlayers - 1; i++)
 				{
 					this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
 					PowerBalls[i]->SetPosition(this->mNetBalls[i]->GetStartPos());
-				}
+				}*/
 			}
 			if(this->mConn->GetNumConnections() > 1)
 			{
@@ -287,6 +289,13 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 		if(numPowerBalls > this->mNumPlayers)
 		{
 			this->DropPlayer(PowerBalls, numPowerBalls,  this->mDropPlayerIndex);
+		}
+		
+		this->mNetBalls[0]->ModifyAliveTime(-dt);
+		if(this->mNetBalls[0]->GetAliveTime() <= 0.0f)
+		{
+			this->mConn->Close();
+			this->mIsRunning = false;
 		}
 	}
 	return this->mIsRunning;

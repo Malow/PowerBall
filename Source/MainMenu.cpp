@@ -190,9 +190,9 @@ bool MainMenu::Run()
 						{
 							//this->mGm->PlayLAN(servers[chosenServer]);
 							ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo(servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
-							if(tett.GetIP() != "")
+							if(tett.GetIP() != "") //"83.233.57.248");//
 							{
-								this->mGh->CreateGame(servers[chosenServer].GetGameMode(), servers[chosenServer]);
+								this->mGh->CreateGame(tett.GetGameMode(), tett);//servers[chosenServer].GetGameMode(), servers[chosenServer]);
 								this->mGh->Start();
 							}
 							else cout << "SERVER NOT FOUND";

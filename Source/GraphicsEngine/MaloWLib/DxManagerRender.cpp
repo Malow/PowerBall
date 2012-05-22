@@ -67,7 +67,7 @@ void DxManager::HandleLightEvent(LightEvent* le)
 		{
 			if(this->lights[i] == light)
 			{
-				delete this->lights.getAndRemove(i);
+				//delete this->lights.getAndRemove(i);
 				light = NULL;
 			}
 		}

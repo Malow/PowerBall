@@ -77,35 +77,39 @@ void GameMode::ClientKeyPress(float diff, const int index, char key)
 		mBalls[index]->RotateForwardLeft(diff);
 	if(key == 'E')
 		mBalls[index]->RotateForwardRight(diff);
-	if(key == '1')
+	
+	if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
 	{
-		if(mBalls[index]->GetSpells()[0]->ReadyToBeCast())
-			MsgHandler::GetInstance().SendCastSpell(index, 1);
-		mBalls[index]->UseSpell(1);
-	}
-	if(key == '2')
-	{
-		if(mBalls[index]->GetSpells()[1]->ReadyToBeCast())
-			MsgHandler::GetInstance().SendCastSpell(index, 2);
-		mBalls[index]->UseSpell(2);
-	}
-	if(key == '3')
-	{
-		if(mBalls[index]->GetSpells()[2]->ReadyToBeCast())
-			MsgHandler::GetInstance().SendCastSpell(index, 3);
-		mBalls[index]->UseSpell(3);
-	}
-	if(key == '4')
-	{
-		if(mBalls[index]->GetSpells()[3]->ReadyToBeCast())
-			MsgHandler::GetInstance().SendCastSpell(index, 4);
-		mBalls[index]->UseSpell(4);
-	}
-	if(key == VK_SPACE)
-	{
-		if(mBalls[index]->GetSpells()[4]->ReadyToBeCast())
-			MsgHandler::GetInstance().SendCastSpell(index, 5);
-		mBalls[index]->UseSpell(5);
+		if(key == '1')
+		{
+			if(mBalls[index]->GetSpells()[0]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 1);
+			mBalls[index]->UseSpell(1);
+		}
+		if(key == '2')
+		{
+			if(mBalls[index]->GetSpells()[1]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 2);
+			mBalls[index]->UseSpell(2);
+		}
+		if(key == '3')
+		{
+			if(mBalls[index]->GetSpells()[2]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 3);
+			mBalls[index]->UseSpell(3);
+		}
+		if(key == '4')
+		{
+			if(mBalls[index]->GetSpells()[3]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 4);
+			mBalls[index]->UseSpell(4);
+		}
+		if(key == VK_SPACE)
+		{
+			if(mBalls[index]->GetSpells()[4]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 5);
+			mBalls[index]->UseSpell(5);
+		}
 	}
 	//if(key == VK_SPACE)
 		//mBalls[index]->AddForce(Vector3(0, diff,0));
@@ -128,35 +132,38 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 			mBalls[index]->RotateForwardRight(diff);
 		if(mGe->GetKeyListener()->IsPressed('D'))
 			mBalls[index]->AddForceRightOfForwardDirection(diff);	
-		if(mGe->GetKeyListener()->IsPressed('1'))
+		if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
 		{
-			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[0]->ReadyToBeCast())
-				MsgHandler::GetInstance().SendCastSpell(index, 1);
-			mBalls[index]->UseSpell(1);
-		}
-		if(mGe->GetKeyListener()->IsPressed('2'))
-		{
-			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[1]->ReadyToBeCast())
-				MsgHandler::GetInstance().SendCastSpell(index, 2);
-			mBalls[index]->UseSpell(2);
-		}
-		if(mGe->GetKeyListener()->IsPressed('3'))
-		{
-			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[2]->ReadyToBeCast())
-				MsgHandler::GetInstance().SendCastSpell(index, 3);
-			mBalls[index]->UseSpell(3);
-		}
-		if(mGe->GetKeyListener()->IsPressed('4'))
-		{
-			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[3]->ReadyToBeCast())
-				MsgHandler::GetInstance().SendCastSpell(index, 4);
-			mBalls[index]->UseSpell(4);
-		}
-		if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
-		{
-			if(this->mNet->IsServer() && mBalls[index]->GetSpells()[4]->ReadyToBeCast())
-				MsgHandler::GetInstance().SendCastSpell(index, 5);
-			mBalls[index]->UseSpell(5);
+			if(mGe->GetKeyListener()->IsPressed('1'))
+			{
+				if(this->mNet->IsServer() && mBalls[index]->GetSpells()[0]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 1);
+				mBalls[index]->UseSpell(1);
+			}
+			if(mGe->GetKeyListener()->IsPressed('2'))
+			{
+				if(this->mNet->IsServer() && mBalls[index]->GetSpells()[1]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 2);
+				mBalls[index]->UseSpell(2);
+			}
+			if(mGe->GetKeyListener()->IsPressed('3'))
+			{
+				if(this->mNet->IsServer() && mBalls[index]->GetSpells()[2]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 3);
+				mBalls[index]->UseSpell(3);
+			}
+			if(mGe->GetKeyListener()->IsPressed('4'))
+			{
+				if(this->mNet->IsServer() && mBalls[index]->GetSpells()[3]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 4);
+				mBalls[index]->UseSpell(4);
+			}
+			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+			{
+				if(this->mNet->IsServer() && mBalls[index]->GetSpells()[4]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 5);
+				mBalls[index]->UseSpell(5);
+			}
 		}
 		if(mGe->GetKeyListener()->IsPressed('Z') && !zoomOutPressed)
 		{
