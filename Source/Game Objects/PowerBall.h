@@ -62,6 +62,7 @@ class PowerBall : public GameObject
 			
 	public:
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position);
+			PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMode);
 			virtual ~PowerBall();
 	
 			
@@ -168,7 +169,8 @@ class PowerBall : public GameObject
 			/*! Restet time for win timer. */
 			void RestetWinTimer() { this->mWinTimer = 0.0f; this->mWinTimerActivated = false;};
 	
-			
+			/*! Restet the parent rotation. */
+			void ResetParent() { Matrix4 temp; temp.LoadIdentity(); this->mLastRotation = temp; }
 			//Set-Functions
 			
 			/*! Sets the health of the ball. */

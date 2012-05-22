@@ -6,6 +6,7 @@ Maze::Maze()
 	this->mIGM = NULL;
 	this->mBalls = NULL;
 	this->mPlatform = NULL;
+	this->mBox = NULL;
 	this->mNumberOfPlayers = -1;
 	this->mNumberOfRounds = -1;
 	this->mGameMode = -1;
@@ -15,6 +16,7 @@ Maze::Maze()
 Maze::Maze(GraphicsEngine* ge)
 {
 	this->mGe = ge;
+	this->mBox = NULL;
 	this->mNumberOfPlayers = 1;
 	this->mNumberOfRounds = 1;
 	this->mGameMode = CREDITS;
@@ -27,6 +29,7 @@ Maze::~Maze()
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
+	SAFE_DELETE(this->mBox);
 	for(int i = 0;i<5;i++) 
 		mGe->DeleteText(this->mHud[i]);
 }
@@ -46,6 +49,7 @@ void Maze::Initialize()
 			this->mLights[i]->SetIntensity(30.0f);
 		mGe->GetCamera()->setUpVector(D3DXVECTOR3(0,0,1));
 		this->mPlatform		= new Map("Media/MazeMap.obj", centerPlatform);
+		this->mBox = new Map("Media/MazeMapFrame.obj", centerPlatform + D3DXVECTOR3(0,1,0) );
 		this->mPlatform->SetRotate(true);
 		StaticMesh* fla = this->mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(13.5f,22.5f,13.5f));
 		this->mPlatform->SetMeshHotZone(fla);
@@ -54,21 +58,29 @@ void Maze::Initialize()
 		this->mPlatform->SetShrinkValue(0.0f);
 		this->mPlatform->SetRestition(0.2f);
 		this->mBalls		= new PowerBall*[this->mNumberOfPlayers];
-		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.5f,24,-13));
+		this->mBalls[0] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(-13.0f,27,-13));
+		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
+		this->mBalls[0]->SetKnockoutMode();
+		this->mBalls[0]->SetAcceleration(this->mBalls[0]->GetAcceleration()*3.0f);
+		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
+		
+		/*
 		this->mBalls[0]->SetForwardVector(Vector3(0,0,1).GetD3DVec());
 		this->mBalls[0]->SetKnockoutMode();
 		this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
-		
+		*/
+
 		/* Set hud */
-		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+		this->mWindowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+		this->mWindowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 		
-		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(windowWidth-800,0),2.0f,"Media/Fonts/1");
-		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(windowWidth-850,60),2.0f,"Media/Fonts/1");
-		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(windowWidth-775,120),2.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(windowWidth-700,180),2.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(windowWidth-785,240),2.0f,"Media/Fonts/1");
 		
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-800,0),1.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-850,60),1.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-775,120),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-700,180),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-785,240),1.0f,"Media/Fonts/1");
+		this->mCreditSpeed = 0.05f;
 
 		/*
 		if(mGe->GetEngineParameters().CamType == TRD)
@@ -92,90 +104,103 @@ void Maze::PlaySpecific()
 		this->mHud[2]->SetText("Markus Tillman");
 		this->mHud[3]->SetText("Didrik Axelsson");
 		this->mHud[4]->SetText("Jerry Rahmqvist");
-		float creditSpeed = 0.05f;
-		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-		bool running = true;
+		
+		
+		this->mRunning = true;
 		this->mGameMode = CREDITS;
-		float diff;
 		
-		diff = mGe->Update();
+		
+		int choice = 1; // choice = 2 is version2 of maze
+		this->mDiff = mGe->Update();
 		srand ( time(NULL) );
-		float targetX = -10 + rand() % 21; // random angle [-10, 10] in x-axis
-		float targetZ = -10 + rand() % 21; // random angle [-10, 10] in z-axis
-		targetX = targetX*(PI/180.0f);
-		targetZ = targetZ*(PI/180.0f);
-		this->mPlatform->SetTargetAngleX(targetX);
-		this->mPlatform->SetTargetAngleZ(targetZ);
-		while(running && mGe->isRunning())
+		this->mTargetX = -10 + rand() % 21;			// random angle [-10, 10] in x-axis
+		this->mTargetZ = -10 + rand() % 21;			// random angle [-10, 10] in z-axis
+		this->mTargetX = this->mTargetX*(PI/180.0f);		// convert to radians
+		this->mTargetZ = this->mTargetZ*(PI/180.0f);		// convert to radians
+		
+		/* set so the first Maze mode will do the random tilt and gets a start angle . */
+		this->mPlatform->SetTargetAngleX(this->mTargetX);
+		this->mPlatform->SetTargetAngleZ(this->mTargetZ);
+
+		/* set so we cant tilt it more than these angles. */
+		this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
+		this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
+
+		/* to swap between Maze modes with space button and we don't want it to flip. */
+		bool spacePressed = false;
+
+		/* counters for the restart restart of maze. */
+		float respownAfterDeathCounter = 0.0f;
+		float resetMazeCounter = 0.0f;
+		this->mDelayTimer = 2.0f;
+
+		while(this->mRunning && mGe->isRunning())
 		{
-		
-			diff = mGe->Update();
-			if(this->mPlatform->IsTargetAngleReachedX())
-			{
-				targetX = -10 + rand() % 21;
-				targetX = targetX*(PI/180.0f);
-				this->mPlatform->SetTargetAngleX(targetX);
-			}
-			if(this->mPlatform->IsTargetAngleReachedZ())
-			{
-				targetZ = -10 + rand() % 21;
-				targetZ = targetZ*(PI/180.0f);
-				this->mPlatform->SetTargetAngleZ(targetZ);
-			}
-		
-		
-			if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-				running = false;
-		
-			if(mGe->GetKeyListener()->IsPressed('W'))
-				mBalls[0]->AddForceForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('S'))
-				mBalls[0]->AddForceOppositeForwardDirection(diff);
-			if(mGe->GetKeyListener()->IsPressed('A'))
-				mBalls[0]->AddForceLeftOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsPressed('D'))
-				mBalls[0]->AddForceRightOfForwardDirection(diff);	
-			if(mGe->GetKeyListener()->IsClicked(2))
-				mBalls[0]->AddForce(Vector3(0,diff*(11.0f/6.0f),0));
-			mBalls[0]->Update(diff);
-			Vector3 normalPlane;
-			if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
-					this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, diff);
-			mBalls[0]->UpdatePost();
-			mPlatform->Update(diff);
 			
-			if(!mBalls[0]->IsAlive())
-				running = false;		
-
-			if(this->checkWinConditions(diff))
-				running = false;
-
-
-			if(this->mHud[0]->GetPosition().y + diff * creditSpeed > windowHeight)
-				this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, 0));
+			this->mDiff = mGe->Update();
+			if(choice == 1)
+			{
+				this->PlayMazeV1();
+			}
 			else
-				this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, this->mHud[0]->GetPosition().y + diff * creditSpeed));
-
-			if(this->mHud[1]->GetPosition().y + diff * creditSpeed > windowHeight)
-				this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, 0));
+			{
+				this->PlayMazeV2();
+			}
+			
+			if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+				this->mRunning = false;
+			
+			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+			{
+				if(!spacePressed)
+				{
+					spacePressed = true;
+					if(choice == 1)
+					{
+						choice = 2;
+						this->mPlatform->SetRotate(false);
+						this->ResetMaze();
+						this->mBalls[0]->SetToStartPosition();
+						this->mBalls[0]->ResetParent();
+						this->mDelayTimer = 2.0f;
+						this->mDelayTimer -= this->mDiff;
+						
+					}
+					else
+					{
+						choice = 1;
+						this->mPlatform->SetRotate(true);
+						this->ResetMaze();
+						this->mBalls[0]->SetToStartPosition();
+						this->mBalls[0]->ResetParent();
+						this->mDelayTimer = 2.0f;
+						this->mDelayTimer -= this->mDiff;
+						
+						
+					}
+				}
+			}
 			else
-				this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, this->mHud[1]->GetPosition().y + diff * creditSpeed));
+				spacePressed = false;
 
-			if(this->mHud[2]->GetPosition().y + diff * creditSpeed > windowHeight)
-				this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, 0));
-			else
-				this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, this->mHud[2]->GetPosition().y + diff * creditSpeed));
+			if(this->checkWinConditions(this->mDiff))
+				this->mRunning = false;
+			if(this->checkRespownConditions())
+			{
+				resetMazeCounter += this->mDiff * 0.001f;
+				if(resetMazeCounter > 1.5f)
+				{
+					this->ResetMaze();
+					this->mBalls[0]->ResetParent();
+					this->mBalls[0]->SetToStartPosition();
+					resetMazeCounter = 0.0f;
+				}
 
-			if(this->mHud[3]->GetPosition().y + diff * creditSpeed > windowHeight)
-				this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, 0));
-			else
-				this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, this->mHud[3]->GetPosition().y + diff * creditSpeed));
+				
+			}
 
-			if(this->mHud[4]->GetPosition().y + diff * creditSpeed > windowHeight)
-				this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, 0));
-			else
-				this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, this->mHud[4]->GetPosition().y + diff * creditSpeed));
+			this->ShowHud();
+
 		}
 		
 }
@@ -203,7 +228,141 @@ bool Maze::checkWinConditions(float dt)
 	return false;
 }
 
+bool Maze::checkRespownConditions()
+{
+		
+		Vector3 pos = this->mPlatform->GetMesh()->GetPosition();
+		D3DXMATRIX quat;
+		D3DXMatrixRotationQuaternion(&quat, &this->mPlatform->GetMesh()->GetRotation()); 
+	
+		Matrix4 rotate(quat);
+		rotate.TransposeThis();
+						
+		Vector3 posBall = this->mBalls[0]->GetMesh()->GetPosition();
+		
+		Vector3 newCoord = rotate.GetInverse() * (posBall - pos - Vector3(0,5.0f,0));
+		
+		
+		if(newCoord.y < -6.0f)
+			return true;
+		else
+			return false;
+}
+
+void Maze::ResetMaze()
+{
+	this->mPlatform->GetMesh()->ResetRotationAndScale();
+	this->mPlatform->ResetXZAngles();
+}
+
+
 void Maze::ShowHud()
 {
+	 
+	 if(this->mHud[0]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, 0));
+	else
+		this->mHud[0]->SetPosition(D3DXVECTOR2(this->mHud[0]->GetPosition().x, this->mHud[0]->GetPosition().y + this->mDiff * this->mCreditSpeed));
 
+	if(this->mHud[1]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, 0));
+	else
+		this->mHud[1]->SetPosition(D3DXVECTOR2(this->mHud[1]->GetPosition().x, this->mHud[1]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+
+	if(this->mHud[2]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, 0));
+	else
+		this->mHud[2]->SetPosition(D3DXVECTOR2(this->mHud[2]->GetPosition().x, this->mHud[2]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+
+	if(this->mHud[3]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, 0));
+	else
+		this->mHud[3]->SetPosition(D3DXVECTOR2(this->mHud[3]->GetPosition().x, this->mHud[3]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+
+	if(this->mHud[4]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, 0));
+	else
+		this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, this->mHud[4]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+
+}
+
+void Maze::PlayMazeV1()
+{
+	if(this->mDelayTimer > 0)
+	{
+		this->mDelayTimer -= this->mDiff;
+		return;
+	}
+	if(this->mPlatform->IsTargetAngleReachedX())
+	{
+		this->mTargetX = -10 + rand() % 21;
+		this->mTargetX = this->mTargetX*(PI/180.0f);
+		this->mPlatform->SetTargetAngleX(this->mTargetX);
+	}
+	if(this->mPlatform->IsTargetAngleReachedZ())
+	{
+		this->mTargetZ = -10 + rand() % 21;
+		this->mTargetZ = this->mTargetZ*(PI/180.0f);
+		this->mPlatform->SetTargetAngleZ(this->mTargetZ);
+	}
+		
+		
+	if(mGe->GetKeyListener()->IsPressed('W'))
+		this->mBalls[0]->AddForceForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsPressed('S'))
+		this->mBalls[0]->AddForceOppositeForwardDirection(this->mDiff);
+	if(mGe->GetKeyListener()->IsPressed('A'))
+		this->mBalls[0]->AddForceLeftOfForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsPressed('D'))
+		this->mBalls[0]->AddForceRightOfForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsClicked(2))
+		this->mBalls[0]->AddForce(Vector3(0,this->mDiff*(11.0f/6.0f),0));
+	this->mBalls[0]->UpdateBallParentMode(this->mPlatform);
+	this->mBalls[0]->Update(this->mDiff);
+	Vector3 normalPlane;
+	if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+		this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, this->mDiff);
+	this->mBalls[0]->UpdatePost();
+	this->mPlatform->Update(this->mDiff);
+	
+}
+
+void Maze::PlayMazeV2()
+{
+	if(this->mDelayTimer > 0)
+	{
+		this->mDelayTimer -= this->mDiff;
+		return;
+	}
+	if(mGe->GetKeyListener()->IsPressed('W'))
+		this->mPlatform->RotateX(this->mDiff);
+	if(mGe->GetKeyListener()->IsPressed('S'))
+		this->mPlatform->RotateX(-this->mDiff);
+	if(mGe->GetKeyListener()->IsPressed('A'))
+		this->mPlatform->RotateZ(this->mDiff);
+	if(mGe->GetKeyListener()->IsPressed('D'))
+		this->mPlatform->RotateZ(-this->mDiff);
+	
+	if(mGe->GetKeyListener()->IsClicked(2))
+		this->mBalls[0]->AddForce(Vector3(0,this->mDiff*(11.0f/6.0f),0));
+	// cheating is gooood!!!
+	if(mGe->GetKeyListener()->IsPressed(VK_UP))
+		this->mBalls[0]->AddForceForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsPressed(VK_DOWN))
+		this->mBalls[0]->AddForceOppositeForwardDirection(this->mDiff);
+	if(mGe->GetKeyListener()->IsPressed(VK_LEFT))
+		this->mBalls[0]->AddForceLeftOfForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsPressed(VK_RIGHT))
+		this->mBalls[0]->AddForceRightOfForwardDirection(this->mDiff);	
+	if(mGe->GetKeyListener()->IsClicked(2))
+		this->mBalls[0]->AddForce(Vector3(0,this->mDiff*(11.0f/6.0f),0));
+	this->mBalls[0]->UpdateBallParentMode(this->mPlatform);
+	this->mBalls[0]->Update(this->mDiff);
+	Vector3 normalPlane;
+	if(this->mBalls[0]->collisionWithPlatformSimple(this->mPlatform,normalPlane))
+		this->mBalls[0]->collisionPlatformResponse(this->mPlatform, normalPlane, this->mDiff);
+	this->mBalls[0]->UpdatePost();
+	this->mPlatform->Update(this->mDiff);
+
+	
 }

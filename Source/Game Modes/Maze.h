@@ -14,6 +14,17 @@
 class Maze : public GameMode
 {
 	private:
+			float mTargetX;
+			float mTargetZ;
+			bool mRunning;
+			float mWindowWidth;
+			float mWindowHeight;
+			float mCreditSpeed;
+			float mDiff;
+			float mDelayTimer;
+			Map* mBox;
+			void PlayMazeV1();
+			void PlayMazeV2();
 
 	public:
 			Maze();
@@ -25,4 +36,6 @@ class Maze : public GameMode
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
+			bool checkRespownConditions();
+			void ResetMaze();
 };
