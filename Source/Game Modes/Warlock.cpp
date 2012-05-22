@@ -89,8 +89,9 @@ void Warlock::Initialize()
 			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[0]);
 			*/
 		this->mIGM	= new InGameMenu(this->mGe);
-		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		WARLOCKInfo* gmi = (WARLOCKInfo*)this->mServerInfo.GetGameModeInfo();
+		/* check if team is chooosen from serverinfo. */
+		//this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 		this->mNumberOfRounds = gmi->GetNumRounds();
 
 		float width = GetGraphicsEngine()->GetEngineParameters().windowWidth;
@@ -167,8 +168,9 @@ bool Warlock::checkWinConditions(float dt)
 		{
 			pos = this->mBalls[i]->GetPositionVector3();
 			posLav = Vector3(pos.x,this->mGe->GetLavaHeightAt(pos.x, pos.z), pos.z);
-			distance = (pos - posLav).GetLength();
-			if(distance < this->mBalls[i]->GetRadius())
+			Vector3 distanceVector = (pos - posLav);
+			distance = distanceVector.GetLength();
+			if(distance < this->mBalls[i]->GetRadius() ||  distanceVector.y < 0.0f )
 				this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt); // minus 4 hp per sec.
 		}
 
@@ -199,6 +201,9 @@ void Warlock::ShowHud()
 		this->mHud[4]->SetText(s);
 		s = "z: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().z)/10.0f);
 		this->mHud[5]->SetText(s);
+		
+		
+		
 		Spell** spells = this->mBalls[this->mNet->GetIndex()]->GetSpells();
 		float percentage = 0;
 		if(spells[0]->InUse())
@@ -385,8 +390,12 @@ void Warlock::ShowHud()
 			s = "";
 		this->mHud[15]->SetText(s);
 		s = "Life: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetHealth())/10.0f);
-		this->mHud[16]->SetText(s);
+		
 		this->mProgressBars[5]->SetPercentOfProgressBarColor1(this->mBalls[this->mNet->GetIndex()]->GetHealth());
+		Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetPositionVector3();
+		string t = " Position: x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
+		s = s + t;
+		this->mHud[16]->SetText(s);
 }
 
 void Warlock::AddBall()
@@ -409,6 +418,7 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
 			temp[i]->AddSpell(new JumpSpell());
 			temp[i]->SetWarlockMode(true);
+			temp[i]->SetSound(true);
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;

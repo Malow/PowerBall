@@ -36,17 +36,6 @@ DepthStencilState DisableDepth
     DepthEnable = FALSE;
     DepthWriteMask = ZERO;
 };
-SamplerState AnisotropicSampler 
-{
-	Filter = ANISOTROPIC;
-	AddressU = Clamp;
-	AddressV = Clamp;
-	AddressW = Clamp;
-	MaxAnisotropy = 4;
-	ComparisonFunc = ALWAYS;
-	MaxLOD = 0.0f;
-	MinLOD = 0.0f;
-};
 RasterizerState NoCulling
 {
 	CullMode = NONE;
@@ -313,7 +302,7 @@ float4 PSScene(float4 pos : SV_Position) : SV_Target
 	
 	float2 rcpFrame = float2(1.0f / width, 1.0f / height);
 	float2 texCoord = float2(pos.x * rcpFrame.x, pos.y * rcpFrame.y);
-	FxaaTex tex = {AnisotropicSampler, sceneTex};
+	FxaaTex tex = {AnisotropicClampSampler, sceneTex};
 	float4 color = float4(FxaaPixelShader(texCoord, tex, rcpFrame), 1.0f);
 	
 	return color; 
