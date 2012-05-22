@@ -123,21 +123,29 @@ void KingOfTheHill::Initialize()
 		this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
 		this->mTotalTimeCapture->SetOpacity(0.0f);
 
-		this->mProgressBar = new ProgressBar();
-		this->mProgressBar->SetPercentOfProgressBarColor1(0.0f);
-		this->mProgressBar->SetPercentOfProgressBarColor2(0.0f);
-		this->mBestBallInHotZone = -1;
-		this->mBestTime = -1;
 		
 		float width = GetGraphicsEngine()->GetEngineParameters().windowWidth;
 		float height = GetGraphicsEngine()->GetEngineParameters().windowHeight;
+		float sizeBarX = width/4.0;
+		float sizeBarY = height/24.0;
+		float posBarX = ((width/2.0f) - (sizeBarX/2.0f))/width;
+		float posBarY = ((height/15.0f) - (sizeBarY/2.0f))/height;
+		
+		this->mProgressBar = new ProgressBar(D3DXVECTOR2(posBarX, posBarY), sizeBarX/width, sizeBarY/height);
+		this->mProgressBar->SetPercentOfProgressBarColor1(0.0f);
+		this->mProgressBar->SetPercentOfProgressBarColor2(0.0f);
+		this->mProgressBar->SetPercentOfProgressBackground(0.0f);
+		this->mBestBallInHotZone = -1;
+		this->mBestTime = -1;
+		
+		
 
 		/* Set hud */
 		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
 		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,400),1.0f,"Media/Fonts/1");
 		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(10,450),1.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2((width/2.0f) -100.0f,80),1.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2((width/2.0f)  + 40.0f,80),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + width/8,height/24),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + (2.0f*width)/8,height/24),1.0f,"Media/Fonts/1");
 }
 
 void KingOfTheHill::Intro()
@@ -203,9 +211,10 @@ void KingOfTheHill::ShowHud()
 		s = "T2: " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetTimeInHotZoneContinuously())/10.0f);
 		this->mHud[4]->SetText(s);
 
-		float percentageContinuously = (this->mBalls[this->mNet->GetIndex()]->GetTimeInHotZone()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
-		float percentageAccumulated = (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
-		
+		/*
+		float percentageContinuously = (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
+		float percentageAccumulated = (this->mBalls[this->mNet->GetIndex()]->GetTimeInHotZone()/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
+		*/
 		float percentage = 0;
 		if( this->mBestBallInHotZone != -1)
 		{
@@ -215,29 +224,30 @@ void KingOfTheHill::ShowHud()
 			if( diffAccumulated > diffContinuously)
 				percentage = 100.0f - (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
 			else
-				percentage = 100.0f - (this->mBestTime/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
+				percentage = 100.0f - (this->mBestTime/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
 			
 			if( (this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
 			{
 				this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
+				this->mProgressBar->SetPercentOfProgressBackground(100);
 				//this->mProgressBar->SetPercentOfProgressBarColor2(0);
 			}
 			else if(this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == this->mBalls[this->mNet->GetIndex()]->GetTeamColor())
 			{
 				this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
-				//this->mProgressBar->SetPercentOfProgressBarColor2(0);
+				this->mProgressBar->SetPercentOfProgressBackground(100);
 			}
 			else
 			{
 				//this->mProgressBar->SetPercentOfProgressBarColor1(0);
 				this->mProgressBar->SetPercentOfProgressBarColor2(percentage);
+				this->mProgressBar->SetPercentOfProgressBackground(100);
 			}
 			
 		}
 		else
 		{
-			this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
-			this->mProgressBar->SetPercentOfProgressBarColor2(percentage);
+			this->mProgressBar->HideBar();
 		}
 }
 

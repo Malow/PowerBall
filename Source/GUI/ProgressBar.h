@@ -26,8 +26,8 @@ class ProgressBar
 		float mFullX;
 		float mFullY;
 
-		float mProcentBoarderX;
-		float mProcentBoarderY;
+		float mFractionBoarderX;
+		float mFractionBoarderY;
 		float mStartBarX;
 		float mStartBarY;
 		float mFullBarX;
@@ -39,12 +39,15 @@ class ProgressBar
 	public:
 		
 		ProgressBar(std::string bar = "Media/LoadingScreen/DarkBlue.png", std::string bar2 = "Media/LoadingScreen/Red.png" , std::string background = "Media/LoadingScreen/Black.png", 
-						D3DXVECTOR2 positionPercentageTopLeft = D3DXVECTOR2(0.4f, 0.03f),
-						float percentageSizeOfWindowX = 0.2f, float percentageSizeOfWindowY = 0.05f, 	
-						float percentageBoarderOfBarX = 0.01f, float percentageBoarderOfBarY = 0.05f);
-		ProgressBar(D3DXVECTOR2 positionPercentageTopLeft);
+						D3DXVECTOR2 positionFractionTopLeft = D3DXVECTOR2(0.4f, 0.03f),
+						float fractionSizeOfWindowX = 0.2f, float fractionSizeOfWindowY = 0.05f, 	
+						float fractionBoarderOfBarX = 0.01f, float fractionBoarderOfBarY = 0.05f);
+		ProgressBar(D3DXVECTOR2 positionFractionTopLeft);
+		ProgressBar(D3DXVECTOR2 positionFractionTopLeft, float fractionSizeOfWindowX, float fractionSizeOfWindowY);
 		~ProgressBar();
 		void SetPercentOfProgressBarColor1(float procentageX);
 		void SetPercentOfProgressBarColor2(float procentageX);
+		void SetPercentOfProgressBackground(float percentageX);
+		void HideBar();
 		void ResetBar();
 };
