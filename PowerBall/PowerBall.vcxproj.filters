@@ -326,6 +326,15 @@
     <ClCompile Include="..\Source\SystemReqRestart.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -625,9 +634,6 @@
     <ClInclude Include="..\Source\EndGameMenu.h">
       <Filter>Game Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\SystemReqRestart.cpp">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\SystemReqRestart.h">
       <Filter>Game Files</Filter>
     </ClInclude>
@@ -640,8 +646,6 @@
     <ClInclude Include="..\Source\Network\Connection.h">
       <Filter>Game Files\Network</Filter>
     </ClInclude>
-
-
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">
@@ -693,6 +697,9 @@
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
     <None Include="Shaders\InvisibilityEffect.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowMapAnimated.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
   </ItemGroup>

@@ -281,30 +281,48 @@ void DxManager::RenderShadowMap()
 		{
 			if(!this->animations[i]->IsUsingInvisibility())
 			{
-				MaloW::Array<MeshStrip*>* strips = this->animations[i]->GetStrips(); //**
+				KeyFrame* one = NULL;
+				KeyFrame* two = NULL;
+				float t = 0.0f;
+				this->animations[i]->SetCurrentTime(this->TimerAnimation);
+				this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
+				MaloW::Array<MeshStrip*>* stripsOne = one->strips;
+				MaloW::Array<MeshStrip*>* stripsTwo = two->strips;
 
+				//set shader data (per object)
 				D3DXMATRIX wvp = this->animations[i]->GetWorldMatrix() * this->lights[l]->GetViewProjMatrix();
-				this->Shader_ShadowMap->SetMatrix("LightWVP", wvp);
-				for(int u = 0; u < strips->size(); u++)
+				this->Shader_ShadowMapAnimated->SetMatrix("LightWVP", wvp);
+				this->Shader_ShadowMapAnimated->SetFloat("t", t);
+
+				for(int u = 0; u < stripsOne->size(); u++) 
 				{
-					Object3D* obj = strips->get(u)->GetRenderObject();
-					Dx_DeviceContext->IASetPrimitiveTopology(obj->GetTopology());
-					Buffer* verts = obj->GetVertBuff();
-					if(verts)
-						verts->Apply();
-					Shader_ShadowMap->SetBool("textured", false);
+					Object3D* objOne = stripsOne->get(u)->GetRenderObject();
+					Object3D* objTwo = stripsTwo->get(u)->GetRenderObject();
 
-					Buffer* inds = obj->GetIndsBuff();
-					if(inds)
-						inds->Apply();
+					//**debug/test:**
+					float t1 = stripsOne->get(u)->getVerts()[u].pos.y;
+					float t2 = stripsTwo->get(u)->getVerts()[u].pos.y;
+					if(t1 == t2)
+					{
+						float derp = 0.0f;
+					}
+					else //kommer aldrig in hit**
+					{
+						float derp = 0.0f;
+					}
+					this->Dx_DeviceContext->IASetPrimitiveTopology(objOne->GetTopology()); 
 
-					Shader_ShadowMap->Apply(0);
+					Buffer* vertsOne = objOne->GetVertBuff();
+					Buffer* vertsTwo = objTwo->GetVertBuff();
 
-					// draw
-					if(inds)
-						Dx_DeviceContext->DrawIndexed(inds->GetElementCount(), 0, 0);
-					else
-						Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
+					ID3D11Buffer* vertexBuffers [] = {vertsOne->GetBufferPointer(), vertsTwo->GetBufferPointer()};
+					UINT strides [] = {sizeof(Vertex), sizeof(Vertex)};
+					UINT offsets [] = {0, 0};
+
+					this->Dx_DeviceContext->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);
+
+					Shader_ShadowMapAnimated->Apply(0);
+					this->Dx_DeviceContext->Draw(vertsOne->GetElementCount(), 0);
 				}
 			}
 		}

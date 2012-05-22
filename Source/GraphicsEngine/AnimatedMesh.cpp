@@ -138,7 +138,7 @@ MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
 	KeyFrame* interpolated = new KeyFrame();
 	float t = 0.0f; 
 	this->GetCurrentKeyFrames(&one, &two, t);
-
+	/* interpolation on CPU:
 	for(int i = 0; i < one->strips->size(); i++)
 	{
 		Vertex* oneVerts = one->strips->get(i)->getVerts(); //** samma vertiser **
@@ -169,8 +169,10 @@ MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
 		interpolated->strips->get(i)->SetVerts(interpolatedVerts);
 	}
 	
-	//return two->strips;
 	return interpolated->strips;
+	*/
+
+	return two->strips;
 }
 
 void AnimatedMesh::SetCurrentTime(float currentTime)

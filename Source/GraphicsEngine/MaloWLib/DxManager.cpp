@@ -16,6 +16,7 @@ DxManager::DxManager(HWND g_hWnd, GraphicsEngineParams params, Camera* cam)
 
 	this->Shader_ShadowMap = NULL;
 	this->Shader_Text = NULL;
+	this->Shader_ShadowMapAnimated = NULL;
 
 	this->Shader_BillBoard = NULL;
 
@@ -71,6 +72,8 @@ DxManager::~DxManager()
 
 	if(this->Shader_ShadowMap)
 		delete this->Shader_ShadowMap;
+
+	SAFE_DELETE(this->Shader_ShadowMapAnimated);
 
 	if(this->Shader_BillBoard)
 		delete this->Shader_BillBoard;

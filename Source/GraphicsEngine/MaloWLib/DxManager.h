@@ -165,6 +165,7 @@ private:
 	Shader* Shader_ShadowMap;
 	Shader* Shader_BillBoard;
 	Shader* Shader_Text;
+	Shader* Shader_ShadowMapAnimated;
 	
 	// Deferred Rendering
 	// Gbuffer:

@@ -172,6 +172,17 @@ HRESULT DxManager::Init()
 		return E_FAIL;
 	}
 
+	// ShadowMapAnimated Shader
+	D3D11_INPUT_ELEMENT_DESC inputDescShadowMapAnimated[] = {
+		{"POSITION",       0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"POSITION_MORPH", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+	this->Shader_ShadowMapAnimated = new Shader();
+	if(FAILED(this->Shader_ShadowMapAnimated->Init(this->Dx_Device, this->Dx_DeviceContext, "Shaders/ShadowMapAnimated.fx", inputDescShadowMapAnimated, 2)))
+	{
+		MaloW::Debug("Failed to open ShadowMapAnimated.fx");
+		return E_FAIL;
+	}	
 
 	// For billboards
 	D3D11_INPUT_ELEMENT_DESC inputDescBillboard[] = {
