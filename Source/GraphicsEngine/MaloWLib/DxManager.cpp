@@ -520,7 +520,14 @@ void DxManager::CreateSkyBox(string texture)
 float DxManager::GetLavaHeightAt(float x, float z) 
 { 
 	float L = 10.0f;
-	float H = 15.0f;
+	float H = 10.0f;
+
+	float len = D3DXVec2Length(&D3DXVECTOR2(x, z)); //length of xz-vector from origin to pixel in world space
+	float scale = this->LavaWavesOuterRadius / H; //outer radius of which to start decreasing the wave height, scale is used to scale the result between 0 and H.
+	if(len < this->LavaWavesOuterRadius)
+	{	
+		H -= (this->LavaWavesOuterRadius - len) / scale;
+	}
 
 	float timer = this->TimerAnimation * 0.001f;
 

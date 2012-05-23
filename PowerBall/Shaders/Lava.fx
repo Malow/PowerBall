@@ -12,6 +12,13 @@
 Texture2D LavaTexture;
 
 //------------------------------------------------------------------------------------------------------
+//	Constant buffers
+//------------------------------------------------------------------------------------------------------
+cbuffer EveryFrame
+{
+	float outerRadius;
+};
+//------------------------------------------------------------------------------------------------------
 //	Lava shader
 //------------------------------------------------------------------------------------------------------
 float4 Lava(float4 color, float4 pixelWorldPosition)
@@ -21,7 +28,30 @@ float4 Lava(float4 color, float4 pixelWorldPosition)
 	bool textureLava = true;
 
 	float L = 10.0f;
-	float H = 15.0f;
+	float H = 10.0f;
+
+	/*
+	//should work, creates a seam however
+	float len = length(pixelWorldPosition.xz); //length of xz-vector from origin to pixel in world space
+	float outerRadius = 100.0f; //radius of which to start decreasing the wave height
+	float innerRadius = 65.0f; //radius of which to end decreasing the wave height (wave height is 0 within this radius)
+	float betweenRadius = outerRadius - innerRadius;
+	float scale = betweenRadius / H;
+	if(len <= outerRadius && len >= innerRadius)
+	{	
+		H -= (outerRadius - len) / scale;
+	}
+	else
+	{
+		H = 0.0f;
+	}*/
+
+	float len = length(pixelWorldPosition.xz); //length of xz-vector from origin to pixel in world space
+	float scale = outerRadius / H; //outer radius of which to start decreasing the wave height, scale is used to scale the result between 0 and H.
+	if(len < outerRadius)
+	{	
+		H -= (outerRadius - len) / scale;
+	}
 
 	if(CameraPosition.y < L)
 		return float4(0,0,0,0);

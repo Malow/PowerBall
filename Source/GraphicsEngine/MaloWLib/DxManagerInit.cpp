@@ -393,6 +393,7 @@ HRESULT DxManager::Init()
 	loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	if(FAILED(D3DX11CreateShaderResourceViewFromFile(this->Dx_Device, "Media/LavaTexture.png", &loadInfo, NULL, &this->LavaTexture, NULL)))
 		MaloW::Debug("Failed to load texture Media/LavaTexture.png");
+	this->LavaWavesOuterRadius = 100.0f;
 
 	// Skybox shader
 	D3D11_INPUT_ELEMENT_DESC SkyboxTextureDesc[] = {
