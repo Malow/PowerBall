@@ -106,7 +106,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	{
 		this->mRestitution   = 1.0f; 
 		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 180.0f;
+		this->mForcePress	 = 20.0f; // good for stepTime = 10 ms
 	}
 	else if( gameMode == GAMEMODE::CTF)
 	{
@@ -335,6 +335,7 @@ void PowerBall::Update(const float dt, bool clientBall)
 	}
 }
 
+
 void PowerBall::UpdateBallParentMode(Map* map)
 {
 		
@@ -553,7 +554,7 @@ void PowerBall::collisionSphereResponse(PowerBall* b1)
 			float sumV = v1 + v2;
 			float damage1 = v2/sumV;
 			float damage2 = v1/sumV;
-			this->mHealth -= damage1*10.0f*(v1/v1Max);
+			this->mHealth -= damage1*10.0f*(v2/v2Max);
 			float health2 = b1->GetHealth();
 			health2 -= damage2*10.0f*(v1/v1Max);
 			b1->SetHealth(health2);
@@ -940,4 +941,141 @@ void PowerBall::SetTeamColor(int team)
 	 {
 		 
 	 }
+}
+
+void PowerBall::UpdatePhysicsEuler(float timeStep)
+{
+	/*
+	*	Try to avoid changing the algoritm below its okey for now.
+	*	If you are unhappy with settings for the ball try to 
+	*	change in the constructor insted. There you
+	*	can change most things like how much "engergy" you loose at impact 
+	*	this->mRestitution, for ball is only ball to ball. In the platform
+	*	class you can change the Restitution value for impact ball against
+	*	platform
+	*
+	*	this->mDamping is used as velocity loose such that airDrag and so on. 
+	*
+	*	how much tangental velocity that is loost due to friction on impact
+	*	only in use when ball is against platform
+	*	this->mFriction
+	*	
+	*	This can be changed if we feel its not working. Give me some pointers
+	*	so we can make this better :)
+	*/
+	
+	float newdt = timeStep*0.001f;
+	
+	D3DXVECTOR3 temp = this->GetMesh()->GetPosition();
+	Vector3 oldPosition = Vector3(temp);
+	Vector3 newPosition = oldPosition + mVelocity * newdt;
+
+	
+	
+	temp = D3DXVECTOR3(newPosition.x, newPosition.y, newPosition.z);
+	this->mTempPosition = newPosition;
+	
+	
+	
+	
+	Vector3 resAcc = this->mAcceleration;
+	// F = ma <-> a = F/m 
+	resAcc += (this->mSumAddedForce / this->mMass );
+	
+	Vector3 oldVelocity = this->mVelocity;
+	this->mPreviousVelocity = oldVelocity;
+	Vector3 newVelocity = this->mVelocity + resAcc * newdt;
+	
+	Vector3 tempVelo = newVelocity;
+	tempVelo.y = 0;
+	if(tempVelo.GetLength() > this->mMaxVelocity)
+	{
+		float length = newVelocity.GetLength();
+		newVelocity.normalize();
+		this->mVelocity = newVelocity * this->mMaxVelocity;
+		this->mVelocity *= pow(this->mDamping, newdt);
+		/*
+		resAcc.x = 0;
+		resAcc.z = 0;
+		this->mVelocity += resAcc * newdt;
+		//this->mVelocity.y *= pow(this->mDamping, newdt);
+		this->mVelocity *= pow(this->mDamping, newdt);
+		*/
+	}
+	else
+	{
+		this->mVelocity += resAcc * newdt;
+		this->mVelocity *= pow(this->mDamping, newdt);
+	}
+	
+	// remove the forces that did push against this ball
+	this->mSumAddedForce = Vector3(0,0,0);
+	
+}
+
+RigidBody PowerBall::Interpolate(RigidBody& stateA, RigidBody& stateB, float alpha)
+{
+	RigidBody state = stateB;
+	
+	state.mPosition = stateA.mPosition*(1-alpha) + stateB.mPosition*alpha;
+	state.mMomentum = stateA.mMomentum*(1-alpha) + stateB.mMomentum*alpha;
+	//state.mOrientation = slerp(stateA.mOrientation, stateB.mOrientation, alpha);
+	state.mAngularMomentum = stateA.mAngularMomentum*(1-alpha) + stateB.mAngularMomentum*alpha;
+	state.CalculateNewValues();
+	return state;
+}
+
+void PowerBall::UpdateLogic(float timeStep, bool clientBall)
+{
+	float newdt = timeStep*0.001f;
+	for(int i = 0;i<this->mNrOfSpells;i++)
+		this->mSpells[i]->UpdateSpecial(newdt);
+	if(this->mWinTimerActivated)
+		this->mWinTimer += newdt;
+	
+
+	if(this->mTempPosition.y < Y_LEVEL_BOUNDARY && !this->mKnockoutMode && !this->mWarlockMode)
+	{
+		this->mVelocity = Vector3(0,-2,0);
+		if(!clientBall)
+		{
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(NULL);
+			((TRDCamera*)GetGraphicsEngine()->GetCamera())->LookAt(this->GetPosition());
+		}
+	}
+	
+	if(this->mFlag != NULL)
+		this->mFlag->SetPosition(this->mMesh->GetPosition());
+	
+	if((this->mMesh->GetPosition().y < Y_LEVEL_BOUNDARY + 1) && !this->mKnockoutMode && !this->mWarlockMode) 
+	{
+		
+		if(this->mFlag != NULL)
+		{
+			this->mFlag->Reset();
+			this->ResetFlag();
+		}
+		if(this->mLivesLeft == 1) //Dont respawn if you lost your last life
+			this->mLivesLeft = 0;
+
+		this->mRespawnTimeLeft -= newdt;
+		if(this->mRespawnTimeLeft <= 0.0f)
+		{
+			if(!clientBall)
+			{
+				//setting the forward vector pointing towards the center of the map when respawning.
+				//D3DXVECTOR3 dir(-this->mStartPosition.x, 0, -this->mStartPosition.z);
+				//::D3DXVec3Normalize(&dir, &dir);
+				
+
+				((TRDCamera*)GetGraphicsEngine()->GetCamera())->setPowerBallToFollow(this);
+			}
+			this->mLivesLeft--;
+			this->mForward = this->mStartForwardVector;
+			this->mMesh->SetPosition(this->mStartPosition);
+			this->SetTempPosition(this->mStartPosition);
+			this->mVelocity = Vector3(0,0,0);
+			this->mRespawnTimeLeft = this->mRespawnTime;
+		}
+	}
 }

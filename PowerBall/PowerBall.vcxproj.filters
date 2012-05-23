@@ -326,6 +326,27 @@
     <ClCompile Include="..\Source\SystemReqRestart.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\PhysicsEngine.cpp">
+      <Filter>Game Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\Quaternion.cpp">
+      <Filter>Game Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\RigidBody.cpp">
+      <Filter>Game Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Physics\GameTimerSimple.cpp">
+      <Filter>Game Files\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -625,9 +646,6 @@
     <ClInclude Include="..\Source\EndGameMenu.h">
       <Filter>Game Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\SystemReqRestart.cpp">
-      <Filter>Game Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\SystemReqRestart.h">
       <Filter>Game Files</Filter>
     </ClInclude>
@@ -640,8 +658,18 @@
     <ClInclude Include="..\Source\Network\Connection.h">
       <Filter>Game Files\Network</Filter>
     </ClInclude>
-
-
+    <ClInclude Include="..\Source\Physics\PhysicsEngine.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\Quaternion.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\RigidBody.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Physics\GameTimerSimple.h">
+      <Filter>Game Files\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">

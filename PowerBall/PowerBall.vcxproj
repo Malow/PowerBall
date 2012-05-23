@@ -102,8 +102,12 @@
     <ClCompile Include="..\Source\Network\PlayerHistory.cpp" />
     <ClCompile Include="..\Source\Network\ServerConnection.cpp" />
     <ClCompile Include="..\Source\Network\ServerInfo.cpp" />
+    <ClCompile Include="..\Source\Physics\GameTimerSimple.cpp" />
     <ClCompile Include="..\Source\Physics\Matrix3.cpp" />
     <ClCompile Include="..\Source\Physics\Matrix4.cpp" />
+    <ClCompile Include="..\Source\Physics\PhysicsEngine.cpp" />
+    <ClCompile Include="..\Source\Physics\Quaternion.cpp" />
+    <ClCompile Include="..\Source\Physics\RigidBody.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundEffect.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundEngine.cpp" />
     <ClCompile Include="..\Source\SoundEngine\SoundSong.cpp" />
@@ -205,8 +209,12 @@
     <ClInclude Include="..\Source\Network\PlayerHistory.h" />
     <ClInclude Include="..\Source\Network\ServerConnection.h" />
     <ClInclude Include="..\Source\Network\ServerInfo.h" />
+    <ClInclude Include="..\Source\Physics\GameTimerSimple.h" />
     <ClInclude Include="..\Source\Physics\Matrix3.h" />
     <ClInclude Include="..\Source\Physics\Matrix4.h" />
+    <ClInclude Include="..\Source\Physics\PhysicsEngine.h" />
+    <ClInclude Include="..\Source\Physics\Quaternion.h" />
+    <ClInclude Include="..\Source\Physics\RigidBody.h" />
     <ClInclude Include="..\Source\Physics\Vector4.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundEffect.h" />
     <ClInclude Include="..\Source\SoundEngine\SoundEngine.h" />

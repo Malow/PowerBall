@@ -1,4 +1,5 @@
 #include "Knockout.h"
+#include "..\Physics\PhysicsEngine.h"
 
 Knockout::Knockout()
 {
@@ -31,12 +32,16 @@ Knockout::~Knockout()
 	SAFE_DELETE(this->mIGM);
 	for(int i = 0;i<6;i++)
 		this->mGe->DeleteText(this->mHud[i]);
+	for(int i = 0;i<this->mNumberOfPlayers; i++)
+		this->mPe->RemoveBody(this->mBalls[i]);
+	this->mPe->RemoveMap(this->mPlatform);
+	SAFE_DELETE(this->mPe);
 }
 
 void Knockout::Initialize()
 {
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,10,0);
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
+	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10)); // y = 25
 	mGe->GetCamera()->LookAt(centerPlatform);	
 	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
 	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
@@ -52,17 +57,24 @@ void Knockout::Initialize()
 	{
 		if( i == 0)
 		{
-				this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5));
+			this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5), GAMEMODE::DM);
 				this->mBalls[i]->SetKnockoutMode();
 				this->mBalls[i]->SetSound(true);
 		}
 		else
 		{
-				this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5));
+				this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5), GAMEMODE::DM);
 				this->mBalls[i]->SetKnockoutMode();
 				this->mBalls[i]->SetSound(true);
 		}
 	}
+
+	this->mPe = new PhysicsEngine(this->mGe);
+	this->mPe->AddBody(this->mBalls[0]);
+	this->mPe->AddBody(this->mBalls[1]);
+	this->mPe->AddMap(this->mPlatform);
+
+
 	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
 	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,60),1.0f,"Media/Fonts/1");
 	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,100),1.0f,"Media/Fonts/1");
@@ -87,7 +99,8 @@ void Knockout::PlaySpecific()
 	this->mGe->Update();
 	this->mIndexBallLeft = -1;
 	this->mWinnerActivated = false;
-	
+	this->mPe->Initialize();
+
 	while(roundsLeft && this->mGe->isRunning())
 	{
 		
@@ -229,9 +242,18 @@ void Knockout::PlayRound(bool& roundsLeft)
 {
 	float diff;
 	bool running = true;
+	
 	while(running)
 	{
-		diff = mGe->Update();	
+		diff = mGe->Update();
+		
+		this->mPe->Simulate(diff);
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+		{
+			roundsLeft = running = this->mIGM->Run();
+			this->mQuitByMenu = !running;
+		}
+		/*
 		this->InputKnockout(diff, running, roundsLeft);
 		for(int i = 0; i < this->mNumberOfPlayers; i++)
 			this->mBalls[i]->Update(diff);
@@ -253,7 +275,10 @@ void Knockout::PlayRound(bool& roundsLeft)
 		{
 			this->mBalls[i]->UpdatePost();
 		}
+		
 		mPlatform->Update(diff);
+		*/
+
 		if(!this->mGe->isRunning())
 		{
 			roundsLeft = running = false;
@@ -263,6 +288,7 @@ void Knockout::PlayRound(bool& roundsLeft)
 		if(this->checkWinConditions(diff))
 			running = false;
 	}
+	this->mPe->ResetTimers();
 }
 
 void Knockout::InputKnockout(float diff, bool& running, bool& roundsLeft)

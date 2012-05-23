@@ -12,7 +12,9 @@
 #include "..\Game Objects\GameObject.h"
 #include "..\Game Objects\FlagCTF.h"
 #include "..\Spells\Spell.h"
+#include "..\Physics\RigidBody.h"
 class Map;
+
 #define Y_LEVEL_BOUNDARY 10
 class PowerBall : public GameObject
 {
@@ -61,13 +63,30 @@ class PowerBall : public GameObject
 
 			
 	public:
+			RigidBody mCurrentState;
+			RigidBody mPreviousState;
+			RigidBody Interpolate(RigidBody& stateA, RigidBody& stateB, float alpha);
+			void UpdatePhysicsEuler(float timeStep);
+			void UpdateLogic(float timeStep, bool clientBall);
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position);
 			PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMode);
 			virtual ~PowerBall();
 	
 			
 			/* Get - functions */
-	
+			
+			/*! Returns true if sound is enabled. */
+			bool SoundEnabled() const { return this->mSound; }
+
+			/*! Returns true if its warlockmode. */
+			bool WarlockMode() const { return this->mWarlockMode; }
+
+			/*! Returns the previous velocity. */
+			Vector3 GetPreviousVelocity() const { return this->mPreviousVelocity; }
+
+			/*! Returns the friction constant. */
+			float GetFriction() const { return this->mFriction; }
+
 			/*! Returns the balls radius. */
 			float GetRadius() const { return this->mRadius; } 
 
@@ -256,6 +275,7 @@ class PowerBall : public GameObject
 			/*! Updates the ball. */
 			void Update(const float dt, bool clientBall = false);
 
+			
 			/*! Updates the balls like if the ball belong to the platform. */
 			void UpdateBallParentMode(Map* map);
 	
@@ -345,5 +365,7 @@ class PowerBall : public GameObject
 
 			/*! Set ball to use invisibility effect or not. */
 			void UseInvisibilityEffect(bool use) { this->mMesh->UseInvisibilityEffect(use); }
+
+			
 };
 

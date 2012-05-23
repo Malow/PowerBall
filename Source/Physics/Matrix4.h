@@ -23,11 +23,13 @@ public:
 	Vector4 operator*(const Vector4& vec) const;
 	Vector3 operator*(const Vector3& vec) const;
 	Matrix4 operator*(const float& s) const;
+	float operator[](int index) const;
 	Matrix3 GetSubMatrix(int i, int j) const;
 	float GetDeterminant() const;
 	Matrix4 GetAdjoint() const;
 	Matrix4 GetInverse() const;
 	Matrix4 GetTranspose() const;
+	float GetRowCol(int row, int col) const;
 	D3DXMATRIX GetD3DXMatrix() const;
 	void TransposeThis();
 	void LoadIdentity();

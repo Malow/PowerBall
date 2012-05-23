@@ -86,6 +86,11 @@ Matrix4 Matrix4::operator*(const float& s) const
 	return temp;
 }
 
+float Matrix4::operator[](int index) const
+{
+	return this->mData[index];
+}
+
 Matrix3 Matrix4::GetSubMatrix(int row, int col) const
 {
 	Matrix3 temp;
@@ -170,6 +175,11 @@ D3DXMATRIX Matrix4::GetD3DXMatrix() const
 	return mat;
 }
 
+float Matrix4::GetRowCol(int row, int col) const
+{
+	return this->mData[(row-1) * 4 + (col-1)];
+}
+
 void Matrix4::SetScale(float xS, float yS, float zS)
 {
 	// the scale
@@ -213,7 +223,7 @@ void Matrix4::LoadIdentity()
 	this->mData[12] = 0.0f;
 	this->mData[13] = 0.0f;
 	this->mData[14] = 0.0f;
-	this->mData[15] = 1.0f;
+	this->mData[15] = 0.0f;
 }
 
 void Matrix4::TransposeThis()
