@@ -79,7 +79,7 @@ void NetworkBall::Reset()
 	this->mForwardVector		= this->mStartForwardVector;
 	this->mVel					= D3DXVECTOR3(0,0,0);
 	this->mExecTime				= 0.0f;
-	this->mTeam					= TEAM::NOTEAM;
+	//this->mTeam					= TEAM::NOTEAM;
 	this->mHP					= 0.0f;
 	this->mAliveTimer			= DROP_TIMER;
 }

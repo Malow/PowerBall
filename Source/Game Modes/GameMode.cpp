@@ -27,35 +27,51 @@ GameMode::~GameMode()
 	SAFE_DELETE(this->mChooseTeamMenu);
 }
 
-void GameMode::PlayLan()
+bool GameMode::PlayLan()
 {
 		bool zoomOutPressed = false;
 		bool zoomInPressed = false;
+		bool quitByMenu = false;
 		this->mGe->Update();
 		bool roundsLeft = true;
 		int roundsPlayed = 0;
 
 		//choose team before starting the game
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
-		if(this->mGameMode != GAMEMODE::WARLOCK)
-			this->mTeam = this->mChooseTeamMenu->Run();
-		else
+		if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
+			CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
+		else if(this->mGameMode == GAMEMODE::WARLOCK)
 			this->mTeam = TEAM::NOTEAM;
+		this->mNet->Reset();
 		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
-		MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+		//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
 		while(roundsLeft && this->mGe->isRunning())
 		{
-
-			this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
+			quitByMenu = this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
 			roundsPlayed++;;
 			if(roundsPlayed == this->mNumberOfRounds)
 				roundsLeft = false;
 		}
 		
-		this->mNet->Close();
+		//this->mNet->Close();
+		return quitByMenu;
 }
 
+DWORD WINAPI GameMode::SelectTeamThread(void* param)
+{
+	GameMode* gm = (GameMode*) param;
+	gm->mTeam = gm->mChooseTeamMenu->Run();
+	MsgHandler::GetInstance().JoinTeam((TEAM)gm->mTeam);
 
+	return 0;
+}
+DWORD WINAPI GameMode::InGameMenuThread(void* param)
+{
+	ThreadParam* tp = (ThreadParam*) param;
+	tp->resume = tp->igm->Run();
+	tp->finished = true;
+	return 0;
+}
 
 
 void GameMode::ClientKeyPress(float diff, const int index, char key)
@@ -183,11 +199,6 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 	else
 	{
 
-	}
-	if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-	{
-		running = this->mIGM->Run();
-		quitByMenu = !running;
 	}
 }
 
@@ -348,7 +359,7 @@ void GameMode::IsClient(float diff, bool& zoomOutPressed, bool& zoomInPressed, b
 	}
 }
 
-void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed)
+bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed)
 {
 		bool running = true;
 		bool quitByMenu = false;
@@ -356,12 +367,29 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 		LARGE_INTEGER oldTick = LARGE_INTEGER();
 		QueryPerformanceCounter(&oldTick);
 		LARGE_INTEGER now =  LARGE_INTEGER();
+
+		ThreadParam* tp = NULL;
+		bool resume = true;
+
 		while(running && this->mGe->isRunning())
 		{
-
 				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
-				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-					roundsLeft = running = this->mIGM->Run();
+
+				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE) && tp == NULL)
+				{
+					tp = new ThreadParam(this->mIGM, resume);
+					CreateThread(0, 0, &InGameMenuThread, (void*)tp, 0, 0);
+				}
+				if(tp != NULL)
+				{
+					if(tp->finished)
+					{
+						roundsLeft = running = tp->resume;
+						quitByMenu = !running;
+						delete tp;
+						tp = NULL;
+					}
+				}
 		
 				QueryPerformanceCounter(&now);
 				LARGE_INTEGER proc_freq;
@@ -370,7 +398,8 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 
 				diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
 				QueryPerformanceCounter(&oldTick);
-				
+				if(diff > 100)
+					diff = 5;
 
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
@@ -401,7 +430,7 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				}
 
 				if(this->mNet->IsServer())
-				if((numAlivePlayers == 1 && this->mNet->GetNumPlayers() > 1) || numAlivePlayers < 1)
+				if(numAlivePlayers < 1)
 				{
 					running = false;
 				}
@@ -414,7 +443,13 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				this->mTimeElapsed += newdt;
 				if(this->mTimeElapsed > 600.0f)
 					running = false;
+				if(this->mQuitByMenu)
+				{
+					quitByMenu = true;
+					running = false;
+				}
 		}
+		return quitByMenu;
 }
 
 void GameMode::AddBall()

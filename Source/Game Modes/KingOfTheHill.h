@@ -34,7 +34,7 @@ class KingOfTheHill : public GameMode
 			virtual ~KingOfTheHill();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void PlaySpecific();
+			virtual bool PlaySpecific();
 			void PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
 			virtual void ShowStats();
 			virtual void ShowHud();

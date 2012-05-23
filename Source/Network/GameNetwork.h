@@ -21,7 +21,7 @@ class GameNetwork
 {
 private:
 	ServerInfo			mServer;
-	NetworkHandler*	mConn;
+	NetworkHandler*		mConn;
 	D3DXVECTOR3*		mFlagPos;
 	int					mIndex;
 	int					mNumPlayers;
@@ -44,6 +44,7 @@ private:
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
+	bool		IsRunning() const { return this->mIsRunning; }
 	void		DropPlayer(int index) { if(index > 0 && index < this->mNumPlayers) mDropPlayerIndex = index; }
 	void		SetLatency(float latency){this->mLatency = latency;}
 	float		GetLatency() const {return this->mLatency;}
@@ -96,6 +97,8 @@ public:
 
 	/*! Closes the game LAN. */
 	void		Close();
+
+	void		Reset();
 	
 	/*! Returns servers active on the LAN. */
 	vector<ServerInfo>		FindServers();

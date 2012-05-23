@@ -337,6 +337,10 @@ D3DXVECTOR3 GameNetwork::CorrectPosition()
 			mod.z = 0;
 		}
 	}
+	else if( this->mNetBalls[this->mIndex]->GetExecTime() >  this->mNetBalls[0]->GetExecTime() + 1)
+	{
+		this->mNetBalls[this->mIndex]->SetExecTime(this->mNetBalls[0]->GetExecTime());
+	}
 	return mod;
 }
 ServerInfo GameNetwork::ConnectTo(string ip)
@@ -399,6 +403,13 @@ void GameNetwork::GoOnline(string accName, string accPass)
 {
 	this->mOnline = true;
 	this->mOnlineHandler->Connect(accName, accPass);
+}
+void GameNetwork::Reset()
+{
+	for(int i = 0; i < PLAYER_CAP; i++)
+	{
+		this->mNetBalls[i]->Reset();
+	}
 }
 void GameNetwork::Close()
 {

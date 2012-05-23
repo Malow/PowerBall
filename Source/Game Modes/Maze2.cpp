@@ -91,7 +91,7 @@ void Maze2::Intro()
 		mGe->DeleteText(intro);
 }
 
-void Maze2::PlaySpecific()
+bool Maze2::PlaySpecific()
 {	
 		bool running = true;
 		this->mGameMode = CREDITS2;
@@ -185,7 +185,7 @@ void Maze2::PlaySpecific()
 			
 			
 		}
-	
+	return false;
 }
 
 void Maze2::ShowStats()

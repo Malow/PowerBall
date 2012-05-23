@@ -97,7 +97,7 @@ void Maze::Intro()
 	mGe->DeleteText(intro);
 }
 
-void Maze::PlaySpecific()
+bool Maze::PlaySpecific()
 {	
 		this->mHud[0]->SetText("Rikard Johansson");
 		this->mHud[1]->SetText("Marcus Lowegren");
@@ -202,7 +202,7 @@ void Maze::PlaySpecific()
 			this->ShowHud();
 
 		}
-		
+		return false;
 }
 
 void Maze::ShowStats()

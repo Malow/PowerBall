@@ -150,9 +150,9 @@ void CaptureTheFlag::Intro()
 		mGe->DeleteText(intro);
 }
 
-void CaptureTheFlag::PlaySpecific()
+bool CaptureTheFlag::PlaySpecific()
 {	
-		GameMode::PlayLan();
+	return GameMode::PlayLan();
 }
 
 void CaptureTheFlag::ShowStats()
