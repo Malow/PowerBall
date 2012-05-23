@@ -13,6 +13,7 @@ GameMode::GameMode()
 	this->mTimeElapsed = 0.0f;
 	this->mChooseTeamMenu = NULL;
 	this->mQuitByMenu = false;
+	this->mTimeElapsedText = NULL;
 }
 
 GameMode::~GameMode()
@@ -25,6 +26,7 @@ GameMode::~GameMode()
 	SAFE_DELETE_ARRAY(this->mBalls);
 	//SAFE_DELETE(this->mNet);
 	SAFE_DELETE(this->mChooseTeamMenu);
+	this->mGe->DeleteText(this->mTimeElapsedText);
 }
 
 void GameMode::PlayLan()
@@ -402,6 +404,11 @@ void GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				if(this->checkWinConditions(diff))
 					running = false;
 				this->ShowHud();
+				
+				//show time elapsed
+				float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
+				this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+
 				float newdt = diff/1000.0f;
 				
 				this->mTimeElapsed += newdt;

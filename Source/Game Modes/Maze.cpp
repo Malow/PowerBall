@@ -86,7 +86,13 @@ void Maze::Initialize()
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 		*/
+		
 
+		this->mTimeElapsedText = this->mGe->CreateText(	"",
+														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
+																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
+														1.0f, 
+														"Media/Fonts/1");
 }
 
 void Maze::Intro()
@@ -138,6 +144,7 @@ void Maze::PlaySpecific()
 		{
 			
 			this->mDiff = mGe->Update();
+			this->mTimeElapsed += this->mDiff * 0.001f;
 			if(choice == 1)
 			{
 				this->PlayMazeV1();
@@ -283,7 +290,11 @@ void Maze::ShowHud()
 		this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, 0));
 	else
 		this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, this->mHud[4]->GetPosition().y + this->mDiff * this->mCreditSpeed));
-
+	
+	
+	//show time elapsed
+	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
+	this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
 }
 
 void Maze::PlayMazeV1()

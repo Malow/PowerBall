@@ -33,6 +33,7 @@ class GameMode
 			int				mTeam;
 			Text* mHud[SIZE_HUD];
 			bool			mQuitByMenu;
+			Text*			mTimeElapsedText;
 			
 	public:
 			GameMode();
