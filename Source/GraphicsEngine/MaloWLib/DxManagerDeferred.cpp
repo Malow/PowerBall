@@ -204,6 +204,7 @@ void DxManager::RenderDeferredPerPixel()
 
 	this->Dx_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
+	//DeferredLightning.fx:
 	this->Shader_DeferredLightning->SetResource("Texture", this->Dx_GbufferSRVs[0]);
 	this->Shader_DeferredLightning->SetResource("NormalAndDepth", this->Dx_GbufferSRVs[1]);
 	this->Shader_DeferredLightning->SetResource("Position", this->Dx_GbufferSRVs[2]);
@@ -211,15 +212,17 @@ void DxManager::RenderDeferredPerPixel()
 	D3DXMATRIX vp = this->camera->GetViewMatrix() * this->camera->GetProjectionMatrix();
 	this->Shader_DeferredLightning->SetMatrix("CameraVP", vp);
 	this->Shader_DeferredLightning->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
+	//stdafx.fx:
 	this->Shader_DeferredLightning->SetFloat("timerMillis", this->TimerAnimation);
 	this->Shader_DeferredLightning->SetInt("windowWidth", this->params.windowWidth);
 	this->Shader_DeferredLightning->SetInt("windowHeight", this->params.windowHeight);
 		
-	// Set SSAO settings
+	//ssao.fx:
 	this->ssao->PreRender(this->Shader_DeferredLightning, this->params, this->camera);
 
-	// Set lava-texture
+	//lava.fx:
 	this->Shader_DeferredLightning->SetResource("LavaTexture", this->LavaTexture);
+	this->Shader_DeferredLightning->SetFloat("outerRadius", this->LavaWavesOuterRadius); 
 
 	this->Shader_DeferredLightning->Apply(0);
 

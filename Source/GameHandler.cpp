@@ -11,6 +11,7 @@ GameHandler::GameHandler()
 	this->mGameMode = NULL;
 	this->mGe = NULL;
 	this->mNet = NULL;
+	this->mEndGameMenu = NULL;
 }
 
 GameHandler::GameHandler(GraphicsEngine* ge)
@@ -18,6 +19,7 @@ GameHandler::GameHandler(GraphicsEngine* ge)
 	this->mGameMode = NULL;
 	this->mGe = ge;
 	this->mNet = NULL;
+	this->mEndGameMenu = new EndGameMenu(ge);
 }
 
 GameHandler::~GameHandler()
@@ -100,11 +102,48 @@ bool GameHandler::CreateMazeGame2()
 
 bool GameHandler::Start()
 {
-	this->mGameMode->Initialize();
-	this->mGameMode->Intro();
-	this->mGameMode->PlaySpecific();
-	this->mGameMode->ShowStats();
-	this->DeleteCreatedGame();
+	if(!this->mNet)
+		this->mNet = new GameNetwork();
+	bool quitByMenu = false;
+	ENDGAMEMENU val = ENDGAMEMENU::PLAYAGAIN;
+
+	if(this->mNet->IsServer())
+	{
+
+		this->mGameMode->Initialize();
+		this->mGameMode->Intro();
+		do
+		{
+			quitByMenu = this->mGameMode->PlaySpecific();
+			this->mGameMode->ShowStats();
+			if(!quitByMenu)
+			{
+				CreateThread(0, 0, &EndMenuThread, (void*)(new EndMenuThreadParam(this->mEndGameMenu, val, this->mGameMode)), 0, 0);
+			}
+			else val = ENDGAMEMENU::QUITGAME;
+
+		}while(val == ENDGAMEMENU::PLAYAGAIN);
+
+		this->DeleteCreatedGame();
+
+	}
+	else //client
+	{
+			this->mGameMode->Initialize();
+			this->mGameMode->Intro();
+			while(this->mNet->IsRunning() && !quitByMenu && val == ENDGAMEMENU::PLAYAGAIN)
+			{
+				quitByMenu = this->mGameMode->PlaySpecific();
+				this->mGameMode->ShowStats();
+				
+				/*if(!quitByMenu)
+					CreateThread(0, 0, &EndMenuThread, (void*)new EndMenuThreadParam(this->mEndGameMenu, val, this->mGameMode), 0, 0);
+				else val = ENDGAMEMENU::QUITGAME;*/
+
+			}
+			this->DeleteCreatedGame();
+	}
+	this->mNet->Close();
 	SAFE_DELETE(this->mNet);
 	return true;
 }
@@ -126,4 +165,15 @@ GameNetwork* GameHandler::GetLanPointer()
 	if(!this->mNet)
 		this->mNet = new GameNetwork();
 	return this->mNet;
+}
+
+
+DWORD WINAPI GameHandler::EndMenuThread(void* param)
+{
+	EndMenuThreadParam* emtp = (EndMenuThreadParam*) param;
+	emtp->val = ENDGAMEMENU(emtp->egm->Run());
+	if(emtp->val == ENDGAMEMENU::QUITGAME)
+		emtp->gm->QuitByMenu();
+	delete emtp;
+	return 0;
 }

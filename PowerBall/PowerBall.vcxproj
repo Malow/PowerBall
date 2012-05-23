@@ -244,6 +244,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>
       <FileType>Document</FileType>
     </None>
+    <None Include="Shaders\ShadowMapAnimated.fx" />
     <None Include="Shaders\SkyBox.fx" />
     <None Include="Shaders\SSAO.fx" />
     <None Include="Shaders\stdafx.fx" />

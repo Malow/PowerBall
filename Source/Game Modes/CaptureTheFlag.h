@@ -17,15 +17,17 @@
 class CaptureTheFlag : public GameMode
 {
 	private:
-			FlagCTF* mEnemyFlag;
-			FlagCTF* mFriendlyFlag;
+			float		mFlagRadius;
+			FlagCTF*	mEnemyFlag;
+			FlagCTF*	mFriendlyFlag;
+
 	public:
 			CaptureTheFlag();
 			CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);
 			virtual ~CaptureTheFlag();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void PlaySpecific();
+			virtual bool PlaySpecific();
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);
