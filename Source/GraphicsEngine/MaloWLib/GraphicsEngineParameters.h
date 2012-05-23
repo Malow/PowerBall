@@ -74,7 +74,7 @@ public:
 	}
 
 
-	void SaveToFile(string file, int winWidth, int winHeight, int shadowMapQual, int FXAAQual )
+	void SaveToFile(string file, int winWidth, int winHeight, int winMax, int shadowMapQual, int FXAAQual )
 	{
 		ofstream out;
 		out.open(file);
@@ -86,6 +86,7 @@ public:
 
 		out << winWidth << endl;
 		out << winHeight << endl;
+		out << winMax << endl;
 		out << shadowMapQual << endl;
 		out << FXAAQual << endl;
 

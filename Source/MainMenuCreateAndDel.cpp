@@ -100,16 +100,24 @@ void MainMenu::CreateOptionsMenu()
 		dx * (155.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 
-	tempElement = new CheckBox(dx * (530.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png",dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
+	tempElement = new CheckBox(dx * (530.0f / 1200.0f) + offSet, windowHeight * (100.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Sound", "true"), "Sound");
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
+
 	/*Graphic*/
+	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionwindowed.png", dx, windowHeight);
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
+
+	GraphicsEngineParams gep;
+	tempElement = new CheckBox(dx * (680.0f / 1200.0f) + offSet, windowHeight * (97.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
+		"Media/Menus/CheckBoxChecked.png", gep.Maximized, new ChangeOptionEvent("Windowed", "true"), "Windowed");
+	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
 	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionsresolution.png", dx, windowHeight);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
-	float dropX = dx * (385.0f / 1200.0f) + offSet, dropY = windowHeight * (125.0f / 900.0f);
-	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", dx * (300.0f / 1200.0f), windowHeight * (25.0f / 900.0f), "GameMode");
+	float dropX = dx * (385.0f / 1200.0f) + offSet, dropY = windowHeight * (205.0f / 900.0f);
+	tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", dx * (300.0f / 1200.0f), windowHeight * (25.0f / 900.0f), "Resolution");
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	
 	if(windowWidth == 1920.0f && windowHeight == 1080.0f)
@@ -157,24 +165,23 @@ void MainMenu::CreateOptionsMenu()
 	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionshadow.png", dx, windowHeight);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
-	GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
 	string startValue = MaloW::convertNrToString(gep.FXAAQuality);
 
-	tempElement = new TextBox(offSet + dx * (525.0f / 1200.0f), windowHeight * (280.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
+	tempElement = new TextBox(offSet + dx * (525.0f / 1200.0f), windowHeight * (365.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
 		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "FXAA", 0.75f, 1, NR, 0, 4);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
-	tempElement = new GUIPicture(offSet + dx * (560.0f / 1200.0f), windowHeight * (285.0f / 900.0f),0, "Media/OptionsMenu/0-4.png", 
+	tempElement = new GUIPicture(offSet + dx * (560.0f / 1200.0f), windowHeight * (370.0f / 900.0f),0, "Media/OptionsMenu/0-4.png", 
 		dx * (53.0f / 1200.0f), windowHeight * (22.0f / 900.0f));
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
 	startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
 
-	tempElement = new TextBox(offSet + dx * (625.0f / 1200.0f), windowHeight * (195.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
+	tempElement = new TextBox(offSet + dx * (625.0f / 1200.0f), windowHeight * (280.0f / 900.0f), 1, "Media/Menus/TextBox30x30.png",
 		dx * (31.0f / 1200.0f), windowHeight * (30.0f / 900.0f), startValue, "SHADOW", 0.75f, 1, NR, 0, 6);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
-	tempElement = new GUIPicture(offSet + dx * (660.0f / 1200.0f), windowHeight * (200.0f / 900.0f),0, "Media/OptionsMenu/0-6.png", 
+	tempElement = new GUIPicture(offSet + dx * (660.0f / 1200.0f), windowHeight * (285.0f / 900.0f),0, "Media/OptionsMenu/0-6.png", 
 		dx * (53.0f / 1200.0f), windowHeight * (22.0f / 900.0f));
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
 
@@ -243,8 +250,8 @@ void MainMenu::CreateOnlineAndLanMenu()
 		dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_ONLINE].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonsendonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_ONLINE),
-		"Media/OnlineAndLanMenu/clicksendonline.png" , "Media/OnlineAndLanMenu/mouseoversendonline.png", 
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/onlinejoin.png", dx, windowHeight, new ChangeSetEvent(99),
+		"Media/OnlineAndLanMenu/onlinejoinclicked.png" , "Media/OnlineAndLanMenu/onlinejoinmouseover.png", 
 		dx * (1006.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_ONLINE].AddElement(tempElement);
 
@@ -260,11 +267,16 @@ void MainMenu::CreateOnlineAndLanMenu()
 
 	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonstartgameonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_LAN),
 		"Media/OnlineAndLanMenu/clickstartgameonline.png" , "Media/OnlineAndLanMenu/mouseoverstartgameonline.png", 
-		dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
+		dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (200.0f / 1200), windowHeight * (35.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/buttonsendonline.png", dx, windowHeight, new ChangeSetEvent(PLAY_LAN),
-		"Media/OnlineAndLanMenu/clicksendonline.png" , "Media/OnlineAndLanMenu/mouseoversendonline.png", 
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/onlinerefresh.png", dx, windowHeight, new ChangeSetEvent(999),
+		"Media/OnlineAndLanMenu/onlinerefreshclicked.png" , "Media/OnlineAndLanMenu/onlinerefreshmouseover.png", 
+		dx * (395.0f / 1200)+offSet, windowHeight * (815.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
+	this->mSets[OPTIONS_LAN].AddElement(tempElement);
+
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/onlinejoin.png", dx, windowHeight, new ChangeSetEvent(99),
+		"Media/OnlineAndLanMenu/onlinejoinclicked.png" , "Media/OnlineAndLanMenu/onlinejoinmouseover.png", 
 		dx * (1006.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (118.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 	
