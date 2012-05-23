@@ -36,7 +36,10 @@ cbuffer EveryFrame
 	float posx;
 	float posy;
 	float size;
+}
 
+cbuffer Once
+{
 	int charTex[70];
 	int charWidth[70];
 }
@@ -83,28 +86,29 @@ VSIn VSScene(VSIn input)
 
 // GS
 [maxvertexcount(160)]
-void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
+void GS(point VSIn input[1], inout TriangleStream<PSSceneIn> triStream)
 {
-
 	PSSceneIn output;
+	float4 basepos = float4(posx, posy, 0, 1);
+
 
 	float imgWidth = 0.0f;
 	float imgHeight = 0.0f;
 	tex2D.GetDimensions(imgWidth, imgHeight);
 
-	float scale = 80.0f;
-	float widthScale = (windowHeight / windowWidth) * 2.5f;
 	
-	//create sprite quad
-	float4 basepos = float4(posx, posy, 0, 1);
-	float height = (size * scale) / windowHeight;
-	//height *= windowHeight / windowWidth;
-	float width = 0.0f;
+	float dimy = size * imgHeight;
+	float height = (dimy / windowHeight);
+	float scale = windowHeight / 950.0f; // Haxfix, text fits at 950 height
+	height *= scale;
 
-	
+
+	float width = 0.0f;
 	for(int i = 0; i < NrOfChars; i++)
 	{
-		float thiswidth = (charWidth[text[i]] / imgWidth) * size * widthScale;
+		float dimx = size * charWidth[text[i]];
+		float thiswidth = (dimx / windowWidth) * scale;
+
 		float texxwidth = (charWidth[text[i]] / imgWidth);
 		float texx = charTex[text[i]] / imgWidth;
 
@@ -112,7 +116,7 @@ void GS( point VSIn input[1], inout TriangleStream<PSSceneIn> triStream )
 		output.Pos = basepos + float4(width, -height, 0, 0);
 		output.tex = float2(texx, 1);
 		triStream.Append(output);
-	
+		
 		//bottom right
 		output.Pos = basepos + float4(width + thiswidth, -height, 0, 0);
 		output.tex = float2(texx + texxwidth, 1);

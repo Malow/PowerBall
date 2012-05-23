@@ -186,26 +186,32 @@ bool MainMenu::Run()
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
-						if(servers.size() > 0)
+						/*if(servers.size() > 0)
 						{
 							//this->mGm->PlayLAN(servers[chosenServer]);
 							ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo(servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
-							if(tett.GetIP() != "")
+							if(tett.GetIP() != "") //"83.233.57.248");//
 							{
-								this->mGh->CreateGame(servers[chosenServer].GetGameMode(), servers[chosenServer]);
+								this->mGh->CreateGame(tett.GetGameMode(), tett);//servers[chosenServer].GetGameMode(), servers[chosenServer]);
 								this->mGh->Start();
 							}
 							else cout << "SERVER NOT FOUND";
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "", 10000, gmi);
+							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "83.233.57.248", 10000, gmi);
 							this->mGh->GetLanPointer()->Start(host);
 							this->mGh->CreateGame(GameMode->GetGameMode(), host);
 							this->mGh->Start();
 
 							//this->mGm->PlayLAN(host);
-						} 
+						} */
+						ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo("192.168.1.125");//servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
+						   if(tett.GetIP() != "")
+						   {
+							this->mGh->CreateGame(tett.GetGameMode(), tett);//servers[chosenServer].GetGameMode(), servers[chosenServer]);
+							this->mGh->Start();
+						   }
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
@@ -391,33 +397,19 @@ bool MainMenu::Run()
 
 					if(this->mSubSet == OPTIONS_GRAPHICS) // A extraspecial case
 					{
-						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
-						string startValue = MaloW::convertNrToString(gep.FXAAQuality);
+						GraphicsEngineParams tempCfg;
 
+						CheckBox* tempCheck = this->mSets[OPTIONS_GRAPHICS].GetCheckBox("Windowed");
+						tempCheck->SetChecked(!tempCfg.Maximized);
+
+						string startValue = MaloW::convertNrToString(tempCfg.FXAAQuality);
 						TextBox* temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("FXAA");
 						temp->SetText(startValue);
 
-						startValue = MaloW::convertNrToString(gep.ShadowMapSettings);
+						startValue = MaloW::convertNrToString(tempCfg.ShadowMapSettings);
 						temp = this->mSets[OPTIONS_GRAPHICS].GetTextBox("SHADOW");
 						temp->SetText(startValue);
 					}
-				}
-				else if(returnEvent->GetEventMessage() == "ChangeResEvent")
-				{
-					ChangeResEvent* tempReturnEvent = (ChangeResEvent*)returnEvent;
-					int width = 0, height = 0;
-					width = tempReturnEvent->GetWidth();
-					height = tempReturnEvent->GetHeight();
-					GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
-
-					//gep.windowWidth = width;
-					//gep.windowHeight = height;
-
-					this->mNeedRestart = true;
-
-					/*
-					Make something that change res here
-					*/
 				}
 				else if(returnEvent->GetEventMessage() == "ChangeOptionEvent")
 				{
@@ -438,13 +430,27 @@ bool MainMenu::Run()
 					if(tempReturnEvent->GetOption() == "Apply")
 					{
 						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
-						TextBox* temp = this->mSets[this->mSubSet].GetTextBox("FXAA");
-						gep.FXAAQuality = atoi(temp->GetText().c_str());
+						TextBox* FXAA = this->mSets[this->mSubSet].GetTextBox("FXAA");
+						gep.FXAAQuality = atoi(FXAA->GetText().c_str());
 
-						temp = this->mSets[this->mSubSet].GetTextBox("SHADOW");
-						if(gep.ShadowMapSettings != atoi(temp->GetText().c_str()))
+						GUIEvent* tempEvent = this->mSets[this->mSubSet].GetEventFromDropDown("Resolution");
+						float windowWidth = ((ChangeResEvent*)tempEvent)->GetWidth();
+						float windowHeight = ((ChangeResEvent*)tempEvent)->GetHeight();
+
+						CheckBox* tempCheck = this->mSets[OPTIONS_GRAPHICS].GetCheckBox("Windowed");
+						if(gep.Maximized != tempCheck->GetOn())
 						{
-							//gep.ShadowMapSettings = atoi(temp->GetText().c_str());
+							this->mNeedRestart = true;
+						}
+
+						if(gep.windowWidth != windowWidth || gep.windowHeight != windowHeight)
+						{
+							this->mNeedRestart = true;
+						}
+
+						TextBox* Shadow = this->mSets[this->mSubSet].GetTextBox("SHADOW");
+						if(gep.ShadowMapSettings != atoi(Shadow->GetText().c_str()))
+						{
 							this->mNeedRestart = true;
 						}
 
@@ -452,10 +458,8 @@ bool MainMenu::Run()
 						{
 							this->mRestart = true;
 						}
-						else
-						{
-							this->mRestart = false;
-						}
+						GraphicsEngineParams params;
+						params.SaveToFile("config.cfg", windowWidth, windowHeight, !tempCheck->GetOn(), atoi(Shadow->GetText().c_str()), atoi(FXAA->GetText().c_str()));
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")

@@ -61,7 +61,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
 	this->mTeamColor = TEAM::NOTEAM;
-	this->mSound		  = false;
+	this->mSound		  = true;
 	this->mWarlockMode    = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");

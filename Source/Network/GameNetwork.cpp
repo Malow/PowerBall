@@ -129,11 +129,13 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			if(this->mNumPlayers != this->mConn->GetNumConnections())
 			{
 				this->mNumPlayers = this->mConn->GetNumConnections();
+				/*
+				Here: Do w/e u want to happen when a new player joins the game.
 				for(int i = 0; i < this->mNumPlayers - 1; i++)
 				{
 					this->mNetBalls[i]->SetPos(this->mNetBalls[i]->GetStartPos());
 					PowerBalls[i]->SetPosition(this->mNetBalls[i]->GetStartPos());
-				}
+				}*/
 			}
 			if(this->mConn->GetNumConnections() > 1)
 			{
@@ -288,6 +290,13 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 		{
 			this->DropPlayer(PowerBalls, numPowerBalls,  this->mDropPlayerIndex);
 		}
+		
+		this->mNetBalls[0]->ModifyAliveTime(-dt);
+		if(this->mNetBalls[0]->GetAliveTime() <= 0.0f)
+		{
+			this->mConn->Close();
+			this->mIsRunning = false;
+		}
 	}
 	return this->mIsRunning;
 }
@@ -327,6 +336,10 @@ D3DXVECTOR3 GameNetwork::CorrectPosition()
 			mod.x = 0;
 			mod.z = 0;
 		}
+	}
+	else if( this->mNetBalls[this->mIndex]->GetExecTime() >  this->mNetBalls[0]->GetExecTime() + 1)
+	{
+		this->mNetBalls[this->mIndex]->SetExecTime(this->mNetBalls[0]->GetExecTime());
 	}
 	return mod;
 }
@@ -390,6 +403,13 @@ void GameNetwork::GoOnline(string accName, string accPass)
 {
 	this->mOnline = true;
 	this->mOnlineHandler->Connect(accName, accPass);
+}
+void GameNetwork::Reset()
+{
+	for(int i = 0; i < PLAYER_CAP; i++)
+	{
+		this->mNetBalls[i]->Reset();
+	}
 }
 void GameNetwork::Close()
 {

@@ -26,7 +26,7 @@ class Knockout : public GameMode
 			virtual ~Knockout();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void PlaySpecific();
+			virtual bool PlaySpecific();
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);

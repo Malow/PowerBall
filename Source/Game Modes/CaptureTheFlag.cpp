@@ -11,11 +11,13 @@ CaptureTheFlag::CaptureTheFlag()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
+	this->mFlagRadius = 0.0f;
+	this->mEnemyFlag = NULL;
+	this->mFriendlyFlag = NULL;
 }
 
 CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 {
-	
 		this->mGe = ge;
 		this->mNumberOfPlayers = 0;
 		this->mNumberOfRounds = 3;
@@ -23,7 +25,10 @@ CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo 
 		this->mNet = net;
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
-	
+
+	this->mFlagRadius = 1.0f;
+	this->mEnemyFlag = NULL;
+	this->mFriendlyFlag = NULL;
 }
 
 CaptureTheFlag::~CaptureTheFlag()
@@ -139,7 +144,12 @@ void CaptureTheFlag::Initialize()
 
 		this->mIGM	= new InGameMenu(this->mGe);
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
-		
+
+		this->mTimeElapsedText = this->mGe->CreateText(	"",
+														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
+																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
+														1.0f, 
+														"Media/Fonts/1");
 }
 
 void CaptureTheFlag::Intro()
@@ -150,9 +160,9 @@ void CaptureTheFlag::Intro()
 		mGe->DeleteText(intro);
 }
 
-void CaptureTheFlag::PlaySpecific()
+bool CaptureTheFlag::PlaySpecific()
 {	
-		GameMode::PlayLan();
+	return GameMode::PlayLan();
 }
 
 void CaptureTheFlag::ShowStats()
@@ -162,9 +172,9 @@ void CaptureTheFlag::ShowStats()
 
 bool CaptureTheFlag::checkWinConditions(float dt)
 {
-	D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[0]->GetRadius(), 0))- this->mBalls[0]->GetPosition());
+	D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[0]->GetRadius(), 0)) - this->mBalls[0]->GetPosition());
 
-	if(D3DXVec3Length(&BallToFlag) < (this->mBalls[0]->GetRadius()))
+	if(D3DXVec3Length(&BallToFlag) - this->mFlagRadius < (this->mBalls[0]->GetRadius()))
 	{
 		this->mBalls[0]->AddFlag(this->mEnemyFlag);
 		this->mEnemyFlag->SetAtBase(false);
@@ -172,7 +182,7 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 	if(!this->mEnemyFlag->GetAtBase())
 	{
 		D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mEnemyFlag->GetMesh()->GetPosition() - this->mFriendlyFlag->GetMesh()->GetPosition());
-		if(D3DXVec3Length(&distBetweenFlags) < (this->mBalls[0]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
+		if((D3DXVec3Length(&distBetweenFlags) - this->mFlagRadius < this->mBalls[0]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
 		{
 			this->mBalls[0]->ResetFlag();
 			this->mEnemyFlag->Reset();

@@ -343,6 +343,7 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 	
 
 	this->mNet->GetBall(0)->SetExecTime(this->GetFromBufferF(buf, offset));
+	this->mNet->GetBall(0)->ResetAliveTime();
 }
 void MsgHandler::ReceiveIdentification(char* buf, int &offset, int index)
 {

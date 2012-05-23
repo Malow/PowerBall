@@ -81,6 +81,11 @@ void test()
 	StaticMesh* flag3 = eng->CreateStaticMesh("Media/FlagBlue3.obj", D3DXVECTOR3(16, 15, 8));
 	StaticMesh* flag4 = eng->CreateStaticMesh("Media/FlagBlue4.obj", D3DXVECTOR3(18, 15, 8));
 	StaticMesh* flag5 = eng->CreateStaticMesh("Media/FlagBlue5.obj", D3DXVECTOR3(20, 15, 8));
+
+	StaticMesh* ball1 = eng->CreateStaticMesh("Media/Ball1.obj", D3DXVECTOR3(12, 30, 8));
+	StaticMesh* ball2 = eng->CreateStaticMesh("Media/Ball2.obj", D3DXVECTOR3(14, 30, 8));
+	StaticMesh* ball3 = eng->CreateStaticMesh("Media/Ball3.obj", D3DXVECTOR3(16, 30, 8));
+	StaticMesh* ball4 = eng->CreateStaticMesh("Media/Ball4.obj", D3DXVECTOR3(18, 30, 8));
 	
 	//StaticMesh* wlmap = eng->CreateStaticMesh("Media/WarlockMap.obj", D3DXVECTOR3(100, 4, 8));
 	//StaticMesh* hb = eng->CreateStaticMesh("Media/HardenedBall.obj", D3DXVECTOR3(12, 15, 12));

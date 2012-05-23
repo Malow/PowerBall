@@ -83,6 +83,7 @@
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
     <ClCompile Include="..\Source\GUI\SliderBar.cpp" />
     <ClCompile Include="..\Source\GUI\TextBox.cpp" />
+    <ClCompile Include="..\Source\GUI\TextButton.cpp" />
     <ClCompile Include="..\Source\InGameMenu.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\MainMenu.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
     <ClInclude Include="..\Source\GUI\SliderBar.h" />
     <ClInclude Include="..\Source\GUI\TextBox.h" />
+    <ClInclude Include="..\Source\GUI\TextButton.h" />
     <ClInclude Include="..\Source\InGameMenu.h" />
     <ClInclude Include="..\Source\MainMenu.h" />
     <ClInclude Include="..\Source\MaloWLib\Array.h" />
@@ -250,6 +252,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputName).fxo</Outputs>
       <FileType>Document</FileType>
     </None>
+    <None Include="Shaders\ShadowMapAnimated.fx" />
     <None Include="Shaders\SkyBox.fx" />
     <None Include="Shaders\SSAO.fx" />
     <None Include="Shaders\stdafx.fx" />

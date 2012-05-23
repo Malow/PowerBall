@@ -81,6 +81,12 @@ void Knockout::Initialize()
 	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(300,150),4.0f,"Media/Fonts/1");
 	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(250,150),2.0f,"Media/Fonts/1");
 	this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
+
+	this->mTimeElapsedText = this->mGe->CreateText(	"",
+													D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
+																this->mGe->GetEngineParameters().windowHeight - 100.0f), 
+													1.0f, 
+													"Media/Fonts/1");
 }
 
 void Knockout::Intro()
@@ -91,7 +97,7 @@ void Knockout::Intro()
 	mGe->DeleteText(intro);
 }
 
-void Knockout::PlaySpecific()
+bool Knockout::PlaySpecific()
 {	
 	
 	bool roundsLeft = true;
@@ -118,7 +124,7 @@ void Knockout::PlaySpecific()
 	}
 
 	
-	
+	return false;
 	
 }
 
@@ -236,6 +242,10 @@ void Knockout::ShowHud()
 	this->mHud[1]->SetText(s);
 	s = "Round: " + MaloW::convertNrToString(this->mRoundsPlayed+1) + " of " + MaloW::convertNrToString(this->mNumberOfRounds);
 	this->mHud[2]->SetText(s);
+	
+	//show time elapsed
+	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
+	this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
 }
 
 void Knockout::PlayRound(bool& roundsLeft)
@@ -254,6 +264,8 @@ void Knockout::PlayRound(bool& roundsLeft)
 			this->mQuitByMenu = !running;
 		}
 		/*
+		this->mTimeElapsed += diff * 0.001f;
+
 		this->InputKnockout(diff, running, roundsLeft);
 		for(int i = 0; i < this->mNumberOfPlayers; i++)
 			this->mBalls[i]->Update(diff);

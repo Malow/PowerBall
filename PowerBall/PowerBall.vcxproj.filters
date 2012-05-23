@@ -347,6 +347,18 @@
     <ClCompile Include="..\Source\Physics\GameTimerSimple.cpp">
       <Filter>Game Files\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GUI\TextButton.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -670,6 +682,9 @@
     <ClInclude Include="..\Source\Physics\GameTimerSimple.h">
       <Filter>Game Files\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\GUI\TextButton.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">
@@ -721,6 +736,9 @@
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
     <None Include="Shaders\InvisibilityEffect.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowMapAnimated.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
   </ItemGroup>

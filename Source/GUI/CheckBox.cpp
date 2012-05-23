@@ -103,3 +103,21 @@ GUIEvent* CheckBox::CheckCollision(float mouseX, float mouseY, bool mousePressed
 	return NULL;
 
 }
+void CheckBox::SetChecked(bool checked)
+{ 
+	if(checked == this->mOn)
+		return;
+	else
+	{
+		this->mOn = checked;
+		if(this->mOn && this->mCheckedImage == NULL)
+		{
+			this->mCheckedImage = GetGraphicsEngine()->CreateImage(this->GetPositionD3D(), this->GetDimension(), this->mCheckedTextureName);
+		}
+		else if(!this->mOn && this->mCheckedImage != NULL)
+		{
+			GetGraphicsEngine()->DeleteImage(this->mCheckedImage);
+			this->mCheckedImage = NULL;
+		}
+	}
+}
