@@ -25,9 +25,7 @@ Warlock::Warlock(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
 		this->mProgressBars = NULL;
-		
 }
-
 Warlock::~Warlock()
 {
 		for(int i = 0; i < 5; i++)
@@ -138,6 +136,12 @@ void Warlock::Initialize()
 		}
 		this->mProgressBars[5] = new ProgressBar();
 	
+
+		this->mTimeElapsedText = this->mGe->CreateText(	"",
+														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
+																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
+														1.0f, 
+														"Media/Fonts/1");
 }
 
 void Warlock::Intro()

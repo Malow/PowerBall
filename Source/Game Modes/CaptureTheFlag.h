@@ -17,8 +17,10 @@
 class CaptureTheFlag : public GameMode
 {
 	private:
-			FlagCTF* mEnemyFlag;
-			FlagCTF* mFriendlyFlag;
+			float		mFlagRadius;
+			FlagCTF*	mEnemyFlag;
+			FlagCTF*	mFriendlyFlag;
+
 	public:
 			CaptureTheFlag();
 			CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo server);

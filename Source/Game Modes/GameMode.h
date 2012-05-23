@@ -33,6 +33,7 @@ class GameMode
 			int				mTeam;
 			Text* mHud[SIZE_HUD];
 			bool			mQuitByMenu;
+			Text*			mTimeElapsedText;
 			
 			static DWORD WINAPI	SelectTeamThread(void* param);
 			static DWORD WINAPI	InGameMenuThread(void* param);

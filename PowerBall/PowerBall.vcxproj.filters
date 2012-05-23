@@ -326,14 +326,17 @@
     <ClCompile Include="..\Source\SystemReqRestart.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Network\Connection.cpp">
-      <Filter>Game Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
-      <Filter>Game Files\Network</Filter>
+    <ClCompile Include="..\Source\GUI\TextButton.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -645,6 +648,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Network\Connection.h">
       <Filter>Game Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\TextButton.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
