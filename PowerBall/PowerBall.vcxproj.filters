@@ -699,5 +699,8 @@
     <None Include="Shaders\InvisibilityEffect.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\ShadowMapAnimated.fx">
+      <Filter>Graphics Engine Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
