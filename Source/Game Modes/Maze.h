@@ -32,7 +32,7 @@ class Maze : public GameMode
 			virtual ~Maze();
 			virtual void Initialize();
 			virtual void Intro();
-			virtual void PlaySpecific();
+			virtual bool PlaySpecific();
 			virtual void ShowStats();
 			virtual void ShowHud();
 			virtual bool checkWinConditions(float dt);

@@ -19,6 +19,7 @@
 
 #include "GraphicsEngine.h"
 #include "Network\GameNetwork.h"
+#include "EndGameMenu.h"
 class GameMode;
 
 class GameHandler
@@ -28,7 +29,9 @@ class GameHandler
 			GameMode*		mGameMode;
 			GraphicsEngine* mGe;
 			GameNetwork*	mNet;
+			EndGameMenu*	mEndGameMenu;
 		
+			static DWORD WINAPI	EndMenuThread(void* param);
 	public:
 			GameHandler();
 			GameHandler(GraphicsEngine* ge);
@@ -73,4 +76,17 @@ class GameHandler
 			/*! Starts LAN game with the assigned amount of players. */
 			//bool PlayLAN(ServerInfo server);
 
+
+		struct EndMenuThreadParam
+		{
+			EndGameMenu*	egm;
+			ENDGAMEMENU		val;
+			GameMode*		gm;
+			EndMenuThreadParam(EndGameMenu* egmPtr, ENDGAMEMENU &valPtr, GameMode* gmPtr)
+			{ 
+				this->egm = egmPtr;
+				this->val = valPtr;
+				this->gm = gmPtr;
+			}
+		};
 };

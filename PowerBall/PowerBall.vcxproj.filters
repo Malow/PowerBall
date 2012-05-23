@@ -326,14 +326,14 @@
     <ClCompile Include="..\Source\SystemReqRestart.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Network\Connection.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Network\OnlineHandler.cpp">
       <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\Connection.cpp">
+      <Filter>Game Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Network\NetworkHandler.cpp">
+      <Filter>Game Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

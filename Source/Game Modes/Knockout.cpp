@@ -85,7 +85,7 @@ void Knockout::Intro()
 	mGe->DeleteText(intro);
 }
 
-void Knockout::PlaySpecific()
+bool Knockout::PlaySpecific()
 {	
 	
 	bool roundsLeft = true;
@@ -111,7 +111,7 @@ void Knockout::PlaySpecific()
 	}
 
 	
-	
+	return false;
 	
 }
 

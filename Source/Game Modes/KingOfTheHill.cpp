@@ -162,9 +162,9 @@ void KingOfTheHill::Intro()
 		mGe->DeleteText(intro);
 }
 
-void KingOfTheHill::PlaySpecific()
+bool KingOfTheHill::PlaySpecific()
 {	
-		GameMode::PlayLan();
+		return GameMode::PlayLan();
 		/* 
 		*  or run it the way down below. 
 		*  

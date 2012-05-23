@@ -152,9 +152,9 @@ void Warlock::Intro()
 		mGe->DeleteText(intro);
 }
 
-void Warlock::PlaySpecific()
+bool Warlock::PlaySpecific()
 {	
-		GameMode::PlayLan();
+	return	GameMode::PlayLan();
 }
 
 void Warlock::ShowStats()
