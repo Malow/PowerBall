@@ -241,7 +241,7 @@ void CaptureTheFlag::AddBall()
 	}
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
-		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos());
+		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::CTF);
 		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		

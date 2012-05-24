@@ -270,7 +270,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 		dx * (280.0f / 1200)+offSet, windowHeight * (847.0f / 900), dx * (200.0f / 1200), windowHeight * (35.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
-	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/onlinerefresh.png", dx, windowHeight, new ChangeSetEvent(999),
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OnlineAndLanMenu/onlinerefresh.png", dx, windowHeight, new ServerListEvent("Refresh"),
 		"Media/OnlineAndLanMenu/onlinerefreshclicked.png" , "Media/OnlineAndLanMenu/onlinerefreshmouseover.png", 
 		dx * (395.0f / 1200)+offSet, windowHeight * (815.0f / 900), dx * (300.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);

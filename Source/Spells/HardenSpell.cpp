@@ -45,7 +45,7 @@ HardenSpell::HardenSpell(PowerBall* ball)
 HardenSpell::HardenSpell(SoundEffect* soundEffect) : Spell(soundEffect)
 {
 	this->mPowerBall = NULL;
-	this->mTimeNeededToCoolDown = 15.0f;
+	this->mTimeNeededToCoolDown = 1.0f; // 15.0f
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
 	this->mTimerCounterInUse = 0.0f;

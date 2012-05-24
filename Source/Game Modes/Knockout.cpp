@@ -123,8 +123,10 @@ bool Knockout::PlaySpecific()
 		}
 	}
 
-	
-	return false;
+	if(this->mQuitByMenu || !roundsLeft)
+		return true;
+	else
+		return false;
 	
 }
 
