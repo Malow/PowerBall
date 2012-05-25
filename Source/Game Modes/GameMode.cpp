@@ -42,7 +42,6 @@ bool GameMode::PlayLan()
 
 		//choose team before starting the game
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
-
 		if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
 			CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
 		else if(this->mGameMode == GAMEMODE::WARLOCK)
@@ -65,8 +64,6 @@ bool GameMode::PlayLan()
 				roundsLeft = false;
 		}
 		
-		delete this->mChooseTeamMenu;
-		this->mChooseTeamMenu = NULL;
 		//this->mNet->Close();
 		return quitByMenu;
 }
@@ -416,8 +413,8 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 					else //is client
 						this->mPe->SimulateClient();
 				
-					
-					this->mNumberOfPlayers = this->mPe->Size();
+				
+
 					
 					if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
 					{

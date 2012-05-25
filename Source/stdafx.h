@@ -85,16 +85,16 @@ inline D3DXVECTOR3 RndUnitVec3()
 
 	return v;
 }
-/*! returns the angle in radian
+/*! returns the angle in radian*/
 inline float DegreesToRadian(float degrees)
 {
 	return (PI / 180) * degrees;
 }
-/*! returns the angle in degrees
+/*! returns the angle in degrees*/
 inline float RadianToDegrees(float radian)
 {
 	return (180 / PI) * radian;
-}*/
+}
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment (lib,"dxerr.lib")
