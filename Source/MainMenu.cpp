@@ -77,7 +77,10 @@ bool MainMenu::Run()
 	mGe->LoadingScreen("Media/LoadingScreen/StartScreen.png", "", 0.0f, 1.0f, 1.0f, 1.0f);
 
 	GameOptions::songPlaying->Play();
-	GameOptions::isPlaying = true;
+	if(GameOptions::isPlaying == false)
+	{
+		GameOptions::songPlaying->Mute();
+	}
 
 	bool IsClicked = false;
 
@@ -462,6 +465,15 @@ bool MainMenu::Run()
 						}
 						GraphicsEngineParams params;
 						params.SaveToFile("config.cfg", windowWidth, windowHeight, !tempCheck->GetOn(), atoi(Shadow->GetText().c_str()), atoi(FXAA->GetText().c_str()));
+					}
+					else if(tempReturnEvent->GetOption() == "ApplySound")
+					{
+						GameOptions go;
+						CheckBox* tempCheck = this->mSets[this->mSubSet].GetCheckBox("Sound");
+
+						go.isPlaying = tempCheck->GetOn();
+
+						go.SaveToFile("GameSettings.cfg");
 					}
 				}
 				else if(returnEvent->GetEventMessage() == "ServerListEvent")

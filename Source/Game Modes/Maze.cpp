@@ -32,14 +32,21 @@ Maze::~Maze()
 	SAFE_DELETE(this->mBox);
 	for(int i = 0;i<5;i++) 
 		mGe->DeleteText(this->mHud[i]);
+	this->mCb->RemoveFromRenderer(this->mGe);
+	delete this->mCb;
 }
 
 void Maze::Initialize()
 {
+		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+		float dx = (windowHeight * 4.0f) / 3.0f;
+		float offSet = (windowWidth - dx) / 2.0f;
+
 		D3DXVECTOR3 centerPlatform;
 		centerPlatform = D3DXVECTOR3(0,20,0);
-		mGe->GetCamera()->setPosition(D3DXVECTOR3(20, 55, -20));
-		mGe->GetCamera()->LookAt(centerPlatform + D3DXVECTOR3(20,0,0));
+		mGe->GetCamera()->setPosition(D3DXVECTOR3(-(dx * (20.0f / 1200.0f)), 55, -20));
+		mGe->GetCamera()->LookAt(centerPlatform + D3DXVECTOR3(-(dx * (20.0f / 1200.0f)),0,0));
 		this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
 		this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
 		this->mLights[2] = mGe->CreateLight(D3DXVECTOR3(0, 50, 20));
@@ -75,11 +82,11 @@ void Maze::Initialize()
 		this->mWindowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 		
 		
-		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-800,0),2.0f,"Media/Fonts/1");
-		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-850,60),2.0f,"Media/Fonts/1");
-		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-775,120),2.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-700,180),2.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-785,240),2.0f,"Media/Fonts/1");
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(0,0),1.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(0,60),1.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(0,120),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(0,180),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(0,240),1.0f,"Media/Fonts/1");
 		this->mCreditSpeed = 0.05f;
 
 		/*
@@ -93,6 +100,13 @@ void Maze::Initialize()
 																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
 														1.0f, 
 														"Media/Fonts/1");
+
+		/*
+		CheckBox for the change gamemode
+		*/
+		this->mCb = new CheckBox(0,0,0,"Media/Menus/CheckBoxFrame.png",	dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
+			"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("MazeMode", "true"), "ChangeSet");
+
 }
 
 void Maze::Intro()
@@ -140,6 +154,8 @@ bool Maze::PlaySpecific()
 	float resetMazeCounter = 0.0f;
 	this->mDelayTimer = 2.0f;
 
+	this->mCb->AddToRenderer(this->mGe);
+
 	while(this->mRunning && mGe->isRunning())
 	{
 			
@@ -156,39 +172,33 @@ bool Maze::PlaySpecific()
 			
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 			this->mRunning = false;
-			
-		if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+		
+		GraphicsEngine* ge = GetGraphicsEngine();
+		D3DXVECTOR2 mousePos = ge->GetKeyListener()->GetMousePosition();
+		GUIEvent* tempEvent = this->mCb->CheckCollision(mousePos.x, mousePos.y, ge->GetKeyListener()->IsClicked(1), ge);
+		if(tempEvent != NULL)
 		{
-			if(!spacePressed)
+			if(((ChangeOptionEvent*)tempEvent)->GetValue() == "false")
 			{
-				spacePressed = true;
-				if(choice == 1)
-				{
-					choice = 2;
-					this->mPlatform->SetRotate(false);
-					this->ResetMaze();
-					this->mBalls[0]->SetToStartPosition();
-					this->mBalls[0]->ResetParent();
-					this->mDelayTimer = 2.0f;
-					this->mDelayTimer -= this->mDiff;
-						
-				}
-				else
-				{
-					choice = 1;
-					this->mPlatform->SetRotate(true);
-					this->ResetMaze();
-					this->mBalls[0]->SetToStartPosition();
-					this->mBalls[0]->ResetParent();
-					this->mDelayTimer = 2.0f;
-					this->mDelayTimer -= this->mDiff;
-						
-						
-				}
+				choice = 2;
+				this->mPlatform->SetRotate(false);
+				this->ResetMaze();
+				this->mBalls[0]->SetToStartPosition();
+				this->mBalls[0]->ResetParent();
+				this->mDelayTimer = 2.0f;
+				this->mDelayTimer -= this->mDiff;
+			}
+			else
+			{
+				choice = 1;
+				this->mPlatform->SetRotate(true);
+				this->ResetMaze();
+				this->mBalls[0]->SetToStartPosition();
+				this->mBalls[0]->ResetParent();
+				this->mDelayTimer = 2.0f;
+				this->mDelayTimer -= this->mDiff;		
 			}
 		}
-		else
-			spacePressed = false;
 
 		if(this->checkWinConditions(this->mDiff))
 			this->mRunning = false;

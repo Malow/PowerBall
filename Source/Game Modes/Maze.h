@@ -9,6 +9,7 @@
 **/
 
 #include "..\Game Modes\GameMode.h"
+#include "..\GUI\CheckBox.h"
 
 
 class Maze : public GameMode
@@ -25,6 +26,7 @@ class Maze : public GameMode
 			Map* mBox;
 			void PlayMazeV1();
 			void PlayMazeV2();
+			CheckBox* mCb;
 
 	public:
 			Maze();

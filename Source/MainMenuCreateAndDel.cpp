@@ -104,6 +104,10 @@ void MainMenu::CreateOptionsMenu()
 		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Sound", "true"), "Sound");
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 
+	tempElement = new SimpleButton(offSet, 0, 1, "Media/OptionsMenu/buttonapply.png", dx, windowHeight, new ChangeOptionEvent("ApplySound", "true"),
+		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
+	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
+
 	/*Graphic*/
 	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionwindowed.png", dx, windowHeight);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
