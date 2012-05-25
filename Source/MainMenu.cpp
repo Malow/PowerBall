@@ -177,7 +177,8 @@ bool MainMenu::Run()
 						}
 						else if(GameMode->GetGameMode() == WARLOCK)
 						{
-							gmi = new WARLOCKInfo(3, 2, 1234.56f); //replace 1234.56 with atoi(this->mSets[this->mSubSet].GetTextFromField("Health").c_str());
+							rounds = atoi(this->mSets[this->mSubSet].GetTextFromField("Rounds").c_str());
+							gmi = new WARLOCKInfo(rounds, 2, 1234.56f); //replace 1234.56 with atoi(this->mSets[this->mSubSet].GetTextFromField("Health").c_str());
 						}
 						serverName  = this->mSets[this->mSubSet].GetTextFromField("ServerName");
 						this->DeleteScene();

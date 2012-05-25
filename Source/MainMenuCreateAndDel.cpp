@@ -308,7 +308,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
 
 	tempElement = new TextBox(offSet + dx * (395.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox300x30.png",
-		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "CTF Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
+		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
 	this->mSets[OPTIONS_LAN_SUBCTF].AddElement(tempElement);
 
 	tempElement = new GUIPicture(dx * (705.0f / 1200.0f) + offSet, windowHeight * (80.0f / 900.0f), 1, "Media/Menus/Flags.png",
@@ -325,7 +325,7 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 	tempElement = new TextBox(offSet + dx * (395.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox300x30.png",
-		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "KOTH Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
+		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
 
@@ -367,7 +367,15 @@ void MainMenu::CreateOnlineAndLanMenu()
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 
 	tempElement = new TextBox(offSet + dx * (395.0f / 1200.0f), windowHeight * (80.0f / 900.0f), 1, "Media/Menus/TextBox300x30.png",
-		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "WARLOCK Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
+		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
+	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
+
+	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (200.0f / 900.0f), 1, "Media/Menus/Rounds.png",
+		dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
+	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
+
+	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (199.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 
 	/*tempElement = new DropDownList(dropX, dropY,1.0f,"Media/Menus/DropDownMenu.png", 300.0f, 25.0f, "GameMode");

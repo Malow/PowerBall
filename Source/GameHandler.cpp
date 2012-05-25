@@ -27,6 +27,7 @@ GameHandler::~GameHandler()
 	SAFE_DELETE(this->mGameMode);
 	this->mGe = NULL;
 	SAFE_DELETE(this->mNet);
+	SAFE_DELETE(this->mEndGameMenu);
 }
 bool GameHandler::CreateGame(int gameMode, ServerInfo server)
 {

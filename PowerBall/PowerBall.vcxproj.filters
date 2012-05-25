@@ -691,6 +691,12 @@
     <ClInclude Include="..\Source\GUI\ServerListEvent.h">
       <Filter>GUI\Event</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Graphics Engine Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DebugNormals.fx">
@@ -747,5 +753,9 @@
     <None Include="Shaders\ShadowMapAnimated.fx">
       <Filter>Graphics Engine Files\Shaders</Filter>
     </None>
+    <None Include="GameIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PowerBall.rc" />
   </ItemGroup>
 </Project>

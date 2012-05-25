@@ -82,11 +82,7 @@ void Knockout::Initialize()
 	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(250,150),2.0f,"Media/Fonts/1");
 	this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
 
-	this->mTimeElapsedText = this->mGe->CreateText(	"",
-													D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																this->mGe->GetEngineParameters().windowHeight - 100.0f), 
-													1.0f, 
-													"Media/Fonts/1");
+	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void Knockout::Intro()
@@ -248,7 +244,7 @@ void Knockout::ShowHud()
 	
 	//show time elapsed
 	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-	this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+	this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 }
 
 void Knockout::PlayRound(bool& roundsLeft)

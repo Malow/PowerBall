@@ -159,15 +159,16 @@ HRESULT GraphicsEngine::InitWindow(HINSTANCE hInstance, int nCmdShow)
 	wcex.cbClsExtra     = 0;	
 	wcex.cbWndExtra     = 0;
 	wcex.hInstance      = this->hInstance;
-	wcex.hIcon          = 0;
-	wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+	wcex.hIcon          = LoadIcon(hInstance, "GameIcon.ico");
+	wcex.hCursor        = LoadCursor(hInstance, "cursor1.cur");
+	//wcex.hCursor		= (HCURSOR)LoadImage(hInstance, "cursor1.cur", IMAGE_ICON, 32,32,LR_LOADFROMFILE);
+	//wcex.hCursor      = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName   = NULL;
 	wcex.lpszClassName  = "GraphicsEngine";
-	wcex.hIconSm        = 0;
+	wcex.hIconSm        = (HICON)LoadImage(hInstance, "GameIcon.ico", IMAGE_ICON, 32,32,LR_LOADFROMFILE);
 	if( !RegisterClassEx(&wcex) )
 		return E_FAIL;
-
 
 	// Create window
 	RECT rc = { 0, 0, this->parameters.windowWidth, this->parameters.windowHeight };

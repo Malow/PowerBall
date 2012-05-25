@@ -42,6 +42,7 @@ bool GameMode::PlayLan()
 
 		//choose team before starting the game
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
+
 		if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
 			CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
 		else if(this->mGameMode == GAMEMODE::WARLOCK)
@@ -64,6 +65,8 @@ bool GameMode::PlayLan()
 				roundsLeft = false;
 		}
 		
+		delete this->mChooseTeamMenu;
+		this->mChooseTeamMenu = NULL;
 		//this->mNet->Close();
 		return quitByMenu;
 }
@@ -439,7 +442,7 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				
 					//show time elapsed
 					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 
 					float newdt = diff/1000.0f;
 				
@@ -523,7 +526,7 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				
 					//show time elapsed
 					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 
 					float newdt = diff/1000.0f;
 				

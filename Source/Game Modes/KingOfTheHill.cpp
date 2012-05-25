@@ -147,11 +147,7 @@ void KingOfTheHill::Initialize()
 		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + width/8,height/24),1.0f,"Media/Fonts/1");
 		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + (2.0f*width)/8,height/24),1.0f,"Media/Fonts/1");
 
-		this->mTimeElapsedText = this->mGe->CreateText(	"",
-														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
-														1.0f, 
-														"Media/Fonts/1");
+		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void KingOfTheHill::Intro()

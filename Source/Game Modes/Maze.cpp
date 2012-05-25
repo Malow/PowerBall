@@ -93,20 +93,16 @@ void Maze::Initialize()
 		if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setBallToFollow(this->mBalls[0]);
 		*/
-		
-
 		this->mTimeElapsedText = this->mGe->CreateText(	"",
-														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
+														D3DXVECTOR2(windowWidth - 150.0f,
+																	windowHeight - 100.0f), 
 														1.0f, 
 														"Media/Fonts/1");
-
 		/*
 		CheckBox for the change gamemode
 		*/
 		this->mCb = new CheckBox(0,0,0,"Media/Menus/CheckBoxFrame.png",	dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 			"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("MazeMode", "true"), "ChangeSet");
-
 }
 
 void Maze::Intro()
@@ -304,7 +300,7 @@ void Maze::ShowHud()
 	
 	//show time elapsed
 	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-	this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+	this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 }
 
 void Maze::PlayMazeV1()
