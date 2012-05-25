@@ -34,7 +34,8 @@ TextButton::~TextButton()
 bool TextButton::AddToRenderer(GraphicsEngine* ge)
 {
 	Element::AddToRenderer(ge);
-	this->mTextPointer = ge->CreateText(this->mText, this->GetPositionD3D(), 1, "Media/Fonts/1");
+	D3DXVECTOR2 temp = this->GetPositionD3D();
+	this->mTextPointer = ge->CreateText(this->mText, D3DXVECTOR2(temp.x + 5, temp.y+2), 1, "Media/Fonts/1");
 
 	return true;
 }

@@ -80,6 +80,7 @@
     <ClCompile Include="..\Source\GUI\NoEvent.cpp" />
     <ClCompile Include="..\Source\GUI\ProgressBar.cpp" />
     <ClCompile Include="..\Source\GUI\SelectTeamEvent.cpp" />
+    <ClCompile Include="..\Source\GUI\ServerListEvent.cpp" />
     <ClCompile Include="..\Source\GUI\SimpleButton.cpp" />
     <ClCompile Include="..\Source\GUI\SliderBar.cpp" />
     <ClCompile Include="..\Source\GUI\TextBox.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="..\Source\GUI\NoEvent.h" />
     <ClInclude Include="..\Source\GUI\ProgressBar.h" />
     <ClInclude Include="..\Source\GUI\SelectTeamEvent.h" />
+    <ClInclude Include="..\Source\GUI\ServerListEvent.h" />
     <ClInclude Include="..\Source\GUI\SimpleButton.h" />
     <ClInclude Include="..\Source\GUI\SliderBar.h" />
     <ClInclude Include="..\Source\GUI\TextBox.h" />

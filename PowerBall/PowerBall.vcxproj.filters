@@ -359,6 +359,9 @@
     <ClCompile Include="..\Source\GUI\TextButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\GUI\ServerListEvent.cpp">
+      <Filter>GUI\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\MainMenu.h">
@@ -684,6 +687,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\GUI\TextButton.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GUI\ServerListEvent.h">
+      <Filter>GUI\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

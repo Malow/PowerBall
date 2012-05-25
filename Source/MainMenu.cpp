@@ -186,7 +186,7 @@ bool MainMenu::Run()
 
 						this->mSets[this->mCurrentSet].RemoveSetFromRenderer(this->mGe);
 						this->mSets[this->mSubSet].RemoveSetFromRenderer(this->mGe);
-						/*if(servers.size() > 0)
+						if(servers.size() > 0)
 						{
 							//this->mGm->PlayLAN(servers[chosenServer]);
 							ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo(servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
@@ -199,19 +199,21 @@ bool MainMenu::Run()
 						}
 						else //atm, will host if no servers running on LAN
 						{
-							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "83.233.57.248", 10000, gmi);
+							ServerInfo host(serverName , 0, 5, GameMode->GetGameMode(), "", 10000, gmi);
 							this->mGh->GetLanPointer()->Start(host);
 							this->mGh->CreateGame(GameMode->GetGameMode(), host);
 							this->mGh->Start();
 
 							//this->mGm->PlayLAN(host);
-						} */
+						} 
+						/*
 						ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo("192.168.1.125");//servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
 						   if(tett.GetIP() != "")
 						   {
 							this->mGh->CreateGame(tett.GetGameMode(), tett);//servers[chosenServer].GetGameMode(), servers[chosenServer]);
 							this->mGh->Start();
 						   }
+						   */
 						this->CreateScene();
 						mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");
 
@@ -460,6 +462,31 @@ bool MainMenu::Run()
 						}
 						GraphicsEngineParams params;
 						params.SaveToFile("config.cfg", windowWidth, windowHeight, !tempCheck->GetOn(), atoi(Shadow->GetText().c_str()), atoi(FXAA->GetText().c_str()));
+					}
+				}
+				else if(returnEvent->GetEventMessage() == "ServerListEvent")
+				{
+					ServerListEvent* temp = (ServerListEvent*)returnEvent;
+					if(temp->GetEventMessage() == "Refresh")
+					{
+						float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+						float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+						float dx = (windowHeight * 4.0f) / 3.0f;
+						float offSet = (windowWidth - dx) / 2.0f;
+						float x = 50, y = 400;
+
+						vector<ServerInfo> servers = this->mGh->GetLanPointer()->FindServers();
+						Element* tempElement;
+						for(int i = 0; i < servers.size(); i++)
+						{
+							tempElement = new TextButton(x, y, 0, "Media/Menus/textbutton.png",dx * (550.0f / 1200.0f),windowHeight * (50.0f / 900.0f),
+								servers.at(i).GetServerName() + "\t\t" + MaloW::convertNrToString(servers.at(i).GetNumPlayers()) + "/" + MaloW::convertNrToString(servers.at(i).GetMaxNumPlayers()),
+								new NoEvent());
+							this->mSets[SERVERLIST].AddElement(tempElement);
+							x += 60;
+						}
+						this->mSets[SERVERLIST].AddSetToRenderer(this->mGe);
+
 					}
 				}
 				if(returnEvent->GetEventMessage() == "ChangeSubSetEvent")

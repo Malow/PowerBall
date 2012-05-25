@@ -75,11 +75,11 @@ void Maze::Initialize()
 		this->mWindowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 		
 		
-		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-800,0),1.0f,"Media/Fonts/1");
-		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-850,60),1.0f,"Media/Fonts/1");
-		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-775,120),1.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-700,180),1.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-785,240),1.0f,"Media/Fonts/1");
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-800,0),2.0f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-850,60),2.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-775,120),2.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-700,180),2.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(this->mWindowWidth-785,240),2.0f,"Media/Fonts/1");
 		this->mCreditSpeed = 0.05f;
 
 		/*
@@ -105,111 +105,111 @@ void Maze::Intro()
 
 bool Maze::PlaySpecific()
 {	
-		this->mHud[0]->SetText("Rikard Johansson");
-		this->mHud[1]->SetText("Marcus Lowegren");
-		this->mHud[2]->SetText("Markus Tillman");
-		this->mHud[3]->SetText("Didrik Axelsson");
-		this->mHud[4]->SetText("Jerry Rahmqvist");
+	this->mHud[0]->SetText("Rikard Johansson");
+	this->mHud[1]->SetText("Marcus Lowegren");
+	this->mHud[2]->SetText("Markus Tillman");
+	this->mHud[3]->SetText("Didrik Axelsson");
+	this->mHud[4]->SetText("Jerry Rahmqvist");
 		
 		
-		this->mRunning = true;
-		this->mGameMode = CREDITS;
+	this->mRunning = true;
+	this->mGameMode = CREDITS;
 		
 		
-		int choice = 1; // choice = 2 is version2 of maze
+	int choice = 1; // choice = 2 is version2 of maze
+	this->mDiff = mGe->Update();
+	srand ( time(NULL) );
+	this->mTargetX = -10 + rand() % 21;			// random angle [-10, 10] in x-axis
+	this->mTargetZ = -10 + rand() % 21;			// random angle [-10, 10] in z-axis
+	this->mTargetX = this->mTargetX*(PI/180.0f);		// convert to radians
+	this->mTargetZ = this->mTargetZ*(PI/180.0f);		// convert to radians
+		
+	/* set so the first Maze mode will do the random tilt and gets a start angle . */
+	this->mPlatform->SetTargetAngleX(this->mTargetX);
+	this->mPlatform->SetTargetAngleZ(this->mTargetZ);
+
+	/* set so we cant tilt it more than these angles. */
+	this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
+	this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
+
+	/* to swap between Maze modes with space button and we don't want it to flip. */
+	bool spacePressed = false;
+
+	/* counters for the restart restart of maze. */
+	float respownAfterDeathCounter = 0.0f;
+	float resetMazeCounter = 0.0f;
+	this->mDelayTimer = 2.0f;
+
+	while(this->mRunning && mGe->isRunning())
+	{
+			
 		this->mDiff = mGe->Update();
-		srand ( time(NULL) );
-		this->mTargetX = -10 + rand() % 21;			// random angle [-10, 10] in x-axis
-		this->mTargetZ = -10 + rand() % 21;			// random angle [-10, 10] in z-axis
-		this->mTargetX = this->mTargetX*(PI/180.0f);		// convert to radians
-		this->mTargetZ = this->mTargetZ*(PI/180.0f);		// convert to radians
-		
-		/* set so the first Maze mode will do the random tilt and gets a start angle . */
-		this->mPlatform->SetTargetAngleX(this->mTargetX);
-		this->mPlatform->SetTargetAngleZ(this->mTargetZ);
-
-		/* set so we cant tilt it more than these angles. */
-		this->mPlatform->SetMaxAngleX(10.0f*(PI/180.0f));
-		this->mPlatform->SetMaxAngleZ(10.0f*(PI/180.0f));
-
-		/* to swap between Maze modes with space button and we don't want it to flip. */
-		bool spacePressed = false;
-
-		/* counters for the restart restart of maze. */
-		float respownAfterDeathCounter = 0.0f;
-		float resetMazeCounter = 0.0f;
-		this->mDelayTimer = 2.0f;
-
-		while(this->mRunning && mGe->isRunning())
+		this->mTimeElapsed += this->mDiff * 0.001f;
+		if(choice == 1)
 		{
+			this->PlayMazeV1();
+		}
+		else
+		{
+			this->PlayMazeV2();
+		}
 			
-			this->mDiff = mGe->Update();
-			this->mTimeElapsed += this->mDiff * 0.001f;
-			if(choice == 1)
-			{
-				this->PlayMazeV1();
-			}
-			else
-			{
-				this->PlayMazeV2();
-			}
+		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
+			this->mRunning = false;
 			
-			if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
-				this->mRunning = false;
-			
-			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+		if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+		{
+			if(!spacePressed)
 			{
-				if(!spacePressed)
+				spacePressed = true;
+				if(choice == 1)
 				{
-					spacePressed = true;
-					if(choice == 1)
-					{
-						choice = 2;
-						this->mPlatform->SetRotate(false);
-						this->ResetMaze();
-						this->mBalls[0]->SetToStartPosition();
-						this->mBalls[0]->ResetParent();
-						this->mDelayTimer = 2.0f;
-						this->mDelayTimer -= this->mDiff;
-						
-					}
-					else
-					{
-						choice = 1;
-						this->mPlatform->SetRotate(true);
-						this->ResetMaze();
-						this->mBalls[0]->SetToStartPosition();
-						this->mBalls[0]->ResetParent();
-						this->mDelayTimer = 2.0f;
-						this->mDelayTimer -= this->mDiff;
-						
-						
-					}
-				}
-			}
-			else
-				spacePressed = false;
-
-			if(this->checkWinConditions(this->mDiff))
-				this->mRunning = false;
-			if(this->checkRespownConditions())
-			{
-				resetMazeCounter += this->mDiff * 0.001f;
-				if(resetMazeCounter > 1.5f)
-				{
+					choice = 2;
+					this->mPlatform->SetRotate(false);
 					this->ResetMaze();
-					this->mBalls[0]->ResetParent();
 					this->mBalls[0]->SetToStartPosition();
-					resetMazeCounter = 0.0f;
+					this->mBalls[0]->ResetParent();
+					this->mDelayTimer = 2.0f;
+					this->mDelayTimer -= this->mDiff;
+						
 				}
+				else
+				{
+					choice = 1;
+					this->mPlatform->SetRotate(true);
+					this->ResetMaze();
+					this->mBalls[0]->SetToStartPosition();
+					this->mBalls[0]->ResetParent();
+					this->mDelayTimer = 2.0f;
+					this->mDelayTimer -= this->mDiff;
+						
+						
+				}
+			}
+		}
+		else
+			spacePressed = false;
+
+		if(this->checkWinConditions(this->mDiff))
+			this->mRunning = false;
+		if(this->checkRespownConditions())
+		{
+			resetMazeCounter += this->mDiff * 0.001f;
+			if(resetMazeCounter > 1.5f)
+			{
+				this->ResetMaze();
+				this->mBalls[0]->ResetParent();
+				this->mBalls[0]->SetToStartPosition();
+				resetMazeCounter = 0.0f;
+			}
 
 				
-			}
-
-			this->ShowHud();
-
 		}
-		return false;
+
+		this->ShowHud();
+
+	}
+	return !this->mRunning;
 }
 
 void Maze::ShowStats()

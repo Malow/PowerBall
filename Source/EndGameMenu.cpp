@@ -53,7 +53,7 @@ bool EndGameMenu::Initialize()
 }
 int EndGameMenu::Run()
 {
-	this->mSets[EGMMENU].AddSetToRenderer(this->mGe);
+	this->mSets[this->mCurrentSet].AddSetToRenderer(this->mGe);
 	this->mIsRunning = true;
 	bool IsClicked = false;
 	bool mousePressed = false;

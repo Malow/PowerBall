@@ -4,7 +4,7 @@
 GUISet::GUISet()
 {
 	this->mNrOfElements = 0;
-	this->mMaxNrOfElements = 20;
+	this->mMaxNrOfElements = 30;
 	this->mElements = new Element*[this->mMaxNrOfElements];
 	for(int i = 0; i < this->mMaxNrOfElements; i++)
 		this->mElements[i] = NULL;

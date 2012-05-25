@@ -123,10 +123,12 @@ bool Knockout::PlaySpecific()
 		}
 	
 	}
-	if(this->mQuitByMenu)
+
+	if(this->mQuitByMenu || !roundsLeft)
 		return true;
 	else
 		return false;
+	
 }
 
 void Knockout::ShowStats()

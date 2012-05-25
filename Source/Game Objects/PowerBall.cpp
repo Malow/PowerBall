@@ -102,36 +102,6 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 
 PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMode)
 {
-	if( gameMode == GAMEMODE::DM)
-	{
-		this->mRestitution   = 1.0f; 
-		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 20.0f; // good for stepTime = 10 ms
-	}
-	else if( gameMode == GAMEMODE::CTF)
-	{
-		this->mRestitution   = 1.0f;
-		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 180.0f;
-	}
-	else if( gameMode == GAMEMODE::KOTH)
-	{
-		this->mRestitution   = 1.0f;
-		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 180.0f;
-	}
-	else if( gameMode == GAMEMODE::WARLOCK)
-	{
-		this->mRestitution   = 1.0f; 
-		this->mAcceleration	 = Vector3(0, -9.81f * 2.0f , 0);
-		this->mForcePress	 = 180.0f;
-	}
-	else
-	{
-		this->mRestitution   = 1.0f; 
-		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 180.0f;
-	}
 	this->mHealth		 = 100;
 	this->mMesh			 = GetGraphicsEngine()->CreateStaticMesh(meshFilePath, position); 
 	this->mRadius		 = 1.0f;
@@ -173,6 +143,39 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	this->mNrOfItems = 0;
 	*/
 	this->mFlag = NULL;
+
+	if( gameMode == GAMEMODE::DM)
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 20.0f; // good for stepTime = 10 ms
+	}
+	else if( gameMode == GAMEMODE::CTF)
+	{
+		this->mMaxVelocity = 10.0f;
+		this->mRestitution   = 1.0f;
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 50.0f;
+	}
+	else if( gameMode == GAMEMODE::KOTH)
+	{
+		this->mRestitution   = 1.0f;
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 60.0f;
+	}
+	else if( gameMode == GAMEMODE::WARLOCK)
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f * 2.0f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	else
+	{
+		this->mRestitution   = 1.0f; 
+		this->mAcceleration	 = Vector3(0, -9.81f , 0);
+		this->mForcePress	 = 180.0f;
+	}
+	
 }
 
 PowerBall::~PowerBall()

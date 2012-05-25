@@ -16,6 +16,7 @@
 #include "TextBox.h"
 #include "GUIPicture.h"
 #include "CheckBox.h"
+#include "TextButton.h"
 
 class GUISet
 {
