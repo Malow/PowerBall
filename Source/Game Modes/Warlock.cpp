@@ -1,5 +1,5 @@
 #include "Warlock.h"
-
+#include "..\Physics\PhysicsEngine.h"
 Warlock::Warlock()
 {
 		this->mGe = NULL;
@@ -43,6 +43,13 @@ Warlock::~Warlock()
 			SAFE_DELETE(this->mProgressBars[i]);
 		}
 		SAFE_DELETE_ARRAY(this->mProgressBars);
+		if(this->mPe)
+		{
+			for(int i = 0;i<this->mNumberOfPlayers; i++)
+			this->mPe->RemoveBody(this->mBalls[i]);
+			this->mPe->RemoveMap(this->mPlatform);
+			SAFE_DELETE(this->mPe);
+		}
 		
 }
 
@@ -413,7 +420,7 @@ void Warlock::AddBall()
 		}
 		for(int i = old; i < this->mNumberOfPlayers; i++)
 		{
-			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos());
+			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::WARLOCK);
 			temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 			temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 			temp[i]->AddSpell(new ChargeSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Charge.mp3")));
@@ -423,6 +430,7 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new JumpSpell());
 			temp[i]->SetWarlockMode(true);
 			temp[i]->SetSound(true);
+			this->mPe->AddBody(temp[i]);
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;

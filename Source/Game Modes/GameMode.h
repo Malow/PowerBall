@@ -13,7 +13,8 @@
 #include "..\InGameMenu.h"
 #include "..\Network\GameNetwork.h"
 #include "ChooseTeamMenu.h"
-
+class PhysicsEngine;
+#define FixedTimeStep 0
 #define SIZE_HUD 20
 class GameMode
 {
@@ -34,7 +35,7 @@ class GameMode
 			Text* mHud[SIZE_HUD];
 			bool			mQuitByMenu;
 			Text*			mTimeElapsedText;
-			
+			PhysicsEngine* mPe;
 			static DWORD WINAPI	SelectTeamThread(void* param);
 			static DWORD WINAPI	InGameMenuThread(void* param);
 	public:
