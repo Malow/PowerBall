@@ -416,8 +416,8 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 					else //is client
 						this->mPe->SimulateClient();
 				
-				
-
+					
+					this->mNumberOfPlayers = this->mPe->Size();
 					
 					if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
 					{
