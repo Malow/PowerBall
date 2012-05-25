@@ -442,7 +442,7 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				
 					//show time elapsed
 					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 
 					float newdt = diff/1000.0f;
 				
@@ -526,7 +526,7 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				
 					//show time elapsed
 					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 
 					float newdt = diff/1000.0f;
 				

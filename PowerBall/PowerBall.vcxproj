@@ -231,8 +231,11 @@
     <ClInclude Include="..\Source\Spells\SprintSpell.h" />
     <ClInclude Include="..\Source\stdafx.h" />
     <ClInclude Include="..\Source\SystemReqRestart.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GameIcon.ico" />
     <None Include="Shaders\DebugNormals.fx" />
     <None Include="Shaders\DebugWireframe.fx" />
     <None Include="Shaders\DeferredGeometry.fx" />
@@ -259,6 +262,9 @@
     <None Include="Shaders\SSAO.fx" />
     <None Include="Shaders\stdafx.fx" />
     <None Include="Shaders\TextRenderer.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PowerBall.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB7EE0D5-90C1-4BBD-8828-F5A39BE7D296}</ProjectGuid>

@@ -45,10 +45,12 @@ Warlock::~Warlock()
 		SAFE_DELETE_ARRAY(this->mProgressBars);
 		if(this->mPe)
 		{
-			for(int i = 0;i<this->mNumberOfPlayers; i++)
-			this->mPe->RemoveBody(this->mBalls[i]);
-			this->mPe->RemoveMap(this->mPlatform);
-			SAFE_DELETE(this->mPe);
+			#if FixedTimeStep
+				for(int i = 0;i<this->mNumberOfPlayers; i++)
+					this->mPe->RemoveBody(this->mBalls[i]);
+				this->mPe->RemoveMap(this->mPlatform);
+				SAFE_DELETE(this->mPe);
+			#endif
 		}
 		
 }
@@ -143,12 +145,7 @@ void Warlock::Initialize()
 		}
 		this->mProgressBars[5] = new ProgressBar();
 	
-
-		this->mTimeElapsedText = this->mGe->CreateText(	"",
-														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
-														1.0f, 
-														"Media/Fonts/1");
+		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void Warlock::Intro()
@@ -430,7 +427,9 @@ void Warlock::AddBall()
 			temp[i]->AddSpell(new JumpSpell());
 			temp[i]->SetWarlockMode(true);
 			temp[i]->SetSound(true);
-			this->mPe->AddBody(temp[i]);
+			#if FixedTimeStep
+				this->mPe->AddBody(temp[i]);
+			#endif
 		}
 		delete[] this->mBalls;
 		this->mBalls = temp;
