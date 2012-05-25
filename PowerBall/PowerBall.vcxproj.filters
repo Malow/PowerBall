@@ -257,9 +257,6 @@
     <ClCompile Include="..\Source\Game Modes\Knockout.cpp">
       <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Game Modes\Maze.cpp">
-      <Filter>Game Files\Game Modes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Game Modes\Warlock.cpp">
       <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
@@ -361,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\GUI\ServerListEvent.cpp">
       <Filter>GUI\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Game Modes\Maze.cpp">
+      <Filter>Game Files\Game Modes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
