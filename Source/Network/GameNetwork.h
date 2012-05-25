@@ -14,8 +14,8 @@ using namespace std;
 #define INTERPOS_MIN 0.01f //if the position difference (vector length) is lesser than this -> sets local position to network position
 #define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
 #define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
-#define SERVER_SEND_MS 5.0f //MAX 1 PACKET PER XX MILLISECONDS
-#define CLIENT_SEND_MS 10.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define SERVER_SEND_MS 1.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define CLIENT_SEND_MS 1.0f //MAX 1 PACKET PER XX MILLISECONDS
 
 class GameNetwork
 {

@@ -7,7 +7,7 @@
 #include "PlayerHistory.h"
 #include "CommandHandler.h"
 using namespace std;
-#define DROP_TIMER 8000.0f
+#define DROP_TIMER 5000.0f
 class NetworkBall
 {
 private:
@@ -22,13 +22,17 @@ private:
 	TEAM				mTeam;
 	float				mExecTime;
 	float				mAliveTimer;
+	
+
+	//Server variables
+	float				mClientExecTime;
 
 public:
 				NetworkBall();
 	virtual		~NetworkBall();
 	
 	void		AddMovementPowerBall(PowerBall* PowerBall);
-	//D3DXVECTOR3 CorrectPosition(float serverExecTime);
+	//D3DXVECTOR3 CorrectPosition(float ClientExecTime);
 	int			GetNumCommands() const { return this->mCommandHandler->GetNumCommands(); }
 	void		ModifyAliveTime(float mod) { this->mAliveTimer += mod; }
 	void		SetAliveTime(float time) { this->mAliveTimer = time; }
@@ -42,6 +46,11 @@ public:
 
 	void		SetExecTime(const float time){this->mExecTime = time;}
 	float		GetExecTime() const { return this->mExecTime; }
+
+	
+	void		SetClientExecTime(const float time){this->mClientExecTime = time;}
+	float		GetClientExecTime() const { return this->mClientExecTime; }
+	void		ModifyClientExecTime(float mod) {this->mClientExecTime += mod;}
 	void		Reset();
 	void		ClearCommands() { this->mCommandHandler->Clear(); }
 	PlayerHistory* GetPlayerHistory() { return this->mPlayerHistory; }
@@ -86,5 +95,7 @@ public:
 	/*! Returns true if the client is pressing the specified key. */
 	Command* 	GetNextCommand();
 	void		PopCommand();
+
+	Snapshot	GetThePowerBallPositionFromThePast(float latency);
 
 };
