@@ -169,15 +169,15 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			test++;
 		}
 		//shadow->SetPosition(this->mPos[this->mIndex]);
-		static float ping_counter = 0.0f;
+		/*static float ping_counter = 0.0f;
 		ping_counter++;
 		if(ping_counter > 10000.0f)
 		{
 			//if no answer, then client dc
 			ping_counter = 0.0f;
 			MsgHandler::GetInstance().Ping(0);
-		}
-		file2 << this->mLatency << endl;
+		}*/
+		//file2 << this->mLatency << endl;
 		if(numPowerBalls > this->mIndex)
 		{
 			D3DXVECTOR3 mod = this->CorrectPosition();//(0,0,0);//
@@ -231,6 +231,8 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}*/
 			/**/
+			//if(1 == 2)
+			{
 			if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
 			{
 				interpolationVector = mod;
@@ -264,6 +266,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 					this->mNetBalls[this->mIndex]->GetPlayerHistory()->Reset(this->mNetBalls[this->mIndex]->GetPos());
 					interpolationVector = ::D3DXVECTOR3(0,0,0);
 				}
+			}
 			}
 			/*if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
 			{

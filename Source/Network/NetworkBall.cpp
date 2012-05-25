@@ -12,6 +12,7 @@ NetworkBall::NetworkBall()
 	this->mTeam					= TEAM::NOTEAM;
 	this->mHP					= 0.0f;
 	this->mAliveTimer			= DROP_TIMER;
+	this->mClientExecTime		= 0.0f;
 	this->mPlayerHistory		= new PlayerHistory();
 	this->mCommandHandler		= new CommandHandler();
 }
@@ -66,7 +67,8 @@ void NetworkBall::PopCommand()
 }
 void NetworkBall::AddMovementPowerBall(PowerBall* PowerBall)
 {
-	this->mPlayerHistory->AddSnapshot(PowerBall->GetPosition(), this->mExecTime);
+	Vector3 asd = PowerBall->GetTempPosition();
+	this->mPlayerHistory->AddSnapshot(PowerBall->GetPosition(), D3DXVECTOR3(asd.x, asd.y, asd.z), this->mExecTime);
 }
 void NetworkBall::Reset()
 {
@@ -82,6 +84,17 @@ void NetworkBall::Reset()
 	//this->mTeam					= TEAM::NOTEAM;
 	this->mHP					= 0.0f;
 	this->mAliveTimer			= DROP_TIMER;
+	this->mClientExecTime		= 0.0f;
+}
+
+Snapshot	NetworkBall::GetThePowerBallPositionFromThePast(float latency)
+{
+	float timeDifference = latency;//this->mClientExecTime - this->mExecTime;
+	if(timeDifference <= 0.0f)
+	{
+		int asd = 0;
+	}
+	return this->mPlayerHistory->GetSnapshot(timeDifference);
 }
 /*
 D3DXVECTOR3 NetworkBall::CorrectPosition(float serverExecTime)

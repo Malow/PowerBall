@@ -124,6 +124,7 @@ void MsgHandler::SendClientData()
 		if(offset > 1)
 		{
 			this->AddToBuffer(bufW, offset, SEGMENT_END);
+			this->AddToBuffer(bufW, offset, this->mNet->GetBall(this->mNet->GetIndex())->GetExecTime());
 			//this->mConn->SetWriteBuffer(bufW, offset, 0);
 			this->mConn->Send(bufW, offset, 0);
 		}
@@ -310,7 +311,13 @@ void MsgHandler::ReceiveClientData(char* buf, int &offset, int index)
 			this->mNet->GetBall(index)->AddKeyInput(keys, numKeys, duration, forward, false);
 		}
 		offset += sizeof(SEGMENT_END);
-
+		
+		float clientExecTime = this->GetFromBufferF(buf, offset);
+		if(index == 0)
+		{
+			int asdccccccc= 0;
+		}
+		this->mNet->GetBall(index)->SetClientExecTime(clientExecTime);
 		this->mNet->GetBall(index)->ResetAliveTime();
 	}
 }

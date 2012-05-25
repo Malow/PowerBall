@@ -211,7 +211,7 @@ bool MainMenu::Run()
 							//this->mGm->PlayLAN(host);
 						} 
 						/*
-						ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo("192.168.1.125");//servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
+						ServerInfo tett = this->mGh->GetLanPointer()->ConnectTo("88.129.204.14");//servers[chosenServer].GetIP()); // replace servers[chosenServer].GetIP() with the IP u wanna connect to
 						   if(tett.GetIP() != "")
 						   {
 							this->mGh->CreateGame(tett.GetGameMode(), tett);//servers[chosenServer].GetGameMode(), servers[chosenServer]);
