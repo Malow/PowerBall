@@ -104,7 +104,7 @@ void DxManager::RenderDeferredGeometry()
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
 		this->Shader_DeferredAnimatedGeometry->SetFloat("t", t);
-		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor());
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor()); //**kraschar på flagga nr 2 under gameplay & på 1(&2?) när man trycket esc**
 
 		for(int u = 0; u < stripsOne->size(); u++)
 		{

@@ -85,6 +85,19 @@ void CaptureTheFlag::Initialize()
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
 		this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
+
+		/*this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
+		this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
+		
+		this->mEnemyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagRed.ani", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
+		this->mEnemyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(90));
+		this->mEnemyFlag->GetMesh()->LoopSeamless();
+		this->mFriendlyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagBlue.ani", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
+		this->mFriendlyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(-90));
+		this->mFriendlyFlag->GetMesh()->LoopSeamless();
+		*/
+
+
 		/*D3DXVECTOR3 startPositions[4];
 		startPositions[0] = D3DXVECTOR3(0,24.7f,-14);
 		startPositions[1] = D3DXVECTOR3(0,24.7f,14);

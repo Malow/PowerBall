@@ -39,6 +39,8 @@ public:
 		this->songVolume = atof(line.c_str());
 		getline(in, line);
 		this->effectVolume = atof(line.c_str());
+		getline(in, line);
+		this->isPlaying = atof(line.c_str());
 
 
 		in.close();
@@ -57,12 +59,13 @@ public:
 		out << this->masterVolume << endl;
 		out << this->songVolume << endl;
 		out << this->effectVolume << endl;
+		out << this->isPlaying << endl;
 
 		out.close();
 	}
 
 
-	void SaveToFile(string file, int masterVolume, int songVolume, int effectVolume)
+	void SaveToFile(string file, int masterVolume, int songVolume, int effectVolume, bool isPlaying)
 	{
 		ofstream out;
 		out.open(file);
@@ -75,6 +78,7 @@ public:
 		out << masterVolume << endl;
 		out << songVolume << endl;
 		out << effectVolume << endl;
+		out << isPlaying << endl;
 
 		out.close();
 	}
