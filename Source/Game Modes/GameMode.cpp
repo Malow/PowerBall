@@ -33,42 +33,42 @@ GameMode::~GameMode()
 
 bool GameMode::PlayLan()
 {
-		bool zoomOutPressed = false;
-		bool zoomInPressed = false;
-		bool quitByMenu = false;
-		this->mGe->Update();
-		bool roundsLeft = true;
-		int roundsPlayed = 0;
+	bool zoomOutPressed = false;
+	bool zoomInPressed = false;
+	bool quitByMenu = false;
+	this->mGe->Update();
+	bool roundsLeft = true;
+	int roundsPlayed = 0;
 
-		//choose team before starting the game
-		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
+	//choose team before starting the game
+	this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
-		if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
-			CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
-		else if(this->mGameMode == GAMEMODE::WARLOCK)
-			this->mTeam = TEAM::NOTEAM;
-		this->mNet->Reset();
-		//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
-		//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
-		#if FixedTimeStep
-			this->mPe = new PhysicsEngine(this->mGe, this->mNet, this->mServerInfo);
-			this->mPe->Initialize();
-			this->mPe->AddMap(this->mPlatform);
-		#else
+	if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
+		CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
+	else if(this->mGameMode == GAMEMODE::WARLOCK)
+		this->mTeam = TEAM::NOTEAM;
+	this->mNet->Reset();
+	//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
+	//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
+	#if FixedTimeStep
+		this->mPe = new PhysicsEngine(this->mGe, this->mNet, this->mServerInfo);
+		this->mPe->Initialize();
+		this->mPe->AddMap(this->mPlatform);
+	#else
 			
-		#endif
-		while(roundsLeft && this->mGe->isRunning())
-		{
-			quitByMenu = this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
-			roundsPlayed++;;
-			if(roundsPlayed == this->mNumberOfRounds)
-				roundsLeft = false;
-		}
+	#endif
+	while(roundsLeft && this->mGe->isRunning())
+	{
+		quitByMenu = this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
+		roundsPlayed++;;
+		if(roundsPlayed == this->mNumberOfRounds)
+			roundsLeft = false;
+	}
 		
-		delete this->mChooseTeamMenu;
-		this->mChooseTeamMenu = NULL;
-		//this->mNet->Close();
-		return quitByMenu;
+	delete this->mChooseTeamMenu;
+	this->mChooseTeamMenu = NULL;
+	//this->mNet->Close();
+	return quitByMenu;
 }
 
 DWORD WINAPI GameMode::SelectTeamThread(void* param)
@@ -375,183 +375,200 @@ void GameMode::IsClient(float diff, bool& zoomOutPressed, bool& zoomInPressed, b
 
 bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed)
 {
-		bool running = true;
-		bool quitByMenu = false;
-		int numAlivePlayers = 0;
-		LARGE_INTEGER oldTick = LARGE_INTEGER();
-		QueryPerformanceCounter(&oldTick);
-		LARGE_INTEGER now =  LARGE_INTEGER();
+	bool running = true;
+	bool quitByMenu = false;
+	int numAlivePlayers = 0;
+	LARGE_INTEGER oldTick = LARGE_INTEGER();
+	QueryPerformanceCounter(&oldTick);
+	LARGE_INTEGER now =  LARGE_INTEGER();
 
-		ThreadParam* tp = NULL;
-		bool resume = true;
-		#if FixedTimeStep
-			while(running && this->mGe->isRunning())
-			{
-					float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
+	ThreadParam* tp = NULL;
+	bool resume = true;
+	bool menuPressed = false;
+	#if FixedTimeStep
+		while(running && this->mGe->isRunning())
+		{
+				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
 
-					if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE) && tp == NULL)
+				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE) && tp == NULL)
+				{
+					this->HideHud();
+					menuPressed = true;
+					tp = new ThreadParam(this->mIGM, resume);
+					CreateThread(0, 0, &InGameMenuThread, (void*)tp, 0, 0);
+				}
+				if(tp != NULL)
+				{
+					if(tp->finished)
 					{
-						tp = new ThreadParam(this->mIGM, resume);
-						CreateThread(0, 0, &InGameMenuThread, (void*)tp, 0, 0);
+						roundsLeft = running = tp->resume;
+						quitByMenu = !running;
+						delete tp;
+						tp = NULL;
+						menuPressed = false;
 					}
-					if(tp != NULL)
-					{
-						if(tp->finished)
-						{
-							roundsLeft = running = tp->resume;
-							quitByMenu = !running;
-							delete tp;
-							tp = NULL;
-						}
-					}
+				}
 					
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-					{
-						if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
-							this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
-					}
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
+						this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
+				}
 
-					if(this->mNet->IsServer())
-						this->mPe->SimulateServer();
-					else //is client
-						this->mPe->SimulateClient();
+				if(this->mNet->IsServer())
+					this->mPe->SimulateServer();
+				else //is client
+					this->mPe->SimulateClient();
 				
 					
-					this->mNumberOfPlayers = this->mPe->Size();
+				this->mNumberOfPlayers = this->mPe->Size();
 					
-					if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
-					{
-						this->AddBall();
-						numAlivePlayers++;
-					}
+				if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
+				{
+					this->AddBall();
+					numAlivePlayers++;
+				}
 					
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-					{
-						if(this->mBalls[i]->IsAlive())
-							numAlivePlayers += 1;
-					}
-					if(this->mNet->IsServer())
-					if(numAlivePlayers < 1)
-					{
-						running = false;
-					}
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->IsAlive())
+						numAlivePlayers += 1;
+				}
+				if(this->mNet->IsServer())
+				if(numAlivePlayers < 1)
+				{
+					running = false;
+				}
 				
-					if(this->checkWinConditions(diff))
-						running = false;
+				if(this->checkWinConditions(diff))
+					running = false;
+				if(!menuPressed)
 					this->ShowHud();
 				
-					//show time elapsed
-					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
+			
 
-					float newdt = diff/1000.0f;
+				float newdt = diff/1000.0f;
 				
-					this->mTimeElapsed += newdt;
-					if(this->mTimeElapsed > 600.0f)
-						running = false;
-					if(this->mQuitByMenu)
-					{
-						quitByMenu = true;
-						running = false;
-					}
-			}
-		#else
-			while(running && this->mGe->isRunning())
-			{
-					float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
+				this->mTimeElapsed += newdt;
+				if(this->mTimeElapsed > 600.0f)
+					running = false;
+				if(this->mQuitByMenu)
+				{
+					quitByMenu = true;
+					running = false;
+				}
+		}
+	#else
+		while(running && this->mGe->isRunning())
+		{
+				float diff = mGe->Update(); //A problem when the user opens up ingame menu is that the diff after resume is incredibly high so it breaks game logic, game gotta continue in the background if network :P	
 
-					if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE) && tp == NULL)
+				if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE) && tp == NULL)
+				{
+					this->HideHud();
+					menuPressed = true;
+					tp = new ThreadParam(this->mIGM, resume);
+					CreateThread(0, 0, &InGameMenuThread, (void*)tp, 0, 0);
+				}
+				if(tp != NULL)
+				{
+					if(tp->finished)
 					{
-						tp = new ThreadParam(this->mIGM, resume);
-						CreateThread(0, 0, &InGameMenuThread, (void*)tp, 0, 0);
+						roundsLeft = running = tp->resume;
+						quitByMenu = !running;
+						delete tp;
+						tp = NULL;
+						menuPressed = false;
 					}
-					if(tp != NULL)
-					{
-						if(tp->finished)
-						{
-							roundsLeft = running = tp->resume;
-							quitByMenu = !running;
-							delete tp;
-							tp = NULL;
-						}
-					}
+				}
 		
-					QueryPerformanceCounter(&now);
-					LARGE_INTEGER proc_freq;
-					::QueryPerformanceFrequency(&proc_freq);
-					double frequency = proc_freq.QuadPart;
+				QueryPerformanceCounter(&now);
+				LARGE_INTEGER proc_freq;
+				::QueryPerformanceFrequency(&proc_freq);
+				double frequency = proc_freq.QuadPart;
 
-					diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
-					QueryPerformanceCounter(&oldTick);
-					if(diff > 100)
-						diff = 5;
+				diff = 1000*((now.QuadPart - oldTick.QuadPart) / frequency); //2			WITH A VARIABLE DELTATIME THE BALL PHYSICS RESULT DIFFER IF MORE THAN TWO CLIENTS WITH DIFFERENT DELTA TIMES PROCESS EXACTLY THE SAME INPUT, SETTING A CONSTANT DELTATIME HOWEVER LEADS TO THE SAME PHYSICS RESULT (THOUGH WITH A HUGE DELAY DUE TO THE CLIENT IN THE BACKGROUND IS A ASSIGNED LESS CPU TIME (-> low FPS)). IS THERE SOMETHING IN BALL PHYSICS THAT SHOULD BE DEPENDANT ON DELTATIME THAT ISNT?//
+				QueryPerformanceCounter(&oldTick);
+				if(diff > 100)
+					diff = 5;
 
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-					{
-						if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
-							this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
-					}
-					if(this->mNet->IsServer())
-						this->IsServer(diff, zoomOutPressed, zoomInPressed, running, quitByMenu);
-					else //is client
-						this->IsClient(diff, zoomOutPressed, zoomInPressed, running, quitByMenu);
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
+						this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
+				}
+				if(this->mNet->IsServer())
+					this->IsServer(diff, zoomOutPressed, zoomInPressed, running, quitByMenu);
+				else //is client
+					this->IsClient(diff, zoomOutPressed, zoomInPressed, running, quitByMenu);
 				
 
-					for(int i = 0; i < this->mNumberOfPlayers; i++)
-					{
-						if(this->mBalls[i]->IsAlive())
-							numAlivePlayers += 1;
-					}
-					mPlatform->Update(diff);
+				for(int i = 0; i < this->mNumberOfPlayers; i++)
+				{
+					if(this->mBalls[i]->IsAlive())
+						numAlivePlayers += 1;
+				}
+				mPlatform->Update(diff);
 
 		
-					if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, diff))
-						running = false;
+				if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, diff))
+					running = false;
 
-					if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
-					{
-						this->AddBall();
-						numAlivePlayers++;
-					}
+				if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
+				{
+					this->AddBall();
+					numAlivePlayers++;
+				}
 
-					if(this->mNet->IsServer())
-					if(numAlivePlayers < 1)
-					{
-						running = false;
-					}
+				if(this->mNet->IsServer())
+				if(numAlivePlayers < 1)
+				{
+					running = false;
+				}
 				
-					if(this->checkWinConditions(diff))
-						running = false;
+				if(this->checkWinConditions(diff))
+					running = false;
+				if(!menuPressed) 
 					this->ShowHud();
 				
-					//show time elapsed
-					float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-					this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
+					
 
-					float newdt = diff/1000.0f;
+				float newdt = diff/1000.0f;
 				
-					this->mTimeElapsed += newdt;
-					if(this->mTimeElapsed > 600.0f)
-						running = false;
-					if(this->mQuitByMenu)
-					{
-						quitByMenu = true;
-						running = false;
-					}
-			}
-		#endif
+				this->mTimeElapsed += newdt;
+				if(this->mTimeElapsed > 600.0f)
+					running = false;
+				if(this->mQuitByMenu)
+				{
+					quitByMenu = true;
+					running = false;
+				}
+		}
+	#endif
 		
-		#if FixedTimeStep
-			this->mPe->ResetTimers();
+	#if FixedTimeStep
+		this->mPe->ResetTimers();
 			
-		#else
+	#else
 			
-		#endif
+	#endif
 		
-		return quitByMenu;
+	return quitByMenu;
 }
 
 void GameMode::AddBall()
 {
 
+}
+
+void GameMode::ShowHud()
+{
+	//show time elapsed
+	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
+	this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
+}
+
+void GameMode::HideHud()
+{
+	this->mTimeElapsedText->SetText("");
 }

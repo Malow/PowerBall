@@ -38,6 +38,7 @@ class KingOfTheHill : public GameMode
 			void PlayRound(bool& roundsLeft, bool& zoomInPressed, bool& zoomOutPressed);
 			virtual void ShowStats();
 			virtual void ShowHud();
+			virtual void HideHud();
 			virtual bool checkWinConditions(float dt);
 			virtual void AddBall();
 

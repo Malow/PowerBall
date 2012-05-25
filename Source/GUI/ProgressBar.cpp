@@ -1,6 +1,6 @@
 #include "ProgressBar.h"
 
-ProgressBar::ProgressBar(std::string bar, std::string bar2, std::string background, D3DXVECTOR2 positionFractionTopLeft, float fractionSizeOfWindowX, 
+ProgressBar::ProgressBar(std::string bar, std::string bar2, std::string bar3, std::string background, D3DXVECTOR2 positionFractionTopLeft, float fractionSizeOfWindowX, 
 						float fractionSizeOfWindowY, 	float fractionBoarderOfBarX, float fractionBoarderOfBarY)
 {
 	
@@ -28,12 +28,14 @@ ProgressBar::ProgressBar(std::string bar, std::string bar2, std::string backgrou
 	this->mBackground = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBgX, this->mStartBgY), D3DXVECTOR2(this->mFullX, this->mFullY ), background);
 	this->mBarColor1 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar);
 	this->mBarColor2 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar2);
+	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
 }
 
 ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft, float fractionSizeOfWindowX, float fractionSizeOfWindowY)
 {
 	std::string bar = "Media/LoadingScreen/DarkBlue.png";
 	std::string bar2 = "Media/LoadingScreen/Red.png";
+	std::string bar3 = "Media/LoadingScreen/BlueOcean.png";
 	std::string background = "Media/LoadingScreen/Black.png";
 	
 	
@@ -64,6 +66,7 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft, float fractionSize
 	this->mBackground = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBgX, this->mStartBgY), D3DXVECTOR2(this->mFullX, this->mFullY ), background);
 	this->mBarColor1 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar);
 	this->mBarColor2 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar2);
+	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
 }
 
 ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
@@ -71,6 +74,7 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
 	
 	std::string bar = "Media/LoadingScreen/DarkBlue.png";
 	std::string bar2 = "Media/LoadingScreen/Red.png";
+	std::string bar3 = "Media/LoadingScreen/BlueOcean.png";
 	std::string background = "Media/LoadingScreen/Black.png";
 	
 	float fractionSizeOfWindowX = 0.2f;
@@ -102,6 +106,7 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
 	this->mBackground = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBgX, this->mStartBgY), D3DXVECTOR2(this->mFullX, this->mFullY ), background);
 	this->mBarColor1 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar);
 	this->mBarColor2 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar2);
+	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
 }
 
 
@@ -111,6 +116,7 @@ ProgressBar::~ProgressBar()
 	GetGraphicsEngine()->DeleteImage(this->mBackground);
 	GetGraphicsEngine()->DeleteImage(this->mBarColor1);
 	GetGraphicsEngine()->DeleteImage(this->mBarColor2);
+	GetGraphicsEngine()->DeleteImage(this->mBarColor3);
 }
 
 void ProgressBar::SetPercentOfProgressBarColor1(float percentageX)
@@ -119,12 +125,18 @@ void ProgressBar::SetPercentOfProgressBarColor1(float percentageX)
 	{
 		float scale = percentageX*0.01f*this->mFullX;
 		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
-		float newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		float newFraction;
+		if( scale != 0)
+			newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		else
+			newFraction = 0;
 		float newFullBar = scale*(1.0f -2.0f*newFraction);
+		this->mBarColor2->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		this->mBarColor3->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
 		if( newFullBar >= 0)
 			this->mBarColor1->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
 		//this->mBarColor1->SetPosition(D3DXVECTOR2(this->mStartBgX + this->mFullX*this->mFractionBoarderX*percentageX*0.01f, this->mStartBarY)); 
-		this->mBarColor2->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		
 	}
 }
 
@@ -134,14 +146,41 @@ void ProgressBar::SetPercentOfProgressBarColor2(float percentageX)
 	{
 		float scale = percentageX*0.01f*this->mFullX;
 		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
-		float newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		float newFraction;
+		if( scale != 0)
+			newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		else
+			newFraction = 0;
+		
 		float newFullBar = scale*(1.0f -2.0f*newFraction);
 		this->mBarColor1->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		this->mBarColor3->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
 		if( newFullBar >= 0)
 			this->mBarColor2->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
 		
 	}
 }
+
+void ProgressBar::SetPercentOfProgressBarColor3(float percentageX)
+{
+	if(percentageX <= 100.0f && percentageX >= 0.0f)
+	{
+		float scale = percentageX*0.01f*this->mFullX;
+		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
+		float newFraction;
+		if( scale != 0)
+			newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		else
+			newFraction = 0;
+		float newFullBar = scale*(1.0f -2.0f*newFraction);
+		this->mBarColor1->SetDimensions(D3DXVECTOR2(this->mFullBarX,this->mFullBarY));
+		this->mBarColor2->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		if( newFullBar >= 0)
+			this->mBarColor3->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+		
+	}
+}
+
 
 void ProgressBar::SetPercentOfProgressBackground(float percentageX)
 {
@@ -154,6 +193,7 @@ void ProgressBar::HideBar()
 	this->mBackground->SetDimensions(D3DXVECTOR2(0,this->mFullY));
 	this->mBarColor1->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
 	this->mBarColor2->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+	this->mBarColor3->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
 }
 
 void ProgressBar::ResetBar()

@@ -156,7 +156,8 @@ void CaptureTheFlag::Initialize()
 		}
 
 		this->mIGM	= new InGameMenu(this->mGe);
-		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
+		
+		//this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
 		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
@@ -287,5 +288,11 @@ void CaptureTheFlag::AddBall()
 
 void CaptureTheFlag::ShowHud()
 {
+	GameMode::ShowHud();
+}
 
+void CaptureTheFlag::HideHud()
+{
+	GameMode::HideHud();
+	this->mTimeElapsedText->SetText("");
 }

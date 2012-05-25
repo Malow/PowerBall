@@ -120,7 +120,7 @@ bool Knockout::PlaySpecific()
 	
 	}
 
-	if(this->mQuitByMenu || !roundsLeft)
+	if(this->mQuitByMenu || !roundsLeft || !this->mGe->isRunning())
 		return true;
 	else
 		return false;
@@ -259,6 +259,7 @@ void Knockout::PlayRound(bool& roundsLeft)
 		this->mPe->Simulate();
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 		{
+			this->HideHud();
 			roundsLeft = running = this->mIGM->Run();
 			this->mQuitByMenu = !running;
 		}
@@ -327,7 +328,15 @@ void Knockout::InputKnockout(float diff, bool& running, bool& roundsLeft)
 
 	if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 	{
+		this->HideHud();
 		roundsLeft = running = this->mIGM->Run();
 		this->mQuitByMenu = !running;
 	}
+}
+
+void Knockout::HideHud()
+{
+	for(int i = 0;i<6;i++)
+		this->mHud[i]->SetText("");
+	this->mTimeElapsedText->SetText("");
 }

@@ -179,7 +179,7 @@ void PhysicsEngine::Simulate(bool clientBall)
 
 	this->mMap->Update(this->mGameTimer->GetDeltaTime());
 	
-	this->mHud->SetText("Time: " + MaloW::convertNrToString(this->mGameTimer->mT));
+	//this->mHud->SetText("Time: " + MaloW::convertNrToString(this->mGameTimer->mT));
 
 
 	

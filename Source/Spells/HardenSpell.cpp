@@ -68,6 +68,12 @@ void HardenSpell::UpdateSpecial(float dt)
 	if(this->mTimerCounterCoolDown > this->mTimeNeededToCoolDown)
 		Spell::Ready();
 	Spell::Update(dt);
+
+
+	/* to make sure the stone is following the mesh of the ball */ 
+	if(this->mIsInUse)
+		this->mHardenMesh->SetPosition(this->mPowerBall->GetMesh()->GetPosition());
+	
 }
 
 void HardenSpell::Use()

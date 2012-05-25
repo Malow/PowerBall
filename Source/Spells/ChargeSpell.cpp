@@ -13,7 +13,7 @@ ChargeSpell::ChargeSpell()
 	this->mMaxTimeUse = 1.0f;
 	this->mIsInUse = false;
 	this->mTimeHoldButton = 0.0f;
-	this->mMaxChargingTime = 3.0f;
+	this->mMaxChargingTime = 2.0f;
 	this->mCharging = false;
 	this->mChargingDone = false;
 	
@@ -177,4 +177,14 @@ void ChargeSpell::Restore()
 		this->mTimerCounterInUse = 0.0f;
 		this->mNeedCoolDown = true;
 	}
+}
+
+float ChargeSpell::GetMaxTimeCharging() const
+{
+	return this->mMaxChargingTime;
+}
+	
+float ChargeSpell::GetTimerCharging() const
+{
+	return this->mTimeHoldButton;
 }
