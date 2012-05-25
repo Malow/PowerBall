@@ -88,11 +88,7 @@ void Maze::Initialize()
 		*/
 		
 
-		this->mTimeElapsedText = this->mGe->CreateText(	"",
-														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
-														1.0f, 
-														"Media/Fonts/1");
+		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void Maze::Intro()
@@ -294,7 +290,7 @@ void Maze::ShowHud()
 	
 	//show time elapsed
 	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;
-	this->mTimeElapsedText->SetText("Time elapsed: " + MaloW::convertNrToString(tmp));
+	this->mTimeElapsedText->SetText(MaloW::convertNrToString(tmp));
 }
 
 void Maze::PlayMazeV1()
