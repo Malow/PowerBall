@@ -6,8 +6,15 @@ cbuffer EveryObject
 
 struct VSIn
 {
-	float3 pos		: POSITION;
-	float3 posMorph : POSITION;
+	float4 Pos : POSITION;
+	float2 tex : TEXCOORD;
+	float3 norm : NORMAL;
+	float4 Color : COLOR;
+
+	float4 Pos_Morph : POSITION_MORPH;
+	float2 tex_Morph : TEXCOORD_MORPH;
+	float3 norm_Morph : NORMAL_MORPH;
+	float4 Color_Morph : COLOR_MORPH;
 };
 
 struct PSIn
@@ -15,9 +22,11 @@ struct PSIn
 	float4 pos : SV_POSITION;
 };
 
-float4 VS(VSIn input) : SV_POSITION
+PSIn VS(VSIn input) : SV_POSITION
 {
-	return mul(lerp(float4(input.pos, 1.0f), float4(input.posMorph, 1.0f), t), LightWVP);
+	PSIn output = (PSIn)0;
+	output.pos = mul(lerp(input.Pos, input.Pos_Morph, t), LightWVP);
+	return output;
 }
 
 BlendState NoBlend

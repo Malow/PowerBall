@@ -321,6 +321,10 @@ void PhysicsEngine::SimulateClient()
 						if(this->CollisionWithSphereSimple(b1, b2))
 							this->CollisionSphereResponse(b1,b2);
 					}
+					
+					Vector3 normalPlane;
+					if(this->CollisionWithMapSimple(b1, this->mMap,normalPlane))
+						this->CollisionMapResponse(b1, this->mMap, normalPlane, timeStep);	
 				}
 				for(int b = 0;b<this->mSize; b++)
 				{

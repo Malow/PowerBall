@@ -299,17 +299,6 @@ void DxManager::RenderShadowMap()
 					Object3D* objOne = stripsOne->get(u)->GetRenderObject();
 					Object3D* objTwo = stripsTwo->get(u)->GetRenderObject();
 
-					//**debug/test:**
-					float t1 = stripsOne->get(u)->getVerts()[u].pos.y;
-					float t2 = stripsTwo->get(u)->getVerts()[u].pos.y;
-					if(t1 == t2)
-					{
-						float derp = 0.0f;
-					}
-					else //kommer aldrig in hit**
-					{
-						float derp = 0.0f;
-					}
 					this->Dx_DeviceContext->IASetPrimitiveTopology(objOne->GetTopology()); 
 
 					Buffer* vertsOne = objOne->GetVertBuff();
