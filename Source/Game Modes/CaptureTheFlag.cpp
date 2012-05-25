@@ -33,14 +33,36 @@ CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo 
 
 CaptureTheFlag::~CaptureTheFlag()
 {
-		for(int i = 0; i < 5; i++)
-		{
-			this->mGe->DeleteLight(this->mLights[i]);
-		}
-		SAFE_DELETE(this->mIGM);
-		SAFE_DELETE(this->mChooseTeamMenu);
-		SAFE_DELETE(this->mFriendlyFlag);
-		SAFE_DELETE(this->mEnemyFlag);
+	//Game mode specific:
+	//ge
+	SAFE_DELETE(this->mIGM);
+	//network
+	SAFE_DELETE(this->mPlatform); //**
+	//balls
+	for(int i = 0; i < 5; i++)
+	{
+		this->mGe->DeleteLight(this->mLights[i]);
+	}
+	SAFE_DELETE(this->mChooseTeamMenu);
+	//text hud
+	for(int i = 0;i<17; i++) //SIZE_HUD
+		mGe->DeleteText(this->mHud[i]);
+	//text timeel
+	if(this->mPe)
+	{
+		#if FixedTimeStep
+			for(int i = 0;i<this->mNumberOfPlayers; i++)
+				this->mPe->RemoveBody(this->mBalls[i]);
+			this->mPe->RemoveMap(this->mPlatform);
+			SAFE_DELETE(this->mPe);
+		#endif
+	}
+
+	//CTF specific:
+	this->mGe->DeleteAnimatedMesh(this->mFriendlyFlag->GetMesh());
+	SAFE_DELETE(this->mFriendlyFlag);
+	this->mGe->DeleteAnimatedMesh(this->mEnemyFlag->GetMesh());
+	SAFE_DELETE(this->mEnemyFlag);
 }
 
 void CaptureTheFlag::Initialize()
@@ -83,11 +105,9 @@ void CaptureTheFlag::Initialize()
 		this->mPlatform		= new Map("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
 		
-		this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
-		this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
+		//this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
+		//this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
 
-		/*this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
-		this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagRed.ani", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
 		this->mEnemyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(90));
@@ -95,7 +115,7 @@ void CaptureTheFlag::Initialize()
 		this->mFriendlyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagBlue.ani", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
 		this->mFriendlyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(-90));
 		this->mFriendlyFlag->GetMesh()->LoopSeamless();
-		*/
+		
 
 
 		/*D3DXVECTOR3 startPositions[4];

@@ -14,7 +14,7 @@
 #include "..\Network\GameNetwork.h"
 #include "ChooseTeamMenu.h"
 class PhysicsEngine;
-#define FixedTimeStep 0
+#define FixedTimeStep 1
 #define SIZE_HUD 20
 class GameMode
 {
