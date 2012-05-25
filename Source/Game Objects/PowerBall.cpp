@@ -63,8 +63,8 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mTeamColor = TEAM::NOTEAM;
 	this->mSound		  = true;
 	this->mWarlockMode    = false;
-	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
-	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wallFIXED.flac");
+	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ballFIXED.wav");
 	/*
 	this->mMaxNrOfItems = 6;
 	this->mNrOfItems = 0;
@@ -136,8 +136,8 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	this->mTeamColor = TEAM::NOTEAM;
 	this->mSound		  = false;
 	this->mWarlockMode    = false;
-	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
-	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wallFIXED.flac");
+	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ballFIXED.wav");
 	/*
 	this->mMaxNrOfItems = 6;
 	this->mNrOfItems = 0;

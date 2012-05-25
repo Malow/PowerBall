@@ -10,7 +10,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int nCmdShow)
 #if defined(DEBUG) || defined(_DEBUG)
 	myInitMemoryCheck();
 #endif
-	//_CrtSetBreakAlloc(1537);
+	//_CrtSetBreakAlloc(647);
 
 	MaloW::ClearDebug();
 	
