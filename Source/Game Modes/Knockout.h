@@ -9,7 +9,7 @@
 **/
 
 #include "..\Game Modes\GameMode.h"
-class PhysicsEngine;
+
 
 class Knockout : public GameMode
 {
@@ -19,7 +19,7 @@ class Knockout : public GameMode
 			int mIndexBallLeft;
 			void PlayRound(bool& roundsLeft);
 			void InputKnockout(float diff, bool& running, bool& roundsLeft);
-			PhysicsEngine* mPe;
+
 	public:
 			Knockout();
 			Knockout(GraphicsEngine* ge, int numberOfPlayers, int numberOfRounds);

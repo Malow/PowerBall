@@ -4,11 +4,13 @@
 #include "GameTimerSimple.h"
 #include "GraphicsEngine.h"
 #include "..\SoundEffect.h"
-
+#include "..\Network\GameNetwork.h"
+#include "..\Network\ServerInfo.h"
 
 PhysicsEngine::PhysicsEngine(GraphicsEngine* ge)
 {
 	this->mGe = ge;
+	this->mNet = NULL;
 	this->mSize = 0;
 	this->mCapacity = CAPACITY;
 	this->mPowerBalls = new PowerBall*[CAPACITY];
@@ -20,6 +22,25 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge)
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ballFIXED.wav");
 	this->mHud = mGe->CreateText("",D3DXVECTOR2(10,300),1.0f,"Media/Fonts/1");
 
+}
+
+PhysicsEngine::PhysicsEngine(GraphicsEngine* ge, GameNetwork* net, ServerInfo info)
+{
+	this->mServerInfo = info;
+	this->mZoomOutPressed = false;
+	this->mZoomInPressed = false;
+	this->mGe = ge;
+	this->mNet = net;
+	this->mSize = 0;
+	this->mCapacity = CAPACITY;
+	this->mPowerBalls = new PowerBall*[CAPACITY];
+	for(int i = 0;i<CAPACITY;i++)
+		this->mPowerBalls[i] = NULL;
+	this->mMap = NULL;
+	this->mGameTimer = new GameTimerSimple();
+	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wall.mp3");
+	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
+	this->mHud = mGe->CreateText("",D3DXVECTOR2(10,300),1.0f,"Media/Fonts/1");
 }
 PhysicsEngine::~PhysicsEngine()
 {
@@ -155,6 +176,7 @@ void PhysicsEngine::Simulate(bool clientBall)
 		loopTime = newTime - oldTime;
 		MaloW::Debug(loopTime);
 	}
+
 	this->mMap->Update(this->mGameTimer->GetDeltaTime());
 	
 	this->mHud->SetText("Time: " + MaloW::convertNrToString(this->mGameTimer->mT));
@@ -163,6 +185,171 @@ void PhysicsEngine::Simulate(bool clientBall)
 	
 }
 
+void PhysicsEngine::SimulateServer()
+{
+	bool needToUpdate = this->mGameTimer->Update();
+	
+	if(!needToUpdate)
+		return;
+	
+	this->mGameTimer->mAccumulator += this->mGameTimer->GetDeltaTime();
+	float timeStep = this->mGameTimer->GetTimeStepDt();
+	
+	
+	float oldTime = 0;
+	float newTime = 0;
+	float loopTime = 0.0f ;
+	//MaloW::Debug(timeStep);
+	while(this->mGameTimer->mAccumulator >= timeStep )
+	{
+			oldTime = this->mGameTimer->GetTime();
+			for(int i = 0; i < this->mSize; i++)
+			{
+				if(i != this->mNet->GetIndex())
+					this->HandleClientKeyInputs(i, timeStep);
+				else
+					this->InputKeysPressedSelf(timeStep, i);	
+			}
+			for(int i = 0; i < this->mSize; i++)
+			{					
+				bool clientBall = true;
+				if(i == this->mNet->GetIndex())
+					clientBall = false;
+				this->mPowerBalls[i]->UpdatePhysicsEuler(timeStep);
+				this->mPowerBalls[i]->UpdateLogic(timeStep, clientBall);
+			}
+			PowerBall* b1;
+			PowerBall* b2;
+			for(int i = 0; i < this->mSize; i++)
+			{
+				b1 = this->mPowerBalls[i];
+				for(int j = i+1; j < this->mSize; j++)
+				{
+					b2 = this->mPowerBalls[j];
+					if(this->CollisionWithSphereSimple(b1, b2) )
+						this->CollisionSphereResponse(b1, b2);
+				}
+				Vector3 normalPlane;
+				if(this->CollisionWithMapSimple(b1, this->mMap,normalPlane))
+					this->CollisionMapResponse(b1, this->mMap, normalPlane, timeStep);	
+			}
+			for(int i = 0;i<this->mSize;i++)
+				this->mPowerBalls[i]->UpdatePost();
+			for(int i = 0; i < this->mSize; i++)
+			{
+				this->mNet->GetBall(i)->SetPos(this->mPowerBalls[i]->GetPosition());
+				Vector3 vel = this->mPowerBalls[i]->GetVelocity();
+				this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
+			}
+			this->mMap->Update(timeStep);
+			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
+			this->mGameTimer->mAccumulator -= timeStep;
+			this->mGameTimer->mT += timeStep;
+
+			newTime = this->mGameTimer->GetTime();
+			loopTime = newTime - oldTime;
+			MaloW::Debug(loopTime);
+	}
+}
+
+void PhysicsEngine::SimulateClient()
+{
+	bool needToUpdate = this->mGameTimer->Update();
+	
+	if(!needToUpdate)
+		return;
+	
+	this->mGameTimer->mAccumulator += this->mGameTimer->GetDeltaTime();
+	float timeStep = this->mGameTimer->GetTimeStepDt();
+	
+	
+	float oldTime = 0;
+	float newTime = 0;
+	float loopTime = 0.0f ;
+	//MaloW::Debug(timeStep);
+	if(this->mGameTimer->mAccumulator >= timeStep)
+		MaloW::Debug(0);
+	else 
+		MaloW::Debug(1);
+	while(this->mGameTimer->mAccumulator >= timeStep )
+	{
+			oldTime = this->mGameTimer->GetTime();
+			for(int i = 0; i < this->mSize; i++)
+			{
+				if(this->mNet->GetIndex() != i)
+				{
+					D3DXVECTOR3 rotVector = this->mNet->GetBall(i)->GetPos() - this->mPowerBalls[i]->GetPosition();
+					
+					this->mPowerBalls[i]->SetPosition(this->mNet->GetBall(i)->GetPos());
+					this->mPowerBalls[i]->SetTempPosition(this->mNet->GetBall(i)->GetPos()); //ny
+					this->mPowerBalls[i]->Rotate(rotVector);
+
+					if(this->mNet->GetBall(i)->GetNumCommands() > 0)
+					{
+						this->mPowerBalls[i]->UseSpell((int)this->mNet->GetBall(i)->GetNextCommand()->GetInput(0));
+						this->mNet->GetBall(i)->PopCommand();
+					}
+				
+					for(int c = 0; c < this->mPowerBalls[i]->GetNrOfSpells(); c++)
+						this->mPowerBalls[i]->GetSpells()[c]->UpdateSpecial(timeStep * 0.001f);
+				}
+			}
+			if(this->mNet->GetIndex() < this->mSize)
+			{
+				int i = this->mNet->GetIndex();
+				this->SendKeyInputs(i, timeStep);
+				this->InputKeysPressedSelf(timeStep, i);
+				// ny
+				for(int b = 0; b < this->mSize; b++)
+				{					
+					bool clientBall = true;
+					if(b == this->mNet->GetIndex())
+						clientBall = false;
+					this->mPowerBalls[b]->UpdatePhysicsEuler(timeStep);
+					this->mPowerBalls[b]->UpdateLogic(timeStep, clientBall);
+				}
+
+				//end ny
+				PowerBall* b1;
+				PowerBall* b2;
+				for(int c = 0; c < this->mSize; c++)
+				{
+					b1 = this->mPowerBalls[c];
+					for(int j = c+1; j < this->mSize; j++)
+					{
+						b2 = this->mPowerBalls[j];
+						if(this->CollisionWithSphereSimple(b1, b2))
+							this->CollisionSphereResponse(b1,b2);
+					}
+				}
+				for(int b = 0;b<this->mSize; b++)
+				{
+					this->mPowerBalls[i]->UpdatePost();
+				}
+				// bort
+				/*
+				Vector3 normalPlane;
+				if(this->mPowerBalls[i]->collisionWithPlatformSimple(this->mMap, normalPlane))
+					this->mPowerBalls[i]->collisionPlatformResponse(this->mMap, normalPlane, timeStep);
+				this->mPowerBalls[i]->UpdatePhysicsEuler(timeStep);
+				this->mPowerBalls[i]->UpdateLogic(timeStep, false);
+				this->mPowerBalls[i]->UpdatePost();				
+				*/
+
+				this->mNet->GetBall(i)->AddMovementPowerBall(this->mPowerBalls[i]);
+			}
+			this->mMap->Update(timeStep);
+			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
+
+			this->mGameTimer->mAccumulator -= timeStep;
+			this->mGameTimer->mT += timeStep;
+
+			newTime = this->mGameTimer->GetTime();
+			loopTime = newTime - oldTime;
+			MaloW::Debug(loopTime);
+	}
+		
+}
 int PhysicsEngine::Size() const
 {
 	return this->mSize;
@@ -688,4 +875,193 @@ bool PhysicsEngine::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p
 void PhysicsEngine::ResetTimers()
 {
 	this->mGameTimer->ResetTimers();
+}
+
+void PhysicsEngine::HandleClientKeyInputs(const int clientIndex, float diff)
+{
+	//keep reading client inputs until the sum of all DT has exceeded server DT (->not allowed to move any more)
+	Command* command = this->mNet->GetBall(clientIndex)->GetNextCommand();
+	float duration = 0.0f;
+	if(command != NULL)
+	{
+		duration = command->GetDuration();
+		while(duration <=  diff && command != NULL)
+		{
+			this->mPowerBalls[clientIndex]->SetForwardVector(command->GetForward());
+			for(int c = 0; c < command->GetNumInputs(); c++)
+			{
+				this->ClientKeyPress(command->GetDuration(), clientIndex, command->GetInput(c));
+			}
+			this->mNet->GetBall(clientIndex)->SetExecTime(this->mNet->GetBall(clientIndex)->GetExecTime() + command->GetDuration());
+			this->mNet->GetBall(clientIndex)->PopCommand();
+
+
+			command = this->mNet->GetBall(clientIndex)->GetNextCommand();
+			if(command != NULL)
+				duration += command->GetDuration();
+								
+		}
+		if(duration > diff && command != NULL)
+		{
+			this->mPowerBalls[clientIndex]->SetForwardVector(command->GetForward());
+			duration -= command->GetDuration();
+									
+			for(int c = 0; c < command->GetNumInputs(); c++)
+			{
+				//ADD A CHECK HERE SO THAT THE SAME KEY CANT APPEAR MORE THAN ONCE IN THE ARRAY (COULD CHEAT THE SYSTEM THIS WAY)
+				
+				this->ClientKeyPress((diff - duration), clientIndex, command->GetInput(c));
+			}
+
+			command->ModifyDuration(-(diff - duration));
+								
+			this->mNet->GetBall(clientIndex)->SetExecTime(this->mNet->GetBall(clientIndex)->GetExecTime() + (diff - duration));
+		}
+	}
+}
+
+void PhysicsEngine::ClientKeyPress(float diff, const int index, char key)
+{
+
+	if(key == 'A')
+		mPowerBalls[index]->AddForceLeftOfForwardDirection(diff);
+	if(key == 'D')
+		mPowerBalls[index]->AddForceRightOfForwardDirection(diff);
+	/* wTF */
+	if(key == 'W')
+		mPowerBalls[index]->AddForceForwardDirection(diff);
+	
+	
+	if(key == 'S')
+		mPowerBalls[index]->AddForceOppositeForwardDirection(diff);
+	
+	if(key == 'Q')
+		mPowerBalls[index]->RotateForwardLeft(diff);
+	if(key == 'E')
+		mPowerBalls[index]->RotateForwardRight(diff);
+	
+	if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
+	{
+		if(key == '1')
+		{
+			if(mPowerBalls[index]->GetSpells()[0]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 1);
+			mPowerBalls[index]->UseSpell(1);
+		}
+		if(key == '2')
+		{
+			if(mPowerBalls[index]->GetSpells()[1]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 2);
+			mPowerBalls[index]->UseSpell(2);
+		}
+		if(key == '3')
+		{
+			if(mPowerBalls[index]->GetSpells()[2]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 3);
+			mPowerBalls[index]->UseSpell(3);
+		}
+		if(key == '4')
+		{
+			if(mPowerBalls[index]->GetSpells()[3]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 4);
+			mPowerBalls[index]->UseSpell(4);
+		}
+		if(key == VK_SPACE)
+		{
+			if(mPowerBalls[index]->GetSpells()[4]->ReadyToBeCast())
+				MsgHandler::GetInstance().SendCastSpell(index, 5);
+			mPowerBalls[index]->UseSpell(5);
+		}
+	}
+
+	
+}
+
+void PhysicsEngine::InputKeysPressedSelf(float diff, int index)
+{
+	if(mGe->GetEngineParameters().CamType == TRD)
+	{
+		if(mGe->GetKeyListener()->IsPressed('A'))
+			mPowerBalls[index]->AddForceLeftOfForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('W'))
+			mPowerBalls[index]->AddForceForwardDirection(diff);	
+		if(mGe->GetKeyListener()->IsPressed('S'))
+			mPowerBalls[index]->AddForceOppositeForwardDirection(diff);
+		if(mGe->GetKeyListener()->IsPressed('Q'))
+			mPowerBalls[index]->RotateForwardLeft(diff);
+		if(mGe->GetKeyListener()->IsPressed('E'))
+			mPowerBalls[index]->RotateForwardRight(diff);
+		if(mGe->GetKeyListener()->IsPressed('D'))
+			mPowerBalls[index]->AddForceRightOfForwardDirection(diff);	
+		if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
+		{
+			if(mGe->GetKeyListener()->IsPressed('1'))
+			{
+				if(this->mNet->IsServer() && mPowerBalls[index]->GetSpells()[0]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 1);
+				mPowerBalls[index]->UseSpell(1);
+			}
+			if(mGe->GetKeyListener()->IsPressed('2'))
+			{
+				if(this->mNet->IsServer() && mPowerBalls[index]->GetSpells()[1]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 2);
+				mPowerBalls[index]->UseSpell(2);
+			}
+			if(mGe->GetKeyListener()->IsPressed('3'))
+			{
+				if(this->mNet->IsServer() && mPowerBalls[index]->GetSpells()[2]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 3);
+				mPowerBalls[index]->UseSpell(3);
+			}
+			if(mGe->GetKeyListener()->IsPressed('4'))
+			{
+				if(this->mNet->IsServer() && mPowerBalls[index]->GetSpells()[3]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 4);
+				mPowerBalls[index]->UseSpell(4);
+			}
+			if(mGe->GetKeyListener()->IsPressed(VK_SPACE))
+			{
+				if(this->mNet->IsServer() && mPowerBalls[index]->GetSpells()[4]->ReadyToBeCast())
+					MsgHandler::GetInstance().SendCastSpell(index, 5);
+				mPowerBalls[index]->UseSpell(5);
+			}
+		}
+		if(mGe->GetKeyListener()->IsPressed('Z') && !this->mZoomOutPressed)
+		{
+			mPowerBalls[index]->ZoomOut();
+			this->mZoomOutPressed = true;
+		}
+		else if(!mGe->GetKeyListener()->IsPressed('Z'))
+			this->mZoomOutPressed = false;
+		if(mGe->GetKeyListener()->IsPressed('C') && !this->mZoomInPressed)
+		{
+			mPowerBalls[index]->ZoomIn();
+			this->mZoomInPressed = true;
+		}
+		else if(!mGe->GetKeyListener()->IsPressed('C'))
+			this->mZoomInPressed = false;
+	}
+	else
+	{
+
+	}
+}
+
+void PhysicsEngine::SendKeyInputs(const int clientIndex, float diff)
+{
+	char keyDowns[5] = {0};
+	char keysToCheck[12] = {'A', 'D', 'W', 'S', 'Q', 'E', VK_SPACE, '1', '2', '3', '4', VK_SPACE};
+	int numKeys = 0;
+	for(int i = 0; i < 12; i++)
+	{
+		if(mGe->GetKeyListener()->IsPressed(keysToCheck[i]) && numKeys < 5)
+			keyDowns[numKeys++] = keysToCheck[i];
+	}
+				
+	if(numKeys == 0)
+		keyDowns[numKeys++] = '?'; //"idle"-key
+	
+	Vector3 temp = this->mPowerBalls[clientIndex]->GetForwardVector();
+	this->mNet->GetBall(clientIndex)->AddKeyInput(keyDowns, numKeys, diff, D3DXVECTOR3(temp.x, temp.y, temp.z));
+	
 }

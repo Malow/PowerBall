@@ -121,6 +121,7 @@ bool Knockout::PlaySpecific()
 			for(int i = 0; i<this->mNumberOfPlayers;i++)
 				this->mBalls[i]->SetToStartPosition();
 		}
+	
 	}
 
 	if(this->mQuitByMenu || !roundsLeft)
@@ -259,7 +260,7 @@ void Knockout::PlayRound(bool& roundsLeft)
 	{
 		diff = mGe->Update();
 		
-		this->mPe->Simulate(diff);
+		this->mPe->Simulate();
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))
 		{
 			roundsLeft = running = this->mIGM->Run();
@@ -302,6 +303,7 @@ void Knockout::PlayRound(bool& roundsLeft)
 		if(this->checkWinConditions(diff))
 			running = false;
 	}
+
 	this->mPe->ResetTimers();
 }
 

@@ -19,6 +19,7 @@
 #include "..\Spells\JumpSpell.h"
 #include "..\GUI\ProgressBar.h"
 
+
 class Warlock : public GameMode
 {
 	private:
