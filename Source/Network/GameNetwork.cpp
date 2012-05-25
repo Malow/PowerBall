@@ -110,8 +110,8 @@ void GameNetwork::ServerUpdate()
 }
 //temporary test variables
 int test = 0;
-PowerBall* shadow;
-PowerBall* shadow2;
+//PowerBall* shadow;
+//PowerBall* shadow2;
 ofstream file2;
 D3DXVECTOR3 interpolationVector(0,0,0);
 
@@ -178,9 +178,17 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			MsgHandler::GetInstance().Ping(0);
 		}*/
 		//file2 << this->mLatency << endl;
+		for(int i = 0; i < numPowerBalls; i++)
+		{
+			if(this->mNetBalls[i]->IsPredictingCollision() && i != this->mIndex)
+				this->mNetBalls[i]->PredictCollision(PowerBalls[i], dt, this->mNetBalls[this->mIndex]->GetExecTime() - this->mNetBalls[0]->GetExecTime());
+			
+		}
 		if(numPowerBalls > this->mIndex)
 		{
-			D3DXVECTOR3 mod = this->CorrectPosition();//(0,0,0);//
+			this->mNetBalls[this->mIndex]->SyncPosWithServer(PowerBalls[this->mIndex], this->mNetBalls[0]);
+
+			//D3DXVECTOR3 mod = this->CorrectPosition();//(0,0,0);//
 			/*
 				Have a interpolation vector and add mod to it all the time and then in the update loop u slowly subtracts from it so it become a smooth movement and not as spiky as now.
 				
@@ -230,8 +238,8 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				this->mNetBalls[this->mIndex]->GetPlayerHistory()->MoveHistory(interpolationVector); //a bit inefficient, add an offset vector in player_history that u add to GetPos()
 				interpolationVector = ::D3DXVECTOR3(0,0,0);
 			}*/
-			/**/
-			//if(1 == 2)
+			/**//*
+			if(1 == 2)
 			{
 			if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
 			{
@@ -268,7 +276,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				}
 			}
 			}
-			/*if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
+			if(PowerBalls[this->mIndex]->GetPosition().y > Y_LEVEL_BOUNDARY)
 			{
 				interpolationVector += mod;
 				if(D3DXVec3Length(&interpolationVector) > INTERPOS_MIN && D3DXVec3Length(&interpolationVector) < INTERPOS_MAX)//FLOAT_EPSILON)

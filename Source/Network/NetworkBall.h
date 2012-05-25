@@ -8,6 +8,12 @@
 #include "CommandHandler.h"
 using namespace std;
 #define DROP_TIMER 5000.0f
+#define FLOAT_EPSILON 0.001f //used for ignoring very tiny movements
+#define INTERPOS_MIN 0.01f //if the position difference (vector length) is lesser than this -> sets local position to network position
+#define INTERPOS_MAX 5.0f //if the position difference (vector length) is greater than this -> sets local position to network position
+#define INTERPOS_MOD 0.75f // 1 = setting local position to latest network position, 0 = ignore network position.
+#define SERVER_SEND_MS 1.0f //MAX 1 PACKET PER XX MILLISECONDS
+#define CLIENT_SEND_MS 1.0f //MAX 1 PACKET PER XX MILLISECONDS
 class NetworkBall
 {
 private:
@@ -23,16 +29,19 @@ private:
 	float				mExecTime;
 	float				mAliveTimer;
 	
-
+	//Client variables
+	bool				mIsPredictingCollision;
 	//Server variables
 	float				mClientExecTime;
 
+	D3DXVECTOR3 CorrectPosition(NetworkBall* serverBall);
 public:
 				NetworkBall();
 	virtual		~NetworkBall();
 	
+	void		SyncPosWithServer(PowerBall* ball, NetworkBall* serverBall);
 	void		AddMovementPowerBall(PowerBall* PowerBall);
-	//D3DXVECTOR3 CorrectPosition(float ClientExecTime);
+
 	int			GetNumCommands() const { return this->mCommandHandler->GetNumCommands(); }
 	void		ModifyAliveTime(float mod) { this->mAliveTimer += mod; }
 	void		SetAliveTime(float time) { this->mAliveTimer = time; }
@@ -47,6 +56,9 @@ public:
 	void		SetExecTime(const float time){this->mExecTime = time;}
 	float		GetExecTime() const { return this->mExecTime; }
 
+	void		StartCollisionPrediction(PowerBall* ball);
+	void		PredictCollision(PowerBall* ball, float diff, float serverExecTimeDifference);
+	bool		IsPredictingCollision() { return this->mIsPredictingCollision; }
 	
 	void		SetClientExecTime(const float time){this->mClientExecTime = time;}
 	float		GetClientExecTime() const { return this->mClientExecTime; }

@@ -66,7 +66,6 @@ Snapshot PlayerHistory::GetSnapshot(float time)
 	D3DXVec3Lerp(&lerpHistoryPos, &this->mHistory[i].pos, &this->mHistory[i + 1].pos, lerpVal);
 	
 	D3DXVECTOR3 lerpHistoryTempPos;
-	float lerpTempVal = (float)(time - this->mHistory[i].time) / (float)(this->mHistory[i+1].time - this->mHistory[i].time);
 	D3DXVec3Lerp(&lerpHistoryTempPos, &this->mHistory[i].tempPos, &this->mHistory[i + 1].tempPos, lerpVal);
 
 	Snapshot ret;
