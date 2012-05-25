@@ -145,11 +145,7 @@ void CaptureTheFlag::Initialize()
 		this->mIGM	= new InGameMenu(this->mGe);
 		this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
 
-		this->mTimeElapsedText = this->mGe->CreateText(	"",
-														D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 150.0f,
-																	this->mGe->GetEngineParameters().windowHeight - 100.0f), 
-														1.0f, 
-														"Media/Fonts/1");
+		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void CaptureTheFlag::Intro()
@@ -172,28 +168,44 @@ void CaptureTheFlag::ShowStats()
 
 bool CaptureTheFlag::checkWinConditions(float dt)
 {
-	D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[0]->GetRadius(), 0)) - this->mBalls[0]->GetPosition());
-
-	if(D3DXVec3Length(&BallToFlag) - this->mFlagRadius < (this->mBalls[0]->GetRadius()))
+	
+	if(this->mEnemyFlag->GetAtBase())
 	{
-		this->mBalls[0]->AddFlag(this->mEnemyFlag);
-		this->mEnemyFlag->SetAtBase(false);
+		for(int i = 0; i < this->mNumberOfPlayers; i++)
+		{
+			//**if team == 1**
+			D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[i]->GetRadius(), 0)) - this->mBalls[0]->GetPosition());
+
+			if(D3DXVec3Length(&BallToFlag) - this->mFlagRadius < (this->mBalls[i]->GetRadius()))
+			{
+				this->mBalls[i]->AddFlag(this->mEnemyFlag);
+				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 0.8f);
+				this->mBalls[i]->SetRestitution(this->mBalls[i]->GetRestitution() * 2.0f);
+				this->mEnemyFlag->SetAtBase(false);
+			}
+		}
 	}
-	if(!this->mEnemyFlag->GetAtBase())
+	else
 	{
 		D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mEnemyFlag->GetMesh()->GetPosition() - this->mFriendlyFlag->GetMesh()->GetPosition());
-		if((D3DXVec3Length(&distBetweenFlags) - this->mFlagRadius < this->mBalls[0]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
+		
+		for(int i = 0; i < this->mNumberOfPlayers; i++)
 		{
-			this->mBalls[0]->ResetFlag();
-			this->mEnemyFlag->Reset();
-			this->mNumberOfRounds--;
-			if(this->mNumberOfRounds <= 0)
-				return true;
+			if((D3DXVec3Length(&distBetweenFlags) - this->mFlagRadius < this->mBalls[i]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
+			{
+				this->mBalls[i]->ResetFlag();
+				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 1.25f);
+				this->mBalls[i]->SetRestitution(this->mBalls[i]->GetRestitution() * 0.5f);
+				this->mEnemyFlag->Reset();
+				this->mNumberOfRounds--;
+				if(this->mNumberOfRounds <= 0)
+					return true;
+			}
 		}
 	}
 
 
-	//just copied temporarily to try
+	//just copied temporarily to try - Rille
 	if(this->mNumberOfPlayers > 1)
 	{
 		D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mFriendlyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[1]->GetRadius(), 0))- this->mBalls[1]->GetPosition());
