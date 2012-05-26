@@ -1,5 +1,7 @@
 #include "CaptureTheFlag.h"
 #include "..\Game Objects\FlagCTF.h"
+#include "..\Physics\PhysicsEngine.h"
+
 CaptureTheFlag::CaptureTheFlag()
 {
 		this->mGe = NULL;
@@ -51,10 +53,12 @@ CaptureTheFlag::~CaptureTheFlag()
 	if(this->mPe)
 	{
 		#if FixedTimeStep
+		/*
 			for(int i = 0;i<this->mNumberOfPlayers; i++)
 				this->mPe->RemoveBody(this->mBalls[i]);
-			this->mPe->RemoveMap(this->mPlatform);
+			this->mPe->RemoveMap(this->mPlatform);*/
 			SAFE_DELETE(this->mPe);
+			this->mPe = NULL;
 		#endif
 	}
 
@@ -290,6 +294,9 @@ void CaptureTheFlag::AddBall()
 		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::CTF);
 		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+		#if FixedTimeStep
+			this->mPe->AddBody(temp[i]);
+		#endif
 		
 	}
 	delete[] this->mBalls;

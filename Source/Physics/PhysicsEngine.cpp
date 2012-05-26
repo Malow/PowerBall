@@ -14,6 +14,7 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge)
 	this->mSize = 0;
 	this->mCapacity = CAPACITY;
 	this->mPowerBalls = new PowerBall*[CAPACITY];
+	this->shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
 	for(int i = 0;i<CAPACITY;i++)
 		this->mPowerBalls[i] = NULL;
 	this->mMap = NULL;
@@ -34,6 +35,7 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge, GameNetwork* net, ServerInfo in
 	this->mSize = 0;
 	this->mCapacity = CAPACITY;
 	this->mPowerBalls = new PowerBall*[CAPACITY];
+	this->shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
 	for(int i = 0;i<CAPACITY;i++)
 		this->mPowerBalls[i] = NULL;
 	this->mMap = NULL;
@@ -49,6 +51,9 @@ PhysicsEngine::~PhysicsEngine()
 	delete this->mGameTimer;
 	this->mGe->DeleteText(this->mHud);
 	filetemp.close();
+	if(this->shadow)
+		delete this->shadow;
+	
 }
 
 void PhysicsEngine::Initialize()
@@ -188,8 +193,10 @@ void PhysicsEngine::Simulate(bool clientBall)
 PowerBall* shadow = NULL;
 void PhysicsEngine::SimulateServer()
 {
+	
 	if(shadow == NULL)
 		 shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
+	
 	bool needToUpdate = this->mGameTimer->Update();
 	
 	if(!needToUpdate)
@@ -300,9 +307,11 @@ void PhysicsEngine::SimulateServer()
 				Vector3 vel = this->mPowerBalls[i]->GetVelocity();
 				this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z)); //Perhaps let the client update all the balls if its too spiky movement on the other balls (this shouldnt happen tho, if server sends the updated data often)
 			}
-			this->mNet->GetBall(this->mNet->GetIndex())->SetExecTime(this->mNet->GetBall(this->mNet->GetIndex())->GetExecTime() + timeStep);
-			this->mNet->GetBall(this->mNet->GetIndex())->AddMovementPowerBall(this->mPowerBalls[this->mNet->GetIndex()]);
-
+			if(this->mNet->GetIndex() < this->mSize)
+			{
+				this->mNet->GetBall(this->mNet->GetIndex())->SetExecTime(this->mNet->GetBall(this->mNet->GetIndex())->GetExecTime() + timeStep);
+				this->mNet->GetBall(this->mNet->GetIndex())->AddMovementPowerBall(this->mPowerBalls[this->mNet->GetIndex()]);
+			}
 			this->mMap->Update(timeStep);
 			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
 			this->mGameTimer->mAccumulator -= timeStep;

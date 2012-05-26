@@ -46,10 +46,12 @@ Warlock::~Warlock()
 	if(this->mPe)
 	{
 		#if FixedTimeStep
+		/*
 			for(int i = 0;i<this->mNumberOfPlayers; i++)
 				this->mPe->RemoveBody(this->mBalls[i]);
-			this->mPe->RemoveMap(this->mPlatform);
+			this->mPe->RemoveMap(this->mPlatform);*/
 			SAFE_DELETE(this->mPe);
+			this->mPe = NULL;
 		#endif
 	}
 		

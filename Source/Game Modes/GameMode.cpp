@@ -29,6 +29,15 @@ GameMode::~GameMode()
 	//SAFE_DELETE(this->mNet);
 	SAFE_DELETE(this->mChooseTeamMenu);
 	this->mGe->DeleteText(this->mTimeElapsedText);
+
+	if(this->mPe)
+	{
+		#if FixedTimeStep
+			SAFE_DELETE(this->mPe);
+			this->mPe = NULL;
+		#endif
+	}
+
 }
 
 bool GameMode::PlayLan()
@@ -64,8 +73,8 @@ bool GameMode::PlayLan()
 			roundsLeft = false;
 	}
 		
-		//this->mNet->Close();
-		return quitByMenu;
+	//this->mNet->Close();
+	return quitByMenu;
 }
 
 DWORD WINAPI GameMode::SelectTeamThread(void* param)

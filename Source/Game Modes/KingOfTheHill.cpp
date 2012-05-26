@@ -1,4 +1,5 @@
 #include "KingOfTheHill.h"
+#include "..\Physics\PhysicsEngine.h"
 
 KingOfTheHill::KingOfTheHill()
 {
@@ -386,6 +387,9 @@ void KingOfTheHill::AddBall()
 		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::KOTH);
 		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+		#if FixedTimeStep
+			this->mPe->AddBody(temp[i]);
+		#endif
 		//if(this->mNet->GetIndex() == i)
 			//temp[i]->SetTeamColor(this->mTeam);
 		

@@ -26,6 +26,7 @@ class PhysicsEngine
 			int mSize;
 			int mCapacity;
 			PowerBall** mPowerBalls;
+			PowerBall* shadow;
 			Map* mMap;
 			GraphicsEngine* mGe;
 			SoundEffect*	mCollisionWithWall;
