@@ -188,12 +188,15 @@ bool Warlock::checkWinConditions(float dt)
 		{
 			/* here the ball take damage. */
 			float radiusMapInside = 55.0f;
-			float moreDamageDistance = radiusMapInside - pos.GetLength();
+			float moreDamageDistance = pos.GetLength() - radiusMapInside;
 			/* minus 4 hp per sec and minus distance in lava per sec */
 			this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt - moreDamageDistance*newdt);
 		}
 	}
-
+	/*
+	if(this->mTimeElapsed > 600.0f)
+		return true;
+	return false;*/
 	int ballIndex = 0;
 	int* arrayIndexs = new int[this->mNumberOfPlayers];
 	bool returnValue = false;
@@ -229,17 +232,6 @@ bool Warlock::checkWinConditions(float dt)
 	{
 		/* here the round is over. */
 		/* to do. add winning information to teams or to player in free 4 all. */
-
-		for(int i = 0; i<this->mNumberOfPlayers; i++)
-		{
-			this->mBalls[i]->ResetTime();
-			this->mBalls[i]->SetToStartPosition();
-			this->mBalls[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
-			this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
-			Vector3 vel = Vector3(0,0,0);
-			this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
-			this->mNet->GetBall(i)->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
-		}			
 		returnValue = true;
 	}	
 	else
@@ -260,7 +252,7 @@ bool Warlock::checkWinConditions(float dt)
 	numberBlue = 0;
 	numberNone = 0;
 	
-	for(int i = 0; i<numberBallsAlive; i++)
+	for(int i = 0; i<this->mNumberOfPlayers; i++)
 	{
 		if(this->mBalls[i]->GetTeamColor() == TEAM::BLUETEAM)
 			numberBlue++;
@@ -271,7 +263,19 @@ bool Warlock::checkWinConditions(float dt)
 	}
 	
 	if(returnValue && ( (numberRed > 0 && numberBlue > 0) || numberNone > 1))
+	{
+		for(int i = 0; i<this->mNumberOfPlayers; i++)
+		{
+			this->mBalls[i]->ResetTime();
+			this->mBalls[i]->SetToStartPosition();
+			this->mBalls[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+			this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
+			Vector3 vel = Vector3(0,0,0);
+			this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
+			this->mNet->GetBall(i)->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+		}
 		returnValue = true;
+	}
 	else
 		returnValue = false;
 	return returnValue;

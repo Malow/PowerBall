@@ -167,7 +167,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	{
 		this->mRestitution   = 1.0f; 
 		this->mAcceleration	 = Vector3(0, -9.81f * 2.0f , 0);
-		this->mForcePress	 = 180.0f;
+		this->mForcePress	 = 50.0f;
 	}
 	else
 	{
@@ -1089,4 +1089,174 @@ void PowerBall::UpdateLogic(float timeStep, bool clientBall)
 			this->mRespawnTimeLeft = this->mRespawnTime;
 		}
 	}
+}
+
+void PowerBall::AddForceForwardDirection(float dt)
+{
+	if(this->mHasContact && this->mSteering)
+	{
+		Vector3 vel = this->mVelocity;
+		Vector3 acc = this->mForward;
+		Vector3 accNorm = acc;
+		accNorm.normalize();
+		Vector3 velNorm = vel;
+		velNorm.normalize();
+		float scalarProd = velNorm.GetDotProduct(accNorm);
+		float eps = 0.01f;
+		if( scalarProd >= 0 )
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+
+		/* the acc force have a component in the opposite directon to the vel vector. */
+		else 
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+		
+	}
+	//this->AddForce(this->mForward * dt); 
+}
+
+void PowerBall::AddForceOppositeForwardDirection(float dt) 
+{
+	if(this->mHasContact && this->mSteering)
+	{
+		Vector3 vel = this->mVelocity;
+		Vector3 acc = this->mForward * (-1.0f);
+		Vector3 accNorm = acc;
+		accNorm.normalize();
+		Vector3 velNorm = vel;
+		velNorm.normalize();
+		float scalarProd = velNorm.GetDotProduct(accNorm);
+		float eps = 0.01f;
+		if( scalarProd >= 0 )
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+
+		/* the acc force have a component in the opposite directon to the vel vector. */
+		else 
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+		
+	}
+	/*
+	if(this->mHasContact && this->mSteering)
+		this->AddForce(this->mForward * (-dt)); */
+}
+
+void PowerBall::AddForceLeftOfForwardDirection(float dt) 
+{ 
+	if(this->mHasContact && this->mSteering)
+	{
+		Vector3 vel = this->mVelocity;
+		Vector3 acc = this->mForward.GetRoteted(-PI/2.0f);
+		Vector3 accNorm = acc;
+		accNorm.normalize();
+		Vector3 velNorm = vel;
+		velNorm.normalize();
+		float scalarProd = velNorm.GetDotProduct(accNorm);
+		float eps = 0.01f;
+		if( scalarProd >= 0 )
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+
+		/* the acc force have a component in the opposite directon to the vel vector. */
+		else 
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+		
+	}
+	/*
+	if(this->mHasContact && this->mSteering)
+		this->AddForce(this->mForward.GetRoteted(-PI/2.0f) * dt); */
+}
+
+void PowerBall::AddForceRightOfForwardDirection(float dt) 
+{ 
+	if(this->mHasContact && this->mSteering)
+	{
+		Vector3 vel = this->mVelocity;
+		Vector3 acc = this->mForward.GetRoteted(PI/2.0f);
+		Vector3 accNorm = acc;
+		accNorm.normalize();
+		Vector3 velNorm = vel;
+		velNorm.normalize();
+		float scalarProd = velNorm.GetDotProduct(accNorm);
+		float eps = 0.01f;
+		if( scalarProd >= 0 )
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+
+		/* the acc force have a component in the opposite directon to the vel vector. */
+		else 
+		{
+			/* projecting acc vector on velocity vector */
+			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			/* GramS. to get the other component. */
+			Vector3 komponent = acc - projAccOnVel;
+			
+			/* the weighted calculation for the force. */
+			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
+			this->AddForce(forceWeighted * dt); 
+		}
+		
+	}
+	/*
+	if(this->mHasContact && this->mSteering)
+		this->AddForce(this->mForward.GetRoteted(PI/2.0f) * dt); */
 }
