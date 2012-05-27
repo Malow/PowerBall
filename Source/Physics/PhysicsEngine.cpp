@@ -600,21 +600,28 @@ void PhysicsEngine::CollisionSphereResponse(PowerBall* b, PowerBall* b1)
 	{
 		Vector3 ve1 = b->GetVelocity();
 		Vector3 ve2 = b1->GetVelocity();
-		float v1Max = b->GetMaxVelocity();
-		float v2Max = b1->GetMaxVelocity();
-		float v1 = ve1.GetLength();
-		float v2 = ve2.GetLength();
 		Vector3 relativeV = ve1 - ve2;
 		if( relativeV.GetLength() > 0.6f)
 		{
-			float sumV = v1 + v2;
-			float damage1 = v2/sumV;
-			float damage2 = v1/sumV;
+			float v1 = ve1.GetLength();
+			float v2 = ve2.GetLength();
+			float mass1 = b->GetMass();
+			float mass2 = b1->GetMass();
+			float momentum1 = v1 * mass1;
+			float momentum2 = v2 * mass2;
+			float sumMomentum = momentum1 + momentum2;
+			/* to make it clear. if ball 1 has the speed of 10 m/s and ball 2 has
+			** the speed 0 m/s, ball 1 will not get any damage but ball 2 gets
+			** his health minus 10* (10 / 10) = 10 so ball 2 has lost 10 in hp.
+			** this works good because we using momentum as a weighted value. 
+			*/
+			float damage1 = 10.0f* (momentum2 / sumMomentum); 
+			float damage2 = 10.0f* (momentum1 / sumMomentum);
 			float health1 = b->GetHealth();
-			health1 -= damage1*10.0f*(v2/v2Max);
+			health1 -= damage1;
 			b->SetHealth(health1);
 			float health2 = b1->GetHealth();
-			health2 -= damage2*10.0f*(v1/v1Max);
+			health2 -= damage2;
 			b1->SetHealth(health2);
 		}
 	}

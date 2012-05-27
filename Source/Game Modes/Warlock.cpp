@@ -61,7 +61,7 @@ void Warlock::Initialize()
 {
 	
 	D3DXVECTOR3 centerPlatform = D3DXVECTOR3(0,4,0);
-	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 25, -10));
+	mGe->GetCamera()->setPosition(D3DXVECTOR3(0, 70, -10)); //D3DXVECTOR3(0, 25, -10)
 	mGe->GetCamera()->LookAt(centerPlatform);	
 	this->mLights[0] = mGe->CreateLight(D3DXVECTOR3(0, 50, 0));
 	this->mLights[1] = mGe->CreateLight(D3DXVECTOR3(0, 50, -20)); 
@@ -108,7 +108,7 @@ void Warlock::Initialize()
 
 		
 	/* Set hud */
-	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
+	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,400),0.5f,"Media/Fonts/1");
 	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1");
 	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
 	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(20,190),1.0f,"Media/Fonts/1");
@@ -173,9 +173,11 @@ void Warlock::ShowStats()
 bool Warlock::checkWinConditions(float dt)
 {
 	float newdt = dt/1000.0f;
+	this->mTimeElapsed += newdt;
 	Vector3 pos;
 	Vector3 posLav;
 	float distance = -1;
+	int numberBallsAlive = 0;
 	for(int i = 0; i<this->mNumberOfPlayers; i++)
 	{
 		pos = this->mBalls[i]->GetPositionVector3();
@@ -183,23 +185,106 @@ bool Warlock::checkWinConditions(float dt)
 		Vector3 distanceVector = (pos - posLav);
 		distance = distanceVector.GetLength();
 		if(distance < this->mBalls[i]->GetRadius() ||  distanceVector.y < 0.0f )
-			this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt); // minus 4 hp per sec.
+		{
+			/* here the ball take damage. */
+			float radiusMapInside = 55.0f;
+			float moreDamageDistance = radiusMapInside - pos.GetLength();
+			/* minus 4 hp per sec and minus distance in lava per sec */
+			this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt - moreDamageDistance*newdt);
+		}
 	}
 
-	/* will be implemented when we have the rules, for now just play around in 600 seconds then gameover */
-	this->mTimeElapsed += newdt;
-	if(this->mTimeElapsed > 600.0f)
-		return true;
-	return false;
+	int ballIndex = 0;
+	int* arrayIndexs = new int[this->mNumberOfPlayers];
+	bool returnValue = false;
+	
+	/* checking which balls that are alive. */
+	for(int i = 0; i<this->mNumberOfPlayers; i++)
+	{
+		if(this->mBalls[i]->GetHealth() > 0)
+		{
+			/* saving the index of the balls that are alive and how many they are. */
+			arrayIndexs[numberBallsAlive] = i;
+			numberBallsAlive++;
+		}
+	}
+
+	/* checking so they belong to the same team. */
+	int numberRed = 0;
+	int numberBlue = 0;
+	int numberNone = 0;
+	
+	for(int i = 0; i<numberBallsAlive; i++)
+	{
+		ballIndex = arrayIndexs[i];
+		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::BLUETEAM)
+			numberBlue++;
+		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::REDTEAM)
+			numberRed++;
+		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
+			numberNone++;
+	}
+	/* if all balls belong to the same team and they are more that zero alive on the map or one alive in free 4 all. */
+	if((numberBallsAlive >0) && (numberBallsAlive == numberBlue || numberBallsAlive == numberRed || numberNone == 1 ))  
+	{
+		/* here the round is over. */
+		/* to do. add winning information to teams or to player in free 4 all. */
+
+		for(int i = 0; i<this->mNumberOfPlayers; i++)
+		{
+			this->mBalls[i]->ResetTime();
+			this->mBalls[i]->SetToStartPosition();
+			this->mBalls[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+			this->mNet->GetBall(i)->SetPos(this->mBalls[i]->GetPosition());
+			Vector3 vel = Vector3(0,0,0);
+			this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z));
+			this->mNet->GetBall(i)->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+		}			
+		returnValue = true;
+	}	
+	else
+	{
+		returnValue = false;
+	}
+	delete arrayIndexs;
+
+	
+	/* when someone starts a game there will only be one alive on the map and he will be the winner by algoritm
+	** but for free 4 all it has to be at least 2 players for the win condition to be able to be true.
+	** and at least one player for each team in team mode of warlock for the win condition to be able to be true.
+	** 
+	*/
+
+	/* checking which ball belong to which team and how many they are and how many that are no team aka free 4 all. */
+	numberRed = 0;
+	numberBlue = 0;
+	numberNone = 0;
+	
+	for(int i = 0; i<numberBallsAlive; i++)
+	{
+		if(this->mBalls[i]->GetTeamColor() == TEAM::BLUETEAM)
+			numberBlue++;
+		if(this->mBalls[i]->GetTeamColor() == TEAM::REDTEAM)
+			numberRed++;
+		if(this->mBalls[i]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
+			numberNone++;
+	}
+	
+	if(returnValue && ( (numberRed > 0 && numberBlue > 0) || numberNone > 1))
+		returnValue = true;
+	else
+		returnValue = false;
+	return returnValue;
+	
 }
 
 void Warlock::ShowHud()
 {
 	GameMode::ShowHud();
 	string s;
-	float tmp = (600.0f - this->mTimeElapsed);
-	tmp = floor(tmp * 10.0f) / 10.0f;
-	s = "Timer: " + MaloW::convertNrToString(tmp);
+	Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetPositionVector3();
+	s = " Position: x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
+	s = s + "Rounds: " + MaloW::convertNrToString(this->mNumberOfRounds);
 	this->mHud[0]->SetText(s);
 	s = "Speed: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[0]->GetVelocity().GetLength())/10.0f) + " m/s";
 	this->mHud[1]->SetText(s);
@@ -214,7 +299,7 @@ void Warlock::ShowHud()
 	this->mHud[4]->SetText(s);
 	s = "z: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().z)/10.0f);
 	this->mHud[5]->SetText(s);
-		
+	
 		
 		
 	Spell** spells = this->mBalls[this->mNet->GetIndex()]->GetSpells();
@@ -420,9 +505,6 @@ void Warlock::ShowHud()
 	/* Life bar */
 	s = "Life: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetHealth())/10.0f);
 	this->mProgressBars[5]->SetPercentOfProgressBarColor1(this->mBalls[this->mNet->GetIndex()]->GetHealth());
-	Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetPositionVector3();
-	string t = " Position: x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
-	s = s + t;
 	this->mHud[16]->SetText(s);
 }
 

@@ -16,6 +16,7 @@ GameMode::GameMode()
 	this->mChooseTeamMenu = NULL;
 	this->mQuitByMenu = false;
 	this->mTimeElapsedText = NULL;
+	this->mPe = NULL;
 }
 
 GameMode::~GameMode()

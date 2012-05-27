@@ -288,7 +288,7 @@ bool KingOfTheHill::checkWinConditions(float dt)
 		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
 			numberNone++;
 	}
-	/* if all balls belong to the same team and they are more that zero in the hotzone then update the time. */
+	/* if all balls belong to the same team and they are more that zero in the hotzone or one in free 4 all then update the time. */
 	if((numberInHotZone >0) && (numberInHotZone == numberBlue || numberInHotZone == numberRed || numberNone == 1 ))  
 	{
 		/* add time to the continuously timer. */
