@@ -74,20 +74,32 @@ void Knockout::Initialize()
 	this->mPe->AddBody(this->mBalls[1]);
 	this->mPe->AddMap(this->mPlatform);
 
+	
+	
+	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(20.0f, 10.0f), 1.0f, "Media/Fonts/1"); //time
+	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,50),1.0f,"Media/Fonts/1"); //player 1 score
+	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1"); //player 2 score
+	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,130),1.0f,"Media/Fonts/1"); //number of rounds
+	float x = 0.0f;
+	float y = 0.0f;
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.266f;
+	y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	this->mHud[3] = mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1"); //winner of round
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.133f;
+	this->mHud[4] = mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1"); //round draw
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4f;
+	y = this->mGe->GetEngineParameters().windowHeight * 0.5f;
+	this->mHud[5] = mGe->CreateText("", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1"); //winner of game/match
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.275f;
+	this->mHud[6] = mGe->CreateText("", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1"); //game/match draw
 
-	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
-	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,60),1.0f,"Media/Fonts/1");
-	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,100),1.0f,"Media/Fonts/1");
-	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(300,150),4.0f,"Media/Fonts/1");
-	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(250,150),2.0f,"Media/Fonts/1");
-	this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(100,150),4.0f,"Media/Fonts/1");
-
-	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void Knockout::Intro()
 {
-	Text*	intro = mGe->CreateText("Knockout",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+	float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.2125f;
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	Text*	intro = mGe->CreateText("Knockout", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);
@@ -152,21 +164,30 @@ void Knockout::ShowStats()
 		}
 		if(!draw)
 		{
-			string win = "Winner: Player " + MaloW::convertNrToString((float)(indexWinner+1)) + " with " + MaloW::convertNrToString((float)bestResault) + " won";
-			Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
+			float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.2125f;
+			float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+			string win = "Winner: Player " + MaloW::convertNrToString((float)(indexWinner+1));// + " with " + MaloW::convertNrToString((float)bestResault) + " won";
+			//Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
+			this->mHud[5]->SetText(win);
 			diff = mGe->Update();
 			while(diff < 2000)
 				diff += mGe->Update();
-			mGe->DeleteText(winner);
+			this->mHud[5]->SetText("");
+			//mGe->DeleteText(winner);
 		}
 		else
 		{
-			string win = "No winner in this Game";
-			Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.0f,"Media/Fonts/1");
+			float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.2125f;
+			float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+			//string win = "No winner in this Game";
+			string win = "Game draw";
+			//Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.0f,"Media/Fonts/1");
 			diff = mGe->Update();
+			this->mHud[6]->SetText(win);
 			while(diff < 2000)
 				diff += mGe->Update();
-			mGe->DeleteText(winner);
+			this->mHud[6]->SetText("");
+			//mGe->DeleteText(winner);
 		}
 	}
 }
@@ -197,11 +218,11 @@ bool Knockout::checkWinConditions(float dt)
 			this->mBalls[this->mIndexBallLeft]->RestetWinTimer();
 			
 			// winner, show winner text for 2 seconds
-			string s = "Winner: Player " + MaloW::convertNrToString((float)(this->mIndexBallLeft+1));
-			this->mHud[4]->SetText(s);
+			string s = "Round won by player " + MaloW::convertNrToString((float)(this->mIndexBallLeft+1));
+			this->mHud[3]->SetText(s);
 			while(dt < 2000)
 				dt += mGe->Update();
-			this->mHud[4]->SetText("");
+			this->mHud[3]->SetText("");
 			this->mWinnerActivated = false;
 			return true;
 		}
@@ -209,7 +230,7 @@ bool Knockout::checkWinConditions(float dt)
 	else if(this->mWinnerActivated)
 	{
 		// draw, show draw text for 2 seconds
-		string s = "Draw";
+		string s = "Round draw";
 		this->mHud[4]->SetText(s);
 		while(dt < 2000)
 			dt += mGe->Update();
@@ -222,7 +243,8 @@ bool Knockout::checkWinConditions(float dt)
 	{
 		// is if both the balls are below y = -6 in the same update
 		// draw, show draw text for 2 seconds
-		string s = "Draw in the same update!";
+		//string s = "Draw in the same update!";
+		string s = "Draw";
 		this->mHud[4]->SetText(s);
 		while(dt < 2000)
 			dt += mGe->Update();
@@ -255,6 +277,7 @@ void Knockout::PlayRound(bool& roundsLeft)
 	while(running)
 	{
 		diff = mGe->Update();
+		this->mTimeElapsed += diff * 0.001f;
 		
 		this->mPe->Simulate();
 		if(this->mGe->GetKeyListener()->IsPressed(VK_ESCAPE))

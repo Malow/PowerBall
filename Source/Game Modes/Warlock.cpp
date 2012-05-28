@@ -186,7 +186,9 @@ void Warlock::Initialize()
 
 void Warlock::Intro()
 {
-	Text* intro = mGe->CreateText("Warlock",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+	float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.2125f;
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	Text* intro = mGe->CreateText("Warlock", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png", 1.0f, 1.0f, 1.0f, 1.0f);	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);

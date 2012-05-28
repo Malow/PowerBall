@@ -108,7 +108,7 @@ void Maze::Initialize()
 void Maze::Intro()
 {
 	float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.133f;
-	float y = this->mGe->GetEngineParameters().windowHeight * 0.6f;
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
 	Text* intro = mGe->CreateText("Maze", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	intro->SetText("");
