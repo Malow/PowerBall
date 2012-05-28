@@ -45,6 +45,7 @@ class ProgressBar
 						float fractionBoarderOfBarX = 0.01f, float fractionBoarderOfBarY = 0.05f);
 		ProgressBar(D3DXVECTOR2 positionFractionTopLeft);
 		ProgressBar(D3DXVECTOR2 positionFractionTopLeft, float fractionSizeOfWindowX, float fractionSizeOfWindowY);
+		ProgressBar(int x, int y);
 		~ProgressBar();
 		void SetPercentOfProgressBarColor1(float procentageX);
 		void SetPercentOfProgressBarColor2(float procentageX);

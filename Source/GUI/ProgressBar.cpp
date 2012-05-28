@@ -109,7 +109,45 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
 	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
 }
 
+ProgressBar::ProgressBar(int x, int y)
+{
+	
+	std::string bar = "Media/LoadingScreen/DarkBlue.png";
+	std::string bar2 = "Media/LoadingScreen/Red.png";
+	std::string bar3 = "Media/LoadingScreen/BlueOcean.png";
+	std::string background = "Media/LoadingScreen/Black.png";
+	
+	float fractionSizeOfWindowX = 0.2f;
+	float fractionSizeOfWindowY = 0.05f;
+	float fractionBoarderOfBarX = 0.01f;
+	float fractionBoarderOfBarY = 0.05f;
 
+
+	/* height and width of window */
+	this->mWidth = GetGraphicsEngine()->GetEngineParameters().windowWidth;
+	this->mHeight = GetGraphicsEngine()->GetEngineParameters().windowHeight;
+
+	/* size of the little smaller background progressbar. */
+	this->mStartBgX = x;
+	this->mStartBgY = y;
+	this->mFullX = fractionSizeOfWindowX*this->mWidth;
+	this->mFullY = fractionSizeOfWindowY*this->mHeight;
+
+	/* size of the boarder around the progressbar. */
+	this->mFractionBoarderX = fractionBoarderOfBarX;
+	this->mFractionBoarderY = fractionBoarderOfBarY;
+
+	/* size of the progressbar in reference to the backgroundbar. */
+	this->mStartBarX = this->mStartBgX + this->mFullX*this->mFractionBoarderX;
+	this->mStartBarY = this->mStartBgY + this->mFullY*this->mFractionBoarderY;
+	this->mFullBarX = this->mFullX*(1.0f - 2.0f*this->mFractionBoarderX);
+	this->mFullBarY = this->mFullBarY = this->mFullY*(1.0f - 2.0f*this->mFractionBoarderY);
+
+	this->mBackground = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBgX, this->mStartBgY), D3DXVECTOR2(this->mFullX, this->mFullY ), background);
+	this->mBarColor1 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar);
+	this->mBarColor2 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar2);
+	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
+}
 
 ProgressBar::~ProgressBar()
 {
