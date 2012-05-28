@@ -38,7 +38,7 @@ Warlock::~Warlock()
 		mGe->DeleteText(this->mHud[i]);
 	SAFE_DELETE(this->mChooseTeamMenu);
 		
-	for(int i = 0; i<6;i++)
+	for(int i = 0; i<7;i++)
 	{
 		SAFE_DELETE(this->mProgressBars[i]);
 	}
@@ -132,7 +132,7 @@ void Warlock::Initialize()
 	
 
 		
-	this->mProgressBars = new ProgressBar*[6];
+	this->mProgressBars = new ProgressBar*[7];
 	float percentX = 0.02f;
 	float percentY = 0.88f;
 	for(int i = 0; i<5;i++)
@@ -150,6 +150,13 @@ void Warlock::Initialize()
 			
 	}
 	this->mProgressBars[5] = new ProgressBar();
+
+	/* test bar 4 malow. there is now no percentage when you set the position of the progressbar. */
+	this->mProgressBars[6] = new ProgressBar(30, 500,250, 50);
+	this->mProcX = 50;
+	this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
+	
+	
 	
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 
@@ -180,7 +187,7 @@ void Warlock::Initialize()
 void Warlock::Intro()
 {
 	Text* intro = mGe->CreateText("Warlock",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png", 1.0f, 1.0f, 1.0f, 1.0f);	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);
 }
@@ -198,6 +205,17 @@ void Warlock::ShowStats()
 bool Warlock::checkWinConditions(float dt)
 {
 	float newdt = dt/1000.0f;
+	if(mGe->GetKeyListener()->IsPressed('M'))
+	{
+		this->mProcX += 5.0f*newdt; // add 5 % every sec button is pressed.
+		this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
+	}
+	if(mGe->GetKeyListener()->IsPressed('N'))
+	{
+		this->mProcX -= 5.0f*newdt; // remove 5 % every sec button is pressed.
+		this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
+	}
+	
 	this->mTimeElapsed += newdt;
 	Vector3 pos;
 	Vector3 posLav;

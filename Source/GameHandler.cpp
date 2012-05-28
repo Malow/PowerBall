@@ -110,9 +110,10 @@ bool GameHandler::Start()
 
 	if(this->mNet->IsServer())
 	{
-
+		
 		this->mGameMode->Initialize();
 		this->mGameMode->Intro();
+		
 		do
 		{
 			quitByMenu = this->mGameMode->PlaySpecific();
@@ -129,9 +130,11 @@ bool GameHandler::Start()
 
 	}
 	else //client
-	{
+	{	
+			
 			this->mGameMode->Initialize();
 			this->mGameMode->Intro();
+			
 			while(this->mNet->IsRunning() && !quitByMenu && val == ENDGAMEMENU::PLAYAGAIN)
 			{
 				quitByMenu = this->mGameMode->PlaySpecific();
