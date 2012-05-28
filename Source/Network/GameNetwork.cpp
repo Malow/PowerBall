@@ -115,7 +115,7 @@ int test = 0;
 ofstream file2;
 D3DXVECTOR3 interpolationVector(0,0,0);
 
-bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, float dt)
+bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, PhysicsEngine* pe, float dt)
 {
 	static float counter = 0.0f;
 	counter += dt;
@@ -145,7 +145,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 					this->mNetBalls[i]->ModifyAliveTime(-dt);
 					if(this->mNetBalls[i]->GetAliveTime() <= 0.0f)
 					{
-						this->DropPlayer(PowerBalls, numPowerBalls, i);
+						this->DropPlayer(PowerBalls, numPowerBalls, pe, i);
 						MsgHandler::GetInstance().SendDropPlayer(i);
 						this->mConn->DropPlayer(i);
 					}
@@ -305,7 +305,7 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 		}
 		if(numPowerBalls > this->mNumPlayers)
 		{
-			this->DropPlayer(PowerBalls, numPowerBalls,  this->mDropPlayerIndex);
+			this->DropPlayer(PowerBalls, numPowerBalls, pe,  this->mDropPlayerIndex);
 		}
 		
 		this->mNetBalls[0]->ModifyAliveTime(-dt);
@@ -317,10 +317,11 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 	}
 	return this->mIsRunning;
 }
-void GameNetwork::DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, int index)
+void GameNetwork::DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, PhysicsEngine* pe, int index)
 {
 	if(index > 0 && index < this->mNumPlayers)
 	{
+		pe->RemoveBody(PowerBalls[index]);
 		NetworkBall* temp = this->mNetBalls[index];
 		this->mNetBalls[index] = this->mNetBalls[--this->mNumPlayers];
 		::D3DXVECTOR3 startPos = this->mNetBalls[index]->GetStartPos();

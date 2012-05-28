@@ -49,7 +49,6 @@ PhysicsEngine::~PhysicsEngine()
 	delete []this->mPowerBalls;
 	delete this->mGameTimer;
 	this->mGe->DeleteText(this->mHud);
-	filetemp.close();
 	if(this->shadow)
 		delete this->shadow;
 	
@@ -193,9 +192,9 @@ void PhysicsEngine::SimulateServer()
 {
 	if(shadow == NULL)
 	
-	bool needToUpdate = this->mGameTimer->Update();
+	//bool needToUpdate = this->mGameTimer->Update();
 	
-	if(!needToUpdate)
+	if(!this->mGameTimer->Update())
 		return;
 	
 	this->mGameTimer->mAccumulator += this->mGameTimer->GetDeltaTime();
@@ -305,7 +304,7 @@ void PhysicsEngine::SimulateServer()
 				this->mNet->GetBall(this->mNet->GetIndex())->AddMovementPowerBall(this->mPowerBalls[this->mNet->GetIndex()]);
 			}
 			this->mMap->Update(timeStep);
-			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
+			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, this, timeStep);
 			this->mGameTimer->mAccumulator -= timeStep;
 			this->mGameTimer->mT += timeStep;
 
@@ -440,7 +439,7 @@ void PhysicsEngine::SimulateClient()
 				this->mNet->GetBall(i)->AddMovementPowerBall(this->mPowerBalls[i]);
 			}
 			this->mMap->Update(timeStep);
-			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
+			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, this, timeStep);
 
 			this->mGameTimer->mAccumulator -= timeStep;
 			this->mGameTimer->mT += timeStep;

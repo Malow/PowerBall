@@ -8,6 +8,7 @@
 #include "CommandHandler.h"
 #include "NetworkBall.h"
 #include "OnlineHandler.h"
+#include "..\Physics\PhysicsEngine.h"
 using namespace std;
 #define PLAYER_CAP 10
 #define FLOAT_EPSILON 0.001f //used for ignoring very tiny movements
@@ -40,7 +41,7 @@ private:
 	/*! Updates the server side, (updates LAN - variables). */
 	void				ServerUpdate();
 	
-	void				DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, int index);
+	void				DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, PhysicsEngine* pe, int index);
 public:
 				GameNetwork();
 	virtual		~GameNetwork();
@@ -84,7 +85,7 @@ public:
 	void		SetIndex(int n) { this->mIndex = n;}
 
 	/*! Calling Server/Client -update and updates the positions/rotations/velocities etc of the PowerBalls. */
-	bool		UpdatePowerBall(PowerBall** PowerBalls, int &numPowerBalls, float dt);
+	bool		UpdatePowerBall(PowerBall** PowerBalls, int &numPowerBalls, PhysicsEngine* pe, float dt);
 
 	/*! Starts the game network. */
 	void		Start(ServerInfo server);
