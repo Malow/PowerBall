@@ -17,9 +17,14 @@
 class CaptureTheFlag : public GameMode
 {
 	private:
-			float		mFlagRadius;
-			FlagCTF*	mEnemyFlag;
-			FlagCTF*	mFriendlyFlag;
+			FlagCTF*	mEnemyFlag;		
+			FlagCTF*	mFriendlyFlag;	
+			int			mEnemyScore;
+			int			mFriendlyScore;
+			Text*		mEnemyScoreText;
+			Text*		mFriendlyScoreText;
+			Text*		mIntermediateText;
+
 
 	public:
 			CaptureTheFlag();

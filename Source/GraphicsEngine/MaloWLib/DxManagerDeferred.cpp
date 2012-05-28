@@ -104,7 +104,8 @@ void DxManager::RenderDeferredGeometry()
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrix", world);
 		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
 		this->Shader_DeferredAnimatedGeometry->SetFloat("t", t);
-		//this->Shader_DeferredGeometry->SetInt("specialColor", this->objects[i]->GetSpecialColor()); //**kraschar på flagga nr 2 under gameplay & på 1(&2?) när man trycket esc**
+
+		this->Shader_DeferredGeometry->SetInt("specialColor", this->animations[i]->GetSpecialColor()); //*kraschar för att antalet animationer > antalet object
 
 		for(int u = 0; u < stripsOne->size(); u++)
 		{
@@ -118,7 +119,6 @@ void DxManager::RenderDeferredGeometry()
 			this->Shader_DeferredAnimatedGeometry->SetFloat("SpecularPower", stripsOne->get(u)->GetMaterial()->SpecularPower);
 			this->Shader_DeferredAnimatedGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->AmbientColor, 1));
 			this->Shader_DeferredAnimatedGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->DiffuseColor, 1));
-
 
 			Buffer* vertsOne = objOne->GetVertBuff();
 			Buffer* vertsTwo = objTwo->GetVertBuff();

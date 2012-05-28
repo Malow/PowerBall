@@ -313,10 +313,6 @@ void MsgHandler::ReceiveClientData(char* buf, int &offset, int index)
 		offset += sizeof(SEGMENT_END);
 		
 		float clientExecTime = this->GetFromBufferF(buf, offset);
-		if(index == 0)
-		{
-			int asdccccccc= 0;
-		}
 		this->mNet->GetBall(index)->SetClientExecTime(clientExecTime);
 		this->mNet->GetBall(index)->ResetAliveTime();
 	}
@@ -349,7 +345,7 @@ void MsgHandler::ReceiveServerData(char* buf, int &offset)
 	}
 	
 
-	this->mNet->GetBall(0)->SetExecTime(this->GetFromBufferF(buf, offset));
+	this->mNet->GetBall(0)->SetClientExecTime(this->GetFromBufferF(buf, offset));
 	this->mNet->GetBall(0)->ResetAliveTime();
 }
 void MsgHandler::ReceiveIdentification(char* buf, int &offset, int index)
