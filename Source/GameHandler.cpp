@@ -110,8 +110,9 @@ bool GameHandler::Start()
 
 	if(this->mNet->IsServer())
 	{
-		this->mGameMode->Intro();
+		
 		this->mGameMode->Initialize();
+		this->mGameMode->Intro();
 		
 		do
 		{
@@ -130,8 +131,9 @@ bool GameHandler::Start()
 	}
 	else //client
 	{	
-			this->mGameMode->Intro();
+			
 			this->mGameMode->Initialize();
+			this->mGameMode->Intro();
 			
 			while(this->mNet->IsRunning() && !quitByMenu && val == ENDGAMEMENU::PLAYAGAIN)
 			{
