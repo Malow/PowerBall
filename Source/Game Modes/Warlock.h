@@ -24,6 +24,7 @@ class Warlock : public GameMode
 {
 	private:
 			ProgressBar** mProgressBars;
+			MaloW::Array<Image*> SpellIcons;
 
 	public:
 			Warlock();

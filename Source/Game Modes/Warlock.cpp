@@ -55,6 +55,8 @@ Warlock::~Warlock()
 		#endif
 	}
 		
+	while(this->SpellIcons.size() > 0)
+		mGe->DeleteImage(this->SpellIcons.getAndRemove(0));
 }
 
 void Warlock::Initialize()
@@ -150,11 +152,34 @@ void Warlock::Initialize()
 	this->mProgressBars[5] = new ProgressBar();
 	
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
+
+
+
+	// Add spell Icons
+	// Rework ScreenWidth to 4:3
+	const float UISCALE = 0.5f;
+	int screenHeight = mGe->GetEngineParameters().windowHeight;
+	int screenWidth = (screenHeight * 4) / 3;
+	int distX = (mGe->GetEngineParameters().windowWidth - screenWidth) / 2;
+	distX /= UISCALE;
+
+	D3DXVECTOR2 imgDim = D3DXVECTOR2(screenWidth / 5, screenWidth / 5) * UISCALE;
+	Image* charge = mGe->CreateImage(D3DXVECTOR2(distX, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/ChargeIcon.png");
+	Image* sprint = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/SprintIcon.png");
+	Image* harden = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x * 2, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/HardenIcon.png");
+	Image* invis = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x * 3, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/InvisIcon.png");
+	Image* jump = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x * 4, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/JumpIcon.png");
+
+	this->SpellIcons.add(charge);
+	this->SpellIcons.add(sprint);
+	this->SpellIcons.add(harden);
+	this->SpellIcons.add(invis);
+	this->SpellIcons.add(jump);
 }
 
 void Warlock::Intro()
 {
-	Text*	intro = mGe->CreateText("Warlock",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+	Text* intro = mGe->CreateText("Warlock",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);
