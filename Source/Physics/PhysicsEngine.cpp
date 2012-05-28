@@ -42,7 +42,6 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge, GameNetwork* net, ServerInfo in
 	this->mCollisionWithBall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_ball.mp3");
 	this->mHud = mGe->CreateText("",D3DXVECTOR2(10,300),1.0f,"Media/Fonts/1");
 }
-ofstream filetemp("latencytest.txt", ios::out);
 PhysicsEngine::~PhysicsEngine()
 {
 	delete []this->mPowerBalls;
@@ -185,11 +184,8 @@ void PhysicsEngine::Simulate(bool clientBall)
 
 	
 }
-PowerBall* shadow = NULL;
 void PhysicsEngine::SimulateServer()
 {
-	if(shadow == NULL)
-		 shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
 	bool needToUpdate = this->mGameTimer->Update();
 	
 	if(!needToUpdate)
@@ -258,13 +254,9 @@ void PhysicsEngine::SimulateServer()
 						{
 							NetworkBall* nb2 = this->mNet->GetBall(j);
 							Snapshot history = nb2->GetThePowerBallPositionFromThePast(nb2->GetExecTime() - (nb1->GetClientExecTime() - nb1->GetExecTime()));
-							shadow->SetPosition(history.pos);
-							shadow->SetTempPosition(history.tempPos);
-							shadow->GetMesh()->SetPosition(history.pos);
 							b2->SetPosition(history.pos); //this->mPowerBalls[j];
 							b2->SetTempPosition(history.tempPos); //this->mPowerBalls[j];
 
-							filetemp << nb1->GetClientExecTime() - nb1->GetExecTime() << endl;
 						}
 						if(this->CollisionWithSphereSimple(b1, b2) )
 						{
@@ -300,9 +292,11 @@ void PhysicsEngine::SimulateServer()
 				Vector3 vel = this->mPowerBalls[i]->GetVelocity();
 				this->mNet->GetBall(i)->SetVel(::D3DXVECTOR3(vel.x, vel.y, vel.z)); //Perhaps let the client update all the balls if its too spiky movement on the other balls (this shouldnt happen tho, if server sends the updated data often)
 			}
-			this->mNet->GetBall(this->mNet->GetIndex())->SetExecTime(this->mNet->GetBall(this->mNet->GetIndex())->GetExecTime() + timeStep);
-			this->mNet->GetBall(this->mNet->GetIndex())->AddMovementPowerBall(this->mPowerBalls[this->mNet->GetIndex()]);
-
+			if(this->mNet->GetIndex() < this->mNet->GetNumPlayers())
+			{
+				this->mNet->GetBall(this->mNet->GetIndex())->SetExecTime(this->mNet->GetBall(this->mNet->GetIndex())->GetExecTime() + timeStep);
+				this->mNet->GetBall(this->mNet->GetIndex())->AddMovementPowerBall(this->mPowerBalls[this->mNet->GetIndex()]);
+			}
 			this->mMap->Update(timeStep);
 			this->mNet->UpdatePowerBall(this->mPowerBalls, this->mSize, timeStep);
 			this->mGameTimer->mAccumulator -= timeStep;
@@ -340,28 +334,35 @@ void PhysicsEngine::SimulateClient()
 			{
 				if(this->mNet->GetIndex() != i)
 				{
+					
+					PowerBall* b1 = this->mPowerBalls[i];
 					if(!this->mNet->GetBall(i)->IsPredictingCollision())
 					{
 						D3DXVECTOR3 rotVector = this->mNet->GetBall(i)->GetPos() - this->mPowerBalls[i]->GetPosition();
 					
-						this->mPowerBalls[i]->SetPosition(this->mNet->GetBall(i)->GetPos());
-						this->mPowerBalls[i]->SetVelocity(this->mNet->GetBall(i)->GetVel());
-						this->mPowerBalls[i]->SetTempPosition(this->mNet->GetBall(i)->GetPos()); //ny
-						this->mPowerBalls[i]->Rotate(rotVector);
+						b1->SetPosition(this->mNet->GetBall(i)->GetPos());
+						b1->SetTempPosition(this->mNet->GetBall(i)->GetPos()); //ny
+						b1->Rotate(rotVector);
+						b1->SetVelocity(this->mNet->GetBall(i)->GetVel());
 					}
 					else
 					{
-						this->mPowerBalls[i]->UpdatePhysicsEuler(timeStep);
-						this->mPowerBalls[i]->UpdatePost();
+
+						b1->UpdatePhysicsEuler(timeStep);
+						b1->UpdatePost();
+						
+						Vector3 normalPlane;
+						if(this->CollisionWithMapSimple(b1, this->mMap,normalPlane))
+							this->CollisionMapResponse(b1, this->mMap, normalPlane, timeStep);
 					}
 					if(this->mNet->GetBall(i)->GetNumCommands() > 0)
 					{
-						this->mPowerBalls[i]->UseSpell((int)this->mNet->GetBall(i)->GetNextCommand()->GetInput(0));
+						b1->UseSpell((int)this->mNet->GetBall(i)->GetNextCommand()->GetInput(0));
 						this->mNet->GetBall(i)->PopCommand();
 					}
 				
-					for(int c = 0; c < this->mPowerBalls[i]->GetNrOfSpells(); c++)
-						this->mPowerBalls[i]->GetSpells()[c]->UpdateSpecial(timeStep * 0.001f);
+					for(int c = 0; c < b1->GetNrOfSpells(); c++)
+						b1->GetSpells()[c]->UpdateSpecial(timeStep * 0.001f);
 				}
 			}
 			if(this->mNet->GetIndex() < this->mSize)
@@ -390,7 +391,6 @@ void PhysicsEngine::SimulateClient()
 						if(j != i)
 						{
 							b2 = this->mPowerBalls[j];
-							Vector3 vel = b1->GetVelocity();
 							if(this->CollisionWithSphereSimple(b1, b2))
 							{
 								this->CollisionSphereResponse(b1,b2);
@@ -399,7 +399,12 @@ void PhysicsEngine::SimulateClient()
 								{
 									this->CollisionSphereResponse(b2,b1);
 								}
-								this->mNet->GetBall(j)->StartCollisionPrediction(b2);
+								/*if(!this->mNet->GetBall(j)->IsPredictingCollision())
+								{
+									this->mNet->GetBall(j)->StartCollisionPrediction(b2);*/
+									//this->mPowerBalls[j]->UpdatePost();
+								//}
+								this->mPowerBalls[j]->SetTempPosition(this->mPowerBalls[j]->GetPositionVector3());
 								//b2->SetColliding(bool true), (if colliding, then dont take server pos instead use the correctposition code in gamenetwork)?
 								//b1->SetTempPosition(b1->GetPositionVector3() - vel*0.05f);
 							}
@@ -424,8 +429,6 @@ void PhysicsEngine::SimulateClient()
 				this->mPowerBalls[i]->UpdatePost();				
 				*/
 				
-
-				filetemp << this->mNet->GetBall(i)->GetExecTime() - this->mNet->GetBall(0)->GetExecTime() << endl;
 
 				this->mNet->GetBall(i)->AddMovementPowerBall(this->mPowerBalls[i]);
 			}

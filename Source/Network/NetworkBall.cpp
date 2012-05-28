@@ -146,7 +146,6 @@ void NetworkBall::PredictCollision(PowerBall* ball, float diff, float serverExec
 {
 	this->mExecTime += diff;
 	this->AddMovementPowerBall(ball);
-
 	D3DXVECTOR3 historyPos = this->GetPlayerHistory()->GetPos(this->mExecTime - serverExecTimeDifference);
 
 	D3DXVECTOR3 interpolationVector = this->GetPos() - historyPos;
@@ -186,19 +185,24 @@ void NetworkBall::PredictCollision(PowerBall* ball, float diff, float serverExec
 	//maybe check here if the serverball and the collision predicted ball is close to eachother then stop predicting.
 	D3DXVECTOR3 vec = ball->GetPosition() - this->mPos;
 	if(D3DXVec3Length(&vec) < 0.2f && this->mExecTime > 500)
+	{
 		this->mIsPredictingCollision	= false;
+		ball->SetPosition(this->mPos);
+		ball->SetTempPosition(this->mPos);
+		ball->Rotate(vec);
+	}
 
 }
 
 D3DXVECTOR3 NetworkBall::CorrectPosition(NetworkBall* serverBall)
 {
 	D3DXVECTOR3 mod(0.0f, 0.0f, 0.0f);
-	if(serverBall->GetExecTime() > 0 && serverBall->GetExecTime() < this->GetExecTime())
+	if(serverBall->GetClientExecTime() > 0 && serverBall->GetClientExecTime() < this->GetExecTime())
 	{
 		// this->mTime - mLatency;//this->totExectime;// ;//this->totExectime;//this->totExectime;// mLatency;// - 100;// latency(which isnt really latency, just the time since server used the keyinput) can get really low if packets stack up, fix this
 		//LATENCY = (TIME PING PACKET RECV - TIME PING PACKET SENT)  + TIME OF THE SUM OF THE KEYCOMMANDS EXECUTED BY SERVER. (execution time)
 		
-		D3DXVECTOR3 historyPos = this->GetPlayerHistory()->GetPos(serverBall->GetExecTime());
+		D3DXVECTOR3 historyPos = this->GetPlayerHistory()->GetPos(serverBall->GetClientExecTime());
 		//shadow2->SetPosition(historyPos );
 		mod = this->GetPos() - historyPos;
 		
@@ -209,9 +213,9 @@ D3DXVECTOR3 NetworkBall::CorrectPosition(NetworkBall* serverBall)
 			mod.z = 0;
 		}
 	}
-	else if( this->GetExecTime() >  serverBall->GetExecTime() + 1)
+	else if( this->GetExecTime() >  serverBall->GetClientExecTime() + 1)
 	{
-		this->SetExecTime(serverBall->GetExecTime());
+		this->SetExecTime(serverBall->GetClientExecTime());
 	}
 	return mod;
 }

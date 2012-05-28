@@ -178,12 +178,6 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 			MsgHandler::GetInstance().Ping(0);
 		}*/
 		//file2 << this->mLatency << endl;
-		for(int i = 0; i < numPowerBalls; i++)
-		{
-			if(this->mNetBalls[i]->IsPredictingCollision() && i != this->mIndex)
-				this->mNetBalls[i]->PredictCollision(PowerBalls[i], dt, this->mNetBalls[this->mIndex]->GetExecTime() - this->mNetBalls[0]->GetExecTime());
-			
-		}
 		if(numPowerBalls > this->mIndex)
 		{
 			this->mNetBalls[this->mIndex]->SyncPosWithServer(PowerBalls[this->mIndex], this->mNetBalls[0]);
@@ -302,6 +296,13 @@ bool GameNetwork::UpdatePowerBall(PowerBall**	PowerBalls, int &numPowerBalls, fl
 				}
 			}*/
 		}
+		
+		for(int i = 0; i < numPowerBalls; i++)
+		{
+			if(this->mNetBalls[i]->IsPredictingCollision() && i != this->mIndex)
+				this->mNetBalls[i]->PredictCollision(PowerBalls[i], dt, this->mNetBalls[this->mIndex]->GetExecTime() - this->mNetBalls[0]->GetClientExecTime());
+			
+		}
 		if(numPowerBalls > this->mNumPlayers)
 		{
 			this->DropPlayer(PowerBalls, numPowerBalls,  this->mDropPlayerIndex);
@@ -333,31 +334,6 @@ void GameNetwork::DropPlayer(PowerBall** PowerBalls, int &numPowerBalls, int ind
 		delete PowerBalls[index];
 		PowerBalls[index] = PowerBalls[--numPowerBalls];
 	}
-}
-D3DXVECTOR3 GameNetwork::CorrectPosition()
-{
-	D3DXVECTOR3 mod(0.0f, 0.0f, 0.0f);
-	if(this->mNetBalls[0]->GetExecTime() > 0 && this->mNetBalls[0]->GetExecTime() < this->mNetBalls[this->mIndex]->GetExecTime())
-	{
-		// this->mTime - mLatency;//this->totExectime;// ;//this->totExectime;//this->totExectime;// mLatency;// - 100;// latency(which isnt really latency, just the time since server used the keyinput) can get really low if packets stack up, fix this
-		//LATENCY = (TIME PING PACKET RECV - TIME PING PACKET SENT)  + TIME OF THE SUM OF THE KEYCOMMANDS EXECUTED BY SERVER. (execution time)
-		
-		D3DXVECTOR3 historyPos = this->mNetBalls[this->mIndex]->GetPlayerHistory()->GetPos(this->mNetBalls[0]->GetExecTime());
-		//shadow2->SetPosition(historyPos );
-		mod = this->mNetBalls[this->mIndex]->GetPos() - historyPos;
-		
-		mod.y = 0;//Ignoring y, maybe remove (weird due to the way collision is implemented, y-value always changes)
-		if(D3DXVec3Length(&mod) < 0.11f)
-		{
-			mod.x = 0;
-			mod.z = 0;
-		}
-	}
-	else if( this->mNetBalls[this->mIndex]->GetExecTime() >  this->mNetBalls[0]->GetExecTime() + 1)
-	{
-		this->mNetBalls[this->mIndex]->SetExecTime(this->mNetBalls[0]->GetExecTime());
-	}
-	return mod;
 }
 ServerInfo GameNetwork::ConnectTo(string ip)
 {
