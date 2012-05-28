@@ -109,7 +109,7 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
 	this->mBarColor3 = GetGraphicsEngine()->CreateImage(D3DXVECTOR2(this->mStartBarX, this->mStartBarY), D3DXVECTOR2(this->mFullBarX, this->mFullBarY), bar3);
 }
 
-ProgressBar::ProgressBar(int x, int y)
+ProgressBar::ProgressBar(int x, int y, int width, int height)
 {
 	
 	std::string bar = "Media/LoadingScreen/DarkBlue.png";
@@ -130,8 +130,8 @@ ProgressBar::ProgressBar(int x, int y)
 	/* size of the little smaller background progressbar. */
 	this->mStartBgX = x;
 	this->mStartBgY = y;
-	this->mFullX = fractionSizeOfWindowX*this->mWidth;
-	this->mFullY = fractionSizeOfWindowY*this->mHeight;
+	this->mFullX = width;
+	this->mFullY = height;
 
 	/* size of the boarder around the progressbar. */
 	this->mFractionBoarderX = fractionBoarderOfBarX;

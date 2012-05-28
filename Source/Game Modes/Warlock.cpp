@@ -152,7 +152,7 @@ void Warlock::Initialize()
 	this->mProgressBars[5] = new ProgressBar();
 
 	/* test bar 4 malow. there is now no percentage when you set the position of the progressbar. */
-	this->mProgressBars[6] = new ProgressBar((6*width)/9, (5*height)/9);
+	this->mProgressBars[6] = new ProgressBar(30, 500,250, 50);
 	this->mProcX = 50;
 	this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
 	
