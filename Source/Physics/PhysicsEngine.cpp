@@ -14,7 +14,6 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge)
 	this->mSize = 0;
 	this->mCapacity = CAPACITY;
 	this->mPowerBalls = new PowerBall*[CAPACITY];
-	this->shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
 	for(int i = 0;i<CAPACITY;i++)
 		this->mPowerBalls[i] = NULL;
 	this->mMap = NULL;
@@ -35,7 +34,6 @@ PhysicsEngine::PhysicsEngine(GraphicsEngine* ge, GameNetwork* net, ServerInfo in
 	this->mSize = 0;
 	this->mCapacity = CAPACITY;
 	this->mPowerBalls = new PowerBall*[CAPACITY];
-	this->shadow = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,30.0f,0));
 	for(int i = 0;i<CAPACITY;i++)
 		this->mPowerBalls[i] = NULL;
 	this->mMap = NULL;
@@ -49,8 +47,6 @@ PhysicsEngine::~PhysicsEngine()
 	delete []this->mPowerBalls;
 	delete this->mGameTimer;
 	this->mGe->DeleteText(this->mHud);
-	if(this->shadow)
-		delete this->shadow;
 	
 }
 
@@ -190,11 +186,10 @@ void PhysicsEngine::Simulate(bool clientBall)
 }
 void PhysicsEngine::SimulateServer()
 {
-	if(shadow == NULL)
 	
-	//bool needToUpdate = this->mGameTimer->Update();
+	bool needToUpdate = this->mGameTimer->Update();
 	
-	if(!this->mGameTimer->Update())
+	if(!needToUpdate)
 		return;
 	
 	this->mGameTimer->mAccumulator += this->mGameTimer->GetDeltaTime();
@@ -225,7 +220,7 @@ void PhysicsEngine::SimulateServer()
 			}
 			PowerBall* b1;
 			PowerBall* b2;
-		/*	for(int i = 0; i < this->mSize; i++)
+			for(int i = 0; i < this->mSize; i++)
 			{
 				b1 = this->mPowerBalls[i];
 				for(int j = i+1; j < this->mSize; j++)
@@ -240,10 +235,10 @@ void PhysicsEngine::SimulateServer()
 				Vector3 normalPlane;
 				if(this->CollisionWithMapSimple(b1, this->mMap,normalPlane))
 					this->CollisionMapResponse(b1, this->mMap, normalPlane, timeStep);	
-			}*/
+			}
 
 			
-			for(int i = 0; i < this->mSize; i++) // this will lead to double collision against balls that hit eachother
+		/*	for(int i = 0; i < this->mSize; i++) // this will lead to double collision against balls that hit eachother
 			{
 				b1 = this->mPowerBalls[i];
 				NetworkBall* nb1 = this->mNet->GetBall(i);
@@ -277,7 +272,7 @@ void PhysicsEngine::SimulateServer()
 						}
 					}
 				}
-			}
+			}*/
 
 			
 			for(int i = 0; i < this->mSize; i++)
