@@ -539,31 +539,34 @@ void Warlock::ShowHud()
 
 void Warlock::AddBall()
 {
-	int old = this->mNumberOfPlayers;
-	this->mNumberOfPlayers = this->mNet->GetNumPlayers();
-	PowerBall** temp = new PowerBall*[this->mNumberOfPlayers];
-	for(int i = 0; i < old; i++)
-	{
-		temp[i] = this->mBalls[i];
-	}
-	for(int i = old; i < this->mNumberOfPlayers; i++)
-	{
-		temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::WARLOCK);
-		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
-		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
-		temp[i]->AddSpell(new ChargeSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Charge.mp3")));
-		temp[i]->AddSpell(new SprintSpell());
-		temp[i]->AddSpell(new HardenSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Harden2FIXED.wav")));
-		temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
-		temp[i]->AddSpell(new JumpSpell());
-		temp[i]->SetWarlockMode(true);
-		temp[i]->SetSound(true);
-		#if FixedTimeStep
-			this->mPe->AddBody(temp[i]);
-		#endif
-	}
-	delete[] this->mBalls;
-	this->mBalls = temp;
+		int old = this->mNumberOfPlayers;
+		this->mNumberOfPlayers = this->mNet->GetNumPlayers();
+		PowerBall** temp = new PowerBall*[this->mNumberOfPlayers];
+		for(int i = 0; i < old; i++)
+		{
+			temp[i] = this->mBalls[i];
+		}
+		for(int i = old; i < this->mNumberOfPlayers; i++)
+		{
+			if(i < 4)
+				temp[i] = new PowerBall("Media/Ball"+ MaloW::convertNrToString(i+1) + ".obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::WARLOCK);
+			else
+				temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::WARLOCK);
+			temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+			temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
+			temp[i]->AddSpell(new ChargeSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Charge.mp3")));
+			temp[i]->AddSpell(new SprintSpell());
+			temp[i]->AddSpell(new HardenSpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Harden2FIXED.wav")));
+			temp[i]->AddSpell(new InvisibilitySpell(this->mGe->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/Spell_Invisibility.mp3")));
+			temp[i]->AddSpell(new JumpSpell());
+			temp[i]->SetWarlockMode(true);
+			temp[i]->SetSound(true);
+			#if FixedTimeStep
+				this->mPe->AddBody(temp[i]);
+			#endif
+		}
+		delete[] this->mBalls;
+		this->mBalls = temp;
 	
 	if(mGe->GetEngineParameters().CamType == TRD)
 			((TRDCamera*)mGe->GetCamera())->setPowerBallToFollow(this->mBalls[this->mNet->GetIndex()]);
