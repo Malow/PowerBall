@@ -4,7 +4,7 @@
 JumpSpell::JumpSpell()
 {
 	this->mPowerBall = NULL;
-	this->mTimeNeededToCoolDown = 10.0f;
+	this->mTimeNeededToCoolDown = 1.0f; //10
 	this->mTimerCounterCoolDown = 0.0f;
 	this->mNeedCoolDown = false;
 	this->mTimerCounterInUse = 0.0f;

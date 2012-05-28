@@ -26,5 +26,6 @@ public:
 	virtual void Use();
 	virtual void Restore();
 	virtual void InformCollision() { this->Restore();}
-
+	float GetMaxTimeCharging() const;
+	float GetTimerCharging() const;
 };

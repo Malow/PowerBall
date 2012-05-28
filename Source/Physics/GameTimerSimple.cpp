@@ -12,7 +12,7 @@ GameTimerSimple::GameTimerSimple()
 	this->mT = 0.0f;
 	this->mAccumulator = 0.0f;
 	this->mCurrentTime = 0.0f;
-	this->mTimeStepDt = 20.0f; //10 for knockout mode
+	this->mTimeStepDt = 10.0f; //10 for knockout mode
 	
 	this->mNewTime = 0.0f;
 	this->mDeltaTime = 0.0f;

@@ -26,6 +26,7 @@ class Maze2 : public GameMode
 			virtual void ShowStats();
 			virtual bool checkWinConditions(float dt);
 			virtual void ShowHud();
+			virtual void HideHud();
 			bool checkRespownConditions();
 			void ResetMaze();
 };

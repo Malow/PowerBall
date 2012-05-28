@@ -164,15 +164,15 @@ Quaternion Quaternion::Slerp(const Quaternion &a, const Quaternion &b, float t)
 
 inline Quaternion operator*(const Quaternion &a, float s)
 {
-	return Quaternion(a.mW*s, a.mX*s, a.mY*s, a.mZ*s);
+	return Quaternion(a.mX*s, a.mY*s, a.mZ*s, a.mW*s);
 }
 
 inline Quaternion operator*(float s, const Quaternion &a)
 {
-	return Quaternion(a.mW*s, a.mX*s, a.mY*s, a.mZ*s);
+	return Quaternion(a.mX*s, a.mY*s, a.mZ*s, a.mW*s);
 }
 
 inline Quaternion operator+(const Quaternion &a, const Quaternion &b)
 {
-	return Quaternion(a.mW+b.mW, a.mX+b.mX, a.mY+b.mY, a.mZ+b.mZ);
+	return Quaternion(a.mX+b.mX, a.mY+b.mY, a.mZ+b.mZ, a.mW+b.mW);
 }

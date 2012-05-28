@@ -383,3 +383,8 @@ void Maze::PlayMazeV2()
 
 	
 }
+
+void Maze::HideHud()
+{
+
+}

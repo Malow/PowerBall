@@ -24,6 +24,7 @@ class Warlock : public GameMode
 {
 	private:
 			ProgressBar** mProgressBars;
+			MaloW::Array<Image*> SpellIcons;
 
 	public:
 			Warlock();
@@ -34,6 +35,7 @@ class Warlock : public GameMode
 			virtual bool PlaySpecific();
 			virtual void ShowStats();
 			virtual void ShowHud();
+			virtual void HideHud();
 			virtual bool checkWinConditions(float dt);
 			virtual void AddBall();
 

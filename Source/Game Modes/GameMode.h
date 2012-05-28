@@ -45,7 +45,8 @@ class GameMode
 			virtual void Intro() = 0;
 			virtual bool PlaySpecific() = 0;
 			virtual void ShowStats() = 0;
-			virtual void ShowHud() = 0;
+			virtual void ShowHud();
+			virtual void HideHud();
 			virtual bool checkWinConditions(float dt) = 0;
 			virtual void AddBall();
 			

@@ -29,6 +29,7 @@ class Knockout : public GameMode
 			virtual bool PlaySpecific();
 			virtual void ShowStats();
 			virtual void ShowHud();
+			virtual void HideHud();
 			virtual bool checkWinConditions(float dt);
 			
 
