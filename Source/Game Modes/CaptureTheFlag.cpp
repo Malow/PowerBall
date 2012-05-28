@@ -13,9 +13,13 @@ CaptureTheFlag::CaptureTheFlag()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
-	this->mFlagRadius = 0.0f;
 	this->mEnemyFlag = NULL;
 	this->mFriendlyFlag = NULL;
+	this->mEnemyScore = 0;
+	this->mFriendlyScore = 0;
+	this->mEnemyScoreText = NULL;
+	this->mFriendlyScoreText = NULL;
+	this->mIntermediateText = NULL;
 }
 
 CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo server)
@@ -28,9 +32,13 @@ CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo 
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
 
-	this->mFlagRadius = 1.0f;
 	this->mEnemyFlag = NULL;
 	this->mFriendlyFlag = NULL;
+	this->mEnemyScore = 0;
+	this->mFriendlyScore = 0;
+	this->mEnemyScoreText = NULL;
+	this->mFriendlyScoreText = NULL;
+	this->mIntermediateText = NULL;
 }
 
 CaptureTheFlag::~CaptureTheFlag()
@@ -40,7 +48,11 @@ CaptureTheFlag::~CaptureTheFlag()
 	SAFE_DELETE(this->mIGM);
 	//network
 	SAFE_DELETE(this->mPlatform); //**
-	//balls
+	/*for(int i = 0; i < this->mNumberOfPlayers; i++) 
+	{
+		//SAFE_DELETE(this->mBalls[i]);
+		this->mGe->DeleteStaticMesh(this->mBalls[i]->GetMesh());
+    }*/
 	for(int i = 0; i < 5; i++)
 	{
 		this->mGe->DeleteLight(this->mLights[i]);
@@ -49,7 +61,7 @@ CaptureTheFlag::~CaptureTheFlag()
 	//text hud
 	for(int i = 0;i<17; i++) //SIZE_HUD
 		mGe->DeleteText(this->mHud[i]);
-	//text timeel
+	//text timeelapsedtext
 	if(this->mPe)
 	{
 		#if FixedTimeStep
@@ -67,6 +79,9 @@ CaptureTheFlag::~CaptureTheFlag()
 	SAFE_DELETE(this->mFriendlyFlag);
 	this->mGe->DeleteAnimatedMesh(this->mEnemyFlag->GetMesh());
 	SAFE_DELETE(this->mEnemyFlag);
+	this->mGe->DeleteText(this->mEnemyScoreText);
+	this->mGe->DeleteText(this->mFriendlyScoreText);
+	this->mGe->DeleteText(this->mIntermediateText);
 }
 
 void CaptureTheFlag::Initialize()
@@ -108,10 +123,6 @@ void CaptureTheFlag::Initialize()
 
 		this->mPlatform		= new Map("Media/CTFMap1.obj", centerPlatform);
 		this->mPlatform->SetShrinkValue(0.0f);
-		
-		//this->mEnemyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
-		//this->mFriendlyFlag = new FlagCTF(mGe->CreateStaticMesh("Media/Flag.obj", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, 25));
-
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagRed.ani", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
 		this->mEnemyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(90));
@@ -181,17 +192,28 @@ void CaptureTheFlag::Initialize()
 
 		this->mIGM	= new InGameMenu(this->mGe);
 		
-		//this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
-
+		//this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe); //generate memory leaks
+		
 		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
+		
+		this->mEnemyScoreText = this->mGe->CreateText("", D3DXVECTOR2(200.0f, 10.0f), 1.0f, "Media/Fonts/1");
+		this->mFriendlyScoreText = this->mGe->CreateText("", D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 275, 10.0f), 1.0f, "Media/Fonts/1");
+		this->mIntermediateText = this->mGe->CreateText("", D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth * 0.5f - 275, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void CaptureTheFlag::Intro()
 {
-		Text*	intro = mGe->CreateText("CaptureTheFlag",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+		Text*	intro = mGe->CreateText("Capture The Flag",D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth * 0.5f - 450.0f, 500),2.0f,"Media/Fonts/1");
 		mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 		intro->SetText("");
 		mGe->DeleteText(intro);
+
+		//net while(this->mChooseTeamMenu->Run());
+
+		this->mEnemyScoreText->SetText("0");
+		this->mFriendlyScoreText->SetText("0");
+		string totalScore = MaloW::convertNrToString(this->mNumberOfRounds);
+		this->mIntermediateText->SetText("Flags captured of " + totalScore);
 }
 
 bool CaptureTheFlag::PlaySpecific()
@@ -206,15 +228,14 @@ void CaptureTheFlag::ShowStats()
 
 bool CaptureTheFlag::checkWinConditions(float dt)
 {
-	
+	//check if enemy flag is at base
 	if(this->mEnemyFlag->GetAtBase())
 	{
 		for(int i = 0; i < this->mNumberOfPlayers; i++)
 		{
-			//**if team == 1**
 			D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[i]->GetRadius(), 0)) - this->mBalls[0]->GetPosition());
 
-			if(D3DXVec3Length(&BallToFlag) - this->mFlagRadius < (this->mBalls[i]->GetRadius()))
+			if(D3DXVec3Length(&BallToFlag) - this->mEnemyFlag->GetFlagRadius() < (this->mBalls[i]->GetRadius()))
 			{
 				this->mBalls[i]->AddFlag(this->mEnemyFlag);
 				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 0.8f);
@@ -223,26 +244,46 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 			}
 		}
 	}
-	else
+	else //otherwise check how far the flags are apart
 	{
 		D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mEnemyFlag->GetMesh()->GetPosition() - this->mFriendlyFlag->GetMesh()->GetPosition());
 		
 		for(int i = 0; i < this->mNumberOfPlayers; i++)
 		{
-			if((D3DXVec3Length(&distBetweenFlags) - this->mFlagRadius < this->mBalls[i]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
+			if((D3DXVec3Length(&distBetweenFlags) - this->mEnemyFlag->GetFlagRadius() < this->mBalls[i]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
 			{
 				this->mBalls[i]->ResetFlag();
 				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 1.25f);
 				this->mBalls[i]->SetRestitution(this->mBalls[i]->GetRestitution() * 0.5f);
 				this->mEnemyFlag->Reset();
-				this->mNumberOfRounds--;
-				if(this->mNumberOfRounds <= 0)
+
+				int teamColor = this->mBalls[i]->GetTeamColor();
+				if(teamColor == BLUETEAM)
+				{
+					this->mFriendlyScoreText->SetText(MaloW::convertNrToString(++this->mFriendlyScore));
+				}
+				else if(teamColor == REDTEAM)
+				{
+					this->mEnemyScoreText->SetText(MaloW::convertNrToString(++this->mEnemyScore));
+				}
+				else //**temp (teams not added)**
+				{
+					this->mFriendlyScoreText->SetText(MaloW::convertNrToString(++this->mFriendlyScore));
+				}
+
+				if(this->mFriendlyScore >= this->mNumberOfRounds || this->mEnemyScore >= this->mNumberOfRounds)
+				{
 					return true;
+				}
+
+				//this->mNumberOfRounds--;
+				//if(this->mNumberOfRounds <= 0)
+				//	return true;
 			}
 		}
 	}
 
-
+	/*
 	//just copied temporarily to try - Rille
 	if(this->mNumberOfPlayers > 1)
 	{
@@ -268,8 +309,8 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 	}
 	/*if(this->mNet->IsServer())
 	{*/
-		this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
-		this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
+		//this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
+		//this->mNet->SetFlagPos(this->mEnemyFlag->GetMesh()->GetPosition(), 1);
 	/*}
 	else
 	{
