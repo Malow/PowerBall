@@ -34,13 +34,13 @@ public:
 		string line = "";
 
 		getline(in, line);
-		this->masterVolume = atof(line.c_str());
+		this->masterVolume = (float)atof(line.c_str());
 		getline(in, line);
-		this->songVolume = atof(line.c_str());
+		this->songVolume = (float)atof(line.c_str());
 		getline(in, line);
-		this->effectVolume = atof(line.c_str());
+		this->effectVolume = (float)atof(line.c_str());
 		getline(in, line);
-		this->isPlaying = atof(line.c_str());
+		this->isPlaying = (bool)atoi(line.c_str());
 
 
 		in.close();

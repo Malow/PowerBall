@@ -13,7 +13,7 @@ KingOfTheHill::KingOfTheHill()
 	this->mTimeElapsed = 0.0f;
 
 	this->mTotalTimeCapture = NULL;
-	this->mTeam = TEAM::NOTEAM;
+	this->mTeam = (int)TEAM::NOTEAM;
 	this->mProgressBar = NULL;
 	/*
 	this->mBackground = NULL;
@@ -32,7 +32,7 @@ KingOfTheHill::KingOfTheHill(GraphicsEngine* ge, GameNetwork* net, ServerInfo se
 	this->mTimeElapsed = 0.0f;
 
 	this->mTotalTimeCapture = NULL;
-	this->mTeam = TEAM::NOTEAM;
+	this->mTeam = (int)TEAM::NOTEAM;
 	this->mProgressBar = NULL;
 	/*
 	this->mBackground = NULL;
@@ -125,10 +125,10 @@ void KingOfTheHill::Initialize()
 	this->mTotalTimeCapture->SetOpacity(0.0f);
 
 		
-	float width = GetGraphicsEngine()->GetEngineParameters().windowWidth;
-	float height = GetGraphicsEngine()->GetEngineParameters().windowHeight;
-	float sizeBarX = width/4.0;
-	float sizeBarY = height/24.0;
+	float width = (float)GetGraphicsEngine()->GetEngineParameters().windowWidth;
+	float height = (float)GetGraphicsEngine()->GetEngineParameters().windowHeight;
+	float sizeBarX = width/4.0f;
+	float sizeBarY = height/24.0f;
 	float posBarX = ((width/2.0f) - (sizeBarX/2.0f))/width;
 	float posBarY = ((height/15.0f) - (sizeBarY/2.0f))/height;
 		
@@ -202,7 +202,7 @@ void KingOfTheHill::ShowHud()
 	s = "Timer: " + MaloW::convertNrToString(tmp);
 	this->mHud[0]->SetText(s);
 	Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetNormalContact();
-	string t = " x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
+	string t = " x: " + MaloW::convertNrToString(floor(10.0f*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10.0f*n.y)/10.0f) + " z: " + MaloW::convertNrToString(floor(10.0f*n.z)/10.0f);
 	if(this->mBalls[this->mNet->GetIndex()]->GetHasContact())
 		s = "Contact: True";
 	else
@@ -230,7 +230,7 @@ void KingOfTheHill::ShowHud()
 		else
 			percentage = 100.0f - (this->mBestTime/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
 			
-		if( (this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
+		if( (this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == (int)TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
 		{
 			this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
 			this->mProgressBar->SetPercentOfProgressBackground(100);
@@ -281,11 +281,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 	for(int i = 0; i<numberInHotZone; i++)
 	{
 		ballIndex = arrayIndexs[i];
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::BLUETEAM)
+		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::BLUETEAM)
 			numberBlue++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::REDTEAM)
+		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::REDTEAM)
 			numberRed++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
+		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::NOTEAM) // this is for free 4 all
 			numberNone++;
 	}
 	/* if all balls belong to the same team and they are more that zero in the hotzone or one in free 4 all then update the time. */
@@ -385,9 +385,9 @@ void KingOfTheHill::AddBall()
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
 		if(i < 4)
-			temp[i] = new PowerBall("Media/Ball"+ MaloW::convertNrToString(i+1) + ".obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::KOTH);
+			temp[i] = new PowerBall("Media/Ball"+ MaloW::convertNrToString((float)(i+1)) + ".obj", this->mNet->GetBall(i)->GetStartPos(), (int)GAMEMODE::KOTH);
 		else
-			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::KOTH);
+			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), (int)GAMEMODE::KOTH);
 		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		#if FixedTimeStep

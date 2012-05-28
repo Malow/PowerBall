@@ -191,6 +191,8 @@ private:
 	FXAA* fxaa;
 	Shader* Shader_Fxaa;
 
+	bool invisibleGeometry;
+
 	// Timer
 	float PCFreq;
 	__int64 prevTimeStamp;

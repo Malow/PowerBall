@@ -57,13 +57,13 @@ void Knockout::Initialize()
 	{
 		if( i == 0)
 		{
-			this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5), GAMEMODE::DM);
+			this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,-5), (int)GAMEMODE::DM);
 				this->mBalls[i]->SetKnockoutMode();
 				this->mBalls[i]->SetSound(true);
 		}
 		else
 		{
-				this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5), GAMEMODE::DM);
+				this->mBalls[i] = new PowerBall("Media/Ball.obj", D3DXVECTOR3(0,25.0f,5), (int)GAMEMODE::DM);
 				this->mBalls[i]->SetKnockoutMode();
 				this->mBalls[i]->SetSound(true);
 		}
@@ -152,7 +152,7 @@ void Knockout::ShowStats()
 		}
 		if(!draw)
 		{
-			string win = "Winner: Player " + MaloW::convertNrToString(indexWinner+1) + " with " + MaloW::convertNrToString(bestResault) + " won";
+			string win = "Winner: Player " + MaloW::convertNrToString((float)(indexWinner+1)) + " with " + MaloW::convertNrToString((float)bestResault) + " won";
 			Text* winner = mGe->CreateText(win,D3DXVECTOR2(250,300),2.5f,"Media/Fonts/1");
 			diff = mGe->Update();
 			while(diff < 2000)
@@ -197,7 +197,7 @@ bool Knockout::checkWinConditions(float dt)
 			this->mBalls[this->mIndexBallLeft]->RestetWinTimer();
 			
 			// winner, show winner text for 2 seconds
-			string s = "Winner: Player " + MaloW::convertNrToString(this->mIndexBallLeft+1);
+			string s = "Winner: Player " + MaloW::convertNrToString((float)(this->mIndexBallLeft+1));
 			this->mHud[4]->SetText(s);
 			while(dt < 2000)
 				dt += mGe->Update();
@@ -239,7 +239,7 @@ void Knockout::ShowHud()
 	this->mHud[0]->SetText(s);
 	s = "Player 2: " + this->mBalls[1]->GetRoundsWonStr();
 	this->mHud[1]->SetText(s);
-	s = "Round: " + MaloW::convertNrToString(this->mRoundsPlayed+1) + " of " + MaloW::convertNrToString(this->mNumberOfRounds);
+	s = "Round: " + MaloW::convertNrToString((float)(this->mRoundsPlayed+1)) + " of " + MaloW::convertNrToString((float)this->mNumberOfRounds);
 	this->mHud[2]->SetText(s);
 	
 	//show time elapsed

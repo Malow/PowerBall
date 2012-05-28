@@ -64,7 +64,7 @@ void test()
 
 	// Example of GE useage
 	GraphicsEngine* eng = GetGraphicsEngine();
-	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6));
+	eng->GetCamera()->setPosition(D3DXVECTOR3(0, 15, -15.6f));
 	eng->GetCamera()->LookAt(D3DXVECTOR3(30, 10, 10));
 	StaticMesh* testBall = eng->CreateStaticMesh("Media/Ball.obj", D3DXVECTOR3(8, 15, 8));
 	StaticMesh* testCylinder = eng->CreateStaticMesh("Media/Cylinder.obj", D3DXVECTOR3(10, 10, 10));

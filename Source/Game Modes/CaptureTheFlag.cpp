@@ -125,9 +125,11 @@ void CaptureTheFlag::Initialize()
 		this->mPlatform->SetShrinkValue(0.0f);
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagRed.ani", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
+		this->mEnemyFlag->GetMesh()->Scale(0.75f);
 		this->mEnemyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(90));
 		this->mEnemyFlag->GetMesh()->LoopSeamless();
 		this->mFriendlyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagBlue.ani", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
+		this->mFriendlyFlag->GetMesh()->Scale(0.75f);
 		this->mFriendlyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(-90));
 		this->mFriendlyFlag->GetMesh()->LoopSeamless();
 		
@@ -196,24 +198,32 @@ void CaptureTheFlag::Initialize()
 		
 		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 		
-		this->mEnemyScoreText = this->mGe->CreateText("", D3DXVECTOR2(200.0f, 10.0f), 1.0f, "Media/Fonts/1");
-		this->mFriendlyScoreText = this->mGe->CreateText("", D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth - 275, 10.0f), 1.0f, "Media/Fonts/1");
-		this->mIntermediateText = this->mGe->CreateText("", D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth * 0.5f - 275, 10.0f), 1.0f, "Media/Fonts/1");
+		float textHalfWidth = this->mGe->GetEngineParameters().windowWidth * 0.25f;
+		float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth;
+		float y = 10.0f;
+		this->mIntermediateText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth - this->mGe->GetEngineParameters().windowWidth * 0.1f - this->mGe->GetEngineParameters().windowWidth * 0.025f;
+		this->mEnemyScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		x = this->mGe->GetEngineParameters().windowWidth * 0.5f + textHalfWidth + this->mGe->GetEngineParameters().windowWidth * 0.1f;
+		this->mFriendlyScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		
 }
 
 void CaptureTheFlag::Intro()
 {
-		Text*	intro = mGe->CreateText("Capture The Flag",D3DXVECTOR2(this->mGe->GetEngineParameters().windowWidth * 0.5f - 450.0f, 500),2.0f,"Media/Fonts/1");
-		mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
-		intro->SetText("");
-		mGe->DeleteText(intro);
+	float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4375f;
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.6f;
+	Text* intro = mGe->CreateText("Capture The Flag", D3DXVECTOR2(x, y), 2.0f,"Media/Fonts/1");
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
+	intro->SetText("");
+	mGe->DeleteText(intro);
 
-		//net while(this->mChooseTeamMenu->Run());
+	//net while(this->mChooseTeamMenu->Run());
 
-		this->mEnemyScoreText->SetText("0");
-		this->mFriendlyScoreText->SetText("0");
-		string totalScore = MaloW::convertNrToString(this->mNumberOfRounds);
-		this->mIntermediateText->SetText("Flags captured of " + totalScore);
+	this->mEnemyScoreText->SetText("0");
+	this->mFriendlyScoreText->SetText("0");
+	string totalScore = MaloW::convertNrToString((float)this->mNumberOfRounds);
+	this->mIntermediateText->SetText("Flags captured of " + totalScore);
 }
 
 bool CaptureTheFlag::PlaySpecific()
@@ -260,15 +270,15 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 				int teamColor = this->mBalls[i]->GetTeamColor();
 				if(teamColor == BLUETEAM)
 				{
-					this->mFriendlyScoreText->SetText(MaloW::convertNrToString(++this->mFriendlyScore));
+					this->mFriendlyScoreText->SetText(MaloW::convertNrToString((float)++this->mFriendlyScore));
 				}
 				else if(teamColor == REDTEAM)
 				{
-					this->mEnemyScoreText->SetText(MaloW::convertNrToString(++this->mEnemyScore));
+					this->mEnemyScoreText->SetText(MaloW::convertNrToString((float)++this->mEnemyScore));
 				}
 				else //**temp (teams not added)**
 				{
-					this->mFriendlyScoreText->SetText(MaloW::convertNrToString(++this->mFriendlyScore));
+					this->mFriendlyScoreText->SetText(MaloW::convertNrToString((float)++this->mFriendlyScore));
 				}
 
 				if(this->mFriendlyScore >= this->mNumberOfRounds || this->mEnemyScore >= this->mNumberOfRounds)
@@ -333,9 +343,9 @@ void CaptureTheFlag::AddBall()
 	for(int i = old; i < this->mNumberOfPlayers; i++)
 	{
 		if(i < 4)
-			temp[i] = new PowerBall("Media/Ball"+ MaloW::convertNrToString(i + 1) + ".obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::CTF);
+			temp[i] = new PowerBall("Media/Ball"+ MaloW::convertNrToString((float)(i + 1)) + ".obj", this->mNet->GetBall(i)->GetStartPos(), (int)GAMEMODE::CTF);
 		else
-			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), GAMEMODE::CTF);
+			temp[i] = new PowerBall("Media/Ball.obj", this->mNet->GetBall(i)->GetStartPos(), (int)GAMEMODE::CTF);
 		temp[i]->SetForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		temp[i]->SetStartForwardVector(this->mNet->GetBall(i)->GetStartForwardVector());
 		#if FixedTimeStep

@@ -78,6 +78,10 @@ void DxManager::RenderDeferredGeometry()
 					this->Dx_DeviceContext->Draw(verts->GetElementCount(), 0);
 			}
 		}
+		else
+		{
+			this->invisibleGeometry = true;
+		}
 	}
 
 
@@ -85,63 +89,70 @@ void DxManager::RenderDeferredGeometry()
 	this->Shader_DeferredAnimatedGeometry->SetFloat4("CameraPosition", D3DXVECTOR4(this->camera->getPosition(), 1));
 	for(int i = 0; i < this->animations.size(); i++)
 	{
-		KeyFrame* one = NULL;
-		KeyFrame* two = NULL;
-		float t = 0.0f;
-		this->animations[i]->SetCurrentTime(this->TimerAnimation);
-		this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
-
-		MaloW::Array<MeshStrip*>* stripsOne = one->strips;
-		MaloW::Array<MeshStrip*>* stripsTwo = two->strips;
-		
-		// Set matrixes
-		world = this->animations[i]->GetWorldMatrix();
-		wvp = world * view * proj;
-		D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
-		D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
-		
-		this->Shader_DeferredAnimatedGeometry->SetMatrix("WVP", wvp);
-		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrix", world);
-		this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
-		this->Shader_DeferredAnimatedGeometry->SetFloat("t", t);
-
-		this->Shader_DeferredGeometry->SetInt("specialColor", this->animations[i]->GetSpecialColor()); //*kraschar för att antalet animationer > antalet object
-
-		for(int u = 0; u < stripsOne->size(); u++)
+		if(!this->animations[i]->IsUsingInvisibility())
 		{
-			Object3D* objOne = stripsOne->get(u)->GetRenderObject();
-			Object3D* objTwo = stripsTwo->get(u)->GetRenderObject();
+			KeyFrame* one = NULL;
+			KeyFrame* two = NULL;
+			float t = 0.0f;
+			this->animations[i]->SetCurrentTime(this->TimerAnimation);
+			this->animations[i]->GetCurrentKeyFrames(&one, &two, t);
 
-			this->Dx_DeviceContext->IASetPrimitiveTopology(objOne->GetTopology());
+			MaloW::Array<MeshStrip*>* stripsOne = one->strips;
+			MaloW::Array<MeshStrip*>* stripsTwo = two->strips;
+		
+			// Set matrixes
+			world = this->animations[i]->GetWorldMatrix();
+			wvp = world * view * proj;
+			D3DXMatrixInverse(&worldInverseTranspose, NULL, &world);
+			D3DXMatrixTranspose(&worldInverseTranspose, &worldInverseTranspose);
+		
+			this->Shader_DeferredAnimatedGeometry->SetMatrix("WVP", wvp);
+			this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrix", world);
+			this->Shader_DeferredAnimatedGeometry->SetMatrix("worldMatrixInverseTranspose", worldInverseTranspose);
+			this->Shader_DeferredAnimatedGeometry->SetFloat("t", t);
 
-			// Setting lightning from material
-			this->Shader_DeferredAnimatedGeometry->SetFloat4("SpecularColor", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->SpecularColor, 1));
-			this->Shader_DeferredAnimatedGeometry->SetFloat("SpecularPower", stripsOne->get(u)->GetMaterial()->SpecularPower);
-			this->Shader_DeferredAnimatedGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->AmbientColor, 1));
-			this->Shader_DeferredAnimatedGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->DiffuseColor, 1));
+			this->Shader_DeferredGeometry->SetInt("specialColor", this->animations[i]->GetSpecialColor()); //*kraschar för att antalet animationer > antalet object
 
-			Buffer* vertsOne = objOne->GetVertBuff();
-			Buffer* vertsTwo = objTwo->GetVertBuff();
-
-			ID3D11Buffer* vertexBuffers [] = {vertsOne->GetBufferPointer(), vertsTwo->GetBufferPointer()};
-			UINT strides [] = {sizeof(Vertex), sizeof(Vertex)};
-			UINT offsets [] = {0, 0};
-
-			this->Dx_DeviceContext->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);
-
-			if(ID3D11ShaderResourceView* texture = objOne->GetTexture())
+			for(int u = 0; u < stripsOne->size(); u++)
 			{
-				this->Shader_DeferredAnimatedGeometry->SetBool("textured", true);
-				this->Shader_DeferredAnimatedGeometry->SetResource("tex2D", texture);
-			}
-			else
-				this->Shader_DeferredAnimatedGeometry->SetBool("textured", false);
+				Object3D* objOne = stripsOne->get(u)->GetRenderObject();
+				Object3D* objTwo = stripsTwo->get(u)->GetRenderObject();
+
+				this->Dx_DeviceContext->IASetPrimitiveTopology(objOne->GetTopology());
+
+				// Setting lightning from material
+				this->Shader_DeferredAnimatedGeometry->SetFloat4("SpecularColor", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->SpecularColor, 1));
+				this->Shader_DeferredAnimatedGeometry->SetFloat("SpecularPower", stripsOne->get(u)->GetMaterial()->SpecularPower);
+				this->Shader_DeferredAnimatedGeometry->SetFloat4("AmbientLight", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->AmbientColor, 1));
+				this->Shader_DeferredAnimatedGeometry->SetFloat4("DiffuseColor", D3DXVECTOR4(stripsOne->get(u)->GetMaterial()->DiffuseColor, 1));
+
+				Buffer* vertsOne = objOne->GetVertBuff();
+				Buffer* vertsTwo = objTwo->GetVertBuff();
+
+				ID3D11Buffer* vertexBuffers [] = {vertsOne->GetBufferPointer(), vertsTwo->GetBufferPointer()};
+				UINT strides [] = {sizeof(Vertex), sizeof(Vertex)};
+				UINT offsets [] = {0, 0};
+
+				this->Dx_DeviceContext->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);
+
+				if(ID3D11ShaderResourceView* texture = objOne->GetTexture())
+				{
+					this->Shader_DeferredAnimatedGeometry->SetBool("textured", true);
+					this->Shader_DeferredAnimatedGeometry->SetResource("tex2D", texture);
+				}
+				else
+					this->Shader_DeferredAnimatedGeometry->SetBool("textured", false);
 			
 
-			this->Shader_DeferredAnimatedGeometry->Apply(0);
+				this->Shader_DeferredAnimatedGeometry->Apply(0);
 
-			// draw
-			this->Dx_DeviceContext->Draw(vertsOne->GetElementCount(), 0);
+				// draw
+				this->Dx_DeviceContext->Draw(vertsOne->GetElementCount(), 0);
+			}
+		}
+		else
+		{
+			this->invisibleGeometry = true;
 		}
 	}
 	this->Shader_DeferredAnimatedGeometry->SetResource("tex2D", NULL);
@@ -247,7 +258,7 @@ void DxManager::RenderDeferredPerPixel()
 	this->Shader_DeferredLightning->Apply(0);
 }
 
-void DxManager::RenderInvisibilityEffect() //***********
+void DxManager::RenderInvisibilityEffect() 
 {
 	HRESULT hr = S_OK;
 
@@ -263,11 +274,12 @@ void DxManager::RenderInvisibilityEffect() //***********
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE; 
 
 	//create texture
-	ID3D11Texture2D* sceneTex;
+	ID3D11Texture2D* sceneTex = NULL;
 	hr = this->Dx_Device->CreateTexture2D(&texDesc, NULL, &sceneTex);	
 	if(FAILED(hr))
 	{
 		MaloW::Debug("InvisibilityEffect: Failed to create texture");
+		return;
 	}
 	
 	//get resource from the render target view of the backbuffer
@@ -285,6 +297,7 @@ void DxManager::RenderInvisibilityEffect() //***********
 	if(FAILED(hr))
 	{
 		MaloW::Debug("InvisibilityEffect: Failed to create shader resource view");
+		return;
 	}
 
 	//set rendertarget & view port

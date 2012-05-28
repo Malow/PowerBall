@@ -424,8 +424,8 @@ void DxManager::RenderText()
 		this->Shader_Text->SetFloat("posy", 2 - (txt->GetPosition().y / this->params.windowHeight) * 2 - 1);
 
 		this->Shader_Text->SetFloat("size", txt->GetSize());
-		this->Shader_Text->SetFloat("windowWidth", this->params.windowWidth);
-		this->Shader_Text->SetFloat("windowHeight", this->params.windowHeight);
+		this->Shader_Text->SetFloat("windowWidth", (float)this->params.windowWidth);
+		this->Shader_Text->SetFloat("windowHeight", (float)this->params.windowHeight);
 		
 		// Im only using ASCI 30 - 100, to reduce data sent I only send those 70 as 0-70. Therefor the t = 30 and t - 30
 		static bool once = true;
@@ -450,7 +450,7 @@ void DxManager::RenderText()
 			drawText = drawText.substr(0, 40);
 
 		this->Shader_Text->SetFloat("NrOfChars", (float)drawText.size());
-		for(int t = 0; t < drawText.size(); t++)
+		for(int t = 0; t < (int)drawText.size(); t++)
 		{
 			// Im only using ASCI 30 - 100, to reduce data sent I only send those 70 as 0-70. Therefor the -30
 			this->Shader_Text->SetFloatAtIndex(t, "text", (float)(int)drawText[t] - 30);
@@ -532,8 +532,9 @@ HRESULT DxManager::Render()
 	//this->RenderQuadDeferred();
 	//this->RenderDeferredTexture();
 	this->RenderDeferredPerPixel();
-
-	this->RenderInvisibilityEffect(); 
+	
+	if(this->invisibleGeometry)
+		this->RenderInvisibilityEffect(); 
 
 	this->RenderParticles();
 	

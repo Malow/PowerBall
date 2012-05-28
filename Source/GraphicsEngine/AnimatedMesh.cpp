@@ -135,7 +135,7 @@ MaloW::Array<MeshStrip*>* AnimatedMesh::GetStrips()
 {
 	KeyFrame* one; 
 	KeyFrame* two;
-	KeyFrame* interpolated = new KeyFrame();
+	//KeyFrame* interpolated = new KeyFrame();
 	float t = 0.0f; 
 	this->GetCurrentKeyFrames(&one, &two, t);
 	/* interpolation on CPU:

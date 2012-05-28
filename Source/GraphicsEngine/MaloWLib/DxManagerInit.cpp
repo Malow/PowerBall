@@ -436,7 +436,7 @@ HRESULT DxManager::Init()
 	this->Shader_Fxaa = new Shader();
 	this->Shader_Fxaa->Init(this->Dx_Device, this->Dx_DeviceContext, "Shaders/FXAA.fx", NULL, 0);
 
-
+	this->invisibleGeometry = false;
 
 	return S_OK;
 }

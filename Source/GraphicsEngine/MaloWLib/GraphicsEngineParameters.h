@@ -44,7 +44,7 @@ public:
 		getline(in, line);
 		this->windowHeight = atoi(line.c_str());
 		getline(in, line);
-		this->Maximized = atoi(line.c_str());
+		this->Maximized = (bool)atoi(line.c_str());
 		getline(in, line);
 		this->ShadowMapSettings = atoi(line.c_str());
 		getline(in, line);

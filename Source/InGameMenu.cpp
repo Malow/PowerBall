@@ -185,7 +185,7 @@ bool InGameMenu::Run()
 				this->mSets[this->mSubSet].AddSetToRenderer(this->mGe);
 				int menuChangeTime = 50;
 				while(menuChangeTime > 0)
-					menuChangeTime -= this->mGe->Update();
+					menuChangeTime -= (int)this->mGe->Update();
 			}
 			else if(returnEvent->GetEventMessage() == "ChangeOptionEvent")
 			{

@@ -52,10 +52,10 @@ bool GameMode::PlayLan()
 
 	//choose team before starting the game
 	this->mChooseTeamMenu = new ChooseTeamMenu(this->mGe);
-	if(this->mGameMode != GAMEMODE::WARLOCK && this->mTeam == TEAM::NOTEAM)
+	if(this->mGameMode != (int)GAMEMODE::WARLOCK && this->mTeam == (int)TEAM::NOTEAM)
 		CreateThread(0, 0, &SelectTeamThread, (void*) this, 0, 0);//this->mChooseTeamMenu->Run();
-	else if(this->mGameMode == GAMEMODE::WARLOCK)
-		this->mTeam = TEAM::NOTEAM;
+	else if(this->mGameMode == (int)GAMEMODE::WARLOCK)
+		this->mTeam = (int)TEAM::NOTEAM;
 	this->mNet->Reset();
 	//this->mBalls[this->mNet->GetIndex]->SetTeamColor(team);**
 	//MsgHandler::GetInstance().JoinTeam((TEAM)this->mTeam);
@@ -115,7 +115,7 @@ void GameMode::ClientKeyPress(float diff, const int index, char key)
 	if(key == 'E')
 		mBalls[index]->RotateForwardRight(diff);
 	
-	if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
+	if(this->mServerInfo.GetGameMode() == (int)GAMEMODE::WARLOCK)
 	{
 		if(key == '1')
 		{
@@ -169,7 +169,7 @@ void GameMode::InputKeysPressedSelf(float diff, int index, bool& zoomOutPressed,
 			mBalls[index]->RotateForwardRight(diff);
 		if(mGe->GetKeyListener()->IsPressed('D'))
 			mBalls[index]->AddForceRightOfForwardDirection(diff);	
-		if(this->mServerInfo.GetGameMode() == GAMEMODE::WARLOCK)
+		if(this->mServerInfo.GetGameMode() == (int)GAMEMODE::WARLOCK)
 		{
 			if(mGe->GetKeyListener()->IsPressed('1'))
 			{
@@ -518,7 +518,7 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 				mPlatform->Update(diff);
 
 		
-				if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, diff))
+				if(!this->mNet->UpdatePowerBall(this->mBalls, this->mNumberOfPlayers, this->mPe, diff))
 					running = false;
 
 				if(this->mNet->GetNumPlayers() > this->mNumberOfPlayers)
