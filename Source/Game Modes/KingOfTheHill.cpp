@@ -142,18 +142,24 @@ void KingOfTheHill::Initialize()
 		
 
 	/* Set hud */
-	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),2.0f,"Media/Fonts/1");
-	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(10,400),1.0f,"Media/Fonts/1");
-	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(10,450),1.0f,"Media/Fonts/1");
-	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + width/8,height/24),1.0f,"Media/Fonts/1");
-	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(((width/2.0f) + (sizeBarX/2.0f)) + (2.0f*width)/8,height/24),1.0f,"Media/Fonts/1");
-
+	for(int i = 0; i < 5; i++)
+	{
+		this->mHud[i] = NULL;
+	}
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 }
 
 void KingOfTheHill::Intro()
 {
-	Text*	intro = mGe->CreateText("King of the Hill",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	float dx = (windowHeight * 4.0f) / 3.0f;
+	float offSet = (windowWidth - dx) / 2.0f;
+	float textHalfWidth = (dx * (490.0f / 800.0f)) * 0.5f;
+
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+
+	Text*	intro = mGe->CreateText("King of the Hill",D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet,y),2.0f,"Media/Fonts/1");
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);
@@ -196,24 +202,6 @@ void KingOfTheHill::ShowStats()
 void KingOfTheHill::ShowHud()
 {
 	GameMode::ShowHud();
-	string s;
-	float tmp = (600.0f - this->mTimeElapsed);
-	tmp = floor(tmp * 10.0f) / 10.0f;
-	s = "Timer: " + MaloW::convertNrToString(tmp);
-	this->mHud[0]->SetText(s);
-	Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetNormalContact();
-	string t = " x: " + MaloW::convertNrToString(floor(10.0f*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10.0f*n.y)/10.0f) + " z: " + MaloW::convertNrToString(floor(10.0f*n.z)/10.0f);
-	if(this->mBalls[this->mNet->GetIndex()]->GetHasContact())
-		s = "Contact: True";
-	else
-		s = "Contact: False";
-	this->mHud[1]->SetText(s);
-	s =  "Normal: " + t;
-	this->mHud[2]->SetText(s);
-	s = "T1: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetTimeInHotZone())/10.0f);
-	this->mHud[3]->SetText(s);
-	s = "T2: " + MaloW::convertNrToString(floor(10.0f*this->mPlatform->GetTimeInHotZoneContinuously())/10.0f);
-	this->mHud[4]->SetText(s);
 
 	/*
 	float percentageContinuously = (this->mPlatform->GetTimeInHotZoneContinuously()/this->mPlatform->GetMaxTimeInHotZoneContinuously())*100.0f;
@@ -412,7 +400,5 @@ void KingOfTheHill::AddBall()
 
 void KingOfTheHill::HideHud()
 {	GameMode::HideHud();
-	for(int i = 0;i<5;i++)
-		this->mHud[i]->SetText("");
 	this->mProgressBar->HideBar();
 }

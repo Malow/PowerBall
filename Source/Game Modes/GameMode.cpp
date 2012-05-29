@@ -70,8 +70,15 @@ bool GameMode::PlayLan()
 	{
 		quitByMenu = this->PlayRoundLan(roundsLeft, zoomInPressed, zoomOutPressed); 
 		roundsPlayed++;;
-		if(roundsPlayed == this->mNumberOfRounds)
+		if(this->mGameMode != CTF)
+		{
+			if(roundsPlayed == this->mNumberOfRounds)
+				roundsLeft = false;
+		}
+		else
+		{
 			roundsLeft = false;
+		}
 	}
 		
 	//this->mNet->Close();
