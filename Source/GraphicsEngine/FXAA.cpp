@@ -28,9 +28,13 @@ void FXAA::PreRender(Shader* shader, unsigned int preset)
 	HRESULT hr = S_OK;
 
 	//get the surface/texture from the swap chain
-	ID3D11Texture2D* backBufferTex;
-	this->gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferTex);
-	
+	ID3D11Texture2D* backBufferTex = NULL;
+	hr = this->gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferTex);
+	if(FAILED(hr))
+	{
+		MaloW::Debug("FXAA: Failed to get buffer from swapchain");
+		return;
+	}
 	//get texture description
 	D3D11_TEXTURE2D_DESC texDesc;
 	backBufferTex->GetDesc(&texDesc);

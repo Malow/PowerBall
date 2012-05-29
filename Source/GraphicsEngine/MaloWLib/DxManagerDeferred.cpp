@@ -263,9 +263,14 @@ void DxManager::RenderInvisibilityEffect()
 	HRESULT hr = S_OK;
 
 	//get the surface/texture from the swap chain
-	ID3D11Texture2D* backBufferTex;
+	ID3D11Texture2D* backBufferTex = NULL;
 	this->Dx_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferTex);
-	
+	if(FAILED(hr))
+	{
+		MaloW::Debug("InvisibilityEffect: Failed to get buffer from swap chain");
+		return;
+	}
+
 	//get texture description
 	D3D11_TEXTURE2D_DESC texDesc;
 	backBufferTex->GetDesc(&texDesc);
@@ -301,8 +306,8 @@ void DxManager::RenderInvisibilityEffect()
 	}
 
 	//set rendertarget & view port
-	//this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
-	//this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
+	this->Dx_DeviceContext->OMSetRenderTargets(1, &this->Dx_RenderTargetView, this->Dx_DepthStencilView);
+	this->Dx_DeviceContext->RSSetViewports(1, &this->Dx_Viewport);
 
 	//set shader variables
 	this->Shader_InvisibilityEffect->SetResource("sceneTex", sceneSRV);
