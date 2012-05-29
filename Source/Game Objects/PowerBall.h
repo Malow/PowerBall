@@ -53,7 +53,7 @@ class PowerBall : public GameObject
 			float		mRespawnTime;
 			float		mRespawnTimeLeft;
 			float		mTimeInHotZone;
-			int			mTeamColor;
+			int			mTeam;
 			/* SoundEffects */
 			bool			mSound;
 			SoundEffect*	mCollisionWithWall;
@@ -168,7 +168,7 @@ class PowerBall : public GameObject
 			bool GetHasContact() const { return this->mHasContact; }
 
 			/*! Returns the team color of the ball. */
-			int GetTeamColor() const { return this->mTeamColor; }
+			int GetTeam() const { return this->mTeam; }
 
 			/*! Returns the start forward vector. */
 			Vector3 GetStartForwardVector() const { return this->mStartForwardVector; }
@@ -176,6 +176,9 @@ class PowerBall : public GameObject
 			/*! Returns the health of the ball. */
 			float GetHealth() const { return this->mHealth; }
 			
+			/*! Returns true if the ball has the flag. */
+			bool HasFlag() { return this->mFlag; }
+
 			/*! Adds a item to the ball*/
 			void AddFlag(FlagCTF* item){ this->mFlag = item; }
 
@@ -267,7 +270,7 @@ class PowerBall : public GameObject
 			void SetHasContact(bool contact) { this->mHasContact = contact; }
 
 			/*! Sets the team of the ball. */
-			void SetTeamColor(int team);
+			void SetTeam(int team);
 
 			/*! Sets the start forward vector. */
 			void SetStartForwardVector(Vector3 forward) { this->mStartForwardVector = forward; }

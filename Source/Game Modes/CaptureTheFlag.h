@@ -19,10 +19,12 @@ class CaptureTheFlag : public GameMode
 	private:
 			FlagCTF*	mEnemyFlag;		
 			FlagCTF*	mFriendlyFlag;	
-			int			mEnemyScore;
-			int			mFriendlyScore;
-			Text*		mEnemyScoreText;
-			Text*		mFriendlyScoreText;
+			FlagCTF*	mRedFlag;		
+			FlagCTF*	mBlueFlag;	
+			int			mRedScore;
+			int			mBlueScore;
+			Text*		mRedScoreText;
+			Text*		mBlueScoreText;
 			Text*		mIntermediateText;
 
 

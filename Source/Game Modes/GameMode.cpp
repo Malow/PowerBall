@@ -501,8 +501,8 @@ bool GameMode::PlayRoundLan(bool& roundsLeft, bool& zoomInPressed, bool& zoomOut
 
 				for(int i = 0; i < this->mNumberOfPlayers; i++)
 				{
-					if(this->mBalls[i]->GetTeamColor() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
-						this->mBalls[i]->SetTeamColor(this->mNet->GetBall(i)->GetTeam());
+					if(this->mBalls[i]->GetTeam() != this->mNet->GetBall(i)->GetTeam()) //causes lag otherwise re-setting the color every frame if its alrdy set.
+						this->mBalls[i]->SetTeam(this->mNet->GetBall(i)->GetTeam());
 				}
 				if(this->mNet->IsServer())
 					this->IsServer(diff, zoomOutPressed, zoomInPressed, running, quitByMenu);

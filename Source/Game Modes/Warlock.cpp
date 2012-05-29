@@ -265,11 +265,11 @@ bool Warlock::checkWinConditions(float dt)
 	for(int i = 0; i<numberBallsAlive; i++)
 	{
 		ballIndex = arrayIndexs[i];
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::BLUETEAM)
+		if(this->mBalls[ballIndex]->GetTeam() == TEAM::BLUETEAM)
 			numberBlue++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::REDTEAM)
+		if(this->mBalls[ballIndex]->GetTeam() == TEAM::REDTEAM)
 			numberRed++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
+		if(this->mBalls[ballIndex]->GetTeam() == TEAM::NOTEAM) // this is for free 4 all
 			numberNone++;
 	}
 	/* if all balls belong to the same team and they are more that zero alive on the map or one alive in free 4 all. */
@@ -299,11 +299,11 @@ bool Warlock::checkWinConditions(float dt)
 	
 	for(int i = 0; i<this->mNumberOfPlayers; i++)
 	{
-		if(this->mBalls[i]->GetTeamColor() == TEAM::BLUETEAM)
+		if(this->mBalls[i]->GetTeam() == TEAM::BLUETEAM)
 			numberBlue++;
-		if(this->mBalls[i]->GetTeamColor() == TEAM::REDTEAM)
+		if(this->mBalls[i]->GetTeam() == TEAM::REDTEAM)
 			numberRed++;
-		if(this->mBalls[i]->GetTeamColor() == TEAM::NOTEAM) // this is for free 4 all
+		if(this->mBalls[i]->GetTeam() == TEAM::NOTEAM) // this is for free 4 all
 			numberNone++;
 	}
 	

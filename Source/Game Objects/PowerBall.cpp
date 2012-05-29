@@ -60,7 +60,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position)
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
-	this->mTeamColor = TEAM::NOTEAM;
+	this->mTeam			= TEAM::NOTEAM;
 	this->mSound		  = true;
 	this->mWarlockMode    = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wallFIXED.flac");
@@ -133,7 +133,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	this->mRespawnTime	 = 5.0f;
 	this->mRespawnTimeLeft	= this->mRespawnTime;
 	this->mTimeInHotZone = 0.0f;
-	this->mTeamColor = TEAM::NOTEAM;
+	this->mTeam = TEAM::NOTEAM;
 	this->mSound		  = false;
 	this->mWarlockMode    = false;
 	this->mCollisionWithWall = GetGraphicsEngine()->GetSoundEngine()->LoadSoundEffect("Media/Sounds/SoundEffects/ball_vs_wallFIXED.flac");
@@ -941,9 +941,9 @@ bool PowerBall::RayTriIntersect(Vector3 origin, Vector3 direction, Vector3 p0, V
 	return true;
 }
 
-void PowerBall::SetTeamColor(int team)
+void PowerBall::SetTeam(int team)
 {
-	 this->mTeamColor = team; 
+	 this->mTeam = team; 
 	 if(team == TEAM::BLUETEAM)
 		 this->mMesh->SetSpecialColor(COLOR::BLUE_COLOR);
 	 else if(team == TEAM::REDTEAM)

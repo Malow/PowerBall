@@ -230,13 +230,13 @@ void KingOfTheHill::ShowHud()
 		else
 			percentage = 100.0f - (this->mBestTime/this->mPlatform->GetMaxTimeInHotZone())*100.0f;
 			
-		if( (this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == (int)TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
+		if( (this->mBalls[this->mBestBallInHotZone]->GetTeam() == (int)TEAM::NOTEAM) && (this->mNet->GetIndex() == this->mBestBallInHotZone) )
 		{
 			this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
 			this->mProgressBar->SetPercentOfProgressBackground(100);
 			//this->mProgressBar->SetPercentOfProgressBarColor2(0);
 		}
-		else if(this->mBalls[this->mBestBallInHotZone]->GetTeamColor() == this->mBalls[this->mNet->GetIndex()]->GetTeamColor())
+		else if(this->mBalls[this->mBestBallInHotZone]->GetTeam() == this->mBalls[this->mNet->GetIndex()]->GetTeam())
 		{
 			this->mProgressBar->SetPercentOfProgressBarColor1(percentage);
 			this->mProgressBar->SetPercentOfProgressBackground(100);
@@ -281,11 +281,11 @@ bool KingOfTheHill::checkWinConditions(float dt)
 	for(int i = 0; i<numberInHotZone; i++)
 	{
 		ballIndex = arrayIndexs[i];
-		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::BLUETEAM)
+		if(this->mBalls[ballIndex]->GetTeam() == (int)TEAM::BLUETEAM)
 			numberBlue++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::REDTEAM)
+		if(this->mBalls[ballIndex]->GetTeam() == (int)TEAM::REDTEAM)
 			numberRed++;
-		if(this->mBalls[ballIndex]->GetTeamColor() == (int)TEAM::NOTEAM) // this is for free 4 all
+		if(this->mBalls[ballIndex]->GetTeam() == (int)TEAM::NOTEAM) // this is for free 4 all
 			numberNone++;
 	}
 	/* if all balls belong to the same team and they are more that zero in the hotzone or one in free 4 all then update the time. */

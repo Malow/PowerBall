@@ -13,12 +13,16 @@ CaptureTheFlag::CaptureTheFlag()
 		this->mGameMode = -1;
 		this->mTimeElapsed = 0.0f;
 
+	this->mTeam = (int)TEAM::NOTEAM;
+
 	this->mEnemyFlag = NULL;
-	this->mFriendlyFlag = NULL;
-	this->mEnemyScore = 0;
-	this->mFriendlyScore = 0;
-	this->mEnemyScoreText = NULL;
-	this->mFriendlyScoreText = NULL;
+	this->mFriendlyFlag = NULL;	
+	this->mRedFlag = NULL;		
+	this->mBlueFlag = NULL;	
+	this->mRedScore = 0;
+	this->mBlueScore = 0;
+	this->mRedScoreText = NULL;
+	this->mBlueScoreText = NULL;
 	this->mIntermediateText = NULL;
 }
 
@@ -32,12 +36,16 @@ CaptureTheFlag::CaptureTheFlag(GraphicsEngine* ge, GameNetwork* net, ServerInfo 
 		this->mServerInfo = server;
 		this->mTimeElapsed = 0.0f;
 
+	this->mTeam = (int)TEAM::NOTEAM;
+
 	this->mEnemyFlag = NULL;
 	this->mFriendlyFlag = NULL;
-	this->mEnemyScore = 0;
-	this->mFriendlyScore = 0;
-	this->mEnemyScoreText = NULL;
-	this->mFriendlyScoreText = NULL;
+	this->mRedFlag = NULL;		
+	this->mBlueFlag = NULL;	
+	this->mRedScore = 0;
+	this->mBlueScore = 0;
+	this->mRedScoreText = NULL;
+	this->mBlueScoreText = NULL;
 	this->mIntermediateText = NULL;
 }
 
@@ -79,8 +87,8 @@ CaptureTheFlag::~CaptureTheFlag()
 	SAFE_DELETE(this->mFriendlyFlag);
 	this->mGe->DeleteAnimatedMesh(this->mEnemyFlag->GetMesh());
 	SAFE_DELETE(this->mEnemyFlag);
-	this->mGe->DeleteText(this->mEnemyScoreText);
-	this->mGe->DeleteText(this->mFriendlyScoreText);
+	this->mGe->DeleteText(this->mRedScoreText);
+	this->mGe->DeleteText(this->mBlueScoreText);
 	this->mGe->DeleteText(this->mIntermediateText);
 }
 
@@ -133,7 +141,8 @@ void CaptureTheFlag::Initialize()
 		this->mFriendlyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(-90));
 		this->mFriendlyFlag->GetMesh()->LoopSeamless();
 		
-
+		this->mRedFlag = this->mEnemyFlag;
+		this->mBlueFlag = this->mFriendlyFlag;
 
 		/*D3DXVECTOR3 startPositions[4];
 		startPositions[0] = D3DXVECTOR3(0,24.7f,-14);
@@ -203,10 +212,13 @@ void CaptureTheFlag::Initialize()
 		float y = 10.0f;
 		this->mIntermediateText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
 		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth - this->mGe->GetEngineParameters().windowWidth * 0.1f - this->mGe->GetEngineParameters().windowWidth * 0.025f;
-		this->mEnemyScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		this->mRedScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
 		x = this->mGe->GetEngineParameters().windowWidth * 0.5f + textHalfWidth + this->mGe->GetEngineParameters().windowWidth * 0.1f;
-		this->mFriendlyScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		this->mBlueScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
 		
+		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4f;
+		y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+		this->mHud[0] = this->mGe->CreateText("", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
 }
 
 void CaptureTheFlag::Intro()
@@ -220,8 +232,8 @@ void CaptureTheFlag::Intro()
 
 	//net while(this->mChooseTeamMenu->Run());
 
-	this->mEnemyScoreText->SetText("0");
-	this->mFriendlyScoreText->SetText("0");
+	this->mRedScoreText->SetText("0");
+	this->mBlueScoreText->SetText("0");
 	string totalScore = MaloW::convertNrToString((float)this->mNumberOfRounds);
 	this->mIntermediateText->SetText("Flags captured of " + totalScore);
 }
@@ -238,14 +250,35 @@ void CaptureTheFlag::ShowStats()
 
 bool CaptureTheFlag::checkWinConditions(float dt)
 {
-	//check if enemy flag is at base
-	if(this->mEnemyFlag->GetAtBase())
+	int team = -1;
+	for(int i = 0; i < this->mNumberOfPlayers; i++)
 	{
-		for(int i = 0; i < this->mNumberOfPlayers; i++)
-		{
-			D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[i]->GetRadius(), 0)) - this->mBalls[0]->GetPosition());
+		team = this->mBalls[i]->GetTeam(); 
 
-			if(D3DXVec3Length(&BallToFlag) - this->mEnemyFlag->GetFlagRadius() < (this->mBalls[i]->GetRadius()))
+		if(team == (int)TEAM::REDTEAM) 
+		{
+			if(this->mFriendlyFlag != this->mRedFlag)
+			{	
+				this->mFriendlyFlag = this->mRedFlag;
+				this->mEnemyFlag = this->mBlueFlag;
+			}
+		}
+		else if(team == (int)TEAM::BLUETEAM)
+		{
+			if(this->mFriendlyFlag != this->mRedFlag)
+			{	
+				this->mFriendlyFlag = this->mBlueFlag;
+				this->mEnemyFlag = this->mRedFlag;
+			}
+		}
+		
+		//check if enemy flag is at it's base
+		if(this->mEnemyFlag->GetAtBase())
+		{
+			//check the distance between it and the ball
+			D3DXVECTOR3 ballToFlag = D3DXVECTOR3((this->mEnemyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[i]->GetRadius(), 0)) - this->mBalls[i]->GetPosition());
+			//if close enough, pick it up and set a penalty for holding it
+			if(D3DXVec3Length(&ballToFlag) - this->mEnemyFlag->GetFlagRadius() < (this->mBalls[i]->GetRadius()))
 			{
 				this->mBalls[i]->AddFlag(this->mEnemyFlag);
 				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 0.8f);
@@ -253,70 +286,60 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 				this->mEnemyFlag->SetAtBase(false);
 			}
 		}
+		else if(this->mFriendlyFlag->GetAtBase()) //otherwise check if the enemy flag can be captured (friendly flag at base)
+		{
+			//check if ball has flag
+			if(this->mBalls[i]->HasFlag())
+			{
+				//check the distance between the friendly flag and the ball
+				D3DXVECTOR3 ballToFlag = D3DXVECTOR3((this->mFriendlyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[i]->GetRadius(), 0)) - this->mBalls[i]->GetPosition());
+				//if close enough, capture flag & reset it and the penalty for holding it
+				if(D3DXVec3Length(&ballToFlag) - this->mFriendlyFlag->GetFlagRadius() < (this->mBalls[i]->GetRadius()))
+				{
+					this->mBalls[i]->ResetFlag();
+					this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 1.25f);
+					this->mBalls[i]->SetRestitution(this->mBalls[i]->GetRestitution() * 0.5f);
+					this->mEnemyFlag->Reset();
+
+					//update score
+					if(team == (int)TEAM::REDTEAM)
+					{
+						this->mRedScoreText->SetText(MaloW::convertNrToString((float)++this->mRedScore));
+					}
+					else if(team == (int)TEAM::BLUETEAM)
+					{
+						this->mBlueScoreText->SetText(MaloW::convertNrToString((float)++this->mBlueScore));
+					}
+
+					//if a team has scored enough, announce winner and return
+					if(this->mRedScore >= this->mNumberOfRounds)
+					{
+						this->mHud[0]->SetText("Red team wins!");
+						while(dt < 2000)
+						{
+							dt += mGe->Update();
+						}
+						this->mHud[0]->SetText("");
+
+						return true;
+					}
+					else if(this->mBlueScore >= this->mNumberOfRounds)
+					{
+						this->mHud[0]->SetText("Blue team wins!");
+						while(dt < 2000)
+						{
+							dt += mGe->Update();
+						}
+						this->mHud[0]->SetText("");
+
+						return true;
+					}
+				}
+			}
+		}
 	}
-	else //otherwise check how far the flags are apart
-	{
-		D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mEnemyFlag->GetMesh()->GetPosition() - this->mFriendlyFlag->GetMesh()->GetPosition());
 		
-		for(int i = 0; i < this->mNumberOfPlayers; i++)
-		{
-			if((D3DXVec3Length(&distBetweenFlags) - this->mEnemyFlag->GetFlagRadius() < this->mBalls[i]->GetRadius()) && this->mFriendlyFlag->GetAtBase())
-			{
-				this->mBalls[i]->ResetFlag();
-				this->mBalls[i]->SetMaxVelocity(this->mBalls[i]->GetMaxVelocity() * 1.25f);
-				this->mBalls[i]->SetRestitution(this->mBalls[i]->GetRestitution() * 0.5f);
-				this->mEnemyFlag->Reset();
 
-				int teamColor = this->mBalls[i]->GetTeamColor();
-				if(teamColor == BLUETEAM)
-				{
-					this->mFriendlyScoreText->SetText(MaloW::convertNrToString((float)++this->mFriendlyScore));
-				}
-				else if(teamColor == REDTEAM)
-				{
-					this->mEnemyScoreText->SetText(MaloW::convertNrToString((float)++this->mEnemyScore));
-				}
-				else //**temp (teams not added)**
-				{
-					this->mFriendlyScoreText->SetText(MaloW::convertNrToString((float)++this->mFriendlyScore));
-				}
-
-				if(this->mFriendlyScore >= this->mNumberOfRounds || this->mEnemyScore >= this->mNumberOfRounds)
-				{
-					return true;
-				}
-
-				//this->mNumberOfRounds--;
-				//if(this->mNumberOfRounds <= 0)
-				//	return true;
-			}
-		}
-	}
-
-	/*
-	//just copied temporarily to try - Rille
-	if(this->mNumberOfPlayers > 1)
-	{
-		D3DXVECTOR3 BallToFlag = D3DXVECTOR3((this->mFriendlyFlag->GetMesh()->GetPosition() + D3DXVECTOR3(0, this->mBalls[1]->GetRadius(), 0))- this->mBalls[1]->GetPosition());
-
-		if(D3DXVec3Length(&BallToFlag) < (this->mBalls[1]->GetRadius()))
-		{
-			this->mBalls[1]->AddFlag(this->mFriendlyFlag);
-			this->mFriendlyFlag->SetAtBase(false);
-		}
-		if(!this->mFriendlyFlag->GetAtBase())
-		{
-			D3DXVECTOR3 distBetweenFlags = D3DXVECTOR3(this->mFriendlyFlag->GetMesh()->GetPosition() - this->mEnemyFlag->GetMesh()->GetPosition());
-			if(D3DXVec3Length(&distBetweenFlags) < (this->mBalls[1]->GetRadius()) && this->mEnemyFlag->GetAtBase())
-			{
-				this->mBalls[1]->ResetFlag();
-				this->mFriendlyFlag->Reset();
-				this->mNumberOfRounds--;
-				if(this->mNumberOfRounds <= 0)
-					return true;
-			}
-		}
-	}
 	/*if(this->mNet->IsServer())
 	{*/
 		//this->mNet->SetFlagPos(this->mFriendlyFlag->GetMesh()->GetPosition(), 0);
@@ -327,6 +350,7 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 		this->mFriendlyFlag->SetPosition(this->mNet->GetFlagPos(1));
 		this->mEnemyFlag->SetPosition(this->mNet->GetFlagPos(0));
 	}*/
+
 	return false;
 }
 
