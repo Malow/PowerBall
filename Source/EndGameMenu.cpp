@@ -58,10 +58,12 @@ int EndGameMenu::Run()
 	bool IsClicked = false;
 	bool mousePressed = false;
 	GUIEvent *returnEvent = NULL;
-	this->mGe->GetKeyListener()->KeyUp(VK_ESCAPE);
-
 	CursorControl cc;
 	cc.SetVisibility(true);
+	while(this->mGe->GetKeyListener()->IsClicked(1))
+	{
+
+	}
 
 	while(this->mIsRunning)
 	{

@@ -38,7 +38,7 @@ Warlock::~Warlock()
 		mGe->DeleteText(this->mHud[i]);
 	SAFE_DELETE(this->mChooseTeamMenu);
 		
-	for(int i = 0; i<7;i++)
+	for(int i = 0; i<6;i++)
 	{
 		SAFE_DELETE(this->mProgressBars[i]);
 	}
@@ -110,67 +110,68 @@ void Warlock::Initialize()
 
 		
 	/* Set hud */
-	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,400),0.5f,"Media/Fonts/1");
-	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1");
-	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
-	this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(20,190),1.0f,"Media/Fonts/1");
-	this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(20,240),1.0f,"Media/Fonts/1");
-	this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(20,290),1.0f,"Media/Fonts/1");
+	this->mHud[0] = NULL;
+	this->mHud[1] = NULL;
+	this->mHud[2] = NULL;
+	this->mHud[3] = NULL;
+	this->mHud[4] = NULL;
+	this->mHud[5] = NULL;
 
-	this->mHud[6] = mGe->CreateText("",D3DXVECTOR2(width*0.03f,height*0.90f),1.0f,"Media/Fonts/1");
-	this->mHud[7] = mGe->CreateText("",D3DXVECTOR2(width*(0.03f+ 0.16f),height*0.90f),1.0f,"Media/Fonts/1");
-	this->mHud[8] = mGe->CreateText("",D3DXVECTOR2(width*(0.03f+ 0.32f),height*0.90f),1.0f,"Media/Fonts/1");
-	this->mHud[9] = mGe->CreateText("",D3DXVECTOR2(width*(0.03f+ 0.48f),height*0.90f),1.0f,"Media/Fonts/1");
-	this->mHud[10] = mGe->CreateText("",D3DXVECTOR2(width*(0.03f+ 0.64f),height*0.90f),1.0f,"Media/Fonts/1");
+	this->mHud[6] = NULL;
+	this->mHud[7] = NULL;
+	this->mHud[8] = NULL;
+	this->mHud[9] = NULL;
+	this->mHud[10] = NULL;
 
-	this->mHud[11] = mGe->CreateText("",D3DXVECTOR2(width*0.07f,height*0.82f),1.0f,"Media/Fonts/1");
-	this->mHud[12] = mGe->CreateText("",D3DXVECTOR2(width*(0.05f+ 0.16f),height*0.82f),1.0f,"Media/Fonts/1");
-	this->mHud[13] = mGe->CreateText("",D3DXVECTOR2(width*(0.05f+ 0.32f),height*0.82f),1.0f,"Media/Fonts/1");
-	this->mHud[14] = mGe->CreateText("",D3DXVECTOR2(width*(0.05f+ 0.48f),height*0.82f),1.0f,"Media/Fonts/1");
-	this->mHud[15] = mGe->CreateText("",D3DXVECTOR2(width*(0.05f+ 0.64f),height*0.82f),1.0f,"Media/Fonts/1");
-	this->mHud[16] = mGe->CreateText("",D3DXVECTOR2(width*0.45f,height*0.15f),1.0f,"Media/Fonts/1");
+	// Rework ScreenWidth to 4:3
+	const float UISCALE = 0.5f;
+	float screenHeight = this->mGe->GetEngineParameters().windowHeight;
+	float screenWidth = (screenHeight * 4) / 3;
+	float distX = (mGe->GetEngineParameters().windowWidth - screenWidth) / 2;
+	distX /= UISCALE;
+
+	D3DXVECTOR2 imgDim = D3DXVECTOR2(screenWidth / 5, screenWidth / 5) * UISCALE;
+	distX = (this->mGe->GetEngineParameters().windowWidth / 2.0f) - ((imgDim.x * 5.0f) / 2.0f);
+
+	for(int i = 11; i < 16; i++)
+	{
+		this->mHud[i] = mGe->CreateText("",D3DXVECTOR2(distX + imgDim.x * (i-11) + (imgDim.x * 0.2f), screenHeight - imgDim.y * 0.65f), 1.0f, "Media/Fonts/1");
+	}
+
+	this->mHud[16] = NULL;
 	
 
 		
-	this->mProgressBars = new ProgressBar*[7];
+	this->mProgressBars = new ProgressBar*[6];
 	float percentX = 0.02f;
 	float percentY = 0.88f;
+
+	
+
 	for(int i = 0; i<5;i++)
 	{
 		D3DXVECTOR2 temp = D3DXVECTOR2(percentX,percentY);
-		this->mProgressBars[i] = new ProgressBar("Media/LoadingScreen/Green.png",
-													"Media/LoadingScreen/Red.png",
-													"Media/LoadingScreen/BlueOcean.png",
-													"Media/LoadingScreen/Black.png",
-													temp,0.10f,0.02,0.01f,0.05f);
+		this->mProgressBars[i] = new ProgressBar(distX + imgDim.x * i, screenHeight - imgDim.y - (screenHeight * 0.03f), imgDim.x,  (screenHeight * 0.03f));
 		this->mProgressBars[i]->SetPercentOfProgressBarColor1(0.0f);
 		this->mProgressBars[i]->SetPercentOfProgressBarColor2(0.0f);
 		this->mProgressBars[i]->SetPercentOfProgressBarColor3(0.0f);
 		percentX = percentX + 0.16f;
 			
 	}
-	this->mProgressBars[5] = new ProgressBar();
 
-	/* test bar 4 malow. there is now no percentage when you set the position of the progressbar. */
-	this->mProgressBars[6] = new ProgressBar(30, 500,250, 50);
-	this->mProcX = 50;
-	this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
-	
-	
+	D3DXVECTOR2 temp = D3DXVECTOR2(percentX,percentY);
+	this->mProgressBars[5] = new ProgressBar(distX, screenHeight - imgDim.y - (screenHeight * 0.08f) , imgDim.x * 5.0f,  (screenHeight * 0.05f));
+	this->mProgressBars[5]->SetPercentOfProgressBarColor1(0.0f);
+	this->mProgressBars[5]->SetPercentOfProgressBarColor2(0.0f);
+	this->mProgressBars[5]->SetPercentOfProgressBarColor3(0.0f);
+	percentX = percentX + 0.16f;
+
 	
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 
 
 
 	// Add spell Icons
-	// Rework ScreenWidth to 4:3
-	const float UISCALE = 0.5f;
-	int screenHeight = mGe->GetEngineParameters().windowHeight;
-	int screenWidth = (screenHeight * 4) / 3;
-	int distX = (mGe->GetEngineParameters().windowWidth - screenWidth) / 2;
-	distX /= UISCALE;
-
-	D3DXVECTOR2 imgDim = D3DXVECTOR2(screenWidth / 5, screenWidth / 5) * UISCALE;
 	Image* charge = mGe->CreateImage(D3DXVECTOR2(distX, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/ChargeIcon.png");
 	Image* sprint = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/SprintIcon.png");
 	Image* harden = mGe->CreateImage(D3DXVECTOR2(distX + imgDim.x * 2, screenHeight - imgDim.y), imgDim, "Media/WarlockUI/HardenIcon.png");
@@ -207,17 +208,7 @@ void Warlock::ShowStats()
 bool Warlock::checkWinConditions(float dt)
 {
 	float newdt = dt/1000.0f;
-	if(mGe->GetKeyListener()->IsPressed('M'))
-	{
-		this->mProcX += 5.0f*newdt; // add 5 % every sec button is pressed.
-		this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
-	}
-	if(mGe->GetKeyListener()->IsPressed('N'))
-	{
-		this->mProcX -= 5.0f*newdt; // remove 5 % every sec button is pressed.
-		this->mProgressBars[6]->SetPercentOfProgressBarColor1(this->mProcX);
-	}
-	
+
 	this->mTimeElapsed += newdt;
 	Vector3 pos;
 	Vector3 posLav;
@@ -234,6 +225,7 @@ bool Warlock::checkWinConditions(float dt)
 			/* here the ball take damage. */
 			float radiusMapInside = 55.0f;
 			float moreDamageDistance = pos.GetLength() - radiusMapInside;
+			moreDamageDistance *= 0.5f;
 			/* minus 4 hp per sec and minus distance in lava per sec */
 			this->mBalls[i]->SetHealth(this->mBalls[i]->GetHealth() - 4.0f*newdt - moreDamageDistance*newdt);
 		}
@@ -331,7 +323,7 @@ void Warlock::ShowHud()
 {
 	GameMode::ShowHud();
 	string s;
-	Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetPositionVector3();
+	/*Vector3 n = this->mBalls[this->mNet->GetIndex()]->GetPositionVector3();
 	s = " Position: x: " + MaloW::convertNrToString(floor(10*n.x)/10.0f) + " y: " + MaloW::convertNrToString(floor(10*n.y)/10.0) + " z: " + MaloW::convertNrToString(floor(10*n.z)/10.0);
 	s = s + "Rounds: " + MaloW::convertNrToString(this->mNumberOfRounds);
 	this->mHud[0]->SetText(s);
@@ -347,7 +339,7 @@ void Warlock::ShowHud()
 	s = "y: " + MaloW::convertNrToString(y);
 	this->mHud[4]->SetText(s);
 	s = "z: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetVelocity().z)/10.0f);
-	this->mHud[5]->SetText(s);
+	this->mHud[5]->SetText(s);*/
 	
 		
 		
@@ -355,13 +347,11 @@ void Warlock::ShowHud()
 	float percentage = 0;
 
 	/* spell information showing on display */
-	string textInfo;
 	string counterInfo;
 
 	/*  Charge Spell */
 	if(spells[0]->InUse())
 	{
-		textInfo = "Using";
 		counterInfo = "";
 		percentage = ((spells[0]->GetMaxTimeUse() - spells[0]->GetTimerCounterInUse())/spells[0]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[0]->SetPercentOfProgressBarColor2(0);
@@ -369,36 +359,34 @@ void Warlock::ShowHud()
 	}
 	else if(spells[0]->IsCharging())
 	{
-		textInfo = "Charging";
 		counterInfo = "";
 		percentage = (((ChargeSpell*)spells[0])->GetTimerCharging()/((ChargeSpell*)spells[0])->GetMaxTimeCharging())*100.0f;
 		this->mProgressBars[0]->SetPercentOfProgressBarColor3(percentage);
 	}
 	else if(spells[0]->NeedCoolDown())
 	{
-		textInfo = "ColdDown";
-		counterInfo = MaloW::convertNrToString(floor(10.0f*spells[0]->GetCoolDownTimeLeft())/10.0f);
+		if(spells[0]->GetCoolDownTimeLeft() >= 10.0f)
+			counterInfo = MaloW::convertNrToString(floor(spells[0]->GetCoolDownTimeLeft()));
+		else
+			counterInfo = MaloW::convertNrToString(floor(10.0f * spells[0]->GetCoolDownTimeLeft()) / 10.0f);
 		percentage = (spells[0]->GetTimerCounterCoolDown()/spells[0]->GetTimeNeededToCoolDown())*100.0f;
 		//this->mProgressBars[0]->SetPercentOfProgressBarColor1(0);
 		this->mProgressBars[0]->SetPercentOfProgressBarColor2(percentage);
 	}
 	else
 	{
-		textInfo = "Ready";
 		counterInfo = "";
 		percentage = ((spells[0]->GetMaxTimeUse() - spells[0]->GetTimerCounterInUse())/spells[0]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[0]->SetPercentOfProgressBarColor2(0);
 		this->mProgressBars[0]->SetPercentOfProgressBarColor1(percentage);
 	}
 	/* sets the text, and countertime */
-	this->mHud[6]->SetText(textInfo);
 	this->mHud[11]->SetText(counterInfo);
 
 		
 	/*  Charge Spell */
 	if(spells[1]->InUse())
 	{
-		textInfo = "Using";
 		counterInfo = "";
 		percentage = ((spells[1]->GetMaxTimeUse() - spells[1]->GetTimerCounterInUse())/spells[1]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[1]->SetPercentOfProgressBarColor2(0);
@@ -408,13 +396,14 @@ void Warlock::ShowHud()
 	}
 	else if(spells[1]->IsCharging())
 	{
-		textInfo = "Charging";
 		counterInfo = "";
 	}
 	else if(spells[1]->NeedCoolDown())
 	{
-		textInfo = "ColdDown";
-		counterInfo = MaloW::convertNrToString(floor(10.0f*spells[1]->GetCoolDownTimeLeft())/10.0f);
+		if(spells[1]->GetCoolDownTimeLeft() >= 10.0f)
+			counterInfo = MaloW::convertNrToString(floor(spells[1]->GetCoolDownTimeLeft()));
+		else
+			counterInfo = MaloW::convertNrToString(floor(10.0f * spells[1]->GetCoolDownTimeLeft()) / 10.0f);
 		percentage = (spells[1]->GetTimerCounterCoolDown()/spells[1]->GetTimeNeededToCoolDown())*100.0f;
 			
 		this->mProgressBars[1]->SetPercentOfProgressBarColor2(percentage);
@@ -422,7 +411,6 @@ void Warlock::ShowHud()
 	}
 	else 
 	{
-		textInfo = "Ready";
 		counterInfo = "";
 		percentage = ((spells[1]->GetMaxTimeUse() - spells[1]->GetTimerCounterInUse())/spells[1]->GetMaxTimeUse())*100.0f;
 			
@@ -431,14 +419,12 @@ void Warlock::ShowHud()
 	}
 
 	/* sets the text, and countertime */
-	this->mHud[7]->SetText(textInfo);
 	this->mHud[12]->SetText(counterInfo);
 
 		
 	/* Harden Spell */
 	if(spells[2]->InUse())
 	{
-		textInfo = "Using";
 		counterInfo = "";
 		percentage = ((spells[2]->GetMaxTimeUse() - spells[2]->GetTimerCounterInUse())/spells[2]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[2]->SetPercentOfProgressBarColor2(0);
@@ -448,13 +434,14 @@ void Warlock::ShowHud()
 	}
 	else if(spells[2]->IsCharging())
 	{
-		textInfo = "Charging";
 		counterInfo = "";
 	}
 	else if(spells[2]->NeedCoolDown())
 	{
-		textInfo = "ColdDown";
-		counterInfo = MaloW::convertNrToString(floor(10.0f*spells[2]->GetCoolDownTimeLeft())/10.0f);
+		if(spells[2]->GetCoolDownTimeLeft() >= 10.0f)
+			counterInfo = MaloW::convertNrToString(floor(spells[2]->GetCoolDownTimeLeft()));
+		else
+			counterInfo = MaloW::convertNrToString(floor(10.0f * spells[2]->GetCoolDownTimeLeft()) / 10.0f);
 		percentage = (spells[2]->GetTimerCounterCoolDown()/spells[2]->GetTimeNeededToCoolDown())*100.0f;
 			
 		this->mProgressBars[2]->SetPercentOfProgressBarColor2(percentage);
@@ -462,7 +449,6 @@ void Warlock::ShowHud()
 	}
 	else 
 	{
-		textInfo = "Ready";
 		counterInfo = "";
 		percentage = ((spells[2]->GetMaxTimeUse() - spells[2]->GetTimerCounterInUse())/spells[2]->GetMaxTimeUse())*100.0f;
 			
@@ -471,14 +457,12 @@ void Warlock::ShowHud()
 	}
 
 	/* sets the text, and countertime */
-	this->mHud[8]->SetText(textInfo);
 	this->mHud[13]->SetText(counterInfo);
 		
 
 	/* Invisibility Spell */
 	if(spells[3]->InUse())
 	{
-		textInfo = "Using";
 		counterInfo = "";
 		percentage = ((spells[3]->GetMaxTimeUse() - spells[3]->GetTimerCounterInUse())/spells[3]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[3]->SetPercentOfProgressBarColor2(0);
@@ -487,20 +471,21 @@ void Warlock::ShowHud()
 	}
 	else if(spells[3]->IsCharging())
 	{
-		textInfo = "Charging";
 		counterInfo = "";
 	}
 	else if(spells[3]->NeedCoolDown())
 	{
-		textInfo = "ColdDown";
-		counterInfo = MaloW::convertNrToString(floor(10.0f*spells[3]->GetCoolDownTimeLeft())/10.0f);
+		if(spells[3]->GetCoolDownTimeLeft() >= 10.0f)
+			counterInfo = MaloW::convertNrToString(floor(spells[3]->GetCoolDownTimeLeft()));
+		else
+			counterInfo = MaloW::convertNrToString(floor(10.0f * spells[3]->GetCoolDownTimeLeft()) / 10.0f);
+
 		percentage = (spells[3]->GetTimerCounterCoolDown()/spells[3]->GetTimeNeededToCoolDown())*100.0f;
 		//this->mProgressBars[3]->SetPercentOfProgressBarColor2(0);
 		this->mProgressBars[3]->SetPercentOfProgressBarColor2(percentage);
 	}
 	else 
 	{
-		textInfo = "Ready";
 		counterInfo = "";
 		percentage = ((spells[3]->GetMaxTimeUse() - spells[3]->GetTimerCounterInUse())/spells[3]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[3]->SetPercentOfProgressBarColor2(0);
@@ -509,14 +494,12 @@ void Warlock::ShowHud()
 	}
 
 	/* sets the text, and countertime */
-	this->mHud[9]->SetText(textInfo);
 	this->mHud[14]->SetText(counterInfo);
 
 
 	/* Jump Spell */
 	if(spells[4]->InUse())
 	{
-		textInfo = "Using";
 		counterInfo = "";
 		percentage = ((spells[4]->GetMaxTimeUse() - spells[4]->GetTimerCounterInUse())/spells[4]->GetMaxTimeUse())*100.0f;
 		//this->mProgressBars[4]->SetPercentOfProgressBarColor2(0);
@@ -525,20 +508,21 @@ void Warlock::ShowHud()
 	}
 	else if(spells[4]->IsCharging())
 	{
-		textInfo = "Charging";
 		counterInfo = "";
 	}
 	else if(spells[4]->NeedCoolDown())
 	{
-		textInfo = "ColdDown";
-		counterInfo = MaloW::convertNrToString(floor(10.0f*spells[4]->GetCoolDownTimeLeft())/10.0f);
+		if(spells[4]->GetCoolDownTimeLeft() >= 10.0f)
+			counterInfo = MaloW::convertNrToString(floor(spells[4]->GetCoolDownTimeLeft()));
+		else
+			counterInfo = MaloW::convertNrToString(floor(10.0f * spells[4]->GetCoolDownTimeLeft()) / 10.0f);
+
 		percentage = (spells[4]->GetTimerCounterCoolDown()/spells[4]->GetTimeNeededToCoolDown())*100.0f;
 		//this->mProgressBars[4]->SetPercentOfProgressBarColor2(0);
 		this->mProgressBars[4]->SetPercentOfProgressBarColor2(percentage);
 	}
 	else 
 	{
-		textInfo = "Ready";
 		counterInfo = "";
 		percentage = ((spells[4]->GetMaxTimeUse() - spells[4]->GetTimerCounterInUse())/spells[4]->GetMaxTimeUse())*100.0f;
 			
@@ -547,14 +531,13 @@ void Warlock::ShowHud()
 	}
 
 	/* sets the text, and countertime */
-	this->mHud[10]->SetText(textInfo);
 	this->mHud[15]->SetText(counterInfo);
 		
 		
 	/* Life bar */
-	s = "Life: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetHealth())/10.0f);
+	/*s = "Life: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetHealth())/10.0f);*/
 	this->mProgressBars[5]->SetPercentOfProgressBarColor1(this->mBalls[this->mNet->GetIndex()]->GetHealth());
-	this->mHud[16]->SetText(s);
+	/*this->mHud[16]->SetText(s);*/
 }
 
 void Warlock::AddBall()
@@ -600,9 +583,7 @@ void Warlock::AddBall()
 void Warlock::HideHud()
 {
 	GameMode::HideHud();
-	for(int i = 0;i<17;i++)
+	for(int i = 11;i<16;i++)
 		this->mHud[i]->SetText("");
-	for(int i = 0;i<6;i++)
-		this->mProgressBars[i]->HideBar();
 	
 }

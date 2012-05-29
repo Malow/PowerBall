@@ -69,7 +69,7 @@ private:
 			bool resume;
 			bool finished;
 			ThreadParam(InGameMenu* igm, bool &res)
-			{ 
+			{
 				this->igm = igm; 
 				this->resume = res; 
 				finished = false;
