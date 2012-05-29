@@ -304,11 +304,11 @@ bool CaptureTheFlag::checkWinConditions(float dt)
 					//update score
 					if(team == (int)TEAM::REDTEAM)
 					{
-						this->mRedScoreText->SetText(MaloW::convertNrToString((float)++this->mRedScore));
+						this->mRedScore++;
 					}
 					else if(team == (int)TEAM::BLUETEAM)
 					{
-						this->mBlueScoreText->SetText(MaloW::convertNrToString((float)++this->mBlueScore));
+						this->mBlueScore++;
 					}
 
 					//if a team has scored enough, announce winner and return
@@ -394,10 +394,21 @@ void CaptureTheFlag::AddBall()
 void CaptureTheFlag::ShowHud()
 {
 	GameMode::ShowHud();
+	//this->mTimeElapsedText->SetText(""); //done by GameMode.cpp
+	string s = "";
+	s = MaloW::convertNrToString((float)this->mRedScore);
+	this->mRedScoreText->SetText(s);
+	s = MaloW::convertNrToString((float)this->mBlueScore);
+	this->mBlueScoreText->SetText(s);
+	s = MaloW::convertNrToString((float)this->mNumberOfRounds);
+	this->mIntermediateText->SetText("Flags captured of " + s);
 }
 
 void CaptureTheFlag::HideHud()
 {
 	GameMode::HideHud();
 	this->mTimeElapsedText->SetText("");
+	this->mRedScoreText->SetText("");
+	this->mBlueScoreText->SetText("");
+	this->mIntermediateText->SetText("");
 }
