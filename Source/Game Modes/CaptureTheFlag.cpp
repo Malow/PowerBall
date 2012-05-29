@@ -217,9 +217,9 @@ void CaptureTheFlag::Initialize()
 		float y = 10.0f;
 		this->mIntermediateText	 = this->mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1");
 		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth - this->mGe->GetEngineParameters().windowWidth * 0.1f - this->mGe->GetEngineParameters().windowWidth * 0.025f;
-		this->mRedScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		this->mRedScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/3");
 		x = this->mGe->GetEngineParameters().windowWidth * 0.5f + textHalfWidth + this->mGe->GetEngineParameters().windowWidth * 0.1f;
-		this->mBlueScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/1");
+		this->mBlueScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/2");
 		
 		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4f;
 		y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
