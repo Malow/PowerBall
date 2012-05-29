@@ -1106,26 +1106,34 @@ void PowerBall::AddForceForwardDirection(float dt)
 		if( scalarProd >= 0 )
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 
 		/* the acc force have a component in the opposite directon to the vel vector. */
 		else 
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 		
 	}
@@ -1147,26 +1155,34 @@ void PowerBall::AddForceOppositeForwardDirection(float dt)
 		if( scalarProd >= 0 )
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 
 		/* the acc force have a component in the opposite directon to the vel vector. */
 		else 
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 		
 	}
@@ -1190,26 +1206,34 @@ void PowerBall::AddForceLeftOfForwardDirection(float dt)
 		if( scalarProd >= 0 )
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 
 		/* the acc force have a component in the opposite directon to the vel vector. */
 		else 
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 		
 	}
@@ -1233,26 +1257,34 @@ void PowerBall::AddForceRightOfForwardDirection(float dt)
 		if( scalarProd >= 0 )
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(3.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 
 		/* the acc force have a component in the opposite directon to the vel vector. */
 		else 
 		{
 			/* projecting acc vector on velocity vector */
-			Vector3 projAccOnVel = velNorm*(acc.GetDotProduct(velNorm));
+			Vector3 projAccOnVel = velNorm*(accNorm.GetDotProduct(velNorm));
 			/* GramS. to get the other component. */
-			Vector3 komponent = acc - projAccOnVel;
+			Vector3 komponent = accNorm - projAccOnVel;
 			
 			/* the weighted calculation for the force. */
 			Vector3 forceWeighted = komponent*(2.0f / 3.0f) + projAccOnVel*(1.0f / 3.0f);
-			this->AddForce(forceWeighted * dt); 
+			
+			/* project the weighted force back on acc */
+			Vector3 forceWeightedOnAcc = accNorm * (accNorm.GetDotProduct(forceWeighted));
+
+			this->AddForce(forceWeightedOnAcc * dt); 
 		}
 		
 	}
