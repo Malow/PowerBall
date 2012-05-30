@@ -111,12 +111,17 @@ ProgressBar::ProgressBar(D3DXVECTOR2 positionFractionTopLeft)
 
 ProgressBar::ProgressBar(int x, int y, int width, int height)
 {
-	
+	/*
 	std::string bar = "Media/LoadingScreen/DarkBlue.png";
 	std::string bar2 = "Media/LoadingScreen/Red.png";
 	std::string bar3 = "Media/LoadingScreen/BlueOcean.png";
 	std::string background = "Media/LoadingScreen/Black.png";
-	
+	*/
+	std::string bar  = "Media/LoadingScreen/Green.png";
+	std::string bar2 = "Media/LoadingScreen/Red.png";
+    std::string bar3 = "Media/LoadingScreen/BlueOcean.png";
+	std::string background = "Media/LoadingScreen/Black.png";
+
 	float fractionSizeOfWindowX = 0.2f;
 	float fractionSizeOfWindowY = 0.05f;
 	float fractionBoarderOfBarX = 0.01f;
@@ -241,4 +246,52 @@ void ProgressBar::ResetBar()
 	this->mBarColor1->SetDimensions(D3DXVECTOR2(this->mFullBarX*0.8f,this->mFullBarY));
 	this->mBarColor2->SetDimensions(D3DXVECTOR2(this->mFullBarX*0.4f,this->mFullBarY));
 
+}
+
+void ProgressBar::SetPercentOfProgressBarMixC1AndC2(float percentageX)
+{
+	if(percentageX <= 100.0f && percentageX >= 0.0f)
+	{
+		float scale = percentageX*0.01f*this->mFullX;
+		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
+		float newFraction;
+		if( scale != 0)
+			newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		else
+			newFraction = 0;
+		float newFullBar = scale*(1.0f -2.0f*newFraction);
+		this->mBarColor3->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		if( newFullBar >= 0)
+		{
+			this->mBarColor1->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+			this->mBarColor2->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+			this->mBarColor1->SetOpacity(percentageX / 100.0f);
+			this->mBarColor2->SetOpacity((100.0f - percentageX) / 100.0f);
+			
+		}
+	}
+}
+
+void ProgressBar::SetPercentOfProgressBarMixC2AndC3(float percentageX)
+{
+	if(percentageX <= 100.0f && percentageX >= 0.0f)
+	{
+		float scale = percentageX*0.01f*this->mFullX;
+		//this->mBackground->SetDimensions(D3DXVECTOR2(scale,this->mFullY));
+		float newFraction;
+		if( scale != 0)
+			newFraction = this->mFractionBoarderX*(this->mFullBarX/scale);
+		else
+			newFraction = 0;
+		float newFullBar = scale*(1.0f -2.0f*newFraction);
+		this->mBarColor1->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+		if( newFullBar >= 0)
+		{
+			this->mBarColor3->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+			this->mBarColor2->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+			this->mBarColor3->SetOpacity(percentageX / 100.0f);
+			this->mBarColor2->SetOpacity((100.0f - percentageX) / 100.0f);
+			
+		}
+	}
 }

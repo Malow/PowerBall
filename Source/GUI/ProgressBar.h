@@ -51,6 +51,8 @@ class ProgressBar
 		void SetPercentOfProgressBarColor2(float procentageX);
 		void SetPercentOfProgressBarColor3(float procentageX);
 		void SetPercentOfProgressBackground(float percentageX);
+		void SetPercentOfProgressBarMixC1AndC2(float percentageX);
+		void SetPercentOfProgressBarMixC2AndC3(float percentageX);
 		void HideBar();
 		void ResetBar();
 };

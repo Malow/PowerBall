@@ -536,7 +536,8 @@ void Warlock::ShowHud()
 		
 	/* Life bar */
 	/*s = "Life: " + MaloW::convertNrToString(floor(10.0f*this->mBalls[this->mNet->GetIndex()]->GetHealth())/10.0f);*/
-	this->mProgressBars[5]->SetPercentOfProgressBarColor1(this->mBalls[this->mNet->GetIndex()]->GetHealth());
+	//this->mProgressBars[5]->SetPercentOfProgressBarColor1(this->mBalls[this->mNet->GetIndex()]->GetHealth());
+	this->mProgressBars[5]->SetPercentOfProgressBarMixC2AndC3(this->mBalls[this->mNet->GetIndex()]->GetHealth());
 	/*this->mHud[16]->SetText(s);*/
 }
 
