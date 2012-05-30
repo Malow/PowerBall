@@ -335,7 +335,7 @@ void ProgressBar::SetPercentOfProgressBarMixC2AndC3(float percentageX)
 			
 			}
 		}
-		else if( percentageX >= 0 && percentageX <= 50)
+		else if( percentageX > 10 && percentageX <= 50)
 		{
 			if( newFullBar >= 0)
 			{
@@ -347,7 +347,22 @@ void ProgressBar::SetPercentOfProgressBarMixC2AndC3(float percentageX)
 				//percentageX += 50;
 				//this->mBarColor2->SetOpacity((100.0f - percentageX) / 100.0f);
 				//percentageX -= 50.0f;
-				this->mBarColor2->SetOpacity((50.0f - percentageX) / 50.0f);
+				this->mBarColor2->SetOpacity((40.0f - (percentageX - 10.0f)) / 40.0f);
+			}
+		}
+		else if( percentageX >= 0  && percentageX <= 10)
+		{
+			if( newFullBar >= 0)
+			{
+				this->mBarColor1->SetDimensions(D3DXVECTOR2(0,this->mFullBarY));
+				this->mBarColor4->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+				this->mBarColor2->SetDimensions(D3DXVECTOR2(newFullBar,this->mFullBarY));
+				//this->mBarColor4->SetOpacity(1.0f);
+				//this->mBarColor4->SetOpacity(percentageX / 100.0f);
+				//percentageX += 50;
+				//this->mBarColor2->SetOpacity((100.0f - percentageX) / 100.0f);
+				//percentageX -= 50.0f;
+				this->mBarColor2->SetOpacity(1.0f);
 			}
 		}
 	}
