@@ -146,9 +146,10 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 
 	if( gameMode == GAMEMODE::DM)
 	{
-		this->mRestitution   = 1.0f; 
+		this->mRestitution   = 1.1f; 
 		this->mAcceleration	 = Vector3(0, -9.81f , 0);
-		this->mForcePress	 = 20.0f; // good for stepTime = 10 ms
+		this->mForcePress	 = 35.0f; // good for stepTime = 10 ms
+		this->mMaxVelocity   = 10.0f;
 	}
 	else if( gameMode == GAMEMODE::CTF)
 	{
@@ -160,6 +161,7 @@ PowerBall::PowerBall(const string meshFilePath, D3DXVECTOR3 position, int gameMo
 	else if( gameMode == GAMEMODE::KOTH)
 	{
 		this->mRestitution   = 1.0f;
+		this->mMaxVelocity   = 10.0f;
 		this->mAcceleration	 = Vector3(0, -9.81f , 0);
 		this->mForcePress	 = 60.0f;
 	}
