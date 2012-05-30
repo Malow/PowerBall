@@ -207,23 +207,7 @@ void CaptureTheFlag::Initialize()
 		
 		this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
 		
-		float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-		float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-		float dx = (windowHeight * 4.0f) / 3.0f;
-		float offSet = (windowWidth - dx) / 2.0f;
 
-		float textHalfWidth = dx * (200.0f / 800.0f);
-		float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth;
-		float y = 10.0f;
-		this->mIntermediateText	 = this->mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1");
-		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth - this->mGe->GetEngineParameters().windowWidth * 0.1f - this->mGe->GetEngineParameters().windowWidth * 0.025f;
-		this->mRedScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/3");
-		x = this->mGe->GetEngineParameters().windowWidth * 0.5f + textHalfWidth + this->mGe->GetEngineParameters().windowWidth * 0.1f;
-		this->mBlueScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/2");
-		
-		x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4f;
-		y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
-		this->mHud[0] = this->mGe->CreateText("", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
 }
 
 void CaptureTheFlag::Intro()
@@ -241,6 +225,27 @@ void CaptureTheFlag::Intro()
 	mGe->DeleteText(intro);
 
 	//net while(this->mChooseTeamMenu->Run());
+
+	// Moved down by malow
+	windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	dx = (windowHeight * 4.0f) / 3.0f;
+	offSet = (windowWidth - dx) / 2.0f;
+
+	textHalfWidth = dx * (200.0f / 800.0f);
+	float x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth;
+	y = 10.0f;
+	this->mIntermediateText	 = this->mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1");
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - textHalfWidth - this->mGe->GetEngineParameters().windowWidth * 0.1f - this->mGe->GetEngineParameters().windowWidth * 0.025f;
+	this->mRedScoreText	 = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/3");
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f + textHalfWidth + this->mGe->GetEngineParameters().windowWidth * 0.1f;
+	this->mBlueScoreText = this->mGe->CreateText("", D3DXVECTOR2(x, y), 1.0f, "Media/Fonts/2");
+		
+	x = this->mGe->GetEngineParameters().windowWidth * 0.5f - this->mGe->GetEngineParameters().windowWidth * 0.4f;
+	y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	this->mHud[0] = this->mGe->CreateText("", D3DXVECTOR2(x, y), 2.0f, "Media/Fonts/1");
+	//
+
 
 	this->mRedScoreText->SetText("0");
 	this->mBlueScoreText->SetText("0");
