@@ -108,6 +108,13 @@ void MainMenu::CreateOptionsMenu()
 		"Media/OptionsMenu/clickapply.png", "Media/OptionsMenu/mouseoverapply.png", dx * (370.0f / 1200) + offSet, windowHeight * (848.0f / 900), dx * (155.0f / 1200), windowHeight * (30.0f / 900));
 	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
 
+	tempElement = new GUIPicture(offSet, 0, 1, "Media/OptionsMenu/MasterVolume.png", dx, windowHeight);
+	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
+
+	tempElement = new TextBox(offSet + dx * (790.0f / 1200.0f), windowHeight * (155.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), MaloW::convertNrToString(GameOptions::masterVolume*100), "MASTERVOLUME", 0.75f, 2, NR);
+	this->mSets[OPTIONS_SOUND].AddElement(tempElement);
+
 	/*Graphic*/
 	tempElement = new GUIPicture(offSet,0,0, "Media/OptionsMenu/optionwindowed.png", dx, windowHeight);
 	this->mSets[OPTIONS_GRAPHICS].AddElement(tempElement);
@@ -128,14 +135,14 @@ void MainMenu::CreateOptionsMenu()
 	{
 		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
 			"", "Media/Menus/EmptyMenu.png");
-		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 900),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	}
 	else if(windowWidth == 1680.0f && windowHeight == 1050.0f)
 	{
-		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 900),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
 			"", "Media/Menus/EmptyMenu.png");
@@ -146,7 +153,7 @@ void MainMenu::CreateOptionsMenu()
 	{
 		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
-		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 900),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
 			"", "Media/Menus/EmptyMenu.png");
@@ -155,7 +162,7 @@ void MainMenu::CreateOptionsMenu()
 	{
 		dropdownlist->AddButton("Media/OptionsMenu/1920x1080.png", new ChangeResEvent(1920, 1080),
 			"", "Media/Menus/EmptyMenu.png");
-		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 1050),
+		dropdownlist->AddButton("Media/OptionsMenu/1680x1050.png", new ChangeResEvent(1680, 900),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 		dropdownlist->AddButton("Media/OptionsMenu/800x600.png", new ChangeResEvent(800, 600),
 			"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
@@ -289,12 +296,19 @@ void MainMenu::CreateOnlineAndLanMenu()
 	DropDownList* dropdownlist = (DropDownList*)tempElement;
 	
 	dropdownlist->AddButton("Media/Menus/CaptureTheFlag_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBCTF, CTF),
-		"", "Media/Menus/EmptyMenu.png");
+		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	dropdownlist->AddButton("Media/Menus/KingOfTheHill_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBKOTH, KOTH),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	dropdownlist->AddButton("Media/Menus/Warlock_DropDown.png", new ChangeSubSetEvent(OPTIONS_LAN_SUBWARLOCK, WARLOCK),
 		"Media/Menus/EmptyMenu.png", "Media/Menus/EmptyMenu.png");
 	
+	this->mSets[OPTIONS_LAN].AddElement(tempElement);
+
+	tempElement = new GUIPicture(offSet, 0, 1, "Media/OnlineAndLanMenu/TeamMenu.png", dx, windowHeight);
+	this->mSets[OPTIONS_LAN].AddElement(tempElement);
+
+	tempElement = new CheckBox(dx * (210.0f / 1200.0f) + offSet, windowHeight * (190.0f / 900.0f), 1, "Media/Menus/CheckBoxFrame.png", dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
+		"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("Team", "true"), "TEAM");
 	this->mSets[OPTIONS_LAN].AddElement(tempElement);
 
 	/*
@@ -353,11 +367,11 @@ void MainMenu::CreateOnlineAndLanMenu()
 		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "20", "Accumulated", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (200.0f / 900.0f), 1, "Media/Menus/Rounds.png",
+	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (230.0f / 900.0f), 1, "Media/Menus/Rounds.png",
 		dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (199.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (229.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
 		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBKOTH].AddElement(tempElement);
 
@@ -370,11 +384,11 @@ void MainMenu::CreateOnlineAndLanMenu()
 		dx * (310.0f / 1200.0f), windowHeight * (30.0f / 900.0f), "Server", "ServerName", 0.75f, 8, NORMALCHAR_NR);
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 
-	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (200.0f / 900.0f), 1, "Media/Menus/Rounds.png",
+	tempElement = new GUIPicture(dx * (50.0f / 1200.0f) + offSet, windowHeight * (230.0f / 900.0f), 1, "Media/Menus/Rounds.png",
 		dx * (190.0f / 1200.0f), windowHeight * (30.0f / 900.0f));
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 
-	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (199.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
+	tempElement = new TextBox(dx * (240.0f / 1200.0f) + offSet, windowHeight * (229.0f / 900.0f), 1, "Media/Menus/TextBox50x30.png",
 		dx * (50.0f / 1200.0f), windowHeight * (32.0f / 900.0f), "5", "Rounds", 0.80f, 2, NR);
 	this->mSets[OPTIONS_LAN_SUBWARLOCK].AddElement(tempElement);
 

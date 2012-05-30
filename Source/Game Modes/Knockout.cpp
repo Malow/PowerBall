@@ -74,26 +74,7 @@ void Knockout::Initialize()
 	this->mPe->AddBody(this->mBalls[1]);
 	this->mPe->AddMap(this->mPlatform);
 
-	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-	float dx = (windowHeight * 4.0f) / 3.0f;
-	float offSet = (windowWidth - dx) / 2.0f;
-	float textHalfWidth = (dx * (455.0f / 800.0f)) * 0.5f;
-	
-	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(20.0f, 10.0f), 1.0f, "Media/Fonts/1"); //time
-	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,50),1.0f,"Media/Fonts/1"); //player 1 score
-	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1"); //player 2 score
-	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,130),1.0f,"Media/Fonts/1"); //number of rounds
-	float y = 0.0f;
-	y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
-	this->mHud[3] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1"); //winner of round
-	textHalfWidth = (dx * (230.0f / 800.0f)) * 0.5f;
-	this->mHud[4] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1"); //round draw
-	textHalfWidth = (dx * (650.0f / 800.0f)) * 0.5f;
-	y = this->mGe->GetEngineParameters().windowHeight * 0.5f;
-	this->mHud[5] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1"); //winner of game/match
-	textHalfWidth = (dx * (455.0f / 800.0f)) * 0.5f;
-	this->mHud[6] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1"); //game/match draw
+
 
 }
 
@@ -110,6 +91,28 @@ void Knockout::Intro()
 	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
 	intro->SetText("");
 	mGe->DeleteText(intro);
+
+
+
+	windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	dx = (windowHeight * 4.0f) / 3.0f;
+	offSet = (windowWidth - dx) / 2.0f;
+	textHalfWidth = (dx * (455.0f / 800.0f)) * 0.5f;
+	
+	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(20.0f, 10.0f), 1.0f, "Media/Fonts/1"); //time
+	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,50),1.0f,"Media/Fonts/1"); //player 1 score
+	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,90),1.0f,"Media/Fonts/1"); //player 2 score
+	this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(20,130),1.0f,"Media/Fonts/1"); //number of rounds
+	y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	this->mHud[3] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1"); //winner of round
+	textHalfWidth = (dx * (230.0f / 800.0f)) * 0.5f;
+	this->mHud[4] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 1.0f, "Media/Fonts/1"); //round draw
+	textHalfWidth = (dx * (650.0f / 800.0f)) * 0.5f;
+	y = this->mGe->GetEngineParameters().windowHeight * 0.5f;
+	this->mHud[5] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1"); //winner of game/match
+	textHalfWidth = (dx * (455.0f / 800.0f)) * 0.5f;
+	this->mHud[6] = mGe->CreateText("", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1"); //game/match draw
 }
 
 bool Knockout::PlaySpecific()

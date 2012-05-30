@@ -66,6 +66,17 @@ void Maze2::Initialize()
 	this->mBalls[0]->SetAcceleration(this->mBalls[0]->GetAcceleration()*3.0f);
 	this->mBalls[0]->SetForcePressed(this->mBalls[0]->GetForcePressed()/15.0f);
 		
+
+}
+
+void Maze2::Intro()
+{
+	Text*	intro = mGe->CreateText("Maze II",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
+	intro->SetText("");
+	mGe->DeleteText(intro);
+
+
 	/* Set hud */
 	this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(20,20),1.0f,"Media/Fonts/1");
 	this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(20,140),1.0f,"Media/Fonts/1");
@@ -83,14 +94,6 @@ void Maze2::Initialize()
 	*/
 
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
-}
-
-void Maze2::Intro()
-{
-	Text*	intro = mGe->CreateText("Maze II",D3DXVECTOR2(400,500),2.0f,"Media/Fonts/1");
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
-	intro->SetText("");
-	mGe->DeleteText(intro);
 }
 
 bool Maze2::PlaySpecific()
