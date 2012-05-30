@@ -157,6 +157,12 @@ bool MainMenu::Run()
 						int flags = -1;
 						int continuously = -1;
 						int accumulated = -1;
+						int teams = 0;
+						if(this->mSets[this->mCurrentSet].GetCheckBox("TEAM")->GetOn())
+							teams = 2;
+
+						MaloW::Debug(teams);
+
 						string serverName = "PowerBall server";
 
 						/* Getting some needed info to start a server*/
@@ -420,7 +426,7 @@ bool MainMenu::Run()
 				else if(returnEvent->GetEventMessage() == "ChangeOptionEvent")
 				{
 					ChangeOptionEvent* tempReturnEvent = (ChangeOptionEvent*)returnEvent;
-					if(tempReturnEvent->GetOption() == "Sound")
+					/*if(tempReturnEvent->GetOption() == "Sound")
 					{
 						if(tempReturnEvent->GetValue() == "true")
 						{
@@ -432,7 +438,7 @@ bool MainMenu::Run()
 							GameOptions::songPlaying->Mute();
 							GameOptions::isPlaying = false;
 						}
-					}
+					}*/
 					if(tempReturnEvent->GetOption() == "Apply")
 					{
 						GraphicsEngineParams gep = GetGraphicsEngine()->GetEngineParameters();
@@ -473,7 +479,24 @@ bool MainMenu::Run()
 						CheckBox* tempCheck = this->mSets[this->mSubSet].GetCheckBox("Sound");
 
 						go.isPlaying = tempCheck->GetOn();
+						if(tempCheck->GetOn())
+						{
+							GameOptions::songPlaying->Unmute();
+							GameOptions::isPlaying = true;
+						}
+						else
+						{
+							GameOptions::songPlaying->Mute();
+							GameOptions::isPlaying = false;
+						}
 
+						TextBox* tempText = this->mSets[this->mSubSet].GetTextBox("MASTERVOLUME");
+
+						float volume = atoi(tempText->GetText().c_str());
+						GameOptions::masterVolume = volume/100;
+						GetGraphicsEngine()->GetSoundEngine()->SetMasterVolume(volume/100);
+						//
+						// Do last
 						go.SaveToFile("GameSettings.cfg");
 					}
 				}
