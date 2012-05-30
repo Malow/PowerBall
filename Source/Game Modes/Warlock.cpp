@@ -168,6 +168,7 @@ void Warlock::Intro()
 		this->mProgressBars[i]->SetPercentOfProgressBarColor1(0.0f);
 		this->mProgressBars[i]->SetPercentOfProgressBarColor2(0.0f);
 		this->mProgressBars[i]->SetPercentOfProgressBarColor3(0.0f);
+		this->mProgressBars[i]->SetPercentOfProgressBarColor4(0.0f);
 		percentX = percentX + 0.16f;
 			
 	}
@@ -177,6 +178,7 @@ void Warlock::Intro()
 	this->mProgressBars[5]->SetPercentOfProgressBarColor1(0.0f);
 	this->mProgressBars[5]->SetPercentOfProgressBarColor2(0.0f);
 	this->mProgressBars[5]->SetPercentOfProgressBarColor3(0.0f);
+	this->mProgressBars[5]->SetPercentOfProgressBarColor4(0.0f);
 	percentX = percentX + 0.16f;
 
 	
