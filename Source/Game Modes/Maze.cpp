@@ -30,7 +30,7 @@ Maze::~Maze()
 		this->mGe->DeleteLight(this->mLights[i]);
 	}
 	SAFE_DELETE(this->mBox);
-	for(int i = 0;i<5;i++) 
+	for(int i = 0;i<10;i++) 
 		mGe->DeleteText(this->mHud[i]);
 	this->mCb->RemoveFromRenderer(this->mGe);
 	delete this->mCb;
@@ -82,11 +82,16 @@ void Maze::Initialize()
 		this->mWindowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 		
 		
-		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(0,0),1.0f,"Media/Fonts/1");
-		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(0,60),1.0f,"Media/Fonts/1");
-		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(0,120),1.0f,"Media/Fonts/1");
-		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(0,180),1.0f,"Media/Fonts/1");
-		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(0,240),1.0f,"Media/Fonts/1");
+		this->mHud[0] = mGe->CreateText("",D3DXVECTOR2(0,0),1.25f,"Media/Fonts/1");
+		this->mHud[1] = mGe->CreateText("",D3DXVECTOR2(0,30),1.0f,"Media/Fonts/1");
+		this->mHud[2] = mGe->CreateText("",D3DXVECTOR2(0,60),1.0f,"Media/Fonts/1");
+		this->mHud[3] = mGe->CreateText("",D3DXVECTOR2(0,90),1.0f,"Media/Fonts/1");
+		this->mHud[4] = mGe->CreateText("",D3DXVECTOR2(0,120),1.25f,"Media/Fonts/1");
+		this->mHud[5] = mGe->CreateText("",D3DXVECTOR2(0,150),1.0f,"Media/Fonts/1");
+		this->mHud[6] = mGe->CreateText("",D3DXVECTOR2(0,180),1.0f,"Media/Fonts/1");
+		this->mHud[7] = mGe->CreateText("",D3DXVECTOR2(0,210),1.0f,"Media/Fonts/1");
+		this->mHud[8] = mGe->CreateText("",D3DXVECTOR2(0,240),1.0f,"Media/Fonts/1");
+		this->mHud[9] = mGe->CreateText("",D3DXVECTOR2(0,270),1.0f,"Media/Fonts/1");
 		this->mCreditSpeed = 0.05f;
 
 		/*
@@ -122,11 +127,16 @@ void Maze::Intro()
 
 bool Maze::PlaySpecific()
 {	
-	this->mHud[0]->SetText("Rikard Johansson");
-	this->mHud[1]->SetText("Marcus Lowegren");
-	this->mHud[2]->SetText("Markus Tillman");
-	this->mHud[3]->SetText("Didrik Axelsson");
-	this->mHud[4]->SetText("Jerry Rahmqvist");
+	this->mHud[0]->SetText("Special thanks to:");
+	this->mHud[1]->SetText("Thorbjorn Mortenssen ");
+	this->mHud[2]->SetText("Lenny Ekberg");
+	this->mHud[3]->SetText("");
+	this->mHud[4]->SetText("Developers:");
+	this->mHud[5]->SetText("Rikard Johansson");
+	this->mHud[6]->SetText("Marcus Lowegren");
+	this->mHud[7]->SetText("Markus Tillman");
+	this->mHud[8]->SetText("Didrik Axelsson");
+	this->mHud[9]->SetText("Jerry Rahmqvist");
 		
 		
 	this->mRunning = true;
@@ -304,6 +314,32 @@ void Maze::ShowHud()
 	else
 		this->mHud[4]->SetPosition(D3DXVECTOR2(this->mHud[4]->GetPosition().x, this->mHud[4]->GetPosition().y + this->mDiff * this->mCreditSpeed));
 	
+	if(this->mHud[5]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[5]->SetPosition(D3DXVECTOR2(this->mHud[5]->GetPosition().x, 0));
+	else
+		this->mHud[5]->SetPosition(D3DXVECTOR2(this->mHud[5]->GetPosition().x, this->mHud[5]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+	
+	if(this->mHud[6]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[6]->SetPosition(D3DXVECTOR2(this->mHud[6]->GetPosition().x, 0));
+	else
+		this->mHud[6]->SetPosition(D3DXVECTOR2(this->mHud[6]->GetPosition().x, this->mHud[6]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+	
+	if(this->mHud[7]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[7]->SetPosition(D3DXVECTOR2(this->mHud[7]->GetPosition().x, 0));
+	else
+		this->mHud[7]->SetPosition(D3DXVECTOR2(this->mHud[7]->GetPosition().x, this->mHud[7]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+	
+	if(this->mHud[8]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[8]->SetPosition(D3DXVECTOR2(this->mHud[8]->GetPosition().x, 0));
+	else
+		this->mHud[8]->SetPosition(D3DXVECTOR2(this->mHud[8]->GetPosition().x, this->mHud[8]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+	
+	if(this->mHud[9]->GetPosition().y + this->mDiff * this->mCreditSpeed > this->mWindowHeight)
+		this->mHud[9]->SetPosition(D3DXVECTOR2(this->mHud[9]->GetPosition().x, 0));
+	else
+		this->mHud[9]->SetPosition(D3DXVECTOR2(this->mHud[9]->GetPosition().x, this->mHud[9]->GetPosition().y + this->mDiff * this->mCreditSpeed));
+	
+
 	
 	//show time elapsed
 	float tmp = floor(this->mTimeElapsed * 10.0f) / 10.0f;

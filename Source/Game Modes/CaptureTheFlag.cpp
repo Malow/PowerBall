@@ -133,11 +133,11 @@ void CaptureTheFlag::Initialize()
 		this->mPlatform->SetShrinkValue(0.0f);
 		
 		this->mEnemyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagRed.ani", D3DXVECTOR3(0, 20, 25)), D3DXVECTOR3(0, 20, 25));
-		this->mEnemyFlag->GetMesh()->Scale(0.75f);
+		this->mEnemyFlag->GetMesh()->Scale(0.66f);
 		this->mEnemyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(90));
 		this->mEnemyFlag->GetMesh()->LoopSeamless();
 		this->mFriendlyFlag = new FlagCTF(mGe->CreateAnimatedMesh("Media/FlagBlue.ani", D3DXVECTOR3(0, 20, -25)), D3DXVECTOR3(0, 20, -25));
-		this->mFriendlyFlag->GetMesh()->Scale(0.75f);
+		this->mFriendlyFlag->GetMesh()->Scale(0.66f);
 		this->mFriendlyFlag->GetMesh()->RotateAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f), DegreesToRadian(-90));
 		this->mFriendlyFlag->GetMesh()->LoopSeamless();
 		
