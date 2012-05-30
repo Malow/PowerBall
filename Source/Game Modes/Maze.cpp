@@ -78,6 +78,25 @@ void Maze::Initialize()
 		*/
 
 		/* Set hud */
+
+}
+
+void Maze::Intro()
+{
+	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	float dx = (windowHeight * 4.0f) / 3.0f;
+	float offSet = (windowWidth - dx) / 2.0f;
+	float textHalfWidth = (dx * (205.0f / 800.0f)) * 0.5f;
+
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+	Text* intro = mGe->CreateText("Maze", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1");
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
+	intro->SetText("");
+	mGe->DeleteText(intro);
+
+
+
 		this->mWindowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
 		this->mWindowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
 		
@@ -103,21 +122,6 @@ void Maze::Initialize()
 		*/
 		this->mCb = new CheckBox(0,0,0,"Media/Menus/CheckBoxFrame.png",	dx * (30.0f / 1200.0f), windowHeight * (30.0f / 900.0f),
 			"Media/Menus/CheckBoxChecked.png", true, new ChangeOptionEvent("MazeMode", "true"), "ChangeSet");
-}
-
-void Maze::Intro()
-{
-	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-	float dx = (windowHeight * 4.0f) / 3.0f;
-	float offSet = (windowWidth - dx) / 2.0f;
-	float textHalfWidth = (dx * (205.0f / 800.0f)) * 0.5f;
-
-	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
-	Text* intro = mGe->CreateText("Maze", D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet, y), 2.0f, "Media/Fonts/1");
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
-	intro->SetText("");
-	mGe->DeleteText(intro);
 }
 
 bool Maze::PlaySpecific()

@@ -121,6 +121,27 @@ void KingOfTheHill::Initialize()
 		this->mLights[i]->SetIntensity(30.0f);
 	this->mIGM	= new InGameMenu(this->mGe);
 
+
+}
+
+void KingOfTheHill::Intro()
+{
+	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
+	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
+	float dx = (windowHeight * 4.0f) / 3.0f;
+	float offSet = (windowWidth - dx) / 2.0f;
+	float textHalfWidth = (dx * (490.0f / 800.0f)) * 0.5f;
+
+	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
+
+	Text*	intro = mGe->CreateText("King of the Hill",D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet,y),2.0f,"Media/Fonts/1");
+	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png", 0.0f, 0.0f, 0.0f, 0.0f);	// Changed by MaloW
+	intro->SetText("");
+	mGe->DeleteText(intro);
+
+
+
+
 	this->mTotalTimeCapture = this->mGe->CreateImage(D3DXVECTOR2(100, 100), D3DXVECTOR2(300, 50), "Media/LoadingScreen/FadeTexture.png");
 	this->mTotalTimeCapture->SetOpacity(0.0f);
 
@@ -147,22 +168,6 @@ void KingOfTheHill::Initialize()
 		this->mHud[i] = NULL;
 	}
 	this->mTimeElapsedText = this->mGe->CreateText(	"", D3DXVECTOR2(15.0f, 10.0f), 1.0f, "Media/Fonts/1");
-}
-
-void KingOfTheHill::Intro()
-{
-	float windowWidth = (float)this->mGe->GetEngineParameters().windowWidth;
-	float windowHeight = (float)this->mGe->GetEngineParameters().windowHeight;
-	float dx = (windowHeight * 4.0f) / 3.0f;
-	float offSet = (windowWidth - dx) / 2.0f;
-	float textHalfWidth = (dx * (490.0f / 800.0f)) * 0.5f;
-
-	float y = this->mGe->GetEngineParameters().windowHeight * 0.4f;
-
-	Text*	intro = mGe->CreateText("King of the Hill",D3DXVECTOR2(dx * 0.5f - textHalfWidth + offSet,y),2.0f,"Media/Fonts/1");
-	mGe->LoadingScreen("Media/LoadingScreen/LoadingScreenBG.png", "Media/LoadingScreen/LoadingScreenPB.png");	// Changed by MaloW
-	intro->SetText("");
-	mGe->DeleteText(intro);
 }
 
 bool KingOfTheHill::PlaySpecific()
